@@ -1443,7 +1443,25 @@ output off;                      @ close output file @
   denotes which of the imputed data buffers (in case of
   \texttt{\_ei2\_mta}) or which of the stored model (in case of
   \texttt{eimodels\_def} and \texttt{eimodels\_run}) in dbuf should be
-  accessed when running \texttt{eiread} and \texttt{eigraph}.  Default=1.
+  accessed when running \texttt{eiread} and \texttt{eigraph}.
+  Default=1.
+  
+\item[\_eiread_Zb] (rows(Zb) $\times$ cols(Zb)) matrix of new
+  covariates for the calculation of first differences (default=\{.\};
+  which indicates the use of the original covariate, \texttt{Zb}).
+  
+\item[\_eiread_Zw] (rows(Zw) $\times$ cols(Zw)) matrix of new
+  covariates for the calculation of first differences (default=\{.\};
+  which indicates the use of the original covariate, \texttt{Zw}).
+  
+\item[\_eiread_betabs] (p $\times$ \texttt{\_Esims}) new simulated
+  draws of $\beta^b$ stored when the new covariates are specified
+  using the globals, \texttt{\_eiread_Zb} and \texttt{\_eiread_Zw}
+  (default=\{.\}; which indicates the use of the original simulated
+  values of $\beta^b$). You need to clear this global variable by
+  setting \texttt{\_eiread_betabs=\{.\}} or using \texttt{eiset;} when
+  you use \texttt{eiread} with the new or original covariates.
+
 \end{description}
 
 \paragraph{\underline{Options}:}
