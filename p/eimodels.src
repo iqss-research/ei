@@ -242,7 +242,7 @@ endp;
 **                   ascending order of the model number (default = 0 which 
 **                   assigns the uniform prior) (# of model x 1).
 **
-**   _EI_bma_est   = 1 if the Laplace-Metropolis estimator (default) and 2
+**   _EI_bma_est   = 1 if the Laplace approximation (default) and 2
 **                   for the Hamonic mean estimator (an importance sampling
 **                   scheme) to estimate the marginal likelihood.
 **
@@ -347,7 +347,7 @@ proc 1=eimodels_avg(ndbuf);
         if _EI_bma_est == 1 and temp[eiread(dbtemp,"ghactual"),1]==-1;
           ?;
           "eimodels: EI for Model " frst " did not calculate the variance covariance matrix";
-          "(_EI_vc={-1 0} option was used). You cannot use the Laplace-Metropolis estimator";
+          "(_EI_vc={-1 0} option was used). You cannot use the Laplace approximation";
           "in this case. Choose the harmonic mean estimator (_EI_bma_est=2) and try again."; 
           "----- EIMODELS_AVG Aborted -----";
           ?;
@@ -357,11 +357,11 @@ proc 1=eimodels_avg(ndbuf);
 
       /* estimating the marginal likelihood */
       if _EI_bma_est == 1;
-        @ Laplace-Metropolis estimator (unnormalized) @
+        @ Laplace approximation (unnormalized) @
         vc=eiread(dbtemp,"vcphi");
         temp=(2*pi)^(0.5*rows(vc))*sqrt(det(vc))*exp(eiread(dbtemp,"loglik"));
         if _Eprt_temp/=0;
-          "using the Laplace-Metropolis estimator..."; 
+          "using the Laplace approximation..."; 
           ?;
         endif;
       elseif _EI_bma_est == 2;
