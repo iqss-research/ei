@@ -664,7 +664,7 @@ Sensitivity to model specification in quantitative political science
 is perhaps most commonly seen when minor changes among the explanatory
 variables in regression-type analyses result in large differences in
 the resulting estimates.  The endemic nature of such model dependent
-inferences in the field makes a decision to base all inferences on a
+inferences [in the field] makes a decision to base all inferences on a
 single model in most situations highly dubious.  This is all the more
 so in ecological inference where model dependence is more frequently
 an issue.  Yet, almost all applications of ecological inference use a
@@ -677,44 +677,48 @@ although it is not markedly different from other applications.  We
 began by following the most common procedure of estimating many models
 and assessing the degree to which our ultimate quantities of interest
 depend on the specification.  This was informative but insufficient,
-since our assignment was to provide a single inference, such as an
-estimate and confidence interval.  The literature includes three basic
-ways of drawing inferences in the presence of model uncertainty.  Some
-researchers persist in choosing a single model, perhaps on the basis
-of qualitative arguments about its merits, and draw inferences
-assuming its veracity.  This optimistic approach typically
-overestimates the degree to which the researcher is certain of the
-correct model specification, and hence typically gives overly precise
-confidence intervals.
+since our assignment was to provide a single inference[, such as] {\bf
+  with} a[n] {\bf point} estimate and confidence interval.  
 
-Some researchers use a formal model selection criterion, such as
-stepwise regression, Mallow's Cp, AIC, etc., to pick the best model.
-Although these procedures are inappropriate when estimating causal
-effects, they are reasonable when the quantity of interest is
-predictive, such as ecological inference.  Unfortunately, even in
-these situations the result of applying these criteria is one model
-which thus also ignores model uncertainty.
+[The literature includes] {\bf There are} three basic ways of drawing
+inferences in the presence of model uncertainty.  Some researchers
+persist in choosing a single model, perhaps on the basis of
+qualitative arguments about its merits, and draw inferences assuming
+its veracity.  This optimistic approach typically overestimates the
+degree to which the researcher is certain of the correct model
+specification, and hence typically gives {\bf imprecise estimates and}
+overly [precise] {\bf narrow} confidence intervals.  Other researchers
+use a formal model selection criterion, such as stepwise regression,
+Mallow's Cp, AIC, etc., to pick the best model.  Although these
+procedures are inappropriate when estimating causal effects, they are
+reasonable when the quantity of interest is predictive, such as
+ecological inference.  Unfortunately, even in these situations the
+result of applying these criteria is one model, {\bf and} [which] thus
+also ignores model uncertainty.
 
 An approach now widely recognized to be superior to any model
-selection criterion is Bayesian model averaging, and so we also use
-this approach.  The basic idea is to estimate a large number of
-potential models and to take the weighted average of their results,
-with weights based on probability that a model is correct.  The
-correctness of the model is not assumed ex ante; nor is it merely
-based on goodness of fit; it is instead calculated from the data via
-Bayesian analysis.  The key result of Bayesian model averaging is that
-the inferences it produces (1) are more accurate than those produced
-by any known model selection criterion, (2) include all model
-uncertainties in our inferences, (3) outperform any of the individual
-models in the set being averaged over.  Moreover, even if the true
-model generating the data lies \emph{outside} the models averaged
-over, inferences from Bayesian model averaging outperform any
-individual model in the set \citep{madi:raft:94}.\footnote{This result
-  is similar to insights from the closely related literature on
-  committee methods \citep{bish:95}, although surprisingly the
-  literatures have relatively few cross-citations.  See also Rosen,
-  Jiang, and Tanner (2000) and Robert
-  (1996)\nocite{rose:jian:tann:00,robe:96a}.  See
+selection criterion is Bayesian model averaging, {\bf which we apply
+  to our ecological inference problem} [and so we also use this
+approach].  The basic idea is to estimate a large number of potential
+models and to take the weighted average of their results, with weights
+based on probability that a model is correct.  The correctness of the
+model is not assumed ex ante; nor is it merely based on goodness of
+fit; it is instead calculated from the data via Bayesian analysis.
+The key result of Bayesian model averaging is that the inferences it
+produces (1) are more accurate than those produced by [any known] {\bf
+  standard} model selection criterion, (2) {\bf formally incorporate}
+[include] all model uncertainties in our inferences, (3) outperform
+any of the individual models {\bf that are } [in the set being]
+averaged over.  {\bf The last property does not depend on whether }
+[Moreover, even if] the true model generating the data lies
+\emph{outside} the models averaged over. {\bf That is}, inferences
+from Bayesian model averaging {\bf always} outperform any individual
+model {\bf considered} [in the set]
+\citep{madi:raft:94}.\footnote{This result is similar to insights from
+  the closely related literature on committee methods \citep{bish:95},
+  although surprisingly the literatures have relatively few
+  cross-citations.  See also Rosen, Jiang, and Tanner (2000) and
+  Robert (1996)\nocite{rose:jian:tann:00,robe:96a}.  See
   \citet{hoet:madi:raft:voli:99} for a general introduction to
   Bayesian model averaging.  \citet{drap:95} discusses how Bayesian
   model averaging deals with the model uncertainty.  See
@@ -724,8 +728,23 @@ individual model in the set \citep{madi:raft:94}.\footnote{This result
 consider a wide range of models, while still producing one set of
 results.
 
+{\bf Of course, one can never cover the entire model space, which is
+  of infinite size, since Bayesian model averaging only allows one to
+  include a finite number of models.} [Bayesian model averaging] {\bf
+  Therefore, the resulting inferences} can always be improved by
+[including] {\bf adding} additional models. {\bf This is not a unique
+  feature of Bayesian model averaging since it is always possible to
+  come up with a better model in any statistical analysis. However,
+  Bayesian model averaging presents significant improvement over a
+  standard analysis resulting from one assumed model.} [and of course
+we are vulnerable to being proven wrong by someone who finds a
+different model to include that turns out to have both a high
+probability of being correct and yields different inferences.  But we
+are content to put forward our conclusions based as they are on all
+specifications that we were able to ellicit at the time.]
+
 Bayesian model averaging is especially important in our application
-since political scientists have only rarely studied absentee ballots
+since political scientists have [only] rarely studied absentee ballots
 and we therefore have little prior theory with which to assist in
 model specification.  The procedure thus enables us to conduct an
 analysis without having to defend one particular specification, or
@@ -734,13 +753,7 @@ models by talking in detail to reporters and partisans on both sides.
 We then formalized \emph{every} intution any of them mentioned in an
 ecological inference model (by defining $Z$) and we included them all
 in our analysis.  We also included a number of others we came up with
-independently.  Bayesian model averaging can always be improved by
-including additional models, and of course we are vulnerable to being
-proven wrong by someone who finds a different model to include that
-turns out to have both a high probability of being correct and yields
-different inferences.  But we are content to put forward our
-conclusions based as they are on all specifications that we were able
-to ellicit at the time.
+independently.  
 
 Our search for models identified 31 possibilities for $Z$, including
 including race, sex, and party registration for the overseas absentee
@@ -780,31 +793,30 @@ distribution.\footnote{\label{f:models}A list of all 31 models
   intervals to search for outliers or bad model fits.  In addition, we
   plotted $E(T|X)$ or $E(T|X,Z)$ by $X$ or $Z$, and checked whether
   the observed $T$ fell within the (say) 90\% confidence interval 90\%
-  of the time.}
-
-Each of our models includes at most two covariates in the model.  In
-part this is because no one proposed a model that clearly was defined
-by more.  But more importantly, we know that predictions are better
-when not overfitting the data with many variables.  Hoeting et al
-(1999) and Madigan and Raftery (1994) and others have shown that
-Bayesian model averaging almost never puts much weight on such models,
-and predictions (unlike say causal inferences) are typically better
-with parsimonious specifications.\footnote{Multiple covariates
-  uncorrelated with $X_i$ causes no identification problems in EI.
-  Ecological inference models that do not incorporate information from
-  the deterministic bounds (such as in Goodman,
-  1953\nocite{goodman53}) are not identified when including $X_i$ or
-  variables related to $X_i$ as covariates (King, 1997: 42).  Thus, to
-  the extent that ecological inference models that incorporate the
-  bounds, such as EI, are estimable when including $X_i$ or covariates
-  that are related to $X_i$, the information that makes this possible
-  is coming from the bounds.  Although no covariates, or one or
-  possibly two are often well identified, the point at which the
-  specification is trying to extract information that is unavailable
-  comes quickly.  Moreover, in the space of the inferences being made,
-  the predictions about the quantities of inferences in EI are not
-  often greatly affected by including more than one covariate at a
-  time.}
+  of the time.}  Each of our models includes at most two covariates in
+the model.  In part this is because no one {\bf including journalists
+  and academics} proposed a model that clearly was defined by more.
+But more importantly, we know that {\bf better} predictions {\bf can
+  be obtained} [are better] when not overfitting the data with {\bf
+  too} many variables.  Hoeting et al (1999) and Madigan and Raftery
+(1994) and others have shown that Bayesian model averaging almost
+never puts much weight on such models, and predictive inferences
+(unlike causal inferences) are typically better with parsimonious
+specifications.\footnote{Multiple covariates uncorrelated with $X_i$
+  causes no identification problems in EI.  Ecological inference
+  models that do not incorporate information from the deterministic
+  bounds (such as in Goodman, 1953\nocite{goodman53}) are not
+  identified when including $X_i$ or variables related to $X_i$ as
+  covariates (King, 1997: 42).  Thus, to the extent that ecological
+  inference models that incorporate the bounds, such as EI, are
+  estimable when including $X_i$ or covariates that are related to
+  $X_i$, the information that makes this possible is coming from the
+  bounds.  Although no covariates, or one or possibly two are often
+  well identified, the point at which the specification is trying to
+  extract information that is unavailable comes quickly.  Moreover, in
+  the space of the inferences being made, the predictions about the
+  quantities of inferences in EI are not often greatly affected by
+  including more than one covariate at a time.}
 
 \section{Empirical Results}
 \label{s:outcome}
