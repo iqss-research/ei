@@ -101,8 +101,8 @@
 \newcommand{\bg}{\beta^{\text{good}}}
 \renewcommand{\bibitem}{\vskip 2pt\par\hangindent\parindent\hskip-\parindent}
 
-\title{Analyzing Second-Stage Ecological Regressions: Extensions to
-  Herron and Shotts}
+\title{Analyzing Second-Stage Ecological Regressions:\\
+  Extensions to Herron and Shotts}
 
 \author{Christopher Adolph\thanks{Ph.D. candidate, Department of
     Government, Harvard University. (Littauer Center---North Yard,
@@ -212,70 +212,91 @@ dependence.  In the other three situations, the best procedures are
 unadjusted least squares, unadjusted weighted least squares
 regression, and a logistic regression procedure, respectively.
 
-\section{A Fully Adjusted Second Stage Regression Procedure}
+\section{A Fully Adjusted Second Stage Regression Model}
 \label{s:fulladj}
 
-HS consider models in which a researcher wishes to regress an EI-based
-estimate, $\hat\beta_i^b$, on some explanatory variable $Z_i$:
-\begin{equation}
-  \label{eq:ssreg}
-  \hat\beta_i^b=\alpha_U+\gamma_U Z_i + \nu_i,
-\end{equation}
-They argue that unless the measurement error in $\hat\beta_i^b$ is
-uncorrelated with the true $\beta_i^b$, $\gamma_U$ will be biased.
-Strictly speaking, this (typically downward) bias will be limited in
-the presence of tight bounds on the estimates of $\hat\beta_i^b$.
-However, to the extent that the bounds are wide and the linearity
-assumed by Eq. \ref{eq:ssreg} holds, $\hat\gamma_U$ will be an
-underestimate of the true $\gamma$, which HS denote $\gamma_R$.
+We eliminate the logical inconsistencies in HS's
+notation,\footnote{For example, their Equations (7) and (8) have
+  different dependent variables, $\beta_i^b$ and $\hat\beta_i^b$ set
+  equal to the same entire right side of the equation in both cases
+  ($\alpha+\gamma'Z_i+\nu_i$).  Later in their paper, they allow
+  $\gamma$ to differ between the two (calling the first $\gamma_R$ and
+  the second $\gamma_U$), but do not fix the constant term (or error
+  terms).} simplify where possible, and present our fully adjusted
+method with their's as a special case.  We thus eliminate the
+inconsistencies and also simplify where possible.
 
-HS propose a correction for this attenuation bias based on the
-assumption that the measurement error in $\hat\beta_i^b$ is a linear
-function of the true $\beta_i^b$'s:
+First, let the expectation of $\beta_i^b$ conditional on $Z_i$ be
+approximated by
 \begin{equation}
-  \label{eq:hserr}
-  \hat\beta_i^b - \beta_i^b = \delta_0^b + \delta_1^b\beta_i^b + \zeta_i.
+  \label{true}
+  E(\beta_i^b)=\alpha_R+\gamma_R Z_i,
 \end{equation}
-If this assumption holds, then it is easy to show that the true slope,
-$\gamma_R$, can be calculated as $\gamma_U/(1 + \delta_1^b)$; HS label
-this adjustment $\gamma_A$.  However, the same method shows that the
-intercept $\alpha$ should be adjusted, so that $\alpha_A =
-(\alpha_U-\delta_0^b)/(1+\delta_1^b)$.  Besides being consistent with
-HS's slope adjustment, intercept correction also makes intuitive
-sense.  Unless the mean of $Z$ is approximately zero, inflating the
-slope without changing the intercept can produce much higher or lower
-predictions of $\hat\beta_i^b$ from Eq.  \ref{eq:ssreg} than are
-consistent with the data, or even possible.  Only when $\bar Z \approx
-0$ is the unadjusted $\alpha$ approximately right.
+so that estimates of $\alpha_R$ and $\gamma_R$ are the immediate goal
+of the analysis.  Also let the expectation of $\hat\beta_i^b$
+conditional on $Z_i$ be
+\begin{equation}
+  \label{est}
+  E(\hat\beta_i^b)=\alpha_R+\gamma_R Z_i,
+\end{equation}
+which is of course well estimated by least squares.  HS then assume
+that the error in estimating $\hat\beta_i^b$ by EI is a linear
+function of $\beta_i^b$:
+\begin{equation}
+  \label{hserr}
+  E(\hat\beta_i^b - \beta_i^b)
+  = \delta_0^b + \delta_1^b\beta_i^b + \zeta_i.
+\end{equation}
+Then solving (\ref{hserr}) for $E(\hat\beta_i^b)$ and substituting the
+result into (\ref{est}) gives a more informative version of (\ref{true}):
+\begin{equation}
+  \label{adj}
+  E(\beta_i^b) = \left(\frac{\alpha_U-\delta_0^b}{1+\delta_i^b}\right)
+  + \left(\frac{\gamma_U}{1+\gamma_1^b}\right)Z_i.
+\end{equation}
+Thus, we know that the quantities of interest, $\alpha_R$ and
+$\gamma_R$, can be expressed as the intercept and slope of
+(\ref{adj}).  If we can estimate the components of each, we can derive
+a consistent estimator, assuming of course HS's various linearity and
+unboundedness assumptions are not too far off.
 
-Since we can easily adapt the procedure HS recommend in Section 7.2
-to produce estimates of both $\delta_0^b$ and $\delta_1^b$, researchers
-can make a full adjustment of a second-stage regression as easily as a
-partial adjustment.
-\begin{table}[tb]
-\label{t:hsrep}
-\begin{center}
-\begin{tabular}{cc|c c c}
-Model Parameters & Truth & \multicolumn{3}{c}{Estimates} \\
-$\breve\psi$  & $\gamma_R$ & $\hat\gamma_R$  &       $\hat\gamma_U$ & $\hat\gamma_A$ \\\hline
-(0.5, 0.5, 0.1, 0.1, 0)&1 &       0.04    &       0.02    &       0.04        \\
-(0.75, 0.5, 0.1, 0.1, 0) &1       &       0.04    &       0.02    &       0.04        \\
-(0.75, 0.75, 0.1, 0.1, 0) &1      &       0.04    &       0.02    &       0.04     \\
-(0.9, 0.9, 0.1, 0.1, 0) &1&       0.02    &       0.01    &       0.02          \\
-(0.5, 0.5, 0.32, 0.1, 0) &1       &       0.19    &       0.13    &       0.19        \\
-(0.6, 0.6, 0.1, 0.32, 0) &1       &       0.04    &       0.01    &       0.04     \\
-(0.9, 0.1, 0.32, 0.32, 0)&1       &       0.15    &       0.08    &       0.15        \\
-(0.5, 0.5, 0.1, 0.1, 0.3)&1       &       0.04    &       0.02    &       0.04     \\
-\hline
-\end{tabular}
-\end{center}
-\caption{\em Estimated and ``true'' slopes from 
-second-stage regressions based on Herron and Schott's Monte Carlo 
-procedure. This table replicates the results of simulations presented in
-HS Table 2.  All results are averages over 100 simulations.  
-The difference and ratios presented in HS Table 2 were also 
-successfully replicated, and are not shown here.}
-\end{table}
+\section{Correcting and Extending Herron and Shotts' Estimation
+  Procedure}
+
+HS offer an estimation algorithm for correcting the slope term in
+their Section 7.2.  This procedure is intuitive and we can easily
+generalize it to provide a correction for the intercept as well.
+Unfortunately, the procedure itself is flawed for two reasons.  First,
+it conditions on the point estimate for $\breve\psi$, and thus assumes
+the absence of estimation uncertainty.  Ignoring uncertainty would
+bias standard errors and confidence intervals, of course, but HS did
+not calculated them.  However, since their estimation procedure is
+nonlinear, ignoring estimation uncertainty also affects their point
+estimates in finite samples.  And second, the procedure calls for
+drawing only a single simulation of $(\beta_i^b,\beta_i^w)$ for each
+observation.  As a result, the estimate includes Monte Carlo
+approximation error.  The error can be eliminated by running their
+entire procedure many times and averaging.  We fix each of these
+problems in our application of this algorithm.\footnote{To define the
+  full algorithm, let a symbol with a tilde on it denote a value of
+  that quantity randomly drawn from its posterior density.  To
+  implement this procedure for a given set of data $X_i$ and $T_i$
+  ($i=1,\dots,p$): (1) run EI on $X$ and $T$; (2) draw $\tilde\psiu$
+  from its posterior density as given by EI; (3) take one draw of
+  $(\tilde\beta_i^b,\tilde\beta_i^w)$ for each $i=1,\dots,p$ from a
+  truncated normal density with parameter vector $\tilde\psiu$, (4)
+  compute a new $T_i$ as $\tilde
+  T_i=\tilde\beta_i^bX_i+\beta_i^w(1-X_i)$; (5) run EI on $X_i$ and
+  $\tilde T_i$ to yield estimates ($\hat\beta_i^b,\hat\beta_i^w$) for
+  all $i$; (6) regress ($\hat\beta_i^b-\hat\beta_i^b$) on $\beta_i^b$
+  to estimate $\delta_0^b$ and $\delta_1^b$; (7) repeat steps (2)-(7)
+  a sufficient number of times to eliminate Monte Carlo approximation
+  error, and average the estimates in (6) to yield $\hat\delta_0^b$
+  and $\hat\delta_1^b$; (8) regress $\hat\beta_i^b$ on $Z_i$ yielding
+  the estimated intercept $\hat\alpha_U$ and slope $\hat\gamma_U$; (9)
+  compute the adjusted intercept as
+  $(\hat\alpha_U-\hat\delta_0^b)/(1+\hat\delta_1^b)$ and adjusted
+  slope as $\hat\gamma_U/(1+\hat\delta_i^b)$.}
 
 \section{Herron and Shotts' Monte Carlo Simulations}
 
@@ -308,6 +329,30 @@ $\hat\gamma_R\approx 0.07$.  Thus, since the unadjusted method is
 unable to recover the coefficients without shrinkage when using the
 true value of the dependent variable, this Monte Carlo setup is
 inappropriate for assessing a dependent variable that is estimated.
+\begin{table}[tb]
+\label{t:hsrep}
+\begin{center}
+\begin{tabular}{cc|c c c}
+Model Parameters & Truth & \multicolumn{3}{c}{HS Estimates} \\
+$\breve\psi$  & $\gamma_R$ & $\hat\gamma_R$  &       $\hat\gamma_U$ & $\hat\gamma_A$ \\\hline
+(0.5, 0.5, 0.1, 0.1, 0)&1 &       0.04    &       0.02    &       0.04        \\
+(0.75, 0.5, 0.1, 0.1, 0) &1       &       0.04    &       0.02    &       0.04        \\
+(0.75, 0.75, 0.1, 0.1, 0) &1      &       0.04    &       0.02    &       0.04     \\
+(0.9, 0.9, 0.1, 0.1, 0) &1&       0.02    &       0.01    &       0.02          \\
+(0.5, 0.5, 0.32, 0.1, 0) &1       &       0.19    &       0.13    &       0.19        \\
+(0.6, 0.6, 0.1, 0.32, 0) &1       &       0.04    &       0.01    &       0.04     \\
+(0.9, 0.1, 0.32, 0.32, 0)&1       &       0.15    &       0.08    &       0.15        \\
+(0.5, 0.5, 0.1, 0.1, 0.3)&1       &       0.04    &       0.02    &       0.04     \\
+\hline
+\end{tabular}
+\end{center}
+\caption{\em Estimated and ``true'' slopes from 
+second-stage regressions based on Herron and Schott's Monte Carlo 
+procedure. This table replicates the results of simulations presented in
+HS Table 2.  All results are averages over 100 simulations.  
+The difference and ratios presented in HS Table 2 were also 
+successfully replicated, and are not shown here.}
+\end{table}
 
 A second problem with the Monte Carlo procedure employed by HS is that
 it artificially rules out nonlinear relationships between $\beta_i^b$
@@ -660,39 +705,38 @@ Sources of Input,'' \emph{Statistical Science}, 9, 4: 538--573.
 
 
 
-To facilitate replication, we present our simulation procedure in a
-manner comparable to HS:
 
-\begin{enumerate}
-\item Choose $\phi_1$, $\phi_2$, $\phi_3$, $\phi_4$, $\sigmau_b$,
-  $\sigmau_w$, and $\rhou$.
+\appendix
+\section{Estimation}
+To estimate $\alpha_R$ and $\gamma_R$ in (\ref{true}), one can follow
+this algorithm.  First choose $\phi_1$, $\phi_2$, $\phi_3$, $\phi_4$,
+$\sigmau_b$, $\sigmau_w$, and $\rhou$ and then repeat the following
+$M$ times:
   
-\item Repeat the following 100 times:
-
 \begin{enumerate}
-\item Draw $X_i$, $i=1,\ldots,500$ from the uniform distribution.
+\item Draw $X_i$, $i=1,\ldots,p$ from the uniform distribution.
   Various ranges of uniform random numbers are chosen to produce
   different mixtures of wide and narrow bounds.
-  
+    
 \item Draw $Z_i$ from the normal distribution.  Various means and
   variances are used in different scenarios.
-  
+    
 \item Calculate the untruncated means $\bbetau^b_i$ and $\bbetau^w_i$
   from the extended EI model, as follows:
-\begin{align}
-  \bbetau^b_i &= \left[\phi_1(\sigmau_b^2+0.25)+0.5\right]
-  +\phi_2Z_i^b\notag\\
-  \bbetau^w_i &= \left[\phi_3(\sigmau_w^2+0.25)+0.5\right]
-  +\phi_4Z_i^w
-  \label{reparZ}
-\end{align}
-
+  \begin{align}
+    \bbetau^b_i &= \left[\phi_1(\sigmau_b^2+0.25)+0.5\right]
+    +\phi_2Z_i^b\notag\\
+    \bbetau^w_i &= \left[\phi_3(\sigmau_w^2+0.25)+0.5\right]
+    +\phi_4Z_i^w
+    \label{reparZ}
+  \end{align}
+  
 \item Draw $\beta_i^b$ and $\beta_i^w$ from the truncated bivariate
   normal given $\psiu =
   \(\bbetau^b,\bbetau^w,\sigmau_b,\sigmau_w,\rhou\)$.
   
-\item Obtain estimates of $\hat\beta_i^b$ and $\hat\beta_i^w$ from EI,
-  omitting the covariate $Z_i$.
+\item Obtain estimates of $\hat\beta_i^b$ and $\hat\beta_i^w$ from
+  EI, omitting the covariate $Z_i$.
   
 \item Estimate $\hat\delta_0^b$ and $\hat\delta_1^b$ using Eq.
   \ref{eq:hserr}.
@@ -706,6 +750,5 @@ manner comparable to HS:
   
 \item Finally, obtain adjusted slopes and coefficients according to
   the procedure described in Section \ref{s:fulladj}.
+\end{enumerate}
 
-\end{enumerate}
-\end{enumerate}
