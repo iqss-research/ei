@@ -78,18 +78,10 @@ proc 2=psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
   betaBs=zeros(rs,_Esims);
   betaWs=betaBs;
   {Bbeta,aggs}=bounds1(t,x,tvap);
-  #ifdos;
-  k=1; do while k<=_Esims;
-  #else;
   for k (1, _Esims, 1);
-  #endif;
     {tt,tt,tt,tt,Ebb,Vbb} = exvar(T,x,eirepar(PSIsims[k+0,.]',Zb,Zw,x));
     betaBs[.,k+0] = rndtni(Ebb,Vbb,Bbeta[.,1 2]);
-  #ifdos;
-  k=k+1; endo;
-  #else;
   endfor;
-  #endif;
 
   /* compute betaWs from betaBs deterministically */
   if _Ebetaws;
@@ -135,11 +127,7 @@ proc betab2w(t,x,betab);
       "EI internal error, betab2w";
       stop;
     endif;
-    #ifdos;
-    i=1;do while i<=col;
-    #else;
     for i (1, col, 1);
-    #endif;
       {c,c0,c1} = homoindx(x[.,i+0]);
       if not(scalmiss(c));
 	betaW[c,i+0] = (t[c]./x1[c,i+0])-((betaB[c,i+0].*x[c,i+0])./x1[c,i+0]);
@@ -150,11 +138,7 @@ proc betab2w(t,x,betab);
       if not(scalmiss(c1));
 	betaW[c1,i+0] = miss(1,1).*ones(rows(c1),1);
       endif;
-    #ifdos;
-    i=i+1; endo;
-    #else;
     endfor;
-    #endif;
     
   endif;
   retp(betaW);
@@ -230,11 +214,7 @@ proc rndisamp(&f,b,vc,dataset,sims);
     _Eivc={.};
   endif;
   
-  #ifdos;
-  i=1; do while i<=k;
-  #else;
   for i (1, k, 1);
-  #endif;
     if int(i/100)==i/100 and _Eprt>=2;
       i/10;
     endif;
@@ -245,11 +225,7 @@ proc rndisamp(&f,b,vc,dataset,sims);
     else;
       norm[i+0]=lnpdfmt(psis[i+0,.]',b,0,_Eist);
     endif;
-  #ifdos;
-  i=i+1; endo;
-  #else;
   endfor;
-  #endif;
   lnir=lik-norm;	@ ln(imptce ratio)  @
 
   if scalone(_EisChk);

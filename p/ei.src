@@ -929,12 +929,7 @@ proc eirepl(dbufin);
 
   r=rows(nms);
 
-  #ifdos;
-    i=1; 
-    do while i<=r;
-  #else;
     for i (1, r, 1);
-  #endif;
     
     tst=vin(dbufin,nms[i]);
     if tst==1;
@@ -953,11 +948,7 @@ proc eirepl(dbufin);
       "   Results may not replicate exactly unless you get the version";
       "   of EI used to create the data buffer. Using current default.";
     endif;
-  #ifdos;
-    i=i+1;endo;
-  #else;  
     endfor;
-  #endif;
     
   dbuf=ei(t,x,n,Zb,Zw);
   retp(dbuf);
@@ -1058,11 +1049,7 @@ proc ei2(V,dbuf,Gb,Gw);
   x2k=lambdaBs;
   
   /* run second stage analyses */
-  #ifdos;
-  i=1; do while i<=ei2m;
-  #else;
   for i (1, ei2m, 1);
-  #endif;
     if (i+0)==ei2m;
       _Eres=Eres;
       _Esims=Esims-_Esims*(ei2m-1);
@@ -1080,12 +1067,7 @@ proc ei2(V,dbuf,Gb,Gw);
     lambdaBs=lambdaBs~eiread(idbuf,"betabs");
     x2k=x2k~(x2[.,i+0].*ones(1,_Esims));
     _Estval=trimr(eiread(idbuf,"phi"),0,2);
-
-  #ifdos;
-  i=i+1;  endo;
-  #else;
   endfor;
-  #endif;
   
   /* prepare output */
   idbuf=vput(idbuf,lambdaBs[.,2:cols(lambdaBs)],"betaBs");

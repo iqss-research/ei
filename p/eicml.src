@@ -354,11 +354,7 @@ proc gvc(&f,b,dataset);
     b=selif(b,_Ghfix);
   endif;
 
-  #ifdos;
-  i=1;  do while i<=rows(_ei_vc);
-  #else;
   for i (1, rows(_ei_vc), 1);
-  #endif;
 
     if _ei_vc[i+0,1]==1;                  @ use hessp @
       if _Eprt>=2;
@@ -413,22 +409,14 @@ proc gvc(&f,b,dataset);
       endif;
       eigvals=eig(vc);
       not_pd = 0;
-      #ifdos;
-      j=1;  do while j<=rows(eigvals);
-      #else;
       for j (1, rows(eigvals), 1);
-      #endif;
         if _Eprt>=3;
           print("gvc: vc eigenvalue ", eigvals[j+0]);
         endif;
         if eigvals[j+0] <= 0;
           not_pd = 1;
 	endif;
-     #ifdos;
-     j=j+1; endo;
-     #else;
-     endfor;
-     #endif;
+      endfor;
       if not_pd == 1;
         if _Eprt>=1;
 	  "gvc:   -hessian matrix not p.d.; trying generalized cholesky also";
@@ -479,11 +467,7 @@ proc gvc(&f,b,dataset);
       retp(vc);
     endif;
   
-  #ifdos;   
-    i=i+1;endo;
-  #else;
   endfor;
-  #endif;
   
   "gvc: positive definite Hessian not found.  Change _ei_vc and rerun"; 
   _GhActual=-1; 
@@ -607,17 +591,9 @@ proc ghessp(&f,x0,wf,grad);
       x=makefacn(cols(p),p);
       i=1;		@ add quad terms  @
       do while i<=k;
-	#ifdos;
-	j=i; do while j<=k;
-	#else;
 	for j (i, k, 1);
-	#endif;
 	  x=x~((x[.,i]-x0[i]).*(x[.,j+0]-x0[j+0]));
-	#ifdos;
-        j=j+1; endo;
-	#else;
 	endfor;
-	#endif;
 	i=i+1;
       endo;
       x=x~ones(rll,1);	@ add constant term @
@@ -625,17 +601,9 @@ proc ghessp(&f,x0,wf,grad);
       x=x[.,k+1:cols(x)];
       
       /* do likelihood evaluations */
-      #ifdos;
-      i=1;  do while i<=rll;
-      #else;
       for i (1, rll, 1);
-      #endif;
 	ll[i+0]=f(ox[i+0,.]');
-      #ifdos;
-      i=i+1;  endo;
-      #else;
       endfor;
-      #endif;
 
       /* compute quad regression */
       local oldt;
@@ -653,11 +621,7 @@ proc ghessp(&f,x0,wf,grad);
       ii=0;
       i=1;	
       do while i<=k;
-	#ifdos;
-        j=i; do while j<=k;
-        #else;
 	for j (i, k, 1);
-        #endif;
 	  ii=ii+1;
 	  hessian[i,j+0]=b[ii];
 	  if i/=j;
@@ -665,11 +629,7 @@ proc ghessp(&f,x0,wf,grad);
 	  else;
 	    hessian[j+0,i]=2*hessian[j+0,i];
 	  endif;
-        #ifdos;
-	j=j+1;endo;
-        #else;
         endfor;
-        #endif;
 	i=i+1;
       endo;
       
@@ -678,11 +638,7 @@ proc ghessp(&f,x0,wf,grad);
       eeB=eye(k).*dhB;
       i=1;
       do while i<=k;
-	#ifdos;
-        j=i; do while j<=k;
-        #else;
 	for j (i, 1, k);
-        #endif;
 	  num = f(x0+eeF[.,i]+eeF[.,j+0]) - f(x0+eeF[.,i]-eeB[.,j+0])
 	      - f(x0-eeB[.,i]+eeF[.,j+0]) + f(x0-eeB[.,i]-eeB[.,j+0]);
 	  den= (eeF[i,i]+eeB[i,i])*(eeF[j+0,j+0]+eeB[j+0,j+0]);
@@ -690,11 +646,7 @@ proc ghessp(&f,x0,wf,grad);
 	  if i/=(j+0);
 	    hessian[j+0,i] = hessian[i,j+0];
 	  endif;
-	#ifdos;
-        j=j+1; endo;
-	#else;
         endfor;
-        #endif;
 
 	i=i+1;
       endo;
@@ -718,11 +670,7 @@ proc ghessp(&f,x0,wf,grad);
 /* subroutine: step size calcuation */    
 step:
     i=1; @ useless command to make the label work with ifdos @
-    #ifdos;
-    i=1;do while i<=k;		@ once for each parameter  @
-    #else;
     for i (1, k, 1);
-    #endif;
       x1=x0;
       f1=f0;
       del=delta;
@@ -732,21 +680,13 @@ step:
 	f1=f(x1);
       endo;
       dh[i+0]=mp*(x1[i+0]-x0[i+0]);
-    #ifdos;
-    i=i+1; endo;
-    #else;
     endfor;
-    #endif;
     return;
   
 /* subroutine: step size calcuation with gradient check */    
 step2:
     i=1;   @ irrelevant command to fix gauss bug @
-    #ifdos;
-    i=1;do while i<=k;
-    #else;
     for i (1, k, 1);			@ loop through parameter space @
-    #endif;
       do while sign > 0;	@ loop while first deriv signs are equal @
         mp=1;				@ go forwards @
         x1=x0;
@@ -789,11 +729,7 @@ step2:
 	  printfl;
         endif;
       endif; 
-    #ifdos;
-    i=i+1;endo;
-    #else;
     endfor;
-    #endif;
     return;
   endp;
 
@@ -838,41 +774,17 @@ step2:
    j = 1;
    do while j <= n;
      /* calculate E[j,j] to add to A[j,j] */
-     #ifdos;
-       i=j; do while i<=n;
-     #else;
-       for i (j, n, 1);
-     #endif;
+     for i (j, n, 1);
        sum = 0;
-       #ifdos;
-	 k=(j+1); do while k<=(i-1);
-       #else;
          for k ((j+1), (i-1), 1);
-       #endif;
-	 sum = sum + abs(A[i+0,k+0]);
-       #ifdos;
-	 k=k+1; endo;
-       #else;
+  	   sum = sum + abs(A[i+0,k+0]);
 	 endfor;
-       #endif;
        sum2 = 0;
-       #ifdos;
-	 k=(i+1); do while k<=n;
-       #else;
          for k ((i+1), n, 1);
-       #endif;
-	 sum2 = sum2 + abs(A[k+0,i+0]);
-       #ifdos;
-	 k=k+1; endo;
-       #else;
+ 	   sum2 = sum2 + abs(A[k+0,i+0]);
          endfor;
-       #endif;
        gersch[i+0] = A[j,j] - sum - sum2;
-     #ifdos;
-       i=i+1; endo;
-     #else;
-       endfor;
-     #endif;
+     endfor;
      if (j+1) <= n;
        normj = sumc(abs(A[(j+1):n,j]));
      else;
@@ -886,59 +798,27 @@ step2:
      if A[j,j] ne normj;
        sum = 1 - normj/A[j,j];
        if (j+1) <= n;
-	 #ifdos;
-	   i=(j+1); do while i<=n;
-         #else;
-           for i ((j+1), n, 1);
-         #endif;
+         for i ((j+1), n, 1);
 	   gersch[i+0] = gersch[i+0] + abs(A[i+0,j])*sum; 
-         #ifdos;
-	   i=i+1; endo;
-         #else;
-           endfor;
-         #endif;
+         endfor;
        endif;
      endif;
 
      /* continue normally with cholesky algorithm */
-     #ifdos;
-       i=1; do while i<=(j-1);
-     #else;
-       for i (1, (j-1), 1);
-     #endif;
+     for i (1, (j-1), 1);
        sum = 0;
-       #ifdos;
-	 k=1; do while k<=(i-1);
-       #else;
-         for k (1, (i-1), 1);	
-       #endif;
+       for k (1, (i-1), 1);	
          sum = sum + R[k+0,i+0]*R[k+0,j];
-       #ifdos;
-	 k=k+1; endo;
-       #else;
-         endfor;
-       #endif;
+       endfor;
        R[i+0,j] = (A[i+0,j] - sum)/R[i+0,i+0];
        if i+0 > j; 
 	 R[i+0,j] = 0; 
        endif; 
-     #ifdos;
-       i=i+1; endo;
-     #else;
-       endfor;
-     #endif;
+     endfor;
      sum = 0;
-     #ifdos;
-       k=1; do while k<=(j-1);
-     #else;
-       for k (1, (j-1), 1);	
-     #endif;
+     for k (1, (j-1), 1);	
        sum = sum + R[k+0,j]^2;
-     #ifdos;
-       k=k+1; endo;
-     #else;
-       endfor;
-     #endif;
+     endfor;
      R[j,j] = sqrt(abs(A[j,j] - sum));  @ added abs() for rounding error @
      j = j + 1;
 

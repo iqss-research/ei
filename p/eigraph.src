@@ -1336,11 +1336,7 @@ proc 0=tomog(x,t,psiu,sel);
     dist2=sortc(dist2,1);
     clearg _tomogVals;
     _tomogVals=_tomogPct;
-    #ifdos;
-    i=1;do while i<=rows(_tomogPct);
-    #else;
     for i (1, rows(_tomogPct), 1);
-    #endif;
       tomogC=sqrt(dist2[_tomogPct[i+0]*sms]);
       _tomogVals[i+0]=tomogC;
       x=bb+tomogC.*v[.,1];
@@ -1351,11 +1347,7 @@ proc 0=tomog(x,t,psiu,sel);
       _plineC=_tomogClr[i+0];
       _plineTh=10+_eigraph_thick;
       plines(x,y);
-    #ifdos;
-    i=i+1; endo;
-    #else;
     endfor;
-    #endif;
   endif;
 
   /* put count of T=1 and T=0 at corners */
@@ -1446,11 +1438,7 @@ proc (2)=density(y,strt,endd,pts,h,kerna,Tleft,Tright);
     format /rdn 4,0;
     "Kernel Density Estimation";
     "Calculating ";;pts;;" Points: ";;
-    #ifdos;
-    i=1;do while i<=pts;
-    #else;
     for i (1, pts, 1);
-    #endif;
         if     (kerna$=="N"); t=kernelN(py[i+0,1],y,h)./h;
         elseif (kerna$=="E"); t=kernelE(py[i+0,1],y,h)./h;
         elseif (kerna$=="B"); t=kernelB(py[i+0,1],y,h)./h;
@@ -1460,11 +1448,7 @@ proc (2)=density(y,strt,endd,pts,h,kerna,Tleft,Tright);
         else; errorlog "_kernel specified incorrectly";stop;endif;
         py[i+0,1]=sumc( t )/rows(y);
         if (i+0)==10*floor(i/10);(i+0);;endif;
-    #ifdos;
-    i=i+1;endo;
-    #else;
     endfor;
-    #endif;
     ?;retp(px,py);endp;
 
 @ Kernel Density Estimate; sets defaults, calls density, then xy @

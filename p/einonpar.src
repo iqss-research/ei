@@ -80,11 +80,7 @@ proc unitarea(t,x);
   area=zeros(nobs,1);
   var=_eigraph_bvsmth^2;
 
-  #ifdos;
-  i=1;do while i<=nobs;
-  #else;
   for i (1, nobs, 1);
-  #endif;
     
     c=maxr(1-uB[i+0],lW[i+0])~maxr(lB[i+0],1-uW[i+0]);
     c=substute(c,c.<0.00001,c*0+0.00001);
@@ -116,11 +112,7 @@ proc unitarea(t,x);
     area[i+0]=meanc(cdfnorm(maxr(a,b),0,var)
     +((S-0.5)*2).*cdfnorm(minr(a,b)-S,0,var));
     
-  #ifdos;
-  i=i+1; endo;
-  #else;
   endfor;
-  #endif;
 
   retp(area);
 endp;
@@ -143,22 +135,13 @@ proc nonbiv(t,x,px,py);
   pz=zeros(rows(px),col);
   c = unitarea(t,x);         @ scale factor to divide by @ 
   r=rows(x);
-  #ifdos;
-  i=1; do while i<=col;
-  #else;
   for i (1, col, 1);
-  #endif;
     d = perpdist(t,x,px[.,i+0],py[.,i+0]);  @ perpendicular distance to line @
 
     /* sheet-normal kernel */
     z = d ./ _eigraph_bvsmth;
     pz[.,i+0] = ((1 / sqrt(2*pi)) * sumc(exp(-0.5*(z.*z))./c)) / r;
-
-  #ifdos;
-  i=i+1;  endo;  
-  #else;
   endfor;
-  #endif;
 
   pz=pz./_eigraph_bvsmth^2;
   retp(pz);
@@ -186,17 +169,9 @@ proc einonp(t,x);
   t=recode(t,(t.<_Enumtol)~(t.>(1-_Enumtol)),_Enumtol|(1-_Enumtol));
   {bnds,tt}=bounds1(t,x,1);
   betab=zeros(_EnonEval,nobs);
-  #ifdos;
-  i=1; do while i<=nobs;
-  #else;
   for i (1, nobs, 1);
-  #endif;
     betab[.,i+0]=seqase(bnds[i+0,1],bnds[i+0,2],_EnonEval);
-  #ifdos;
-  i=i+1; endo;
-  #else;
   endfor;
-  #endif;
 
   x1=1-x;
   betaw=(t./x1)'-(x./x1)'.*betab;
@@ -214,11 +189,7 @@ proc einonp(t,x);
   areas=cumsumc(areas./sumc(areas)');
   
   betabs=zeros(nobs,_Esims);
-  #ifdos;
-  i=1; do while i<=nobs;
-  #else;
   for i (1, nobs, 1);
-  #endif;
   
     /* count within categories defined by areas of interpolated trapazoids */
     cnts=counts(rndu(_Esims,1),areas[.,i+0]);
@@ -236,30 +207,18 @@ proc einonp(t,x);
     CD=C.*D;
     
     res=0;
-    #ifdos;
-    j=1;do while j<=_EnonEval-1;
-    #else;
     for j (1, _EnonEval-1, 1);
-    #endif;
       if cnts[j+0]>0;
 	res=res|(-CD[j+0]+sqrt((C[j+0]^2).*(D[j+0]^2)
 	+ 2*CE[j+0].*(CD[j+0].*a[j+0]+0.5*CE[j+0].*(a[j+0]^2)+rndu(cnts[j+0],1))))./CE[j];
       endif;
-    #ifdos;
-    j=j+1; endo;
-    #else;
     endfor;
-    #endif;
 
 
     res=trimr(res,1,0)';
     betabs[i+0,.]=res[sortind(rndu(_Esims,1))];
 
-  #ifdos;  
-  i=i+1;endo;
-  #else;
   endfor;
-  #endif;
 
   retp(betabs);
 endp;

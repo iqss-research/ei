@@ -492,19 +492,11 @@ proc cdfbvnorma(mu1,mu2,s1,s2,rho);
   
   a=zeros(k,r);
   b=zeros(k,r);
-  #ifdos;
-  i=1; do while i<=k;
-  #else;
   for i (1, k, 1);
-  #endif;
     a[i+0,.]=pdfnorm(x[i+0],mu1,s1s)';
     cdf1=mu2+(rho*(s2./s1).*(x[i+0]-mu1)); 
     b[i+0,.]=cdfnormdif(cdf1,omr,l2,u2)';
-  #ifdos;
-  i=i+1; endo;
-  #else;
   endfor;
-  #endif;
   
   aa=cdfnormdif(mu1,s1s,l1,u1);
   
@@ -607,20 +599,12 @@ proc lcdfbvnorma(mu1,mu2,s1,s2,rho);
   a=zeros(k,r);
   b=zeros(k,r);
 
-  #ifdos;
-  i=1; do while i<=k;
-  #else;
   for i (1, k, 1);
-  #endif;
     t=cdfn((l1-mu1)./s1)+(((2*i-1)/(2*k)).*exp(aa));
     x=mu1+s1.*cdfni(t);
     cdf1=mu2+(rho.*(s2./s1).*(x-mu1)); 
     b[i+0,.]=lcdfnormi(l2~u2,cdf1,omr)';
-  #ifdos;
-  i=i+1; endo;
-  #else;
   endfor;
-  #endif;
 
   res=aa+ln(meanc(exp(b)));
   retp(res);
