@@ -230,14 +230,13 @@ proc eiread(dbuf,str);
   if vin(dbuf,"titl");
     if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
       if str$=="_ealphab" or str$=="_ealphaw" or str$=="_ebeta" or str$=="_ebounds" or
-         str$=="_ecdfbvn" or str$=="_edirtol" or str$=="_ecdftol" or str$=="_evtol" or
-         str$=="_edoml" or str$=="_edoml_phi" or str$=="_edomL_vcphi" or str$=="_edosim" or
-         str$=="_eeta" or str$=="_eigraph_bvsmth" or str$=="_eischk" or str$=="_eilliks" or
-         str$=="_eisfac" or str$=="_eisn" or str$=="_eist" or str$=="emaxIter" or 
-         str$=="_enoneva" or str$=="_enonnum" or str$=="_enonpar" or str$=="_enumtol" or
-         str$=="_erho" or str$=="_eselect" or str$=="_eselrnd" or str$=="_esigma" or
-         str$=="_esims" or str$=="_estval" or str$=="_ei_vc" or str$=="_ei2_m" or 
-         str$=="_eimetar" or str$=="_eimodels_save" or
+         str$=="_ecdfbvn" or str$=="_edirtol" or str$=="_edoml" or str$=="_edoml_phi" or
+         str$=="_edoml_vcphi" or str$=="_eeta" or str$=="_ei_vc" or str$=="_eigraph_bvsmth" or 
+         str$=="_eischk" or str$=="_eisfac" or str$=="_eisn" or str$=="_eist" or 
+         str$=="emaxiter" or str$=="_enoneval" or str$=="_enonnumint" or str$=="_enonpar" or 
+         str$=="_enumtol" or str$=="_erho" or str$=="_eselrnd" or str$=="_esigma" or 
+         str$=="_estval" or str$=="_evtol" or
+         str$=="_ei2_m" or str$=="_eimetar" or str$=="_eimodels_save" or
          str$=="zb" or str$=="zw" or str$=="_t" or str$=="_x" or str$=="_ez" or
          str$=="x2" or str$=="x2rn" or  
          str$=="checkr" or str$=="dataset" or str$=="etac" or str$=="etas" or
@@ -248,6 +247,9 @@ proc eiread(dbuf,str);
          str$=="tsims" or str$=="vcphi";
          "ei: You cannot eiread " $strtmp " from the output buffer of eimodels_avg.";
          res={.};
+         retp(res);
+      elseif str$=="_esims";
+         res=cols(eiread(dbuf,"betabs"));
          retp(res);
       endif;
     endif;
