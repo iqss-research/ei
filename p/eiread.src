@@ -930,7 +930,7 @@ proc eiread(dbuf,str);
       res={.};
     else;
       e=eiread(dbuf,"etas");
-      if if _ei_vc[_Ghactual,1]/=-1;
+      if _ei_vc[_Ghactual,1]/=-1;
         a=sqrt(diag(vread(dbuf,"vcphi")))|e;
       else;
         a=sqrt(1/diag(vread(dbuf,"vcphi")))|e;
