@@ -242,11 +242,15 @@ endp;
 **                   ascending order of the model number (default = 0 which 
 **                   assigns the uniform prior) (# of model x 1).
 **
+**   _EI_bma_est   = 1 if the Laplace-Metropolis estimator (default) and 2
+**                   for the Hamonic mean estimator (an importance sampling
+**                   scheme) to estimate the marginal likelihood.
+**
 */
 proc 1=eimodels_avg(ndbuf);
   local et, sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
         aggs, betabs, betaws, mfreq, ratio, j, titl, t, x, n, eselect,
-        frst, prprob, _eprt_temp, tst;
+        frst, prprob, _eprt_temp, tst, vc;
 
   et=hsec;     @ timing start @
   @ checking the input buffer @
@@ -283,10 +287,8 @@ proc 1=eimodels_avg(ndbuf);
   for i (1,num,1); 
     clear dbtemp,dta;
     if vin(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0));
-      dbtemp = vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0));
+      dbtemp=vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0));
       "Estimating the marginal likelihood for Model" i;
-      "using importance sampling...";
-      ?;
 
       if sumc(j)==0;
         nobs = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"nobs");
@@ -341,10 +343,44 @@ proc 1=eimodels_avg(ndbuf);
           ?;
           retp("");
         endif;
+        temp=eiread(dbtemp,"_ei_vc");
+        if _EI_bma_est == 1 and temp[eiread(dbtemp,"ghactual"),1]==-1;
+          ?;
+          "eimodels: EI for Model " frst " did not calculate the variance covariance matrix";
+          "(_EI_vc={-1 0} option was used). You cannot use the Laplace-Metropolis estimator";
+          "in this case. Choose the harmonic mean estimator (_EI_bma_est=2) and try again."; 
+          "----- EIMODELS_AVG Aborted -----";
+          ?;
+          retp("");
+        endif;
       endif; 
-      /* check the conditional maximization */
-      temp=1/(sumc(1/exp(eiread(dbtemp,"lliksims")))/eiread(dbtemp,"_Esims"));      
-      if not(in(eiread(dbtemp,"retcode"),0|3333);
+
+      /* estimating the marginal likelihood */
+      if _EI_bma_est == 1;
+        @ Laplace-Metropolis estimator (unnormalized) @
+        vc=eiread(dbtemp,"vcphi");
+        temp=(2*pi)^(0.5*rows(vc))*sqrt(det(vc))*exp(eiread(dbtemp,"loglik"));
+        if _Eprt_temp/=0;
+          "using the Laplace-Metropolis estimator..."; 
+          ?;
+        endif;
+      elseif _EI_bma_est == 2;
+        @ harmonic mean estimator (unnormalized) @
+        temp=1/(sumc(1/exp(eiread(dbtemp,"lliksims")))/eiread(dbtemp,"_Esims"));
+        if _Eprt_temp/=0;
+          "using the harmonic mean estimator..."; 
+          ?;
+        endif;
+      else;
+        ?;
+        "eimodels: an invalid value for _EI_bma_est.";
+        "----- EIMODELS_AVG Aborted -----";
+        ?;
+        retp("");
+      endif;     
+
+      /* check the conditional maximization and marginal likelihood */
+      if not(in(eiread(dbtemp,"retcode"),0|3333,1));
         ?;
         "WARNING: The value of retcode for Model " i " is not zero: problem with";
         "         the conditional likelihood maximization (retcode =" temp ").";
@@ -363,7 +399,6 @@ proc 1=eimodels_avg(ndbuf);
         "         the fit of the model and change its specification.";
         ?;
       else;
-        @ harmonic mean estimate (unnormalized) @
         margllik[i,1]=i;
         margllik[i,2]=temp;
         sims[i]=eiread(dbtemp,"_Esims");
@@ -371,11 +406,11 @@ proc 1=eimodels_avg(ndbuf);
       endif;
     endif;
   endfor;
-
-  margllik = selif(margllik,j);
-  sims = selif(sims,j);
+  margllik=selif(margllik,j);
+  sims=selif(sims,j);
   j=sumc(j);
-  prprob = margllik;
+  prprob=0*margllik;
+
   /* check the prior model probabilities */
   if _EI_bma_prior==0;
     prprob[.,2] = ones(j,1)/j;

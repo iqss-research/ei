@@ -848,6 +848,7 @@ proc 0=eiset;
   /* eimodels */
   _EImodels_save=""; 
   _EI_bma_prior=0;
+  _EI_bma_est=1;
 
 endp;
 

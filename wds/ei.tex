@@ -1275,21 +1275,21 @@ method called \textit{Bayesian Model Averaging} as explained below.
 \texttt{eimodels\_run} as an input and implements Bayesian Model
 Averaging over all the models stored in that data buffer. To use this
 procedure, three global variables are required for each of the
-component EI runs.  First, \texttt{\_EiLikS} should be set to 1 for
-each model so that the output data buffer from \texttt{eimodels\_run}
-stores the values of the log-likelihood at each simulation. These
-values are necessary to compute the marginal likelihood, which is used
-for the computation of the posterior model probabilities. Second, when
-a model includes covariates, the prior distributions for $\alpha^a$
-and $\alpha^b$ need to be specified for Bayesian Model Averaging in
-order to ensure that the posterior distribution is proper. The two
-global variables, \texttt{\_Ealpha\_B} and \texttt{\_Ealpha\_W},
-perform this function.  Finally, \EI uses the harmonic mean estimator,
-a variant of importance sampling estimation, for computing the
-marginal likelihoods. It is recommended that the number of
-simulations, \texttt{\_Esims}, should be set to 500 or more in order
-to improve the precision of this estimation.  Finally, the output data
-buffer should be read with \texttt{eiread} and \texttt{eigraph}.
+component EI runs.  First, when a model includes covariates, the prior
+distributions for $\alpha^a$ and $\alpha^b$ need to be specified for
+Bayesian Model Averaging in order to ensure that the posterior
+distribution is proper. The two global variables, \texttt{\_Ealpha\_B}
+and \texttt{\_Ealpha\_W}, perform this function.  Second, \EI uses the
+Laplace-Metropolis estimator (default) or the harmonic mean estimator,
+for computing the marginal likelihoods. It is recommended that the
+number of simulations, \texttt{\_Esims}, should be set to a relatively
+large number in order to improve the precision of this estimation.  If
+you use the harmonic mean estimator, \texttt{\_EiLikS} should be set
+to 1 for each model so that the output data buffer from
+\texttt{eimodels\_run} stores the values of the log-likelihood at each
+simulation. These values are necessary to compute the marginal
+likelihood for this method. Finally, the output data buffer should be
+read with \texttt{eiread} and \texttt{eigraph}.
 
 \paragraph{\underline{Example}:}
 The following example uses the sample file \texttt{sample.asc} that
@@ -1311,7 +1311,6 @@ _Eres = vput(_Eres, "Model 1", "titl");  @ print out model number @
 _Eeta = 1;                               @ zb=x, zw=1 @
 _Ealpha_B = {0 2};                       @ prior for betaB @
 _Esims = 1000;                           @ number of simulation @
-_EiLlikS = 1;                            @ store log-likelihood at each simulation @
 dbufdef = eimodels_def("",1,t,x,n,1,1);  @ save Model 1, the first model @
 
 eiset;                                   @ clear for Model 2 @
@@ -1319,7 +1318,6 @@ _Eres = vput(_Eres, "Model 2", "titl");
 _Eeta = 2;                               @ zb=1, zw=x @
 _Ealpha_W = {0 2};                       @ prior for betaW @
 _Esims = 1000;
-_EiLlikS = 1;
 dbufdef = eimodels_def(dbufdef,2,t,x,n,1,1); @ save Model 2 @
 
 eiset;                                   @ clear for Model 3 @
@@ -1328,7 +1326,6 @@ _Eeta = 3;                               @ zb=x, zw=x @
 _Ealpha_B = {0 2};                       @ prior for betaB @
 _Ealpha_W = {0 2};                       @ prior for betaW @
 _Esims = 1000;
-_EiLlikS = 1;
 dbufdef = eimodels_def(dbufdef,3,t,x,n,1,1); @ save Model 3 @
 
 save rvdef = dbufdef;                    @ save ndbuf in file rvdef.fmt @
@@ -1341,11 +1338,13 @@ call eiread(dbufrun, "sum");             @ summary of ei run for Model 1 @
 _EIMetaR = 3;
 graphon;
 call eigraph(dbufrun, "tomog");          @ tomography plot for Model 3 @
+graphoff;
 
 _EI_bma_prior = {0.2,0.4,0.4};           @ set prior model probabilities @
 dbufavg = eimodels_avg(dbufrun);         @ Bayesian Model Averaging @
 save rvavg = dbufavg;                    @ save dbres in file rvavg.fmt @
 
+graphon;
 call eiread(dbufavg,"sum");              @ summary for dbres @
 call eigraph(dbufavg,"post");            @ draw district level posterior @
 graphoff;                                @ close graphics window @
@@ -1353,15 +1352,21 @@ graphoff;                                @ close graphics window @
 
 \paragraph{\underline{Globals}:}
 \begin{description}
+
 \item[\_EImodels\_save] set to ``filename'' if you want to save the
   results at each iteration in a data buffer on the disk (default =
   ``\mbox{ }''; for no save).
+
+\item[\_EImodels\_est] scalar, if 1 the Laplace-Metropolis estimator0
+will be used to estimate the marginal likelihood (default). If 2, the
+harmonic mean estimator (an importance sampling scheme) will be used.
   
 \item[\_EI\_bma\_prior] (($\#$ of models)$\times 1$) The discrete
   prior probability of each model in the ascending order of the model
   number (default = 0 which assigns the uniform prior). The elements
   of this vector must sum up to 1.
 \end{description}
+
 
 \subsection{EIREAD} \label{eiread}
 \markright{Reference: EIREAD}

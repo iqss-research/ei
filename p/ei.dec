@@ -145,5 +145,5 @@ declare matrix _tokwds=-1;  @ null @
 
 /* eimodels */
 declare string _EImodels_save != "";
-declare matrix _EI_bma_prior != 0;
-
+declare matrix _EI_bma_prior  != 0;
+declare matrix _EI_bma_est    != 1;
