@@ -242,25 +242,17 @@ proc eiread(dbuf,str);
   /* almost all of the global variables and some parameters */
   if vin(dbuf,"titl");
     if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
-      if str$=="_ealphab" or str$=="_ealphaw" or str$=="_ebeta" or str$=="_ebounds" or
-         str$=="_ecdfbvn" or str$=="_edirtol" or str$=="_edoml" or str$=="_edoml_phi" or
-         str$=="_edoml_vcphi" or str$=="_eeta" or str$=="_ei_vc" or str$=="_eigraph_bvsmth" or 
-         str$=="_eischk" or str$=="_eisfac" or str$=="_eisn" or str$=="_eist" or 
-         str$=="emaxiter" or str$=="_enoneval" or str$=="_enonnumint" or str$=="_enonpar" or 
-         str$=="_enumtol" or str$=="_erho" or str$=="_eselrnd" or str$=="_esigma" or 
-         str$=="_estval" or str$=="_evtol" or
-         str$=="_ei2_m" or str$=="_eimetar" or str$=="_eimodels_save" or
-         str$=="zb" or str$=="zw" or str$=="_t" or str$=="_x" or str$=="_ez" or
-         str$=="x2" or str$=="x2rn" or  
-         str$=="checkr" or str$=="dataset" or str$=="etac" or str$=="etas" or
-         str$=="expvarci" or str$=="expvarcis" or str$=="lnir" or str$=="loglik" or
-         str$=="logliks" or str$=="meanir" or str$=="mppsiu" or str$=="parnames" or
-         str$=="phi" or str$=="phisims" or str$=="pphi" or str$=="psi" or
-         str$=="psitruth" or str$=="psiu" or str$=="r" or str$=="ri" or str$=="retcode" or
-         str$=="tsims" or str$=="vcphi";
+      let vrs=_ealphab _ealphaw _ebeta _ebounds _ecdfbvn _edirtol _edoml
+      _edoml_phi _edoml_vcphi _eeta _ei_vc _eigraph_bvsmth _eischk _eisfac
+      _eisn _eist emaxiter _enoneval _enonnumint _enonpar _enumtol _erho
+      _eselrnd _esigma _estval _evtol _ei2_m _eimetar _eimodels_save zb zw
+      _t _x _ez x2 x2rn checkr dataset etac etas expvarci expvarcis lnir
+      loglik logliks meanir mppsiu parnames phi phisims pphi psi psitruth
+      psiu r ri retcode tsims vcphi;
+      vrs=lower(vrs);
+      if in(str,vrs,0);
          "eiread: You cannot eiread " $strtmp " from the output buffer of eimodels_avg.";
-         res={.};
-         retp(res);
+         retp(miss(1,1));
       elseif str$=="_esims";
          res=cols(eiread(dbuf,"betabs"));
          retp(res);
@@ -272,21 +264,17 @@ proc eiread(dbuf,str);
   /* almost all of the global variables and some parameters */
   if vin(dbuf,"titl");
     if titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
-      if str$=="_t" or str$=="_x" or str$=="_ez" or str$=="abounds" or str$=="abounds2" or 
-         str$=="aggbias" or str$=="beta" or str$=="betab" or str$=="betabs" or str$=="betaw" or
-         str$=="betaws", or str$=="bounds" or str$=="checkr" or str$=="ci50b" or str$=="ci50w" or 
-         str$=="ci80b" or str$=="ci80bw" or str$=="ci95b" or str$=="ci95bw" or str$=="coverage" or 
-         str$=="csbetab" or str$=="csbetaw" or str$=="eaggbias" or str$=="etac" or str$=="etas" or 
-         str$=="expvarci" or str$=="expvarcis" or str$=="gebw" or str$=="gebwa" or str$=="gewb" or 
-         str$=="gewba" or str$=="goodman" or str$=="lnir" or str$=="loglik" or str$=="logliks" or 
-         str$=="maggs" or str$=="meanir" or str$=="mppsiu" or str$=="neighbor" or str$=="paggs" or 
-         str$=="palmquist" or str$=="parnames" or str$=="phi" or str$=="phisims" or str$=="pphi" or 
-         str$=="psi" or str$=="psiu" or str$=="r" or str$=="ri" or str$=="resamp" or str$=="retcode" or
-         str$=="rnbetabs" or str$=="rnbetaws" or str$=="sbetab" or str$=="sbetaw" or str$=="stbetabs" or 
-         str$=="stbetaws" or str$=="sum" or str$=="thomsen" or str$=="tsims" or str$=="vcaggs" or str$=="vcphi";
+      let vrs=_t or _x _ez abounds abounds2 aggbias beta betab betabs
+      betaw betaws, bounds checkr ci50b ci50w ci80b ci80bw ci95b ci95bw
+      coverage csbetab csbetaw eaggbias etac etas expvarci expvarcis gebw
+      gebwa gewb gewba goodman lnir loglik logliks maggs meanir mppsiu
+      neighb paggs palmquist parnames phi phisims pphi psi psiu r ri
+      resamp retcode rnbetabs rnbetaws sbetab sbetaw stbetabs stbetaws sum
+      thomsen tsims vcaggs vcphi;
+      vrs=lower(vrs);
+      if in(str,vrs,0);
          "ei: You cannot eiread " $strtmp " from the output buffer of eimodels_def.";
-         res={.};
-         retp(res);
+         retp(miss(1,1));
       endif;
     endif;
   endif;
