@@ -426,7 +426,8 @@ eiutil.src
     str2mat                          : proc
     token2                           : proc
     infrv                            : proc
-
+    vreadall                         : proc
+    
 cml.dec
     _cml_version                     : matrix
     _cml_Algorithm                   : matrix

@@ -145,7 +145,8 @@ external matrix _tokwds;
 external string _EImodels_save;
 external matrix _EI_bma_prior;
 
-
+/* vreadall */
+external matrix _vreadallvrs;
 
 
 

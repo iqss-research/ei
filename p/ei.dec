@@ -147,3 +147,6 @@ declare matrix _tokwds=-1;  @ null @
 declare string _EImodels_save != "";
 declare matrix _EI_bma_prior  != 0;
 declare matrix _EI_bma_est    != 1;
+
+/* vreadall */
+declare matrix _vreadallvrs ?= 0;

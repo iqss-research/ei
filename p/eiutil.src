@@ -899,3 +899,36 @@ proc infrv(x,m,p);
   endif;
   retp(res);
 endp;
+
+/*
+** call vreadall(dbuf);
+**
+** INPUT
+** dbuf = input data buffer
+**
+** OUTPUT
+** procedure dumps data buffer to memory in stored variable names
+**
+** GLOBAL
+** _vreadallvrs = character vector of selected variables to read or 0 to read all
+*/
+proc 0=vreadall(dbuf);
+  local i,nums,str,cv,r;
+  if scalzero(_vreadallvrs);
+    cv=vnamecv(dbuf);
+  else;
+    cv=_vreadallvrs;
+  endif;
+  r=rows(cv);
+  i=1;
+  do while i<=r;
+    str=strstrip(""$+cv[i]);    /* force type to string */
+    nums=vread(dbuf,str);
+    if varput(nums,str)==0;
+      "vreadall: varputting problems";
+      stop;
+    endif;
+    i=i+1;
+  endo;
+endp;
+

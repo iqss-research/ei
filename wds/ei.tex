@@ -581,7 +581,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   falloff in the likelihood function; \{3 $f$\} use quadradic
   approximation with falloff in likelihood function set at $f$; \{4
   0\} use a generalized inverse (to deal with singularity) and a
-  generalized cholesky (to deal with non-positive definateness) based
+  generalized cholesky (to deal with non-positive definiteness) based
   on work in progress by Jeff Gill and Gary King; \{5 0\} use wide
   step lengths but check that the gradients for each are correct (and
   if necessary search for better ones); \{-1 0\} avoid the computation
@@ -613,7 +613,8 @@ interactively (or with a separate program) using \texttt{eiread} and
 \item[\_EIgraph\_bvsmth] smoothing parameter for nonparametric
   estimation; used only if \texttt{\_Enonpar}=1. Default=0.08.  (The
   same parameter controls the nonparametric bivariate density
-  estimation for diagnostic purposes in \texttt{eigraph}.)
+  estimation for diagnostic purposes in \texttt{eigraph}.)  See
+  Section 9.3.2.
 
 \item[\_EisChk] 0 to do nothing (default); 1 change \texttt{lnir} from
   the scalar mean importance ratio to a
@@ -686,13 +687,14 @@ interactively (or with a separate program) using \texttt{eiread} and
   printed in convenient places.  See \texttt{eiread} for further
   information.  Do not use the name of any globals to this procedure
   or options listed under eiread(), or your variable will be lost.
-
-\item[\_Erho[1]] Standard deviation of normal prior on $\phi_5$ for
-  the correlation; set to 0 to fix $\phi_5$ to a second element,
-  \texttt{\_Erho[2]}; set to $-1$ to estimate without a prior.
-  Default=0.5.  \texttt{\_Erho} should be a scalar unless the first
-  element is 0, in which case it should be a $2\times 1$ vector.  See
-  Section 7.4.
+  
+\item[\_Erho] The first element is the standard deviation of normal
+  prior on $\phi_5$ for the correlation; set to 0 to fix $\phi_5$ to a
+  second element, \texttt{\_Erho[2]}; set to $-1$ to estimate without
+  a prior.  Default=0.5.  \texttt{\_Erho} should be a scalar unless
+  the first element is 0, in which case it should be a $2\times 1$
+  vector, where the second element is the value at which the $\phi_5$
+  is fixed (and not estimated).  See Section 7.4.
 
 \item[\_Eselect] Controls which observations are included in the
   estimation stage, including both likelihood maximization and
@@ -716,7 +718,7 @@ interactively (or with a separate program) using \texttt{eiread} and
 
 \item[\_Esigma] Standard deviation of an underlying normal
   distribution, from which a half normal is constructed as a prior for
-  both $\sigmau_b$ and $\sigmau^w$.  Note: the expected value under
+  both $\sigmau_b$ and $\sigmau_w$.  Note: the expected value under
   this prior is \texttt{\_Esigma}$\sqrt{2/\pi}
   \approx$\texttt{\_Esigma}0.8.  Set to zero or negative for no prior.
   Default = 0.5.  See Section 7.4.
@@ -1911,7 +1913,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   used with \texttt{ei2}).
   
 \item[tsims0] $p\times$\texttt{\_Esims}$+1$: simulations of $T_i$
-  given observed values of $X_i$ and/or \textt{Zb} and \texttt{Zw}.
+  given observed values of $X_i$ and/or \texttt{Zb} and \texttt{Zw}.
   The first column is the actual values of $T_i$ (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
 
