@@ -1,0 +1,261 @@
+\documentclass[11pt]{article}
+\usepackage{graphicx,psfrag}
+\addtolength{\oddsidemargin}{-.55in}
+\addtolength{\evensidemargin}{-.55in}
+\addtolength{\textwidth}{1.1in}
+\addtolength{\textheight}{.9in}
+
+\newcommand{\wt}{\widetilde}
+\newcommand{\al}{\alpha}
+\newcommand{\step}{\sc Step}
+
+\begin{document}
+
+\begin{center}
+  {\bf \Large Point-By-Point Reply to Referee~1}
+\end{center}
+
+We begin by thanking the two referee for his/her careful reading of
+our manuscript and their many helpful comments. We believe we have
+addressed all of these comments in our revised manuscript and that in
+so doing we have improved our presentation significantly.  In what
+follows, the original comments appear in italic type; our replies and
+comments are in roman type.
+
+\bigskip
+
+\noindent {\bf Major Comments of and reply to Referee~1}
+
+\begin{enumerate}
+  
+\item {\it Using 67 observations, the author wants to estimate the
+    impact of 27 covariates and $X_i$ on bad vote rates for Bush and
+    Gore.  Each covariate requires 2 estimated parameters as in the
+    ``Except [for] the first three models $\cdots$'' clause of
+    footnote 9.  Roughly, this means that there are 56 parameters to
+    estimate.  $67-56=11$, and this is a very, very low number. This
+    paper, therefore, has almost no data to bear on the quantities it
+    wants to estimate.  This is not the fault of the authors.  The bad
+    votes problem is just one that is practically data-less.}
+  
+  \smallskip The referee seems to misunderstand the primary goal of
+  our paper.  The purpose of our method is NOT to ``estimate the
+  impact of 27 covariates and $X_i$ on bad vote rates for Bush and
+  Gore.'' Rather, our goal is to predict the number of bad votes that
+  was cast for Bush. These two are fundamentally different: the first
+  is the problem of causal inference, while the second is the problem
+  of the predictive inference. In
+  addition, the fundamental theoretical property of Bayesian model
+  averaging is concerned about the predictive inference and not about
+  the causal inference. We will elaborate more on this point below.
+  
+  In predictive problems (but not causal problems) where we do not
+  know the true model, estimating a model with ``all'' variables one
+  can think of will almost surely generate bias and inefficiency
+  relative to some subset.  In particular, including irrelevant
+  variables may not bias causal inferences but they will bias
+  predictive inferences and so should be avoided.  This is the
+  conclusion of the large literature on model (or variable) selection
+  (e.g., stepwise methods, Cp criterion, etc.), most of which don't
+  make much sense in making causal inferences. 
+  
+  A key result in this literature is that BMA is known to perform
+  better than all these standard variable selection procedures because
+  it takes into account model uncertainty rather than trying to select
+  the ``one best model.''  Hoeting et al (1999, Statistical Science)
+  and Madigan and Raftery (1994, JASA) among others have shown that
+  BMA almost never puts much weight on the model with all covariates,
+  even when that is an option, and that the average of the submodels
+  is optimal.  Indeed, even if the true model has 2000 variables --
+  and so with 67 observations it can't be estimated, and for
+  predictive purposes some model with a subset of variables must be
+  chosen -- a BMA that averages over any relevant set of submodels
+  will outperform any individual model in the set, even though the
+  truth is obviously not one of the models estimated.  
+ 
+\item {\it If I were reviewing a paper that used a least squares model
+    with 67 observations to estimate 56 parameters, I would not trust
+    its answers at all.  In this case, the situation is even harder.
+    The models used in the paper are non-linear and use aggregate
+    data.
+    
+    The author tries to get around this problem by using model
+    averaging.  Rather than one EI model with 56 estimated parameters
+    (or more, for intercepts and variances) the author considers a
+    collection of EI models that require only a few parameters.  This
+    does not eliminate the problem of estimating 56 parameters with 67
+    observations.  Furthermore, the author does averaging over a tiny
+    subset of possible models.  There are roughly 228 (or maybe 256)
+    models over which the author should be averaging.  However, he
+    considers only 31 of these.  31/228 is basically zero, and so it
+    follows that the author has not explored the model space. 
+    
+    Will the author's approach, which calls for using 31 small models,
+    be sufficient to cover the entire model space?  I cannot imagine
+    so.  There are no arguments for this in the paper.  The author
+    claims on page 10 that the reduction to 31 is fine, but there is
+    no evidence showing this to be the case.}
+  
+  As the referee correctly points out, we have not explored the entire
+  model space. Indeed, in our application, neither 31 nor 228 models
+  do not represent the entire model space. One can collect more
+  covariates, include more interactions and higher order polynomial
+  terms, use different ecological inference models, and so on.  Since
+  the model space is infinite, however, one can never explore the
+  entire model space.  Bayesian model averaging (BMA), therefore, must
+  condition on a subset of the entire model space. In the revised
+  manuscript, we emphasized this weakness.
+  
+  However, we disagree with the referee's point that this invalidates
+  our BMA analysis. If the referee's criticism is correct, any
+  standard statistical analysis is invalid since it conditions on one
+  model.  For example, the standard ecological inference analysis
+  would use one model with no covariate.  The referee's suggestion to
+  ``consider EI models that include $X_i$ only'' is also suboptimal
+  since it conditions on a single model and does not explore the
+  entire model space. 
+  
+  Our BMA analysis does not explore the entire model space, but is
+  superior to any of these standard approach. This is based on the
+  general theoretical property of BMA. The BMA analysis is better at
+  estimating a predictive quantity than any submodel being averaged
+  over, even if the true model is {\it outside} the set of submodels
+  being averaged over (e.g., Madigan and Raftery, 1994 JASA).  Almost
+  the same result exists in the literature on committee methods (e.g.,
+  Bishop, 1995). This implies that our BMA approach is better than any
+  submodel that is averaged over in our analysis (see Appendix B.2).
+  
+  Of course, someone could find a better submodel to include in a BMA.
+  No one has suggested a plausible story, and accompanying model, but
+  we are certainly open to be proved wrong if someone finds such a
+  model.  However, this fact does not distinguish our analysis from
+  any other statistical analysis in any field.  Every empirical
+  analysis is vulnerable to this criticism that there might be a
+  better model that is not considered in the original analysis.
+  
+\item {\it Notwithstanding the data-less aspect of the overseas
+    problem, much more should be said about the EI method being used.
+    King's EI technique has been the subject of at least four
+    controversies: the Tam article in PA, the JASA exchange, the
+    American Statistician exchange, and the PA exchange.  I think the
+    most relevant of these are the first two.  Any application of
+    King's EI method needs to note these exchanges, as they talk about
+    the importance of assumptions and limitations of the method.  It
+    is fine for the paper to depend on King's EI method since it must
+    depend on something.  But it needs to be honest with known model
+    shortcomings.}
+  
+\item {\it It also needs to be honest about priors.  When a Bayesian
+    statistical method has 67 observations, priors are going to matter
+    a huge amount, even if only 5 parameters were estimated.  The
+    author on page 12 says that priors should ``include all
+    information available about a quantity of interest'' but then goes
+    on to use ``standard independent priors.'' These standard priors
+    have nothing to do with information.  Any prior that is standard
+    cannot reflect information unique to a given problem, else it
+    would not be standard.}
+  
+  There are two kinds of prior that we specify in our BMA analysis.
+  One on the model probability and the other on the distribution of
+  parameters. We use the noninformative prior for the model
+  probability by not favoring any particular model a priori. This is a
+  standard approach in BMA since the whole purpose of BMA is to let
+  the data tell you which model should be preferred. For the model
+  parameters, we use the standard prior presented and examined in King
+  (1997). Following the standard Bayesian analysis, we conduct the
+  sensitivity analysis (see Appendix B.2) and find that prior
+  specification had little influence on the outcome.
+  
+\item {\it For a revision of this paper, I would recommend sticking
+    with the bounds analysis which is excellent and nicely written.}
+  
+  The bounds analysis is appealing since it does not impose any
+  statistical assumptions.  However, the public is apparently
+  uninterested in the limited information it provides, and so the
+  bounds alone do not answer the question posed (this is of course why
+  the field of ecological inference did not end in 1953 with Duncan
+  and Davis' discovery of the bounds, and why the bounds alone are
+  used in very few studies studies that apply ecological inference
+  even in academia).  
+  
+  Indeed, the Times reporters constantly told us that they needed a
+  point estimate, and that they could deal with confidence intervals
+  (or margins of error) but not the bounds.  BMA provides a point
+  estimate that takes into account all reasonable models that were
+  suggested to us at that time.  It has limitations, but it is better
+  than any feasible alternative suggested at the time or since in
+  providing what the public and newspaper needed (a point estimate and
+  uncertainty estimate). 
+ 
+\item {\it I would also keep the material on Republican pressure,
+    although the conclusions the author draws from this are overstated
+    in some places.  The Republicans choose where to pressure, so
+    arguing that they were successful (see page 19) is hard to
+    justify.}
+  
+  In the revised manuscript, we have acknowledged this possible
+  selection bias and added a qualification. See page ??.
+
+
+\end{enumerate}
+
+\bigskip
+\noindent {\bf Minor Comments of and reply to Referee~1}
+
+\begin{enumerate}
+\item {\it The first sentence of the paper is awkward.  ``Yet, they
+    clearly determined the outcome of the election.'' This can be said
+    of every anomaly from Florida given the tight margin.}
+  
+\item {\it ``Our results give ...'' on page 3.  Replace ``give'' with
+    ``estimate.'' Statistical results can do not better than this.}
+  
+\item {\it ``seen as remarkable ...'' is not remarkable.  The
+    probability that all voters in Florida like Gore more than Bush
+    has positive probability, the probability that Katherine Harris
+    decided the election has positive probability, and so on.}
+  
+\item {\it ``In counties more favorable to Democrats ...'' examples
+    would be nice.}
+  
+\item {\it Table 2 has 3 columns and Table 3 has 2 columns.  The
+    transition is awkward.}
+  
+\item {\it Page 7 should cite Duncan and Davis.}
+  
+\item {\it The Baker County example on page 8 is striking and could be
+    played up more.}
+  
+\item {\it ``... knowing for certain who won the 2000 election'' We
+    all know that Bush won since winning is a legal matter.  What the
+    author means is knowing if more voters were cast for Bush than
+    Gore in Florida.}
+  
+\item {\it Section 4.3 has too many comments that look causal.  See my
+    comments above.  ``if all American laws had been followed'' is not
+    the point here.  Voting laws are almost entirely local, so the
+    issue for Florida votes is Florida laws.}
+
+
+\end{enumerate}
+
+\clearpage
+\begin{center}
+  {\bf \Large Point-By-Point Reply to Referee~2}
+\end{center}
+
+We begin by thanking the referee for his/her careful reading of our
+manuscript and many helpful comments. We believe we have addressed all
+of these comments in our revised manuscript and that in so doing we
+have improved our presentation significantly.  In what follows, the
+original comments appear in italic type; our replies and comments are
+in roman type.
+
+\bigskip
+
+\noindent {\bf Major Comments of and reply to Referee~2}
+
+
+\end{document}
+
+
