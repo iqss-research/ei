@@ -453,12 +453,7 @@ proc gvc(&f,b,dataset);
       _GhDelta=0;
       hessian=ghessp(&_gvc_procedure,b,1,1);
       
-    endif;
-    
-    local oldt;
-    oldt = trapchk(1);
-    trap 1,1;
-    if _ei_vc[i+0,1] == -1;          @ do not compute the vc matrix @
+    elseif _ei_vc[i+0,1] == -1;      @ do not compute the vc matrix @
       hessian=hessp(&_gvc_procedure,b);
       if _Eprt>=2;
 	printfl "gvc: avoided computing the variance covariance matrix.";
@@ -466,6 +461,10 @@ proc gvc(&f,b,dataset);
       _GhActual = i+0;
       retp(-hessian);                @ return -hessian instead @
     endif;
+    
+    local oldt;
+    oldt = trapchk(1);
+    trap 1,1;
     if _ei_vc[i+0,1] ne 4;           @ did not use generalized approach @
       vc=invpd(-hessian);
     endif;
