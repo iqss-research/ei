@@ -311,7 +311,7 @@ intervals, which were not available in HS's version.\footnote{To
   $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (5) run EI
   on $X_i$ and $\tilde T_i$ to yield estimates
   ($\hat\beta_i^b,\hat\beta_i^w$) for all $i$; (6) regress
-  ($\hat\beta_i^b-\hat\beta_i^b$) on $\beta_i^b$ to estimate
+  ($\hat\beta_i^b-\beta_i^b$) on $\beta_i^b$ to estimate
   $\delta_0^b$ and $\delta_1^b$; (7) regress $\hat\beta_i^b$ on $Z_i$
   yielding the estimated intercept $\hat\alpha_U$ and slope
   $\hat\gamma_U$; (8) compute the adjusted intercept as
@@ -467,10 +467,11 @@ worse, we do not consider it further.
       adjustment based on the true values of $\delta_0$ and $\delta_1$
       (TA).  Clearly TA fits the true points best, but is
       unfortunately badly estimated by FA.  Data were generated from
-      the extended EI model, with
-      $\breve\psi=(-2,1,-2,1,0.05,0.05,0)$, $X \sim
-      \textrm{Uniform}(0,0.2)$, and $Z \sim
-      \textrm{Normal}(0.5,0.1)$.}
+      the extended EI model with $X \sim \textrm{Uniform}(0,0.2)$, $Z
+      \sim \textrm{Normal}(0.5,0.1)$, $\breve\bbeta_i^b = [-2 \times
+      (\sigmau_b^2 + 0.25) + 0.5] + Z_i$, $\breve\bbeta_i^w = [-2
+      \times (\sigmau_w^2 + 0.25) + 0.5] + Z_i$, $\sigmau_b = 0.05$,
+      $\sigmau_w = 0.05$, and $\rhou = 0$.}
     \label{f:wide}
   \end{center}
 \end{figure}
@@ -494,9 +495,12 @@ give approximately the same estimates.
       squares (LS) and weighted least squares (WLS) appears almost on
       top of one another, and our fully adjusted method (FA).  Note
       how all three methods give almost the same answer. Data were
-      generated from the extended EI model, with
-      $\breve\psi=(-0.2,1,0.6,1,0.05,0.05,0)$, $X \sim
-      \textrm{Uniform}(0.2,1)$, and $Z \sim \textrm{Normal}(0,0.1)$.}
+      generated from the extended EI model, with $X \sim
+      \textrm{Uniform}(0.2,1)$, $Z \sim \textrm{Normal}(0,0.1)$,
+      $\breve\bbeta_i^b = [-0.2 \times (\sigmau_b^2 + 0.25) + 0.5] +
+      Z_i$, $\breve\bbeta_i^w = [0.6 \times (\sigmau_w^2 + 0.25) +
+      0.5] + Z_i$, $\sigmau_b = 0.05$, $\sigmau_w = 0.05$, and
+      $\rhou = 0$.}
     \label{f:narrow}
   \end{center}
 \end{figure}
@@ -537,10 +541,12 @@ badly estimated and misses the mark.
       fits for least squares (LS), weighted least squares (WLS), and
       our fully adjusted method (FA).  Note how (unadjusted) WLS
       corrects for most of the attenuation bias.  Data were generated
-      from the extended EI model, with
-      $\breve\psi=(-0.2,1,0.6,1,0.05,0.05,0)$, $X \sim
-      \textrm{Uniform}(0,0.2) \textrm{and} \textrm{Uniform}(0.8,1)$, and $Z
-      \sim \textrm{Normal}(0,0.1)$.}
+      from the extended EI model, with $X \sim
+      \textrm{Uniform}(0.2,1)$ and $(0.8,1)$, $Z \sim
+      \textrm{Normal}(0,0.1)$, $\breve\bbeta_i^b = [-0.2 \times
+      (\sigmau_b^2 + 0.25) + 0.5] + Z_i$, $\breve\bbeta_i^w = [0.6
+      \times (\sigmau_w^2 + 0.25) + 0.5] + Z_i$, $\sigmau_b = 0.05$,
+      $\sigmau_w = 0.05$, and $\rhou = 0$.}
     \label{f:mixed}
   \end{center}
 \end{figure}
@@ -573,9 +579,12 @@ into the impossible region) for some values of $Z_i$.
       almost on top of one another, weighted least squares (WLS), and
       the better fitting logistic transformation (LT).  Note how all
       the linear methods give out of bounds predictions.  Data were
-      generated from the extended EI model, with
-      $\breve\psi=(1.2,1,1.2,1,0.3,0.3,0)$, $X \sim \textrm{Uniform}(0,1)$, and
-      $Z \sim \textrm{Normal}(0,2)$.}
+      generated from the extended EI model, with $X \sim
+      \textrm{Uniform}(0,1)$, $Z \sim \textrm{Normal}(0,2)$,
+      $\breve\bbeta_i^b = [1.2 \times (\sigmau_b^2 + 0.25) + 0.5] +
+      Z_i$, $\breve\bbeta_i^w = [1.2 \times (\sigmau_w^2 + 0.25) +
+      0.5] + Z_i$, $\sigmau_b = 0.3$, $\sigmau_w = 0.3$, and
+      $\rhou = 0$.}
     \label{f:nonlinear}
   \end{center}
 \end{figure}
@@ -596,18 +605,18 @@ features of their model are correctly specified).
 & \multicolumn{3}{c}{\underbar{President/House}} & \multicolumn{3}{c}{\underbar{President/Senate}}\\
 Variable        &       LS      &       FA      &       WLS     &       LS      &       FA      &       WLS     \\
 \hline
-Constant        &       0.066   &       -0.092  &       0.034   &       0.139   &       -0.016  &       0.167   \\
-        &       (0.008) &               &       (0.014) &       (0.083) &               &       (0.100) \\
-Ideological distance    &       ---       &       ---       &       ---   &       -0.023  &       -0.031  &       -0.046  \\
-        &               &               &               &       (0.039) &               &       (0.050) \\
-Democratic incumbent    &       0.108   &       0.149   &       0.048   &       0.057   &       0.077   &       0.040   \\
-        &       (0.015) &               &       (0.033) &       (0.051) &               &       (0.064) \\
-Spending ratio  &       0.349   &       0.483   &       0.598   &       0.325   &       0.440   &       0.394   \\
-        &       (0.021) &               &       (0.042) &       (0.092) &               &       (0.111) \\
-Ballot format   &       -0.032  &       -0.045  &       -0.137  &       -0.049  &       -0.066  &       -0.060  \\
-        &       (0.008) &               &       (0.014) &       (0.036) &               &       (0.046) \\
-South   &       0.044   &       0.061   &       0.175   &       0.063   &       0.085   &       0.033   \\
-        &       (0.009) &               &       (0.013) &       (0.051) &               &       (0.065) \\
+Spending ratio  &       0.350   &       0.446   &       0.471   &       0.318   &       0.441   &       0.426   \\
+        &       (0.021) &       (0.193) &       (0.032) &       (0.094) &       (0.174) &       (0.111) \\
+Ideological distance    &       -       &       -       &       -       &       -0.025  &       -0.035  &       -0.053  \\
+        &               &               &               &       (0.040)  &       (0.014) &       (0.051) \\
+Democratic incumbent    &       0.106   &       0.135   &       0.090   &       0.059   &       0.081   &       0.028   \\
+        &       (0.015) &       (0.056) &       (0.025) &       (0.052) &       (0.032) &       (0.063) \\
+Ballot format   &       -0.032  &       -0.041  &       -0.074  &       -0.050  &       -0.070  &       -0.062  \\
+        &       (0.008) &       (0.018) &       (0.011) &       (0.037) &       (0.028) &       (0.047) \\
+South   &       0.041   &       0.053   &       0.081   &       0.046   &       0.064   &       0.003   \\
+        &       (0.009) &       (0.023) &       (0.011) &       (0.052) &       (0.025) &       (0.058) \\
+Constant        &       0.067   &       -0.181  &       0.051   &       0.144   &       -0.159  &       0.168   \\
+        &       (0.008) &       (0.507) &       (0.011) &       (0.084) &       (0.422) &       (0.102) \\
 $N$     &       361     &       361     &       361     &       32      &       32      &       32      \\
 \hline
 \end{tabular}
