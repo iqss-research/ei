@@ -181,7 +181,7 @@ the constant term unchanged.  The adjustment is based on linear
 approximations within the classical linear regression econometric
 theory framework.  The problems we describe below with HS's approach
 are all due assuming linearity when modeling an inherently nonlinear
-and bounded relationship, and HS's decision to adjust the slop without
+and bounded relationship, and HS's decision to adjust the slope without
 adjusting the constant term too.
 
 We replicated HS's simulations without trouble.  We then examined how
@@ -213,38 +213,50 @@ unadjusted least squares, unadjusted weighted least squares
 regression, and a logistic regression procedure, respectively.
 
 \section{A Fully Adjusted Second Stage Regression Procedure}
-
-HS suggest that researchers who wish to estimate a linear second-stage
-regression using EI estimates
+\label{s:fulladj}
+HS consider models in which a researcher wishes to regress an EI-based
+estimate, $\hat\beta_i^b$, on some explanatory variable $Z_i$:
 \begin{equation}
 \label{eq:ssreg}
 \hat\beta_i^b=\alpha_U+\gamma_U Z_i + \nu_i,
 \end{equation}
-make an adjustment to the slope $\gamma$, but make no suggestion
-regarding the intercept $\alpha$.  However, the logic underlying HS's
-slope adjustment requires simultaneous adjustment of the constant.
-Specifically, HS assume that the measurement error in EI estimates,
-$\hat\beta_i^b - \beta_i^b$, can be approximated by the linear
-regression
+They argue that unless the measurement error in $\hat\beta_i^b$ is
+uncorrelated with the true $\beta_i^b$, $\gamma_U$ will be biased.
+Strictly speaking, this (typically downward) bias will be limited in
+the presence of tight bounds on the estimates of $\hat\beta_i^b$.
+However, to the extent that the bounds are wide and the linearity
+assumed by Eq. \ref{eq:ssreg} holds, $\hat\gamma_U$ will be an
+underestimate of the true $\gamma$, which HS denote $\gamma_R$.
+
+HS propose a correction for this attenuation bias based on the
+assumption that the measurement error in $\hat\beta_i^b$ is a linear
+function of the true $\beta_i^b$'s:
 \begin{equation}
 \label{eq:hserr}
 \hat\beta_i^b - \beta_i^b = \delta_0^b + \delta_1^b\beta_i^b + \zeta_i.
 \end{equation}
-If this holds, simple algebraic substitution into Eq. \ref{eq:ssreg}
-shows that
-\begin{equation}
-\label{eq:hscorr}
-\beta_i^b = \frac{\alpha_U-\delta_0^b}{1+\delta_1^b} +
-\frac{\gamma_U}{1+\delta_1^b}Z_i.
-\end{equation}
-The slope in this equation provides the HS slope correction.  Clearly,
-this adjusted slope only makes sense in the context of Eq.
-\ref{eq:hscorr}.  Thus users of HS slope correction should also
-adjuste the constant, which is easily accomplished by calculating
-$\alpha_A = (\alpha_U-\delta_0^b)/(1+\delta_1^b)$.  Failure to adjust
-all parameters often leads to a worse fit than the unadjusted
-regression, and the fully adjusted procedure generally dominates slope
-correction alone.
+If this assumption holds, then it is easy to show that the true slope,
+$\gamma_R$, can be calculated as $\gamma_U/(1 + \delta_1^b)$; HS label
+this adjustment $\gamma_A$.  However, the same method shows that the
+intercept $\alpha$ should be adjusted, so that $\alpha_A =
+(\alpha_U-\delta_0^b)/(1+\delta_1^b)$.  Besides being consistent with
+HS's slope adjustment, intercept correction also makes intuitive
+sense.  Unless the mean of $Z$ is approximately zero, inflating the
+slope without changing the intercept can produce much higher or lower
+predictions of $\hat\beta_i^b$ from Eq.  \ref{eq:ssreg} than are
+consistent with the data, or even possible.  Only when $\bar Z \approx
+0$ is the unadjusted $\alpha$ approximately right.
+
+Since the procedure HS recommend in Section 7.2 produces estimates of
+both $\delta_0^b$ and $\delta_1^b$, researchers can make a full
+adjustment of a second-stage regression as easily as a partial
+adjustment.  In practice, there is no reason to correct only the
+slope.  Failure to adjust all parameters often leads to a worse fit
+than the unadjusted regression, and the fully adjusted procedure
+generally dominates slope correction alone.
+
+
+
 \begin{table}[tb]
 \label{t:hsrep}
 \begin{center}
@@ -302,6 +314,19 @@ coefficients without shrinkage when using the true value of the
 dependent variable, this Monte Carlo setup is certainly inappropriate
 for assessing a dependent variable that is estimated.
 
+A second problem with the Monte Carlo procedure employed by HS is that
+it artificially rules out nonlinear relationships between $\beta_i^b$
+and $Z_i$.  Perhaps the most common situation confronting users of
+second-stage EI regressions is an unbounded independent variable which
+covaries with a necessarily-bounded dependent variable, which is
+estimated by EI.  By contrast, HS construct their explanatory
+variable, $Z_i$, from the bounded $beta_i^b$'s (plus a normal
+disturbance), effectively ensuring that the relationship between the
+two is linear and contained within the (0,1) bound on $beta_i^b$.
+Within this framework, it is simply not possible to test the
+robustness of the HS adjustment to the sort of nonlinear relationships
+which may crop up in applied research.
+
 \section{An Improved Monte Carlo Simulation} \label{s:alt}
 
 Our conclusions below do not depend on changing the simulation method,
@@ -320,9 +345,57 @@ nonlinear because the bounds are very influential, a regression of the
 true $\beta_i^b$ on $Z_i$ recovers the intercept and slope
 coefficients accurately.
 
+To facilitate replication, we present our simulation procedure in a manner comparable to HS:
+
+\begin{enumerate}
+
+\item Choose $\phi_1$, $\phi_2$, $\phi_3$, $\phi_4$, $\sigmau_b$,
+$\sigmau_w$, and $\rhou$.
+
+\item Repeat the following 100 times:
+
+\begin{enumerate}
+
+\item Draw $X_i$, $i=1,\ldots,500$ from the uniform distribution.  Various
+ranges of uniform random numbers are chosen to produce different
+mixtures of wide and narrow bounds.
+
+\item Draw $Z_i$ from the normal distribution.  Various means and variances are used in different scenarios.
+
+\item Calculate the untruncated means $\bbetau^b_i$ and $\bbetau^w_i$ from
+the extended EI model, as follows:
+\begin{align}
+  \bbetau^b_i &= \left[\phi_1(\sigmau_b^2+0.25)+0.5\right]
+      +\phi_2Z_i^b\notag\\
+  \bbetau^w_i &= \left[\phi_3(\sigmau_w^2+0.25)+0.5\right]
+      +\phi_4Z_i^w
+  \label{reparZ}
+\end{align}
+
+\item Draw $\beta_i^b$ and $\beta_i^w$ from the truncated bivariate normal
+given $\psiu = \(\bbetau^b,\bbetau^w,\sigmau_b,\sigmau_w,\rhou\)$.
+
+\item Obtain estimates of $\hat\beta_i^b$ and $\hat\beta_i^w$ from EI,
+omitting the covariate $Z_i$.
+
+\item Estimate $\hat\delta_0^b$ and $\hat\delta_1^b$ using Eq. \ref{eq:hserr}.
+
+\item Estimate the following equations:
+\begin{align}
+  \beta_i^b=\alpha_R+\gamma_R Z_i + \nu_i \textrm{by LS}\notag\\
+  \hat\beta_i^b=\alpha_U+\gamma_U Z_i + \nu_i \textrm{by LS}\notag\\
+  \hat\beta_i^b=\alpha_W+\gamma_W Z_i + \nu_i \textrm{by WLS}
+\end{align}
+
+\item Finally, obtain adjusted slopes and coefficients according to the procedure described in Section \ref{s:fulladj}.
+
+\end{enumerate}
+\end{enumerate}
+
+
 We use this Monte Carlo setup to illustrate four prototypical
 situations that would seem to map out the space of applications in
-which the various methods work in different ways. 
+which the various methods work in different ways.
 
 First, when ecological data have very wide bounds, EI (and any method
 of ecological inference) will be sensitive to modeling assumptions.
@@ -341,11 +414,11 @@ the unadjusted least squares line (marked LS) fits the estimated
 points well (in the right graph) but are attenuated for the true
 points (in the left).  Since the bounds are all very wide, the
 variances are almost constant and so the weighted least squares
-(marked WLS) line is almost on top of the LS line.  In contrast, the
-line representing the fully adjusted method we developed (marked FA)
-fits the true points well, and hence corrects for the attenuation.
+(marked WLS) line is practically on top of the LS line.  In contrast,
+the line representing the fully adjusted method we developed (marked
+FA) fits the true points well, and hence corrects for the attenuation.
 Figure \ref{f:wide} also plots Herron and Shotts' partially adjusted
-method (marked HS), which as is more biased than any of the
+method (marked HS), which is more biased than any of the
 alternatives, a problem which grows in severity as the mean of $Z$
 departs from zero.  Since Herron and Shotts' proposal is never better
 than full adjustment, and often dramatically worse, we do not consider
@@ -359,7 +432,10 @@ it further.
       Herron and Shotts' partially adjusted procedure (HS), least
       squares (LS) and weighted least squares (WLS) almost on top of
       one another, and our fully adjusted method (FA).  Note how FA
-      fits the true points best.}
+      fits the true points best.  Data were generated from the
+      extended EI model, with $\breve\psi=(-2,1,-2,1,0.05,0.05,0)$, $X
+      \sim \textrm{Uniform}(0,0.2)$, and $Z \sim
+      \textrm{Normal}(0.5,0.1)$.}
     \label{f:wide}
   \end{center}
 \end{figure}
@@ -382,7 +458,10 @@ give approximately the same estimates.
       and the true $\beta_i^b$ (in the left graph) with fits for least
       squares (LS) and weighted least squares (WLS) appear almost on
       top of one another, and our fully adjusted method (FA).  Note
-      how all three methods give almost the same answer.}
+      how all three methods give almost the same answer. Data were
+      generated from the extended EI model, with
+      $\breve\psi=(-0.2,1,0.6,1,0.05,0.05,0)$, $X \sim
+      \textrm{Uniform}(0.2,1)$, and $Z \sim \textrm{Normal}(0,0.1)$.}
     \label{f:narrow}
   \end{center}
 \end{figure}
@@ -422,7 +501,10 @@ correct for most of the attenuation.
       right graph) and the true $\beta_i^b$ (in the left graph) with
       fits least squares (LS), weighted least squares (WLS), and our
       fully adjusted method (FA).  Note how (unadjusted) WLS corrects
-      for most of the attenuation bias.}
+      for most of the attenuation bias.  Data were generated from the
+      extended EI model, with $\breve\psi=(-0.2,1,0.6,1,0.05,0.05,0)$,
+      $X \sim \textrm{Uniform}\in (0,0.2) and (0.8,1)$, and $Z \sim
+      \textrm{Normal}(0,0.1)$.}
     \label{f:mixed}
   \end{center}
 \end{figure}
@@ -454,7 +536,10 @@ region) for some values of $Z_i$.
       fits for least squares (LS) and our fully adjusted method (FA)
       almost on top of one another, weighted least squares (WLS), and
       the better fitting logistic transformation (LT).  Note how all
-      the linear methods give out of bounds predictions.}
+      the linear methods give out of bounds predictions.  Data were
+      generated from the extended EI model, with
+      $\breve\psi=(1.2,1,1.2,1,0.3,0.3,0)$, $X \sim \textrm{Uniform}(0,1)$, and
+      $Z \sim \textrm{Normal}(0,2)$.}
     \label{f:nonlinear}
   \end{center}
 \end{figure}
@@ -511,7 +596,7 @@ goal was to show whether ticket splitting was the result of
 intentional efforts by moderate voters to balance ideologically
 disparate candidates (Alesina and Rosenthal, 1995) or an artifact of
 differing campaign resources (Jacobson, 1997) and ballot formats
-(Beck, 1997).  They found that ticket splitting rises with the
+(Beck, 1997).  They found that ticket splitting falls with the
 ideological distance between presidential and Senate candidates,
 undermining the balancing thesis, but also that differences in
 campaign resources appear to predict ticket splitting quite well.
@@ -527,16 +612,19 @@ FA).\footnote{Since Burden and Kimball estimate their dependent
   stage to compute the fully adjusted method.} In most cases, the FA
 results are comparable to, or bracketed by, the LS and WLS estimates
 (which Burden and Kimball considered sufficiently similar to use
-interchangeably).  All three methods support Burden and Kimball's
-argument that ticket-splitting results not from intentional balancing,
-but as an unintential result of campaign specific factors.
+interchangeably).  In particular, we obtain generally similar results
+for the two most important variables in Burden and Kimball's model,
+spending ratio and ideological distance.  All three methods thus
+support Burden and Kimball's argument that ticket-splitting results
+not from intentional balancing, but as an unintentional result of
+campaign specific factors.
 
 Note that Table \ref{t:bkrep} reports no standard errors for the fully
-adjusted method; HS offer no procedure for computing standard errors
-of their partially adjusted method and we have not bothered to finish
-this aspect of their work.  It would be possible (by extending beyond
+adjusted method, as HS offer no procedure for computing standard
+errors for their adjusted coefficients.  It would be possible to
+calculate standard errors for these estimates (by extending beyond
 linear econometrics), although slightly complicated because the
-adjusted estimators are ratios and also because of dependence of the
+adjusted estimators are ratios and also because the dependence of the
 numerator and denomonator needs to be worked out.
 
 \section{Concluding Suggestions}
@@ -553,7 +641,7 @@ making ecological inferences.  To this scatterplot, we would suggest
 adding information on the bounds.  This can be done by adding a thin
 vertical line representing the bounds on $\beta_i^b$ for each
 $(\hat\beta_i^b,Z_i)$ point plotted (e.g., King, 1997: Figure 13.2).
-Form this figure, we can then see all the data, precisely how
+From this figure, we can then see all the data, precisely how
 informative the bounds are, whether the bounds are of constant or
 variable width.
 
