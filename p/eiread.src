@@ -535,7 +535,7 @@ proc eiread(dbuf,str);
     n=eiread(dbuf,"n");
     res=x.*n;
 
-  elseif str$=="nb2";	@ black vap sims from ei2 @
+  elseif str$=="nb2";	@ number of blacks turning out to vote: sims from ei2 @
     x=eiread(dbuf,"x2");
     n=eiread(dbuf,"n");
     res=x.*n;
