@@ -41,13 +41,6 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
    endif;
 
    {u,s,v}=svd1(invvc);
-/* OLD: KOSUKE, PLS CHECK MY CHANGES AND DELETE THE OLD VERSION IF THEY'RE OK.
-   v=s+(diag(s) .< tol).*eye(rows(s));
-   res=u'*(rndmn(u*mean,invpd(v),sims))';
-   res=res-(diag(s) .< tol).*res;       
-   res=res+(diag(s) .< tol).*(rndu(rows(mean),sims).*(bounds[2,.]-bounds[1,.])'
-       +bounds[1,.]');
-*/
    t=(diag(s) .< tol);
    v=s+t.*eye(rows(s));
    res=(1-t).*(u'*(rndmn(u*mean,invpd(v),sims))')
