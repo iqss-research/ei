@@ -1043,6 +1043,7 @@ proc ei2(V,dbuf,Gb,Gw);
     x2=missrv(betabs[.,1:_ei2_m],0).*x./t;
     ei2m = _ei2_m;
   endif;
+
   nt=eiread(dbuf,"nt");
   lambdaBs=t*0;
   x2k=lambdaBs;
@@ -1061,7 +1062,7 @@ proc ei2(V,dbuf,Gb,Gw);
       ?;"==================> Starting ei2 imputation ";;(i+0);?;
     endif;
     
-    idbuf = ei(V,x2[.,i+0],nt,Gb,Gw);
+    idbuf = ei(V,recode(x2[.,i+0],(x2[.,i+0].>1)~(x2[.,i+0].<0),1|0),nt,Gb,Gw);
     if scalmiss(idbuf) or not(vin(idbuf,"betabs"));
       "ei2: problem with EI run (noted above), terminating EI2.";
       retp(miss(1,1));
