@@ -424,7 +424,7 @@ proc 1=eimodels_avg(ndbuf);
       "----- EIMODELS_AVG Aborted -----";
       ?;
       retp("");
-    elseif sumc(_EI_bma_prior) /= 1;
+    elseif sumc(round(_EI_bma_prior)) /= 1;
       ?;
       "eimodels: The prior model probability does not sum up to 1.";
       "----- EIMODELS_AVG Aborted -----";
