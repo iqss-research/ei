@@ -1853,6 +1853,10 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   between zero and one, columns are $X_i$ and sorted simulations of
   $T_i|X_i$.  See Section 8.5.  (Uses \texttt{x2} simulations when
   used with \texttt{ei2}).
+  
+\item[tsims0] $p\times$\texttt{\_Esims}$+1$: simulations of $T_i$
+  given observed values of $X_i$ and/or \textt{Zb} and \texttt{Zw}.
+  The first column is the actual values of $T_i$.
 
 \item[VCaggs] $2\times 2$: variance matrix of 2 district-level
   parameters, $\hat{B}^b$ and $\hat{B}^w$.  See Section 8.3.  (Uses
