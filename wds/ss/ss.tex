@@ -490,19 +490,21 @@ the purpose of evaluating second-stage regressions.\footnote{A second
   estimators does not reveal which is closer to the unknown
   $\gamma_R$.  Since they are probably correlated, the Monte Carlo
   procedure can only reveal how close the estimators are to each
-  other, not to the truth, since it is unknown.  By this
-  interpretation, the procedure misses the whole point of running
-  Monte Carlo experiments in the first place --- creating a world
-  where we know the true quantity being estimated and then seeing how
-  good an estimator is at recovering its known value.  Although by
-  this interpretation we cannot know the true $\gamma_R$ in each
-  iteration, we can compute the expected value by averaging over the
-  variability in $\tau_i$ over Monte Carlo iterations, but this then
-  implies that on average $\gamma_R=1$, and leads exactly to the first
-  interpretation and to a regression of $\beta_i^b$ on $Z_i$
-  underestimating the truth.  (That is,
-  $E_\tau[E(\beta_i^b|Z_i)]=\alpha_R+\gamma_R \beta_i$ which implies
-  that $\alpha_R=0$ and $\gamma_R=1$.)}
+  other, not to the truth, since it is unknown and changing over
+  iterations.  This interpretation, of course, misses the whole point
+  of running Monte Carlo experiments in the first place --- creating a
+  world where we know the true quantity being estimated and then
+  seeing how good an estimator is at recovering its known value.
+  
+  Although by this last interpretation we cannot know the different
+  true $\gamma_R$ in each iteration, we can compute its expected value
+  by averaging over the variability in $\tau$ across Monte Carlo
+  iterations, but this then implies that on average $\gamma_R=1$.
+  (That is, $E_\tau[E(\beta_i^b|Z_i)]=\alpha_R+\gamma_R \beta_i$ which
+  implies that $\alpha_R=0$ and $\gamma_R=1$.)  This therefore leads
+  to the first interpretation where a regression of $\beta_i^b$ on
+  $Z_i$ underestimates the truth and so is also not appropriate for
+  evaluating second stage regressions.}
 
 Whichever interpretation one has of the HS Monte Carlo procedure, it
 also suffers from two other serious problems.  First, it artificially
