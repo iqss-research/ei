@@ -10,6 +10,9 @@
 \usepackage{vmargin}
 \setpapersize{USletter}
 
+\usepackage{apsr}
+
+
 % === dcolumn package ===
 \usepackage{dcolumn}
 \newcolumntype{.}{D{.}{.}{-1}}
@@ -100,8 +103,11 @@
 \newcommand{\bg}{\beta^{\text{good}}}
 
 \title{Did Illegally Counted Overseas Absentee Ballots Decide the 2000
-  U.S.\ Presidential Election?\thanks{Thanks to Jim Alt and Jonathan
-    Wand for helpful discussions and the National Science Foundation
+  U.S.\ Presidential Election?\thanks{We are deeply grateful to the
+    many private citizens of every political stripe who took the time
+    to send us comments on this paper.  Thanks also to Jim Alt and
+    Jonathan Wand for helpful discussions; Associate Editor Henry
+    Brady for many suggestions; and the National Science Foundation
     (IIS-9874747), the National Institutes of Aging (P01 AG17625-01),
     and the World Health Organization for research support.  Software
     to implement the methods in this paper is available from
@@ -113,13 +119,11 @@
     \texttt{http://www.people.fas.harvard.edu/\~\,kimai},
     \texttt{KImai@Fas.Harvard.Edu}).}
 \and %
-Gary King\thanks{Professor of Government, Harvard University and
-  Senior Science Advisor, Evidence and Information for Policy Cluster,
-  World Health Organization (Center for Basic Research in the Social
-  Sciences, 34 Kirkland Street, Harvard University, Cambridge MA
-  02138; \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu},
-  (617) 495-2027).}  
-}
+Gary King\thanks{David Florence Professor of Government, Harvard
+  University (Center for Basic Research in the Social Sciences, 34
+  Kirkland Street, Harvard University, Cambridge MA 02138;
+  \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu}, (617)
+  495-2027).}  }
 
 \begin{document}
 \maketitle
@@ -206,9 +210,9 @@ they concluded that 680 of the overseas absentee ballots that had been
 counted by Florida counties unambiguously violated one or more aspects
 of Florida election law and, by any reasonable interpretation of the
 law, should have been discarded.  Indeed, after the \emph{Times} story
-appeared, commentators and partisans from both sides did not
-contradict these factual claims.\footnote{The only exception seems to
-  have been Zelnick (2001)\nocite{Zelnick01}.}
+appeared, commentators and partisans from both sides accepted these
+factual claims.\footnote{The only exception seems to have been Zelnick
+  (2001)\nocite{Zelnick01}.}
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{lcccc}
@@ -279,29 +283,29 @@ introduce here to analyze other problems, we have included all methods
 introduced here in the program \emph{EI: A Program for
   Ecological Inference} (available at \url{http://GKing.Harvard.edu}).
 
-Our results give the exact probability that Gore would have won the
-election if the law had been followed in this instance.  This
-probability is small, but we know with mathematical certainty that it
-is greater than zero --- a conclusion that can only be seen as
-remarkable for the world's premier democracy.  Secondly, although our
-analyses show that it is unlikely that illegal overseas absentee
-ballots alone changed the outcome of the election, we show that Bush's
-margin of victory would likely have been much narrower if those flawed
-ballots had not been counted.  This supports the argument made by
-\emph{The New York Times} that the flawed ballots favored Bush much
-more than other candidates.  We also present here a variety of results
-that did not appear in the \emph{Times} article, including the
-probability that Gore would have won under various hypothetical
-scenarios, such as if Katherine Harris had accepted Palm Beach
-County's recount, which was submitted two hours late.  In some
-plausible scenarios, the probability that Gore would have won is
-nearly 100\%.  Finally, we present evidence that the propensity of
-local election officials to violate the law and accept bad ballots was
-substantially greater in counties where Bush strategists believed
-there were more absentee ballot support for Bush and tried to convince
-election officials to accept bad ballots.  This is consistent with the
-\emph{Times}' thesis and evidence that these local election officials
-bent to the will of Republican lobbists.
+Our results give the probability that Gore would have won the election
+if the law had been followed in this instance.  This probability is
+small, but we know with mathematical certainty that it is greater than
+zero --- a conclusion that can only be seen as remarkable for the
+world's premier democracy.  Secondly, although our analyses show that
+it is unlikely that illegal overseas absentee ballots alone changed
+the outcome of the election, we show that Bush's margin of victory
+would likely have been much narrower if those flawed ballots had not
+been counted.  This supports the argument made by \emph{The New York
+  Times} that the flawed ballots favored Bush much more than other
+candidates.  We also present here a variety of results that did not
+appear in the \emph{Times} article, including the probability that
+Gore would have won under various hypothetical scenarios, such as if
+Katherine Harris had accepted Palm Beach County's recount, which was
+submitted two hours late.  In some plausible scenarios, the
+probability that Gore would have won is nearly 100\%.  Finally, we
+present evidence that the propensity of local election officials to
+violate the law and accept bad ballots was substantially greater in
+counties where Bush strategists believed there were more absentee
+ballot support for Bush and tried to convince election officials to
+accept bad ballots.  This is consistent with the \emph{Times}' thesis
+and evidence that these local election officials bent to the will of
+Republican lobbyists.
 
 Section \ref{s:ballots} reviews the illegal overseas absentee ballots
 in Florida and their importance in the course of events following the
@@ -347,8 +351,9 @@ or more of these categories (Barstow and Van Natta, Jr.,
 2001):\footnote{For pictures of some of the bad ballots, see
   \url{http://www.nytimes.com/images/2001/07/15/politics/absentee/nat_ABSENTEE_count_index.html}.}
 \begin{itemize}
-\item 344 ballots had late, illegible or missing postmarks (postmarks
-  must indicate that the ballot was cast on or before election day).
+\item 344 ballots had late, illegible or missing postmarks (the law
+  requires that postmarks must indicate that the ballot was cast on or
+  before election day).
 \item 183 ballots with United States postmarks.
 \item 169 ballots were received from voters who were not registered,
   who had failed to sign the envelope, or who had not requested a
@@ -383,9 +388,9 @@ the same ecological inference problem exists in each.
       & Gore  & Bush & Others & total  \\
       \hline 
       invalid ballots &   ?   &   ?  &   ?    &  680   \\
-      valid ballots   &   ?   &   ?  &   ?    & 1824   \\
+      valid ballots   &   ?   &   ?  &   ?    & 1810   \\
       \hline
-      & 836   & 1575 &   79   & 2504   \\
+      & 836   & 1575 &   79   & 2490   \\
     \end{tabular} \caption{The Ecological Inference Problem in Florida.  
       ``?'' indicates the unknown quantities to be
       estimated.}\label{tb:ballots}
@@ -411,20 +416,21 @@ all overseas absentee ballots as $X_i$, and the total number of
 overseas absentee ballots which were counted as $N_i$.  We also let
 Gore's proportion of the vote be $T_i$.  To simplify presentation, we
 combine the votes for Bush and the other minor candidates as Bush
-votes. (Although our presentation always involves only the Bush/Gore
+votes.  (Although our presentation always involves only the Bush/Gore
 choice, our empirical results using deterministic bounds in Section
 \ref{s:noassump} includes the possibility of bad ballots having been
 cast for minor party candidates.  We handle minor parties in our
 statistical analyses in Section \ref{s:stat} by ignoring the problem
-at first and then conducting sensitivity analyses; since votes for
-minor party candidates only total 3 percent, we find, as expected,
-that they have a very small effect on the overall result.  Other
-analyses (not shown) using more computationally intensive techniques
-designed to model these choices separately confirm these results (see
-Rosen et al., 2001)\nocite{RosJaiKin01}.)  Each of these quantities
-are observed.  We denote unobserved quantities with Greek letters.
-Thus, the proportions of invalid and valid ballots cast for Gore are
-$\bb_i$ and $\bg_i$, respectively.
+at first and then conducting sensitivity analyses in Appendix
+\ref{a:impl}; since votes for minor party candidates only total 3
+percent, we find, as expected, that they have a very small effect on
+the overall result.  Other analyses (not shown) using more
+computationally intensive techniques designed to model these choices
+separately confirm these results (see Rosen et al.,
+2001)\nocite{RosJaiKin01}.)  Each of these quantities are observed.
+We denote unobserved quantities with Greek letters.  Thus, the
+proportions of invalid and valid ballots cast for Gore are $\bb_i$ and
+$\bg_i$, respectively.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{cccc}
@@ -442,12 +448,10 @@ valid ballots   & $\bg_i$  & $1-\bg_i$ & $1-X_i$ \\
 Although $\bb_i$ and $\bg_i$ are used for the estimation, our ultimate
 quantity of interest is Bush's margin after dropping the invalid
 absentee ballots.  To define this quantity, first define the statewide
-fraction of bad ballots that went to Gore as the weighted average of
-the individual county quantities:
-\begin{equation}
-  \bb=\frac{\sum_{i=1}^{67}N_i\bb_i}{\sum_{i=1}^{67}N_i},
-\end{equation}
-so that we then have
+fraction of bad ballots that went to Gore $\bb$ as the weighted
+average of the individual county quantities.\footnote{The weighted
+  average is $\bb=\sum_{i=1}^{67}N_i\bb_i/\sum_{i=1}^{67}N_i$.}  so
+that we then have
 \begin{align}
   \text{Bush's margin} & = \text{official margin}
   - [\text{Bush's bad ballots} - \text{Gore's bad ballots}] \notag\\
@@ -476,7 +480,7 @@ relationship between the two unknown parameters,
 \end{equation}
 which traces out what \citet{king:97} calls a tomography line.  In
 addition, before we observe $X_i$ and $T_i$ in any county, we also
-know that $\bb_i\in[0,1]$ and $\bg_i\in[0,1]$.
+know that $\bb_i$ and $\bg_i$ are each between 0 and 1.
 
 Once we observe $X_i$ and $T_i$, we can narrow the bounds further
 (simply by projecting the line in Equation \ref{eq:identity} to the
@@ -584,25 +588,28 @@ ecological inference problem is weak
 identification.\footnote{Including multiple covariates uncorrelated
   with $X_i$ cause no identification problems in ecological inference.
   Ecological inference models that do not incorporate information from
-  the deterministic bounds (such as in Goodman
-  (1953)\nocite{goodman53}) are not identified when including $X_i$ or
+  the deterministic bounds (such as in Goodman,
+  1953\nocite{goodman53}) are not identified when including $X_i$ or
   variables related to $X_i$ as covariates (King, 1997: 42).  Thus, to
   the extent that ecological inference models that incorporate the
   bounds, such as King's (1997), are estimable when including $X_i$ or
   covariates that are related to $X_i$, the information that makes
-  this possible is coming from the bounds.  Hence, weak identification
-  with multiple covariates in modern ecological inference models
-  occurs primarly when both the data have relatively uninformative
-  bounds and the model includes one or more covariates that are
-  correlated with $X_i$.}  A consequence is that one cannot always use
-models with as many covariates as are available to analyze ecological
-data because such models are often not identified.  On the other hand,
-if we have many covariates to predict individual behavior, it makes
-sense that we should be able to improve our inferences by using them.
-After all, more data should be better in this area as it is in every
-other.  Our application of Bayesian model averaging reduces this
-problem by letting analysts combine many small models with the full
-range of covariates.
+  this possible is coming from the bounds.  (Distributional
+  assumptions are also required, but the real information in the data
+  necessary for identification is made available through the bounds.)
+  Hence, weak identification with multiple covariates in modern
+  ecological inference models occurs primarily when both the data have
+  relatively uninformative bounds and the model includes one or more
+  covariates that are correlated with $X_i$.}  A consequence is that
+one cannot always use models with as many covariates as are available
+to analyze ecological data because such models are often not
+identified.  On the other hand, if we have many covariates to predict
+individual behavior, it makes sense that we should be able to improve
+our inferences by using them.  After all, when used appropriately,
+more data should be better in this area as it is in every other.  Our
+application of Bayesian model averaging reduces this problem by
+letting analysts combine many small models with the full range of
+covariates.
 
 Bayesian model averaging was especially important here since political
 scientists have only rarely studied absentee ballots and we therefore
@@ -619,19 +626,23 @@ We now give a brief qualitative overview of King's (1997) models of
 ecological inference \nocite{king:97} and their assumptions in the
 context of our overseas absentee ballot analysis.  These models have
 come to called EI, after the software that implements them.  We then
-explain the Bayesian model averaging procedure and the logic behind it
+explain the Bayesian model averaging procedure and the logic behind it,
 and show how to incorporate this methodology into EI.
 Appendix~\ref{appx:king} gives technical details.
 
-We begin by thinking about the data in terms of the \emph{possible}
-values of the ($\bg_i,\bb_i$) points for each county as line segments
-(defined by Equation \ref{eq:identity}) in the tomography plot in
-Figure~\ref{fg:tomog}.  Any possible values of the two parameters for
-each county has to lie on the portion of its own tomography line that
-falls within the unit square.  Without any further assumptions, this
-is all the information that exists about our quantities of interest.
-In a sense, then, Figure \ref{fg:tomog} presents the data in the form
-closest to the answers we seek.
+We begin by summarizing everything we know about the quantities of
+interest without making any statistical assumptions.  Thus, we take
+the information described in Section \ref{s:noassump} and portray it
+graphically.  Thus, for each county, we summarize what the data tell
+us in terms of all \emph{possible} values of $\bg_i$ and of $\bb_i$.
+As it turns out, the data tell us more than merely the bounds on each
+separately since Equation \ref{eq:identity} says that if $\bg_i$ is
+near the top of its bounds, $\bb_i$ must be near the bottom if its
+bounds.  In fact, the two are perfectly correlated and fall on a line
+defined precisely by that equation.  To illustrate, we plot one line
+for each county in Florida in the tomography plot in Figure
+\ref{fg:tomog}.  Figure \ref{fg:tomog} thus merely reexpresses the
+data in the form closest to the answers we seek.
 \begin{figure}[t]
   \vspace{-1in}\hspace{0.5in}
   \begin{minipage}[c]{6.5in}
@@ -645,66 +656,85 @@ closest to the answers we seek.
     respectively.  Each line traces out the possible values of the
     $\bb_i,\bg_i$ point for each county $i$.}
 \end{figure}
-% \begin{figure}[t]
-% \begin{center}
-% \includegraphics[width=4.5in,height=6in,angle=-90]{tomog}
-% \caption{\label{fg:tomog}
-%   Tomography plot for invalid overseas absentee ballots.  $\bb$ and
-%   $\bg$ are the proportion of Gore's invalid and valid ballots,
-%   respectively.  Each line traces out the possible values of the
-%   $\bb_i,\bg_i$ point for each county $i$.}
-% \end{center} 
-% \end{figure}
 
-We then add three assumptions, all conditional on $X$ and a set of
-covariates $Z$.  First, we assume that $\bb_i$ and $\bg_i$ follow a
-truncated bivariate normal distribution, with truncation on the unit
-square.  The idea here is that whatever the values of the unknown
-parameters from Florida's 67 counties on their respective tomography
-lines, they all have something in common, and that any systematic
-difference between them will be picked up by covariates.  The main
-constraint of this assumption is that the bivariate density is
-unimodal and that it is constrained to the [0,1] interval in both
-directions.
+All of the above is as far as it is possible to go without making
+statistical assumptions.  Thus, we now add three assumptions, all
+conditional on $X$ and a specified set of control variables $Z$.  We
+could begin with the assumption that $\bb_i$ and $\bg_i$ are the same
+for all counties, which is essentially Goodman's regression.  This
+would be enough to identify the model, but it would be a very strong
+assumption, and indeed in our application it can be rejected with
+certainty by merely examining at Figure \ref{fg:tomog}.
+
+Thus, as an alternative, we do not assume that $\bb_i$ and $\bg_i$ are
+the same over counties, but instead that they come from the same
+distribution (the truncated bivariate normal distribution, with
+truncation kept to the square represented by the tomography plot).  The
+idea here is that whatever the values of the unknown parameters from
+Florida's 67 counties on their respective tomography lines, they all
+have something in common --- since they are all in the same state,
+subject to almost the same electoral campaign, etc.  Differences
+across the counties in these parameters of any size are thus allowed
+so long as they are either random and fit the distributional
+assumption or they are systematic and picked up by control variables.
+The main constraint of this assumption is that the bivariate density
+is unimodal (which is our formalization of the assumption that the
+counties ``have something in common'') and that all volume under the
+density appears over the square represented by the tomography plot.
+Violations of this distributional assumption do not seem to affect the
+quantities we need for this application (see King, 1997: Table 9.2).
 
 The second assumption is that the absence of residual spatial
 correlation in $T$ after taking into account $X$ and $Z$.  King's
-ecological inference model has not been shown to be very sensitive to
-anything but extreme levels of spatial autocorrelation, but we make
-this assumption even more plausible by including tests with covariates
-that tap into Florida's regions and other spatial features.
+ecological inference model has been shown to be relatively insensitive
+to anything but extreme levels of spatial autocorrelation (King, 1997:
+Table 9.1, King, 2000)\nocite{King00}, but we make this assumption
+even more plausible by including tests with covariates that tap into
+Florida's regions and other spatial features.
 
 The final assumption states that the two unknown quantities, $\bb_i$
-and $\bg_i$, are independent of $X_i$, given $Z$.  For example, if the
-\textit{The New York Times} reporters are correct that bad ballots
-were cast disproportionately for Bush in Bush counties, then we should
-find a strong relationship between $\bb_i$ and variables that measure
-Bush support.
+and $\bg_i$, are independent of $X_i$, given $Z$.  For example, if
+more bad ballots cast for Gore, $\bb_i$, came from counties with more
+bad ballots overall, $X_i$, then this assumption would be violated
+unless $Z$ included variables that sufficiently controlled for this
+relationship.  This is the most critical of the three assumptions, and
+indeed the validity of the analysis depends crucially on the content
+of $Z$.
 
 Each of these three assumptions can be modified to any degree by the
-inclusion of different covariates.  We rely on this point to produce a
-diverse array of models to which we then apply Bayesian model
-averaging.
+inclusion of different covariates, $Z$.  We rely on this point to
+produce a diverse array of models to which we then apply Bayesian
+model averaging.
 
 \subsubsection{Bayesian Model Averaging}
 
-In Bayesian inference, we are interested in the posterior distribution
-which we obtain through the application of Bayes theorem:
+In Bayesian inference, one summarizes all knowledge about a quantity
+of interest with a probability density called the posterior
+distribution.  The posterior, in turn, is proportional to information
+that comes from the data, which is the likelihood (the same likelihood
+used in computing maximum likelihood estimates), and a prior density.
+The prior density should optimally include all information available
+about a quantity of interest external to (and collected ``prior'' to)
+the data.  Bayes theorem is the simple but powerful mathematical rule
+that formalizes the logic of basing one's inferences on all
+information in the data and all information external to the data.
+It specifies that the posterior is proportional to the product of the
+prior times the likelihood:
 \begin{equation}
   \P(\Theta|T) \propto \P(\Theta)\P(T|\Theta).\label{eq:post}
 \end{equation}
 where $\P(\Theta)$ is the prior probability distribution on some
 unknown parameter $\Theta$, and $\P(T|\Theta)$ is the likelihood
-(which in our case is given in Equation~\ref{eq:likelihood}).
-Everything is conditioned on $X$, $N$, and $Z$, which we observe. We
-use the standard independent prior on each parameter of $\Theta$ as
-described in section 7.4 of \citet{king:97}.  This prior distribution
-and the likelihood function together define King's model in a standard
-Bayesian framework.
+(which in our case is given in the appendix as
+Equation~\ref{eq:likelihood}).  Everything is conditioned on $X$, $N$,
+and $Z$, which we observe. We use the standard independent prior on
+each parameter of $\Theta$ as described in Section 7.4 of
+\citet{king:97}.  This prior distribution and the likelihood function
+together define King's model in a standard Bayesian framework.
 
 Along with $T_i$, $X_i$ and $N_i$, we have 27 other variables
 including race, sex, and party registration for the overseas absentee
-voters as well as county level election and demographic data.  We
+voters as well as county level election and demographic data.  We thus
 define 27 models, each using one of these 27 variables as the
 covariate.  We also include a model with no covariates and 3 models
 with $X_i$ as the covariate for the mean of $\bb$, $\bg$, and for
@@ -729,15 +759,23 @@ support each model receives from the data.\footnote{\label{f:models}A
   population not registered, (25) Black registered Democrats, (26)
   Black registered Republican residents, (27) acceptance ratio of
   overall absentee ballots, (28) ratio of invalid absentee ballots,
-  (29) Panhandl Florida regional indicator variable, (30) Southern
+  (29) Panhandle Florida regional indicator variable, (30) Southern
   Florida regional indicator variable, (31) corruption indicator. All
   the covariates except indicator variables are entered as a ratio
   varying from 0 to 1.  Except the first three models, the covariate
-  was used to model the conditional untruncted mean of both
+  was used to model the conditional untruncated mean of both
   parameters, $\bb$ and $\bg$.  Models (5) to (11) are based on
   information about the absentee ballots and so different variables
   were available regarding the invalid and valid ballots; we used the
   former group to predict $\bb$ and the latter to predict $\bg$.}
+
+To restate an important point, the 31 models are not merely averaged.
+Instead, a weighted average of the models is taken.  But the weights
+are not specified ex ante from some prior distribution.  Instead, a
+weighted average of the 31 models is taken with the weights themselves
+computed from the data.  That is, through Bayesian inference, the data
+tell us how seriously we should take each model, and the models judged
+more likely to be correct are weighted the most.
 
 Let $M_k$ denote the $k$th model specification ($k=1,\dots,31$). Then
 we make an inference about some quantity of interest $\Delta$ by
@@ -764,40 +802,46 @@ distinguishing systematic from idiosyncratic features of the data.
 
 To compute the posterior model probability, we need two elements.
 First is a prior probability that each model is correct, $\Pr(M_k)$.
-For simplicity, we assign an equal prior probability, $1/31$, to each
-model.  This at least does not given any a priori advantage to one
-model over another.  (Section \ref{s:sens} discusses sensitivity to
-priors.)
+This is a starting point necessary in using the data to compute the
+posterior model probability, which is of more interest.  The question
+is how to assign these prior probabilities.  One answer is to assume
+that each is equally probable ex ante.  We do that.  Of course, people
+may have different views on this, just as partisans have had very
+different views on most aspects of the 2000 election.  Some might
+think that one model is better than another, and others may think that
+important models have been left out.  We have found few who have
+expressed these views and were willing to justify them, without
+looking at the data, but it is of course impossible to gain agreement
+on a fully normative issue such as this.  Fortunately, the ultimate
+model averaging uses the data.  We also discuss sensitivity to prior
+specifications in Appendix \ref{a:impl}.
 
 The other quantity we need to compute for the posterior model
-probability is the marginal likelihood, $\P(T|M_k)$, which is
-\begin{equation}
-  \P(T|M_k) = \int \P(T|\Theta_k, M_k) \P(\Theta_k|M_k) d\Theta_k,
-  \label{eq:marglik}
-\end{equation} 
-where $\P(\Theta_j|M_j)$ is the prior distribution for the parameter
-vector $\Theta$ in Model $k$. That is, the marginal likelihood is
-obtained by averaging the likelihood over the prior distribution.  The
-marginal likelihood can be thought of as ``the probability of seeing
-the data that actually were observed, calculated \emph{before} any
-data became available'' \cite[p.776]{kass:raft:95}.  That is, instead
-of maximizing the likelihood with respect to the parameter given the
-data, as we would do to compute the maximum likelihood estimate, the
-marginal likelihood does not have a maximization step: it is the
-average value of the likelihood evaluated at parameter values drawn
-from their prior density.  (Although this quantity could be computed
-by simulation in this way, such a method tends to be highly
-inefficient, especially for problems with relatively flat priors or
-high dimensional parameter vectors.  We discuss these and other
-computational issues in the Appendix.)\footnote{Estimates obtained via
-  Bayesian model averaging are also known to provide better
-  predictions under certain widely applicable conditions than using
-  any of the individual component models \citep{madi:raft:94}.  This
-  result is similar to insights from the closely related literature on
-  committee methods \citep{bish:95}, although suprisingly the
-  literatures have relatively few cross-citations.  See also Rosen,
-  Jiang, and Tanner (2000) and Robert
-  (1996)\nocite{rose:jian:tann:00,robe:96a}.}
+probability is the marginal likelihood, $\P(T|M_k)$, which is obtained
+by averaging the likelihood over the prior
+distribution.\footnote{\label{eq:marglik}The marginal likelihood is
+  $\P(T|M_k) = \int \P(T|\Theta_k, M_k) \P(\Theta_k|M_k) d\Theta_k$,
+  where $\P(\Theta_j|M_j)$ is the prior distribution for the parameter
+  vector $\Theta$ in Model $k$.}  The marginal likelihood can be
+thought of as ``the probability of seeing the data that actually were
+observed, calculated \emph{before} any data became available''
+\cite[p.776]{kass:raft:95}.  That is, instead of maximizing the
+likelihood with respect to the parameter given the data, as we would
+do to compute the maximum likelihood estimate, the marginal likelihood
+does not have a maximization step: it is the average value of the
+likelihood evaluated at parameter values drawn from their prior
+density.  (Although this quantity could be computed by simulation in
+this way, such a method tends to be highly inefficient, especially for
+problems with relatively flat priors or high dimensional parameter
+vectors.  We discuss these and other computational issues in the
+Appendix.)\footnote{Estimates obtained via Bayesian model averaging
+  are also known to provide better predictions under certain widely
+  applicable conditions than using any of the individual component
+  models \citep{madi:raft:94}.  This result is similar to insights
+  from the closely related literature on committee methods
+  \citep{bish:95}, although surprisingly the literatures have
+  relatively few cross-citations.  See also Rosen, Jiang, and Tanner
+  (2000) and Robert (1996)\nocite{rose:jian:tann:00,robe:96a}.}
 
 \section{Empirical Results}
 \label{s:outcome}
@@ -845,11 +889,10 @@ they also could not finish the manual recount, but they submitted the
 result of the partial recount just before the deadline, which would
 have given Gore a net gain of 192 votes for Gore. Later that day, Palm
 Beach electoral officials reported the result of the complete recount
-to Harris.  She rejected this complete recount as well as the partial
-recount and did not include them in the certified official tally,
-thereby denying Gore a total of 349 votes \nocite{purd:00}(Purdum,
-2000).
-
+to Katherine Harris.  She rejected this complete recount as well as
+the partial recount and did not include them in the certified official
+tally, thereby denying Gore a total of 349 votes
+\nocite{purd:00}(Purdum, 2000).
 \begin{table}[t]
   \begin{minipage}[c]{5.875in}
     \begin{tabular}{l..}
@@ -895,9 +938,12 @@ votes in Miami Dade and Palm Beach had all been counted, Gore would
 have won with a 0.82 probability, with the uncertainty in this number
 coming only from our analysis of the bad overseas absentee ballots.
 If only the Palm Beach votes had been counted, Gore would have won
-with 0.29 probability.  To put it another way, the massive differences
-in the probabilities from 0.002 to 0.82 for a Gore victory were all
-due to the decisions of Katherine Harris.
+with 0.29 probability.  To put it one way, the massive differences in
+the probabilities from 0.002 to 0.82 for a Gore victory were all due
+to the decisions of Katherine Harris.  Of course, these decisions
+could have been overturned by the courts, and the candidates could
+have influenced them if they had requested statewide or different
+types of recounts.
 
 In the last panel of Table \ref{tb:senario}, we consider
 counterfactuals where the invalid overseas absentee ballots had not
@@ -1032,22 +1078,24 @@ this qualitative evidence.
 
 We also look for indirect evidence of local election officials
 succumbing to pressure from Republican Party officials by examining
-which component models in the Bayesian model averaging procedure were
-found to have the highest posterior probability.  Table~\ref{tb:bma}
-gives the top six such models listed in order.  Generally, if the
-\emph{Times'} hypothesis is right, we would expect that the covariates
-that have the biggest effects would be related to where
-Republicans tried hardest to influence local officials.  If they were
-as rational and deliberate as the \emph{Times} indicated, these would
-be counties where they expected the largest numbers of bad ballots
-that, if counted, would help Bush's cause.  Obviously, we have no such
-variable, but there are a variety of variables related to this.  In
-the top six, two have the largest effects and both are consistent with
-the theory: The more absentee voters registered as Republicans, and the
-more white absentee voters in a district, the more bad ballots
-were cast for Bush (the negative sign indicating that Bush's lead is
-reduced when these ballots are not counted).  The other covariates
-have comparatively small effects.
+the posterior probabilities of each of the 31 component models we
+included.  Generally, if the \emph{Times'} hypothesis is right, we
+would expect that the covariates that have the biggest effects would
+be related to where Republicans tried hardest to influence local
+officials.  If they were as rational and deliberate as the
+\emph{Times} suggested, these would be counties where they expected
+the largest numbers of bad ballots that, if counted, would help Bush's
+cause.  Obviously, we have no such variable, but we do have a variety
+of variables related to this.
+
+Table~\ref{tb:bma} gives the top six models listed in order of the
+posterior probability of being correct.  In the top six, two have the
+largest effects and both are consistent with the theory: The more
+absentee voters registered as Republicans, and the more white absentee
+voters in a district, the more bad ballots were cast for Bush (the
+negative sign indicating that Bush's lead is reduced when these
+ballots are not counted).  The other covariates have comparatively
+small effects.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{l c r@{, }l d{3} d{-3}}
@@ -1095,89 +1143,22 @@ been rejected.  This is obviously quite different from our overall
 result of only a 0.2 percent probability that Gore won.  Since
 different specifications yield very different inferences, an analyst
 having to choose one model would be in the untenable position of
-having to defend choices without a lot of prior evidence.  Bayesian
-model averaging offers a way around this common problem.  Instead of
-results jumping dramatically from one specification to the next,
-results in Bayesian model averaging do not change as much when new
-models are added to the specification, unless they have especially
-large probabilities of being true.
+having to defend choices without a lot of prior evidence.  
 
-Finally, we give a summary of some of the diagnostics we used to check
-the fit of the model.  First, we reran each model with different
-starting values to verify that we found the global maximum in each
-case.  We also examined each the tomography plots with contours or
-confidence intervals to search for outliers or bad model fits.  In
-addition, we plotted $E(T|X)$ or $E(T|X,Z)$ by $X$ or $Z$, and checked
-whether the observed $T$ fell within the (say) 90\% confidence
-interval 90\% of the time.
+Bayesian model averaging offers a way around this common problem.
+Instead of results jumping dramatically from one specification to the
+next, results in Bayesian model averaging do not change as much when
+new models are added to the specification, unless they have especially
+large probabilities of being true.  Of course, we cannot get something
+for nothing.  Our procedure is an improvement over straight EI because
+we only need to assume that one of our 31 models, or some combination
+of our 31 models, contains something close to the right model.  This
+is in contrast to the usual approach where we merely get one model
+from which to choose, but it is not a panacea: although if someone
+comes up with a new idea for a model, we can include it, but if no one
+(or no combination of those) we consult comes close to the right
+model, then our procedure will obviously fail to give valid answers.
 
-We also look at whether the first stage of the model (i.e., before
-conditioning on $T_i$) fits by comparing the county-level posterior
-predictive confidence interval for $T_i$ to its observed value.
-Figure \ref{fg:fit} gives several examples of this strategy for two of
-the models we ran (in the first two rows), as well as for the ultimate
-model implied by the entire Bayesian model averaging procedure (in the
-last row).  The first column plots these predictive confidence
-intervals by $X_i$, the fraction of bad ballots.  The second column
-plots the same intervals by the covariate included.  The proportion of
-observed $T_i$ points falling inside the 80\% confidence intervals is
-always approximately 80\%, which is one check on model fit.  Another
-is the lack of any noticeable relationship between the degree to which
-the observed $T_i$ deviates from the center of the conference interval
-and the variable plotted on the horizontal axis.  All these
-diagnostics, and other similar graphs we examined, seem to confirm the
-fit of the model to these data.
-\begin{figure}[t!]
-\begin{center}
-\includegraphics[width=4.5in,height=6in]{fit}
-\caption{Evaluation of model fit: Predicted distribution of
-  Gore's share of absentee ballots in each county, $T_i$. 80\%
-  confidence intervals of the predictive distribution of $T_i$ given
-  the observed values of $X_i$, in the first column, and a given
-  $Z_i$, in the second column.  The first two rows give selected
-  individual models and the last is the full model computed via
-  Bayesian model averaging.  Dots represent the true values of $T_i$
-  and ``+'' indicates that the model predicts exactly without
-  uncertainty.}
-\label{fg:fit}
-\end{center} 
-\end{figure}
-
-\subsection{The Minor Effects of Minor Candidates and Prior Densities} 
-\label{s:sens}
-
-Finally, we analyze the effects on our results of ignoring the minor
-party candidates and also study the sensitivity of our results to our
-choices for model priors.  Figure~\ref{fg:sensitivity} plots the
-posterior distribution of Bush's new margin without invalid overseas
-absentee ballots for different model specifications for comparison
-with our posterior distribution.  The solid line in this figure is an
-alternative specification of the ecological inference model where we
-combine the votes for the minor candidates together with those for
-Gore rather than with the votes for Bush, resulting in 31 new
-individual models corresponding to the 31 models already run.  The
-posterior distribution for this model is very similar to the results
-of our previous analysis indicating that our results do not depend on
-which model specification is used.
-\begin{figure}[t]
-\begin{center}
-\includegraphics[width=3in,height=4.5in,angle=-90]{sensitivity}
-\caption{Sensitivity analysis of Bayesian model
-  averaging. The histogram is the posterior distribution of Bush's new
-  margin for our model, while the other lines give posterior
-  distributions from different models and prior specifications.}
-\label{fg:sensitivity}
-\end{center} 
-\end{figure}
-
-The other two lines represent the use of different prior distributions
-for the coefficients of the covariate of each model.  We use different
-prior standard deviations for the coefficients of the covariates to
-see if the results are sensitive to the choice of the prior
-distribution.  While some feature of the posterior do vary across
-specifications, the graph shows that model results are not
-particularly sensitive to the prior specification.  The median
-posterior point in particular is hardly changed across the models.
 
 \section{Concluding Remarks}\label{s:concl}
 
@@ -1216,7 +1197,7 @@ not seen as much use as it could.
 
 Bayesian model averaging is a clear improvement on the usual situation
 of having to select and defend a single model, but it is of course not
-a panecia. A researcher never knows whether all relevant models have
+a panacea. A researcher never knows whether all relevant models have
 been included and, although its results are more robust than
 single-model approaches, it is always possible to come up with a
 different list of models and produce a different substantive result.
@@ -1301,9 +1282,9 @@ simulations of $\Delta$.  By applying this procedure to each of the 31
 models, we get the first of the two components of Equation
 \ref{eq:bma} needed for Bayesian model averaging.  The difficult part
 of computing the second piece is the computation of the marginal
-likelihood.  In particular, the integration in Equation
-\ref{eq:marglik} is difficult, especially when the prior on the
-parameters is relatively flat. A number of estimators have been
+likelihood.  In particular, the integration in the equation in
+Footnote \ref{eq:marglik} is difficult, especially when the prior on
+the parameters is relatively flat. A number of estimators have been
 proposed to improve the precision of the estimation of the marginal
 likelihood (see \citet{kass:raft:95} for a comprehensive survey).
 
@@ -1333,7 +1314,92 @@ does not produce the correct value.''  Hence, in our application the
 Laplace approximation is more appropriate than BIC.
 
 \singlespacing
-\bibliographystyle{/home/willow/king/texinputs/pa}
+\bibliographystyle{/home/king/c/gkbibtex/polisci}
 \bibliography{stat,polisci}
+
+\section{Implementation Issues} \label{a:impl}
+
+In the two sections of this appendix, we discuss model fit and the
+sensitivity of our results to assumptions about minor parties and
+prior densities.
+
+\subsection{Model Fit}\label{a:fit}
+
+We now give a summary of some of the diagnostics we used to check the
+fit of the model.  First, we reran each model with different starting
+values to verify that we found the global maximum in each case.  We
+also examined each the tomography plots with contours or confidence
+intervals to search for outliers or bad model fits.  In addition, we
+plotted $E(T|X)$ or $E(T|X,Z)$ by $X$ or $Z$, and checked whether the
+observed $T$ fell within the (say) 90\% confidence interval 90\% of
+the time.
+
+We also looked at whether the first stage of the model (i.e., before
+conditioning on $T_i$) fits by comparing the county-level posterior
+predictive confidence interval for $T_i$ to its observed value.
+Figure \ref{fg:fit} gives several examples of this strategy for two of
+the models we ran (in the first two rows), as well as for the ultimate
+model implied by the entire Bayesian model averaging procedure (in the
+last row).  The first column plots these predictive confidence
+intervals by $X_i$, the fraction of bad ballots.  The second column
+plots the same intervals by the covariate included.  The proportion of
+observed $T_i$ points falling inside the 80\% confidence intervals is
+always approximately 80\%, which is one check on model fit.  Another
+is the lack of any noticeable relationship between the degree to which
+the observed $T_i$ deviates from the center of the conference interval
+and the variable plotted on the horizontal axis.  All these
+diagnostics, and other similar graphs we examined, seem to confirm the
+fit of the model to these data.
+\begin{figure}[t!]
+\begin{center}
+\includegraphics[width=4.5in,height=6in]{fit}
+\caption{Evaluation of model fit: Predicted distribution of
+  Gore's share of absentee ballots in each county, $T_i$. 80\%
+  confidence intervals of the predictive distribution of $T_i$ given
+  the observed values of $X_i$, in the first column, and a given
+  $Z_i$, in the second column.  The first two rows give selected
+  individual models and the last is the full model computed via
+  Bayesian model averaging.  Dots represent the true values of $T_i$
+  and ``+'' indicates that the model predicts exactly without
+  uncertainty.}
+\label{fg:fit}
+\end{center} 
+\end{figure}
+
+\subsection{The Minor Effects of Minor Candidates and Prior Densities} 
+\label{a:sens}
+
+Here, we analyze the effects on our results of ignoring the minor
+party candidates and also study the sensitivity of our results to our
+choices for model priors.  Figure~\ref{fg:sensitivity} plots the
+posterior distribution of Bush's new margin without invalid overseas
+absentee ballots for different model specifications for comparison
+with our posterior distribution.  The solid line in this figure is an
+alternative specification of the ecological inference model where we
+combine the votes for the minor candidates together with those for
+Gore rather than with the votes for Bush, resulting in 31 new
+individual models corresponding to the 31 models already run.  The
+posterior distribution for this model is very similar to the results
+of our previous analysis indicating that our results do not depend on
+which model specification is used.
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=3in,height=4.5in,angle=-90]{sensitivity}
+\caption{Sensitivity analysis of Bayesian model
+  averaging. The histogram is the posterior distribution of Bush's new
+  margin for our model, while the other lines give posterior
+  distributions from different models and prior specifications.}
+\label{fg:sensitivity}
+\end{center} 
+\end{figure}
+
+The other two lines represent the use of different prior distributions
+for the coefficients of the covariate of each model.  We use different
+prior standard deviations for the coefficients of the covariates to
+see if the results are sensitive to the choice of the prior
+distribution.  While some feature of the posterior do vary across
+specifications, the graph shows that model results are not
+particularly sensitive to the prior specification.  The median
+posterior point in particular is hardly changed across the models.
 
 \end{document}
