@@ -249,6 +249,11 @@ proc rndisamp(&f,b,vc,dataset,sims);
     _Eres=vput(_Eres,meanIR,"lnir");
   endif;
 
+  if ismiss(lnir)==1;
+    "Importance sampling failed! Returning normal sims. ";
+    retp(psis[1:sims,.]);
+  endif;
+  
   resamp=0;
   r=0;
   do while r-1<sims;

@@ -1638,55 +1638,8 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   completed, as well as the version number and date of the program
   \EI\ that created the input data buffer.
 
-\item[EaggBias] $4\times 2$: regressions of estimated $\beta_i^b$ and
-  $\beta_i^w$ on a constant term and $X_i$.  First row: coefficients,
-  second row: standard errors.  See Section 9.2.4.
-
-\item[etaC] $2\times 1$ coefficients implied by global \_Eeta
-
-\item[etaS] $2\times 1$ standard errors implied by global \_Eeta
-
-\item[ExpVarCI] $100\times 4$: 80\% confidence intervals for $T_i$
-  given $X_i$.  X$\sim$20\%CI$\sim$mean$\sim$80\%CI of sims from
-  $P(T_i|X)$, where $X$ in this context is 100 numbers equally spaced
-  between 0 and 1.  See Section 8.5.  (Uses \texttt{x2} simulations
-  when used with \texttt{ei2}).
-
-\item[ExpVarCIs] $100\times 4$: same as expvarci, but smoothed with
-  LOESS.  Used for eigraph's xtfit.  See Section 8.5.  (Uses
-  \texttt{x2} simulations when used with \texttt{ei2}).
-
-\item[GEbw] $p\times 3$: $\beta_i^b\sim\beta_i^w\sim$Nsims.  Point
-  estimates of $\beta_i^b$ and $\beta_i^w$, based on the mean
-  posterior under the prior that $\beta_i^b\geq\beta_i^w$.  Use this
-  option (instead of \texttt{beta}) if you are reasonably certain that
-  $\beta_i^b\geq\beta_i^w$.  This procedure is based on simulations for
-  which the inequality holds, and thus also reports \texttt{Nsims},
-  the number of simulations on which each estimate is based (If
-  \texttt{Nsims} is not close to \texttt{\_Esims}, you may wish to
-  question your assumption or increase \texttt{\_Esims}).
-
-\item[GEbwa] $p\times 2$: $B^b\sim B^w$.  Aggregate level mean
-  posterior estimates, based on simulations where
-  $\beta_i^b\geq\beta_i^w$.  See \texttt{GEbw} for more information.
-
-\item[GEwb] $p\times 3$: $\beta_i^b\sim\beta_i^w\sim$Nsims.  Point
-  estimates of $\beta_i^b$ and $\beta_i^w$, based on the mean
-  posterior under the prior that $\beta_i^b\leq\beta_i^w$.  Use this
-  option (instead of \texttt{beta}) if you are reasonably certain that
-  $\beta_i^b\leq\beta_i^w$.  This procedure is based on simulations for
-  which the inequality holds, and thus also reports \texttt{Nsims},
-  the number of simulations on which each estimate is based (If
-  \texttt{Nsims} is not close to \texttt{\_Esims}, you may wish to
-  question your assumption or increase \texttt{\_Esims}).
-
-\item[GEwba] $p\times 2$: $B^b\sim B^w$.  Aggregate level mean
-  posterior estimates, based on simulations where
-  $\beta_i^b\leq\beta_i^w$.  See \texttt{GEwb} for more information.
-
-\item[GhActual] value of the output global \texttt{\_GhActual}, the
-  row of \texttt{\_ei\_vc} for which a positive definite variance
-  matrix was found.
+\item[double] $2\times 1$ coefficients from a double regression.
+  Requires an EI2 data buffer as input.  See Section 4.3.
 
 \item[Goodman] $2\times 2$: row 1: Goodman's Regression coefficients,
   row 2: standard errors.  See Section 3.1.
