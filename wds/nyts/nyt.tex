@@ -125,7 +125,7 @@
     and the National Science Foundation (IIS-9874747), the National
     Institutes of Aging (P01 AG17625-01), and the World Health
     Organization for research support.  Software to implement the
-    methods in this paper is available from
+    methods in this paper is available at
     \texttt{http://GKing.Harvard.Edu}.}}
 
 \author{Kosuke Imai\thanks{Assistant Professor, Department of Politics,
@@ -853,7 +853,9 @@ the partial recount and did not include them in the certified official
 tally, thereby denying Gore a total of 349 votes
 \nocite{purd:00}(Purdum, 2000).
 \begin{table}[t]
+\begin{center}
   \begin{minipage}[c]{5.875in}
+    \begin{center}
     \begin{tabular}{l..}
       & \multicolumn{1}{c}{Bush's margin} & \multicolumn{1}{c}{Prob(Gore Wins)}\\
       \hline
@@ -883,11 +885,13 @@ tally, thereby denying Gore a total of 349 votes
         -422 & >0.99 \\
         \hline
     \end{tabular}
+    \end{center}
     \caption{Estimated margin and probability of victory
       if the invalid overseas absentee ballots had not been counted
       along with selected other counterfactuals (each of which also
       excludes the invalid absentee ballots).} \label{tb:senario}
   \end{minipage}
+\end{center}
 \end{table}
 
 The panel of Table~\ref{tb:senario} marked ``actual recounts''
@@ -1185,13 +1189,12 @@ likelihood:
   \P(\Theta|T) \propto \P(\Theta)\P(T|\Theta).\label{eq:post}
 \end{equation}
 where $\P(\Theta)$ is the prior probability distribution on some
-unknown parameter $\Theta$, and $\P(T|\Theta)$ is the likelihood
-(which in our case is given in the appendix as
-Equation~\ref{eq:likelihood}).  Everything is conditioned on $X$, $N$,
-and $Z$, which we observe.  We use the standard independent prior on
-each parameter of $\Theta$ as described in \citet{king:97}.  This
-prior distribution and the likelihood function together define King's
-model in a standard Bayesian framework.
+unknown parameter $\Theta$, and $\P(T|\Theta)$ is the likelihood.
+Everything is conditioned on $X$, $N$, and $Z$, which we observe.  We
+use the standard independent prior on each parameter of $\Theta$ as
+described in \citet{king:97}.  This prior distribution and the
+likelihood function together define King's model in a standard
+Bayesian framework.
 
 Let $M_k$ denote the $k$th model specification ($k=1,\dots,31$). Then
 we make an inference about a quantity of interest $\Delta$ by
