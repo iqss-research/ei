@@ -20,14 +20,14 @@
 */
 
 proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
-   local u,s,v,tmpmean,res;
+   local u,s,v,res;
 
    /* some input checks */
    if sumc(bounds[1,.].>=bounds[2,.])/=0;
      "error(rndmnsvd): Upper bounds must be greater than lower bounds.";
      res={.};
      retp(res);
-   endif;
+   endif; 
    if rows(invvc)/=rows(invvc);
      "error(rndmnsvd): the Inverse of variance covariance matrix has to be a square matrix.";
      res={.};
@@ -41,17 +41,13 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
    endif;
 
    {u,s,v}=svd1(invvc);
-   tmpmean=u*mean;
-   res=zeros(rows(mean),sims);
-   for i (1,rows(mean),1);
-     if (1/s[i,i])<tol;
-       res[i,.]=rndn(1,sims)/sqrt(s[i,i])+tmpmean[i];
-     else;
-       res[i,.]=rndu(1,sims).*(bounds[2,.]-bounds[1,.])+bounds[1,.];
-     endif;
-   endfor;
-   for i (1,sims,1);
-     res[.,i]=inv(u)*res[.,i];
-   endfor;
+   v=s+(diag(s) .< tol).*eye(rows(s));
+   res=u'*(rndmn(u*mean,invpd(v),sims))';
+   res=res-(diag(s) .< tol).*res;       
+   res=res+(diag(s) .< tol).*(rndu(rows(mean),sims).*(bounds[2,.]-bounds[1,.])'
+       +bounds[1,.]');
    retp(res');
 endp;
+
+
+
