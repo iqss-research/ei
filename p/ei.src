@@ -908,16 +908,16 @@ proc eirepl(dbufin);
   
   /*  names of essential globals (_Eeta is vread above) */
   nms="_EalphaB"$|"_EalphaW"$|"_Ebeta"$|"_Ebounds"$|"_Ecdfbvn"$|
-  "_EdirTol"$|"_EdoML"$|"_EdoML_phi"$|"_EdoML_vcphi"$|"_EdoSim"$|
-  "_Eigraph_bvsmth"$|"_EisChk"$|"_EisFac"$|"_Eisn"$|"_EisT"$|"_EmaxIter"$|
+  "_EdirTol"$|"_EdoML"$|"domlphi"$|"doml_vc"$|"_EdoSim"$|
+  "bvsmth"$|"_EisChk"$|"_EisFac"$|"_Eisn"$|"_EisT"$|"EmaxIter"$|
   "_EnonEval"$|"_EnonNumInt"$|"_EnonPar"$|"_EnumTol"$|"_Erho"$|"_Eselect"$|
   "_EselRnd"$|"_Esigma"$|"_Esims"$|"_Estval"$|"_EI_vc"|_EdirTol;
 */
 
   /*  names of essential globals (_Eeta is vread above) */
   nms="_EalphaB"|"_EalphaW"|"_Ebeta"|"_Ebounds"|"_Ecdfbvn"|
-  "_EdirTol"|"_EdoML"|"_EdoML_phi"|"_EdoML_vcphi"|"_EdoSim"|
-  "_Eigraph_bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"_EmaxIter"|
+  "_EdirTol"|"_EdoML"|"doml_phi"|"doml_vc"|"_EdoSim"|
+  "bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"EmaxIter"|
   "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
   "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
 
