@@ -650,7 +650,9 @@ proc checkinputs;
     retp("ei: _EI2_m must be a scalar");
   endif;
   if _EI2_m<1 or _ei2_m/=int(_ei2_m);
-    retp("ei: _EI2_m must be a positive integer");
+    if _ei2_m /= -1;
+      retp("ei: _EI2_m must be -1 or a positive integer");
+    endif;
   endif;
   
   if rows(_EIMetaR)/=1 or cols(_EIMetaR)/=1;
@@ -991,7 +993,11 @@ endp;
 **       see additional documentation under eiread and eigraph
 **        
 ** GLOBALS:  all the globals from EI() work here too.  In addition,
-** _EI2_m   = 4; number of data sets to multiply impute (must be <=_Esims)
+** _EI2_m   = 4; number of data sets to multiply impute (must be <=_Esims) 
+**           if it is set to - 1, ei2 will use the posterior mean of betabs to 
+**           impute one data set. This option should be used only when ei2 has 
+**           the computational difficulty since the standard error is likely to 
+**           be underestimated. The point estimate should not be biased.)
 **
 ** OUTPUT GLOBAL:
 ** _ei2_mta = a "meta-data buffer" with elements data buffers named dbuf#, 
@@ -1000,7 +1006,7 @@ endp;
 **            contain results from the imputation runs that completed.
 */ 
 proc ei2(V,dbuf,Gb,Gw);
-  local i,idbuf,filenm,nm,t,x,nt,betabs,x2,Esims,lambdaBs,mpx,x2k,Eres,_t,_x,_n;
+  local i,idbuf,filenm,nm,t,x,nt,betabs,x2,ei2m,Esims,lambdaBs,mpx,x2k,Eres,_t,_x,_n;
   clearg _ei2_mta;
 
   Eres=_Eres;
@@ -1014,8 +1020,10 @@ proc ei2(V,dbuf,Gb,Gw);
   
   _ei2_mta=vput("","*MDB* Meta-Data Buffer from 2nd Stage *MDB*","titl");
   Esims=_Esims;
-  _Esims=int(_Esims/_ei2_m);
-  
+  if _ei2_m /= -1;
+    _Esims=int(_Esims/_ei2_m);
+  endif;
+ 
   /* get data from first stage analysis data buffer */
   if vin(dbuf,"x2");
     x=eiread(dbuf,"x2rn");
@@ -1028,20 +1036,26 @@ proc ei2(V,dbuf,Gb,Gw);
   t=recode(t,t.<=_Enumtol,_Enumtol/2);
   _n=eiread(dbuf,"n");
   betabs=eiread(dbuf,"rnbetabs");
-  x2=missrv(betabs[.,1:_ei2_m],0).*x./t;
+  if _ei2_m == -1; 
+    x2=missrv(eiread(dbuf,"betab"),0).*x./t;
+    ei2m = 1;
+  else;
+    x2=missrv(betabs[.,1:_ei2_m],0).*x./t;
+    ei2m = _ei2_m;
+  endif;
   nt=eiread(dbuf,"nt");
   lambdaBs=t*0;
   x2k=lambdaBs;
   
   /* run second stage analyses */
   #ifdos;
-  i=1; do while i<=_ei2_m;
+  i=1; do while i<=ei2m;
   #else;
-  for i (1, _ei2_m, 1);
+  for i (1, ei2m, 1);
   #endif;
-    if (i+0)==_ei2_m;
+    if (i+0)==ei2m;
       _Eres=Eres;
-      _Esims=Esims-_Esims*(_ei2_m-1);
+      _Esims=Esims-_Esims*(ei2m-1);
     endif;
     if _Eprt>0;
       ?;"==================> Starting ei2 imputation ";;(i+0);?;
@@ -1062,7 +1076,7 @@ proc ei2(V,dbuf,Gb,Gw);
   #else;
   endfor;
   #endif;
-
+  
   /* prepare output */
   idbuf=vput(idbuf,lambdaBs[.,2:cols(lambdaBs)],"betaBs");
   idbuf=vput(idbuf,x2k[.,2:cols(x2k)],"x2");
