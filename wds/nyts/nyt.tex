@@ -125,38 +125,38 @@ Gary King\thanks{Professor of Government, Harvard University and
 \maketitle
 
 \begin{abstract}
-  Although it was not widely known until much later, Al Gore received
-  202 more votes than George W.\ Bush on election day in Florida.
-  George W.\ Bush was elected president because he overcame the
-  election day margin among the overseas absentee ballots that arrived
-  and were counted after election day.  In the final official tally,
-  Bush received 537 more votes than Gore.  These numbers are taken
-  from the official results released by the Florida Secretary of
-  State's office and so do not reflect overvotes, undervotes,
-  unsuccessful litigation, possible butterfly ballot problems,
-  recounts that might have been allowed but were not, or any other
-  hypothetical divergence between voter preferences and counted votes.
-  After the election, the \emph{New York Times} conducted a six month
-  long investigation and found that 680 of the overseas absentee
-  ballots were illegally counted, and no partisan, pundit, or academic
-  has publicly disagreed with their assessment.  In this paper, we
-  describe the statistical procedures we developed and implemented for
-  the \emph{Times} to ascertain whether disqualifying these 680
-  ballots would have changed the outcome of the election.  The methods
-  involve adding formal Bayesian model averaging procedures to King's
-  (1997) ecological inference model.  Formal Bayesian model averaging
-  has not been used in political science but is especially useful when
-  substantive conclusions depend heavily on apparently minor but
-  indefensible model choices, when model generalization is not
-  feasible, and when potential critics are more partisan than
-  academic.  We show how we derived the results for the \emph{Times}
-  so that other scholars can use these methods in making ecological
-  inferences and for other purposes.  We also present a variety of new
-  empirical results that delineate the precise conditions under which
-  Al Gore would have been elected president, and offer new evidence of
-  the striking effectiveness of the Republican effort to convince
-  local election officials to count invalid ballots in Bush counties
-  and not count them in Gore counties.
+  Although not widely known until much later, Al Gore received 202
+  more votes than George W.\ Bush on election day in Florida.  George
+  W.\ Bush was elected president because he overcame the election day
+  margin among the overseas absentee ballots that arrived and were
+  counted after election day.  In the final official tally, Bush
+  received 537 more votes than Gore.  These numbers are taken from the
+  official results released by the Florida Secretary of State's office
+  and so do not reflect overvotes, undervotes, unsuccessful
+  litigation, possible butterfly ballot problems, recounts that might
+  have been allowed but were not, or any other hypothetical divergence
+  between voter preferences and counted votes.  After the election,
+  the \emph{New York Times} conducted a six month long investigation
+  and found that 680 of the overseas absentee ballots were illegally
+  counted, and no partisan, pundit, or academic has publicly disagreed
+  with their assessment.  In this paper, we describe the statistical
+  procedures we developed and implemented for the \emph{Times} to
+  ascertain whether disqualifying these 680 ballots would have changed
+  the outcome of the election.  The methods involve adding formal
+  Bayesian model averaging procedures to King's (1997) ecological
+  inference model.  Formal Bayesian model averaging has not been used
+  in political science but is especially useful when substantive
+  conclusions depend heavily on apparently minor but indefensible
+  model choices, when model generalization is not feasible, and when
+  potential critics are more partisan than academic.  We show how we
+  derived the results for the \emph{Times} so that other scholars can
+  use these methods to make ecological inferences and for other
+  purposes.  We also present a variety of new empirical results that
+  delineate the precise conditions under which Al Gore would have been
+  elected president, and offer new evidence of the striking
+  effectiveness of the Republican effort to convince local election
+  officials to count invalid ballots in Bush counties and not count
+  them in Gore counties.
 \end{abstract}
 
 %\noindent \textbf{Keywords}: Ecological Inference, Bayesian Model
@@ -198,18 +198,16 @@ outdistance Gore, which he did in the end by 537 votes (see Table
 \ref{tb:official}).  The extent to which the law was followed in this
 small but consequential part of the story escaped scrutiny for some
 time. After the election was decided, however, the \emph{New York
-  Times} conducted a six month long investigation, retrieved the
-envelopes in which the ballots were mailed, and searched for
-violations of the law (Barstow and Van Natta, Jr., 2001).  In one of
-the longest set of articles ever published by the \emph{Times}, they
-concluded that 680 of the overseas absentee ballots that had been
+  Times} conducted a six month long investigation during which they
+retrieved the envelopes in which the ballots were mailed, and searched
+for violations of the law (Barstow and Van Natta, Jr., 2001).  In one
+of the longest set of articles ever published by the \emph{Times},
+they concluded that 680 of the overseas absentee ballots that had been
 counted by Florida counties unambiguously violated one or more aspects
 of Florida election law and, by any reasonable interpretation of the
 law, should have been discarded.  Indeed, after the \emph{Times} story
 appeared, commentators and partisans did not contradict these factual
-claims.  The bad ballots represent nearly 30 percent of the 2,504
-overseas absentee ballots counted statewide and constitute more than
-the final margin of victory.
+claims.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{lcccc}
@@ -228,11 +226,11 @@ In comparison with other features of the election that have been
 studied, this problem was not caused by old machines or the
 inattention of local election officials or political party
 representatives.  It is also not a theoretical problem, in the sense
-that it does not rely on comparing the intent of the voters with
+that it does not rely on comparing the intent of the voters with the
 official vote.  Rather, according to the \emph{Times}, the overseas
 ballot problem was due to blatantly illegal actions on the part of
-local election officials that had not been noticed previously.  The
-\emph{Times} argued that the local officials were influenced by the
+local election officials that had not been previously noticed.  The
+\emph{Times} argued that local officials were influenced by the
 deliberate political strategies employed by the Bush campaign, and
 comparative neglect by the Democrats.\footnote{Democratic Vice
   Presidential candidate Joe Lieberman publicly announced his party's
@@ -245,24 +243,22 @@ and Van Natta, Jr., 2001)\nocite{BarVan01}.
 
 Were these 680 inappropriately counted ballots enough to have thrown
 the election to the wrong candidate?  The \emph{Times} hired us to
-find out.  Our conclusions and a brief description of the methods we
-used were presented as part of the story (Barstow and Van Natta, Jr.,
-2001; Barbanel, 2001)\nocite{Barbanel01}.  In this paper, we discuss
-in detail the methods we developed for this project so that others
-might use them for similar problems.  We also discuss the conclusions,
-and a variety of others, along with a description of our methods.  The
-problem is a straightforward ecological inference: we observe the
-number of bad ballots in each of Florida's counties and the number of
-ballots cast and counted for each of the candidates.  From these
-variables, and a variety of other auxiliary information, we try to
-infer the total number of bad ballots that had been cast for each
-candidate and see whether this is enough to make up for Bush's 537
-official vote margin.
+find out.  Our conclusions were presented as part of the story
+(Barstow and Van Natta, Jr., 2001) and our methods were briefly
+described in a sidebar (Barbanel, 2001)\nocite{Barbanel01}.  In this
+paper, we discuss in detail the methods we developed for this project
+so that others might use them for similar problems.  The problem is a
+straightforward ecological inference: we observe the number of bad
+ballots in each of Florida's counties and the number of ballots cast
+and counted for each of the candidates.  From these variables, and a
+variety of other auxiliary information, we try to infer the total
+number of bad ballots that had been cast for each candidate and see
+whether this is enough to make up for Bush's 537 official vote margin.
 
 Since the partisan atmosphere surrounding public discourse on this
 issue was so highly charged, we knew that our work would be subject to
 more than the usual academic scrutiny, and so we sought a method that
-was less vulnerable to criticism --- even, from a scholarly
+was less vulnerable to criticism --- perhaps even, from a scholarly
 perspective, somewhat unreasonable criticism.  No such statistical
 method like this exists of course, especially for an area as uncertain
 as ecological inference, but much can be done.  Our approach, in
@@ -284,7 +280,7 @@ world's premier democracy.  Secondly, although our analyses show that
 it is unlikely that illegal overseas absentee ballots alone changed
 the outcome of the election, we show that Bush's margin of victory
 would likely have been much narrower if those flawed ballots had not
-been counted.  This supports the argument made by \textit{The New York
+been counted.  This supports the argument made by \emph{The New York
   Times} that the flawed ballots favored Bush much more than other
 candidates.  We also present here a variety of results that did not
 appear in the \emph{Times} article, including the probability that
@@ -312,19 +308,18 @@ Section \ref{s:concl} concludes.
 
 On July 15, 2001, \textit{The New York Times} published an article,
 ``How Bush Took Florida: Mining the Overseas Absentee Vote,'' as the
-result of its six-month investigation on the 2000 US election. In this
-article, which at four and a half pages was their longest since the
-coverage of Watergate scandal, The \emph{Times} reporters describe the
-details of the Bush campaign effort to secure victory by pressuring
-selected local election officials to count invalid overseas absentee
-ballots in Florida.  In particular, Republicans focused on military
-ballots and the counties where Bush had his strongest voting base.
-For example, in counties such as Escambia, Okaloosa, and Santa Rosa,
-Bush lawyers argued that every vote cast by Americans in uniform
-should be counted, regardless of the letter of the law.  In counties
-more favorable to Democrats, Bush's lawyers argued exactly the
-opposite --- that local election officials must follow the letter of
-the law and disqualify any ballot not meeting the rules.
+result of its six-month investigation on the 2000 US election.  The
+\emph{Times} reporters describe the details of the Bush campaign
+effort to secure victory by pressuring selected local election
+officials to count invalid overseas absentee ballots in Florida.  In
+particular, Republicans focused on military ballots and the counties
+where Bush had his strongest voting base.  For example, in counties
+such as Escambia, Okaloosa, and Santa Rosa, Bush lawyers argued that
+every vote cast by Americans in uniform should be counted, regardless
+of the letter of the law.  In counties more favorable to Democrats,
+Bush's lawyers argued exactly the opposite --- that local election
+officials must follow the letter of the law and disqualify any ballot
+not meeting the rules.
 
 According to the \emph{Times}, this unequal pressure led to unequal
 treatment by local officials of citizens who cast their ballots from
@@ -1163,8 +1158,15 @@ not seen as much use as it could.
 Bayesian model averaging is a clear improvement on the usual situation
 of having to select and defend a single model, but it is of course not
 a panecia. A researcher never knows whether all relevant models have
-been included.  In the present case, where 100\% confidence intervals
-are available, we also have some maximum constraints on possible results.
+been included and, although its results are more robust than
+single-model approaches, it is always possible to come up with a
+different list of models and produce a different substantive result.
+And so in the end, the investigator's judgment always plays an
+important role in making inferences.  Model averaging cannot
+substitute for judgment, but it can help account for model
+uncertainties where prior knowledge is not available. Furthermore, in
+the present case, where 100\% confidence intervals are available, we
+also have maximum constraints on possible results.
 
 \appendix
 \section{A Formal Presentation of the King's Model} \label{appx:king}
