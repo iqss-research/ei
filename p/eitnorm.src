@@ -435,7 +435,7 @@ proc (1)=rndtsn(mean,invvc,sims,bounds,tol);
        res=res|temp;
      endif;
      if _Eprt>=2;
-       "(rndmnsvd): trying" limsim "th time...";
+       "rndtsn: trying" limsim "th time...";
      endif;
      limsim=limsim+1;
      if limsim==100;
