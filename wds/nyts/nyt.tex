@@ -386,17 +386,16 @@ votes.\footnote{Although our presentation always involves only the
   Bush/Gore choice, our empirical results using deterministic bounds
   in Section \ref{s:noassump} includes the possibility of bad ballots
   having been cast for minor party candidates.  We handle minor
-  parties in our statistical analyses in Section \ref{s:stat} by
-  ignoring the problem at first and then conducting sensitivity
-  analyses in Appendix \ref{a:impl}; since votes for minor party
-  candidates only total 3 percent, we find, as expected, that they
-  have a very small effect on the overall result.  Other analyses (not
-  shown) using more computationally intensive techniques designed to
-  model these choices separately confirm these results (see Rosen et
-  al., 2001)\nocite{RosJaiKin01}.}  Each of these quantities are
-observed.  We denote unobserved quantities with Greek letters.  Thus,
-the proportions of invalid and valid ballots cast for Gore are $\bb_i$
-and $\bg_i$, respectively.
+  parties in our statistical analyses by ignoring the problem at first
+  and then conducting sensitivity analyses in Appendix \ref{a:sens};
+  since votes for minor party candidates only total 3 percent, we
+  find, as expected, that they have a very small effect on the overall
+  result.  Other analyses (not shown) using more computationally
+  intensive techniques designed to model these choices separately
+  confirm these results (see Rosen et al., 2001)\nocite{RosJaiKin01}.}
+Each of these quantities are observed.  We denote unobserved
+quantities with Greek letters.  Thus, the proportions of invalid and
+valid ballots cast for Gore are $\bb_i$ and $\bg_i$, respectively.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{cccc}
@@ -563,9 +562,8 @@ of course an extremely common situation in social science research,
 but it is particularly salient when attempting to provide independent
 nonpartisan advice in the midst of one of the most highly charged
 partisan debates in modern times.  We now introduce our model and its
-associated assumptions.  Then in Section \ref{s:multimodel}, we show
-how to include the uncertainties due to model specification in our
-final inferences.
+associated assumptions.  Then we show how to include the uncertainties
+due to model specification in our final inferences.
 
 We use the class of ecological inference models given in King
 (1997)\nocite{king:97}, which have come to called EI, after the
@@ -1322,15 +1320,7 @@ example, Kass and Raftery (1995: 778) say that ``even for very large
 samples, it [BIC] does not produce the correct value.''  Hence, in our
 application the Laplace approximation is more appropriate than BIC.
 
-\section{Implementation Issues} \label{a:impl}
-
-In the two sections of this appendix, we discuss model fit and the
-sensitivity of our results to assumptions about minor parties and
-prior densities.
-
-
-\subsection{The Minor Effects of Minor Candidates and Prior Densities} 
-\label{a:sens}
+\section{The Minor Effects of Minor Candidates and Prior Densities}\label{a:sens}
 
 Here, we analyze the effects on our results of ignoring the minor
 party candidates and also study the sensitivity of our results to our
