@@ -7,9 +7,18 @@
 
 % === additional commands/packages/settings ===
 \usepackage{graphicx,psfrag,natbib}
-\usepackage{setspace}
-\usepackage{vmargin}
-\setpapersize{USletter}
+%\usepackage{setspace}
+%\usepackage{vmargin}
+%\setpapersize{USletter}
+\usepackage{endfloat,endnotes}
+
+\setlength{\oddsidemargin}{-0.1in} \setlength{\evensidemargin}{-0.1in}
+\setlength{\textwidth}{6.4in}
+\normalsize
+% \citationstyle{apsr}
+% \makeatletter
+ \def\baselinestretch{2}\large\normalsize
+
 
 % === dcolumn package ===
 \usepackage{dcolumn}
@@ -118,6 +127,7 @@ Gary King\thanks{Department of Government, Harvard University and
 
 \begin{document}
 \maketitle
+%\baselineskip=1.57\baselineskip
 
 \section{Introduction}
 
@@ -610,7 +620,7 @@ full adjustment, and often dramatically worse, we do not consider it
 further.
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=wide.eps, width=5.5in}
+    \epsfig{file=adolph.fig1.eps, width=5.5in}
     \caption{Data with Wide Bounds. Plot of $Z_i$ horizontally by
       the estimated $\hat\beta_i^b$ vertically (in the right graph)
       and the true $\beta_i^b$ (in the left graph), with fits for the
@@ -641,7 +651,7 @@ where least squares, weighted least squares, and the fully adjusted
 method all give approximately the same estimates.
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=narrow.eps, width=5.5in}
+    \epsfig{file=adolph.fig2.eps, width=5.5in}
     \caption{Data with Informative Bounds. Plot of the $Z_i$ horizontally by
       the estimated $\hat\beta_i^b$ vertically (in the right graph)
       and the true $\beta_i^b$ (in the left graph) with fits for least
@@ -685,7 +695,7 @@ squares (WLS) line corrects for most of the attenuation.  The fully
 adjusted (FA) line, in contrast, over-corrects for attenuation.
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=mixed.eps, width=5.5in}
+    \epsfig{file=adolph.fig3.eps, width=5.5in}
     \caption{Data with Narrow and Wide Bounds. Plot of the $Z_i$ 
       horizontally by the estimated $\hat\beta_i^b$ vertically (in the
       right graph) and the true $\beta_i^b$ (in the left graph) with
@@ -724,7 +734,7 @@ linear regression on the logit scale would also stay out of the
 impossible region but the fit would not be as much of an improvement.)
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=nonlinear.eps, width=5.5in}
+    \epsfig{file=adolph.fig4.eps, width=5.5in}
     \caption{Data with a Nonlinear Relationship.  Plot of $Z_i$ 
       horizontally by the estimated $\hat\beta_i^b$ vertically (in the
       right graph) and the true $\beta_i^b$ (in the left graph) with
@@ -853,9 +863,9 @@ provided by EI.  We are in their debt for pointing this out and
 stimulating the ideas and discussions offered herein.
 
 \section*{References}
-\mbox{} \baselineskip=6pt 
-\parskip=1.5\baselineskip plus 4pt minus 4pt
-\vspace{-\parskip}
+%\mbox{} \baselineskip=6pt 
+%\parskip=1.5\baselineskip plus 4pt minus 4pt
+%\vspace{-\parskip}
 
 \bibitem Duncan, Otis Dudley. and Beverly Davis. 1953. ``An Alternative to
   Ecological Correlation,'' \emph{American Sociological Review}, 18:
@@ -876,134 +886,3 @@ stimulating the ideas and discussions offered herein.
   Uncongenial Sources of Input,'' \emph{Statistical Science}, 9, 4:
   538--573.
 \end{document}
-
-
-Possibly include on the web:
-
-\section{Adjustments in Practice: A Replication of Burden and Kimball (1998)}
-
-At least in some applications, differences among the various methods
-of second stage analysis make little difference.  We replicate Burden
-and Kimball's (1998: Table 6) study of split-ticket voting, the
-empirical study on which HS focus the most, and find that none of the
-proposed corrections affect the substantive conclusions of the
-original study.  Table \ref{t:bkrep} presents these results (assuming
-arguendo that other features of their model are correctly specified).
-\begin{table}[th]
-\label{t:bkrep}
-\begin{center}
-\begin{tabular}{lcccccc}
-& \multicolumn{3}{c}{\underbar{President/House}} & \multicolumn{3}{c}{\underbar{President/Senate}}\\
-Variable        &       LS      &       FA      &       WLS     &       LS      &       FA      &       WLS     \\
-\hline
-Spending ratio  &       0.350   &       0.428   &       0.471   &       0.318   &       0.428   &       0.426   \\
-        &       (0.021) &       (0.064) &       (0.032) &       (0.094) &       (0.181) &       (0.111) \\
-Ideological distance    &       ---       &       ---       &       ---       &       -0.025  &       -0.029  &       -0.053  \\
-        &               &               &               &       (0.04)  &       (0.060) &       (0.051) \\
-Democratic incumbent    &       0.106   &       0.132   &       0.090   &       0.059   &       0.085   &       0.028   \\
-        &       (0.015) &       (0.026) &       (0.025) &       (0.052) &       (0.074) &       (0.063) \\
-Ballot format   &       -0.032  &       -0.039  &       -0.074  &       -0.050  &       -0.067  &       -0.062  \\
-        &       (0.008) &       (0.012) &       (0.011) &       (0.037) &       (0.054) &       (0.047) \\
-South   &       0.041   &       0.052   &       0.081   &       0.046   &       0.070   &       0.003   \\
-        &       (0.009) &       (0.013) &       (0.011) &       (0.052) &       (0.073) &       (0.058) \\
-Constant        &       0.067   &       -0.139  &       0.051   &       0.144   &       -0.159  &       0.168   \\
-        &       (0.008) &       (0.507) &       (0.011) &       (0.084) &       (0.328) &       (0.102) \\
-$N$     &       361     &       361     &       361     &       32      &       32      &       32      \\
-\hline
-\end{tabular}
-\end{center}
-\caption{\em Replication of Burden and Kimball (1998: Table 6).  
-The dependent variable is the estimated proportion of 
-voters who split their tickets between the Republican presidential 
-candidate and a Democratic congressional candidate in the 1988 general 
-election, obtained from EI.  LS denotes least squares estimates, FA 
-full adjustment, and WLS weighted least squares.  Note the similarity
-of the point estimates but the much larger standard errors (given in 
-parentheses) for FA. (The ideological distance variable was unavailable
-to Burden and Kimball in the House.)}
-\end{table}
-
-Burden and Kimball investigated ticket-splitting behavior in the 1988
-U.S. general election.  They used EI to estimate the proportion of
-Bush voters who also voted for a Democratic Congressional candidate
-(considering House and Senate separately), then employed these
-estimates as dependent variables in second-stage regressions.  Their
-goal was to show whether ticket splitting was the result of
-intentional efforts by moderate voters to balance ideologically
-disparate candidates (Alesina and Rosenthal, 1995) or an artifact of
-differing campaign resources (Jacobson, 1997) and ballot formats
-(Beck, 1997).  They found that the degree of ticket splitting falls
-with the ideological distance between presidential and Senate
-candidates, undermining the balancing thesis, but also that
-differences in campaign resources appear to predict ticket-splitting
-quite well.
-
-Burden and Kimball's work is consistent with our recommendations.  The
-relationship they examine is approximately linear, and few of the
-bounds are particularly wide or narrow.  Appropriately, they report
-both least squares and weighted least squares estimates, which we were
-able to replicate reasonably well (see columns LS and WLS in Table
-\ref{t:bkrep}).  We also computed our fully adjusted method (column
-FA).\footnote{Burden and Kimball estimate their dependent variable
-  using a two-stage EI procedure for a $2\times 3$ table.  We used
-  only the second stage to compute the fully adjusted method.} In most
-cases, the FA results are comparable to, or bracketed by, the LS and
-WLS estimates (which Burden and Kimball considered sufficiently
-similar to use interchangeably).  In particular, we obtain generally
-similar results for the two most important variables in Burden and
-Kimball's model, spending ratio and ideological distance.  All three
-methods thus support Burden and Kimball's argument that
-ticket-splitting results not from intentional balancing, but as an
-unintentional result of election-specific factors.
-
-The large standard errors in the FA column, relative to the others in
-Table \ref{t:bkrep}, highlight the relative inefficiency of the
-adjusted estimator.  Thus, in this example, the minor reduction in bias
-is outweighed by the substantial increase in variance.  A mean square
-error criterion, which combines bias and variance, would suggest not
-making the adjustment even in the presence of attenuation bias.  (We
-confirmed that this result was fairly general with Monte Carlo
-simulations, but we do not present them here.)  This is an intuitive
-result given that the bias adjustment takes the form of a ratio, and
-both the numerator and denominator contain estimation uncertainty.  It
-is also consistent with the experience of many others trying to create
-bias adjustments in a wide variety of models outside of the field of
-ecological inference. % (**cites?).
-
-\section{Adjustments in Practice: A Replication of Burden and Kimball (1998)}
-
-At least in some applications, differences among the various methods
-of second stage analysis make little difference.  We replicated Burden
-and Kimball's (1998: Table 6) study of split-ticket voting, the
-empirical study on which HS focus the most, and find that none of the
-proposed corrections affect the substantive conclusions of the
-original study.  (We summarize the results here without presenting the
-detailed numbers to save space.) The relationship Burden and Kimball
-examine is approximately linear, and few of the bounds are
-particularly wide or narrow.  Appropriately, they report both LS and
-WLS estimates, which we were able to replicate reasonably well.  We
-then applied the fully adjusted method, which gives coefficients that
-are normally bracketed by, or close to, the two other methods (which
-Burden and Kimball considered sufficiently similar to use
-interchangeably).  
-
-We also computed standard errors for the fully adjusted method, which
-turned out uniformly larger than those obtained from LS and WLS.  For
-the slopes in Burden and Kimball's models, the standard errors under
-full adjustment are on average 70 percent larger than under LS, and 30
-percent larger than WLS.  For the intercepts, which under full
-adjustment combine the uncertainty of three parameters, the standard
-errors are on average 34 times larger than LS, and 25 times larger
-than WLS.  Thus, in this example, any minor reduction in bias that may
-occur is outweighed by the substantial increase in variance.  This is
-an intuitive result given that the bias adjustment takes the form of a
-ratio, and both the numerator (which is LS) and denominator contain
-estimation uncertainty.  (We confirmed this result with a small number
-of Monte Carlo experiments.)  It is also consistent with the
-experience of others trying to create bias adjustments in a variety of
-models outside the field of ecological inference.
-
-\bibitem Burden, Barry C., and David C. Kimball.\ 1998.  ``A New Approach to
-the Study of Ticket Splitting,'' \emph{American Political Science
-  Review} 92, 3: 533--544.
-
