@@ -1,0 +1,1746 @@
+%!PS-Adobe-2.0 EPSF-1.2
+%%Creator: PGL v-2.00 by AnSoft, Inc.
+%%Pages:  1
+%%BoundingBox: 0 0 611 791
+%%EndComments
+%---------------------------------------------------------------------
+%
+%------------------ Copyright (C) 1991 AnSoft,Inc.--------------------
+%
+%---------------------------------------------------------------------
+% Temporary variables used
+%---------------------------------------------------------------------
+%  PROC          VARIABLES
+%  PatternFill : fx1,fx2,fy1,fy2,fwidth
+%
+%---------------------------------------------------------------------
+%  PGL Global Data
+%---------------------------------------------------------------------
+/LineColor 1   def  % -1 turns off Line & Outline drawing
+/LineStyle []  def  % 
+/Phase     0   def  %
+/AreaColor 1   def  % -1 turns off Area Fills
+/FillFlag  1   def  % 1-Outline, 2-Fill, 3-Both
+/FillStyle 0   def  % 
+/FillMode  1   def  %  1-opaque, 0-transparent
+/MaxColor  15  def  %
+/CurFont   0   def  % FontNames index
+/topFlagV  0   def  % Text Justification(Vertical) Flags 
+/ctrFlagV  0   def  %                   (Vertical)
+/ctrFlagH  0   def  %                   (Horizonal)
+/LineWidth 1   def  %
+/UnitWidth 1   def  % Unit Line thickness in 1/300'ths inches
+/PatSize   3   def  % Fill Pattern Scale Factor
+/PatChar   1   def  % Fill Pattern Ascii Value
+/UserChar  85  def  % UserFill Pattern Ascii Value
+/FillChar  (?) def  % UserFill Pattern Ascii Value
+/UserFillPat <0000000000000000> def %- empty fill by default
+
+%--------------------------------------------------------------------
+% Bitmap support
+%--------------------------------------------------------------------
+/rleFlag   1 string def
+/rleStr    2 string def
+/bmStr     1 string def
+
+%--------------------------------------------------------------------
+%  Color Tables and Mappings
+%--------------------------------------------------------------------
+/bwColors 256 array def
+0 1 255 { bwColors exch 0 put } for  % zero all colors to black
+bwColors 0 1 put                     % index 0 - white, all others black
+
+/grayColors 256 array def
+0 1 255 { grayColors exch 0 put } for  % zero all colors to black
+grayColors  0  1.00 put 
+grayColors  1  0.11 put 
+grayColors  2  0.59 put 
+grayColors  3  0.70 put 
+grayColors  4  0.30 put 
+grayColors  5  0.41 put 
+grayColors  6  0.40 put 
+grayColors  7  0.97 put 
+grayColors  8  0.50 put 
+grayColors  9  0.40 put 
+grayColors  10 0.73 put 
+grayColors  11 0.80 put 
+grayColors  12 0.53 put 
+grayColors  13 0.60 put 
+grayColors  14 0.93 put 
+grayColors  15 0.00 put 
+
+/rgbColors 256 array def
+0 1 255 { rgbColors exch [0 0 0] put } for  % zero all colors to black
+rgbColors  0  [1 1 1]           put         % white
+rgbColors  1  [0 0 1]           put         % blue
+rgbColors  2  [0 1 0]           put         % green
+rgbColors  3  [0 1 1]           put         % cyan
+rgbColors  4  [1 0 0]           put         % red
+rgbColors  5  [1 0 1]           put         % magenta
+rgbColors  6  [0.67  0.33  0]   put         % brown
+rgbColors  7  [0.9 0.9 0.9]     put         % darkgray
+rgbColors  8  [0.75 0.75 0.75]  put         % lightgray
+rgbColors  9  [0.33 0.33 1]     put         % lightblue
+rgbColors  10 [0.33  1 0.33]    put         % lightgreen
+rgbColors  11 [0.33 1 1]        put         % lightcyan
+rgbColors  12 [1 0.33  0.33]    put         % lightred
+rgbColors  13 [1 0.33  1]       put         % lightmagenta
+rgbColors  14 [1 1 0.33]        put         % yellow
+rgbColors  15 [0 0 0]           put         % black
+        
+/ColorModel  0 def
+/ColorChoices [ bwColors grayColors rgbColors ] def
+/ColorMap ColorChoices ColorModel get def   % default colors=b&w
+
+%--------------------------------------------------------------------
+%----Page Size, Set By Main Pgm
+%--------------------------------------------------------------------
+%
+/PX  1950 def
+/PY  1194 def
+
+%--------------------------------------------------------------------
+%----Text Scale Factors
+%--------------------------------------------------------------------
+/SX  1800 def   % Base size of page width/height, 
+/SY  1194 def   % for scaling fonts against
+
+/FSX  [  6  7   8  10  12  9  10 ] def  % Unit Font Scale factors
+/FSY  [ -2.3  -4.6 -4.6 -4.6 -4.6 -4.6 -4.6 ] def  % Neg's to invert Y axis
+
+%--------------------------------------------------------------------
+%---- Users Font Scale Factors
+%--------------------------------------------------------------------
+/FSXN 1 def
+/FSXD 1 def
+/FSYN 1 def
+/FSYD 1 def
+
+%---------------------------------------------------------------------
+%  Fonts Names Used by PGL
+%  These replace the following vector fonts provided with PGL
+%  If you change these you may need to change the scale factors
+%  in FSX and FSY.
+%---------------------------------------------------------------------
+/FontNames
+[
+  /Helvetica          % small
+  /Courier            % simplex
+  /Helvetica          % duplex
+  /Times-Roman        % triplex
+  /Times-BoldItalic   % gothic 
+  /Courier-Oblique    % script simplex
+  /Helvetica-Oblique  % script duplex
+] def
+
+%---------------------------------------------------------------------
+%  Fill Pattern Font based on "PS Lang Ref Man (Red Book) - Chap 5"
+%---------------------------------------------------------------------
+/newfont 10 dict def
+newfont 
+begin
+ /FontType 3 def
+ /FontMatrix [ .125 0 0 .125 0 0 ] def
+ /FontBBox   [ 0 0 8 8 ]     def
+
+ /Encoding 256 array def
+ 0 1 255 { Encoding exch /.notdef put } for
+ Encoding 1  /empty     put  % '0'
+ Encoding 2  /solid     put  % '1'
+ Encoding 3  /lfill     put  % '2'
+ Encoding 4  /slash     put  % '3'
+ Encoding 5  /hslash    put  % '4'
+ Encoding 6  /hbkslash  put  % '5'
+ Encoding 7  /bkslash   put  % '6'
+ Encoding 8  /hatch     put  % '7'
+ Encoding 9  /xhatch    put  % '8'
+ Encoding 10 /intleav   put  % '9'
+ Encoding 11 /widedot   put  % '10'
+ Encoding 12 /closedot  put  % '11'
+ Encoding 13 /pat13 put
+ Encoding 14 /pat14 put
+ Encoding 15 /pat15 put
+ Encoding 16 /pat16 put
+ Encoding 17 /pat17 put
+ Encoding 18 /pat18 put
+ Encoding 19 /pat19 put
+ Encoding 20 /pat20 put
+ Encoding 21 /pat21 put
+ Encoding 22 /pat22 put
+ Encoding 23 /pat23 put
+ Encoding 24 /pat24 put
+ Encoding 25 /pat25 put
+ Encoding 26 /pat26 put
+ Encoding 27 /pat27 put
+ Encoding 28 /pat28 put
+ Encoding 29 /pat29 put
+ Encoding 30 /pat30 put
+ Encoding 31 /pat31 put
+ Encoding 32 /pat32 put
+ Encoding 33 /pat33 put
+ Encoding 34 /pat34 put
+ Encoding 35 /pat35 put
+ Encoding 36 /pat36 put
+ Encoding 37 /pat37 put
+ Encoding 38 /pat38 put
+ Encoding 39 /pat39 put
+ Encoding 40 /pat40 put
+ Encoding 41 /pat41 put
+ Encoding 42 /pat42 put
+ Encoding 43 /pat43 put
+ Encoding 44 /pat44 put
+ Encoding 45 /pat45 put
+ Encoding 46 /pat46 put
+ Encoding 47 /pat47 put
+ Encoding 48 /pat48 put
+ Encoding 49 /pat49 put
+ Encoding 50 /pat50 put
+ Encoding 51 /pat51 put
+ Encoding 52 /pat52 put
+ Encoding 53 /pat53 put
+ Encoding 54 /pat54 put
+ Encoding 55 /pat55 put
+ Encoding 56 /pat56 put
+ Encoding 57 /pat57 put
+ Encoding 58 /pat58 put
+ Encoding 59 /pat59 put
+ Encoding 60 /pat60 put
+ Encoding 61 /pat61 put
+ Encoding 62 /pat62 put
+ Encoding 63 /pat63 put
+ Encoding 64 /pat64 put
+ Encoding 65 /pat65 put
+ Encoding 66 /pat66 put
+ Encoding 67 /pat67 put
+ Encoding 68 /pat68 put
+ Encoding 69 /pat69 put
+ Encoding 70 /pat70 put
+ Encoding 71 /pat71 put
+ Encoding 72 /pat72 put
+ Encoding 73 /pat73 put
+ Encoding 74 /pat74 put
+ Encoding 75 /pat75 put
+ Encoding 76 /pat76 put
+ Encoding 77 /pat77 put
+ Encoding 78 /pat78 put
+ Encoding 79 /pat79 put
+ Encoding 80 /pat80 put
+ Encoding 81 /pat81 put
+ Encoding 82 /pat82 put
+ Encoding 83 /pat83 put
+ Encoding 84 /pat84 put
+
+ Encoding  85 /patfill   put  % '12'
+
+ /CharProcs 86 dict def
+ CharProcs 
+ begin
+ /.notdef {} bind def
+ /empty    { 8 8 true [1 0 0 1 0 0] { <0000000000000000> } imagemask } bind def
+ /solid    { 8 8 true [1 0 0 1 0 0] { <ffffffffffffffff> } imagemask } bind def
+ /lfill    { 8 8 true [1 0 0 1 0 0] { <ffff0000ffff0000> } imagemask } bind def
+ /slash    { 8 8 true [1 0 0 1 0 0] { <0102040810204080> } imagemask } bind def 
+ /hslash   { 8 8 true [1 0 0 1 0 0] { <e0c183070e1c3870> } imagemask } bind def 
+ /hbkslash { 8 8 true [1 0 0 1 0 0] { <f0783c1e0f87c3e1> } imagemask } bind def 
+ /bkslash  { 8 8 true [1 0 0 1 0 0] { <a5d269b45a2d964b> } imagemask } bind def 
+ /hatch    { 8 8 true [1 0 0 1 0 0] { <ff888888ff888888> } imagemask } bind def 
+ /xhatch   { 8 8 true [1 0 0 1 0 0] { <8142241818244281> } imagemask } bind def 
+ /intleav  { 8 8 true [1 0 0 1 0 0] { <cc33cc33cc33cc33> } imagemask } bind def 
+ /widedot  { 8 8 true [1 0 0 1 0 0] { <8000080080000800> } imagemask } bind def 
+ /closedot { 8 8 true [1 0 0 1 0 0] { <8800220088002200> } imagemask } bind def 
+ /pat13  { 8 8 true [1 0 0 1 0 0] { <aa55aa55aa55aa55> } imagemask } bind def
+ /pat14  { 8 8 true [1 0 0 1 0 0] { <aa00aa00aa00aa00> } imagemask } bind def
+ /pat15  { 8 8 true [1 0 0 1 0 0] { <8000000008000000> } imagemask } bind def
+ /pat16  { 8 8 true [1 0 0 1 0 0] { <8000000000000000> } imagemask } bind def
+ /pat17  { 8 8 true [1 0 0 1 0 0] { <8100001818000081> } imagemask } bind def
+ /pat18  { 8 8 true [1 0 0 1 0 0] { <cccc3333cccc3333> } imagemask } bind def
+ /pat19  { 8 8 true [1 0 0 1 0 0] { <f0f0f0f00f0f0f0f> } imagemask } bind def
+ /pat20  { 8 8 true [1 0 0 1 0 0] { <7effffe7e7ffff7e> } imagemask } bind def
+ /pat21  { 8 8 true [1 0 0 1 0 0] { <0000001818000000> } imagemask } bind def
+ /pat22  { 8 8 true [1 0 0 1 0 0] { <55ffaaff55ffaaff> } imagemask } bind def
+ /pat23  { 8 8 true [1 0 0 1 0 0] { <77ffddff77ffddff> } imagemask } bind def
+ /pat24  { 8 8 true [1 0 0 1 0 0] { <aa005500aa005500> } imagemask } bind def
+ /pat25  { 8 8 true [1 0 0 1 0 0] { <aa11aa44aa11aa44> } imagemask } bind def
+ /pat26  { 8 8 true [1 0 0 1 0 0] { <ff888888ff222222> } imagemask } bind def
+ /pat27  { 8 8 true [1 0 0 1 0 0] { <ff080808ff808080> } imagemask } bind def
+ /pat28  { 8 8 true [1 0 0 1 0 0] { <0040a00000040a00> } imagemask } bind def
+ /pat29  { 8 8 true [1 0 0 1 0 0] { <ff80808080808080> } imagemask } bind def
+ /pat30  { 8 8 true [1 0 0 1 0 0] { <ff818181818181ff> } imagemask } bind def
+ /pat31  { 8 8 true [1 0 0 1 0 0] { <fe82baaaba82fe00> } imagemask } bind def
+ /pat32  { 8 8 true [1 0 0 1 0 0] { <0044281028440000> } imagemask } bind def
+ /pat33  { 8 8 true [1 0 0 1 0 0] { <8844201000002010> } imagemask } bind def
+ /pat34  { 8 8 true [1 0 0 1 0 0] { <0040201000010204> } imagemask } bind def
+ /pat35  { 8 8 true [1 0 0 1 0 0] { <0010284428100000> } imagemask } bind def
+ /pat36  { 8 8 true [1 0 0 1 0 0] { <0008083e08080000> } imagemask } bind def
+ /pat37  { 8 8 true [1 0 0 1 0 0] { <8844220088442200> } imagemask } bind def
+ /pat38  { 8 8 true [1 0 0 1 0 0] { <1122440011224400> } imagemask } bind def
+ /pat39  { 8 8 true [1 0 0 1 0 0] { <cccccccccccccccc> } imagemask } bind def
+ /pat40  { 8 8 true [1 0 0 1 0 0] { <8040201008040201> } imagemask } bind def
+ /pat41  { 8 8 true [1 0 0 1 0 0] { <0b172e5dba74e8d0> } imagemask } bind def
+ /pat42  { 8 8 true [1 0 0 1 0 0] { <0f1f3f7ffefcf8f0> } imagemask } bind def
+ /pat43  { 8 8 true [1 0 0 1 0 0] { <c0e070381c0e0703> } imagemask } bind def
+ /pat44  { 8 8 true [1 0 0 1 0 0] { <0002040200204020> } imagemask } bind def
+ /pat45  { 8 8 true [1 0 0 1 0 0] { <1f11f1111f11f111> } imagemask } bind def
+ /pat46  { 8 8 true [1 0 0 1 0 0] { <f11111111f111111> } imagemask } bind def
+ /pat47  { 8 8 true [1 0 0 1 0 0] { <0102448801020000> } imagemask } bind def
+ /pat48  { 8 8 true [1 0 0 1 0 0] { <0010284444380000> } imagemask } bind def
+ /pat49  { 8 8 true [1 0 0 1 0 0] { <c183070e1c3870e0> } imagemask } bind def
+ /pat50  { 8 8 true [1 0 0 1 0 0] { <e1c3870f1e3c78f0> } imagemask } bind def
+ /pat51  { 8 8 true [1 0 0 1 0 0] { <a54b962d5ab469d2> } imagemask } bind def
+ /pat52  { 8 8 true [1 0 0 1 0 0] { <d0e874ba5d2e170b> } imagemask } bind def
+ /pat53  { 8 8 true [1 0 0 1 0 0] { <f0f8fcfe7f3f1f0f> } imagemask } bind def
+ /pat54  { 8 8 true [1 0 0 1 0 0] { <03070e1c3870e0c0> } imagemask } bind def
+ /pat55  { 8 8 true [1 0 0 1 0 0] { <0000182444241800> } imagemask } bind def
+ /pat56  { 8 8 true [1 0 0 1 0 0] { <ff7e3c18183c7eff> } imagemask } bind def
+ /pat57  { 8 8 true [1 0 0 1 0 0] { <ff00000000000000> } imagemask } bind def
+ /pat58  { 8 8 true [1 0 0 1 0 0] { <8080808080808080> } imagemask } bind def
+ /pat59  { 8 8 true [1 0 0 1 0 0] { <ff000000ff000000> } imagemask } bind def
+ /pat60  { 8 8 true [1 0 0 1 0 0] { <8888888888888888> } imagemask } bind def
+ /pat61  { 8 8 true [1 0 0 1 0 0] { <5555aaaa5555aaaa> } imagemask } bind def
+ /pat62  { 8 8 true [1 0 0 1 0 0] { <ff00ff00ff00ff00> } imagemask } bind def
+ /pat63  { 8 8 true [1 0 0 1 0 0] { <aaaaaaaaaaaaaaaa> } imagemask } bind def
+ /pat64  { 8 8 true [1 0 0 1 0 0] { <f00000000f000000> } imagemask } bind def
+ /pat65  { 8 8 true [1 0 0 1 0 0] { <0808080880808080> } imagemask } bind def
+ /pat66  { 8 8 true [1 0 0 1 0 0] { <20508f5020202020> } imagemask } bind def
+ /pat67  { 8 8 true [1 0 0 1 0 0] { <1028448344281010> } imagemask } bind def
+ /pat68  { 8 8 true [1 0 0 1 0 0] { <e0ffe04040404040> } imagemask } bind def
+ /pat69  { 8 8 true [1 0 0 1 0 0] { <f8f8fff8f8202020> } imagemask } bind def
+ /pat70  { 8 8 true [1 0 0 1 0 0] { <82050a142850a041> } imagemask } bind def
+ /pat71  { 8 8 true [1 0 0 1 0 0] { <41a05028140a0582> } imagemask } bind def
+ /pat72  { 8 8 true [1 0 0 1 0 0] { <10387cff7c381010> } imagemask } bind def
+ /pat73  { 8 8 true [1 0 0 1 0 0] { <fffefcf8f0e0c080> } imagemask } bind def
+ /pat74  { 8 8 true [1 0 0 1 0 0] { <80c0e0f0f8fcfeff> } imagemask } bind def
+ /pat75  { 8 8 true [1 0 0 1 0 0] { <c021120c08102040> } imagemask } bind def
+ /pat76  { 8 8 true [1 0 0 1 0 0] { <4020101824428180> } imagemask } bind def
+ /pat77  { 8 8 true [1 0 0 1 0 0] { <0609090600000000> } imagemask } bind def
+ /pat78  { 8 8 true [1 0 0 1 0 0] { <1824428118244281> } imagemask } bind def
+ /pat79  { 8 8 true [1 0 0 1 0 0] { <1122448888442211> } imagemask } bind def
+ /pat80  { 8 8 true [1 0 0 1 0 0] { <8244281010101000> } imagemask } bind def
+ /pat81  { 8 8 true [1 0 0 1 0 0] { <008040201e204080> } imagemask } bind def
+ /pat82  { 8 8 true [1 0 0 1 0 0] { <7fc1a2948894a2c1> } imagemask } bind def
+ /pat83  { 8 8 true [1 0 0 1 0 0] { <101028c70101827c> } imagemask } bind def
+ /pat84  { 8 8 true [1 0 0 1 0 0] { <1c121121c1211112> } imagemask } bind def
+ /patfill  { 8 8 true [1 0 0 1 0 0] { UserFillPat } imagemask } bind def 
+ end
+
+ /BuildChar
+ {
+    exch
+    begin  
+      dup UserChar eq{                 
+        8 0 setcharwidth            % userfillstyle
+      }{
+        8 0 0 0 8 8 setcachedevice  % standard fillstyle
+      }ifelse
+      Encoding exch get  
+      CharProcs exch get 
+    end
+    exec
+ }def
+end 
+
+/FillFont newfont definefont pop
+%----- End Of Area Fill Font Def--------------------------------------
+
+%---------------------------------------------------------------------
+%  PGL Redefinitions
+%---------------------------------------------------------------------
+/gs   { gsave } bind def         
+/gr   { grestore } bind def  
+/m    { moveto } bind def        
+/l    { lineto currentpoint stroke moveto } bind def  
+/rm   { rmoveto } bind def       
+/rl   { rlineto } bind def  
+/cp   { closepath } bind def     
+/np   { newpath } bind def   
+/sg   { setgray } bind def       
+/st   { stroke } bind def     
+/sd   { setdash } bind def       
+/ex   { exch } bind def
+/in   { index } bind def         
+/sw   { stringwidth } bind def 
+/cxy  { currentpoint } bind def  
+/slw  { setlinewidth } bind def 
+
+%---------------------------------------------------------------------
+% str strlen nchars
+%---------------------------------------------------------------------
+/strlen
+{
+    dup           % str str
+    /itmp 0 def
+    { /itmp itmp 1 add def pop } forall  % count characters
+    itmp          % nchars
+} bind def
+
+%---------------------------------------------------------------------
+% string txtCtrH   % Center Justify a string Horiz
+%---------------------------------------------------------------------
+/txtCtrH { dup sw pop 2 div neg dup 0 rm /ctrFlagH exch def } bind def 
+
+%---------------------------------------------------------------------
+% wx wy string atxtCtrH   % Center Justify a string Horiz
+%---------------------------------------------------------------------
+/atxtCtrH { 
+    3 -1 roll   % wy string wx
+    dup        % wy string wx wx
+    4 1 roll  % wx wy string wx
+    /xW ex def % wx wy string
+    strlen     % wx wy string nchars
+    xW mul
+    /xW ex def
+    dup        % str str
+    sw         % str wx wy
+    pop        % str wx
+    xW add     % str wx+xW
+    2 div neg 
+    dup 
+    0 rm 
+    /ctrFlagH exch def 
+} bind def 
+
+%---------------------------------------------------------------------
+% txtCtrHend   % Finish Center Justifying a string Horiz
+%                cp shoud be at center of string
+%---------------------------------------------------------------------
+/txtCtrHend { ctrFlagH 0 rm /ctrFlagH 0 def } bind def 
+
+%---------------------------------------------------------------------
+% string txtRtH   % Right Justify a string Horiz
+%---------------------------------------------------------------------
+/txtRtH  {dup sw pop neg 0 rm} bind def 
+
+%---------------------------------------------------------------------
+% string txtRtH   % Right Justify a string Horiz
+%---------------------------------------------------------------------
+/atxtRtH  {
+    3 -1 roll   % wy string wx
+    dup        % wy string wx wx
+    4 1 roll  % wx wy string wx
+    /xW ex def % wx wy string
+    strlen     % wx wy string nchars
+    xW mul
+    /xW ex def
+    dup 
+    sw 
+    pop 
+    xW add     % str wx+xW
+    neg 0 rm
+} bind def 
+
+%---------------------------------------------------------------------
+% txtCtrV  % Center Justify a string Vertically
+%---------------------------------------------------------------------
+/txtCtrV { gs np 0 0 m (X) true charpath flattenpath pathbbox ex pop 
+           sub neg 2 div 0 ex gr rm pop /ctrFlagV 1 def } bind def 
+
+%---------------------------------------------------------------------
+% txtCtrVend  % Center Justify a string Vertically
+%---------------------------------------------------------------------
+/txtCtrVend { gs np 0 0 m (X) true charpath flattenpath pathbbox ex pop 
+              sub neg 2 div 0 ex gr neg rm pop /ctrFlagV 0 def } bind def 
+
+%---------------------------------------------------------------------
+% string txtTopV  % Top Justify a string Vertically
+%---------------------------------------------------------------------
+/txtTopV { gs np 0 0 m (X) true charpath flattenpath pathbbox ex pop 
+           sub neg 0 ex gr rm pop /topFlagV 1 def } bind def 
+
+%---------------------------------------------------------------------
+% txtTopVend  % Top Justify a string Vertically
+%---------------------------------------------------------------------
+/txtTopVend { gs np 0 0 m (X) true charpath flattenpath pathbbox ex pop 
+           sub neg 0 ex gr neg rm pop /topFlagV 0 def } bind def 
+
+%---------------------------------------------------------------------
+%  ash   display text & readjusts cp for Top & Center Vertical
+%        text justification
+%---------------------------------------------------------------------
+/ash {
+   ashow
+   topFlagV 1 eq {
+     txtTopVend
+   } if
+   ctrFlagV 1 eq {
+     txtCtrVend
+   } if
+   ctrFlagH 0 ne {
+     txtCtrHend
+   } if
+} bind def
+
+%---------------------------------------------------------------------
+%  sh   display text & readjusts cp for Top & Center Vertical
+%       text justification
+%---------------------------------------------------------------------
+/sh {
+   show
+   topFlagV 1 eq {
+     txtTopVend
+   } if
+   ctrFlagV 1 eq {
+     txtCtrVend
+   } if
+   ctrFlagH 0 ne {
+     txtCtrHend
+   } if
+} bind def
+
+%---------------------------------------------------------------------
+% xs  % Extended Stroke 
+%---------------------------------------------------------------------
+/xs { 
+  LineColor -1 ne
+  { cxy st m }{ cxy np m }ifelse 
+} bind def                       
+
+%---------------------------------------------------------------------
+%  color SLC   % SetLineColor  % -1 turns off line drawing
+%---------------------------------------------------------------------
+/SLC { dup /LineColor exch def SCC }bind def
+
+%---------------------------------------------------------------------
+%  index [r g b] SRC   % SetRgbColor
+%---------------------------------------------------------------------
+/SRC { 
+/rgbTmp   exch def
+/rgbIndex exch def
+/rgbAbs   0.0  def
+rgbTmp 0 get 1. 255. div mul  rgbTmp exch 0 exch put
+rgbTmp 1 get 1. 255. div mul  rgbTmp exch 1 exch put
+rgbTmp 2 get 1. 255. div mul  rgbTmp exch 2 exch put
+rgbColors rgbIndex rgbTmp put  
+rgbTmp { dup mul rgbAbs add /rgbAbs exch def } forall
+grayColors rgbIndex rgbAbs sqrt put
+}bind def
+
+%---------------------------------------------------------------------
+%  color SCC  % SetCurColor
+%---------------------------------------------------------------------
+/SCC { 
+  dup -1 ne 
+  { % -1 turns of line drawing
+     ColorMap exch get 
+     dup type /arraytype ne { 
+       setgray 
+     }{ 
+       {} forall setrgbcolor 
+     } ifelse
+  }{ 
+     pop  % remove -1 from stack
+  }ifelse
+}bind def
+
+%---------------------------------------------------------------------
+%  [] phase SLS  % SetLineStyle
+%---------------------------------------------------------------------
+/SLS { 
+   /Phase exch def
+   /LineStyle exch def 
+   LineStyle Phase setdash 
+}bind def
+
+%---------------------------------------------------------------------
+%  width SLW % SetLineWidth ( 1/300 inch )
+%---------------------------------------------------------------------
+/SLW { 
+   /LineWidth exch def 
+   LineWidth UnitWidth mul setlinewidth 
+}bind def
+
+%---------------------------------------------------------------------
+%   color SFC % SetFillColor
+%---------------------------------------------------------------------
+/SFC {  /AreaColor exch def }bind def
+
+%---------------------------------------------------------------------
+%  <pattern> SUF  % SetUserFill pattern = hex no 
+%---------------------------------------------------------------------
+/SUF {  
+    /UserFillPat exch def  % set pattern
+    /FillStyle 84 def      % set flag
+}bind def
+
+%---------------------------------------------------------------------
+%  style SFS  % SetFillStyle style no (0-11)
+%---------------------------------------------------------------------
+/SFS {  /FillStyle exch def }bind def
+
+%---------------------------------------------------------------------
+%  mode SFM  % SetFillMode   ( 1-Opaque, 2-Transparent)
+%---------------------------------------------------------------------
+/SFM {  /FillMode exch def }bind def
+
+%---------------------------------------------------------------------
+%  fontno SCF SetCurFont
+%---------------------------------------------------------------------
+/SCF {
+ dup  /CurFont exch def        % save font no.
+ FontNames exch get findfont 
+   [ FSX CurFont get FSXN mul FSXD div PX mul SX div 0 0
+     FSY CurFont get FSYN mul FSYD div PY mul SY div 0 0 ]
+   makefont setfont 
+ }bind def
+
+%---------------------------------------------------------------------
+%  xn xd yn yd SFX    % SetFontScale
+%---------------------------------------------------------------------
+/SFX {
+  /FSYD exch def    /FSYN exch def  
+  /FSXD exch def    /FSXN exch def
+  CurFont SCF
+}bind def
+
+%---------------------------------------------------------------------
+%  [ f1 f2 f3 f4 f5 f6 f7 ] SFNS   % SetFontNames
+%---------------------------------------------------------------------
+/SFNS {
+  /FontNames exch def
+}bind def
+
+%---------------------------------------------------------------------
+% [7 xsizes] [7 ysizes] SFZ  % SetFontSizes
+%---------------------------------------------------------------------
+/SFSZ {
+  /FSY exch def
+  /FSX exch def
+}bind def
+
+%---------------------------------------------------------------------
+%  px py SPS  % SetPageSize
+%---------------------------------------------------------------------
+/SPS { /PY exch def  /PX exch def }bind def
+
+%---------------------------------------------------------------------
+%  x y color Pix  % SetPixel  1-Pixel = 1/300" pixel!
+%---------------------------------------------------------------------
+/Pix { 
+gsave                        %
+SCC moveto                   % set color & position
+1 setlinewidth [] 0 setdash  % set attributes
+1 0 rlineto stroke           % do it!
+grestore                     %
+} bind def                       
+
+%---------------------------------------------------------------------
+%  x1 x2 y2 y2 Ln  % Line
+%---------------------------------------------------------------------
+/Ln { gs np 4 -2 roll m l st gr } bind def                       
+
+%---------------------------------------------------------------------
+%  x1 y1 x2 y2 flag Rect   (flag: 1-outline,2-fill,3-both)
+%---------------------------------------------------------------------
+/Rect { 
+    /FillFlag exch def 
+    gs np DrawRect FillArea OutLine gr 
+} bind def
+
+%---------------------------------------------------------------------
+% x1 y1 x2 y2 x3 y3 .... flag PolyF  % PolyFill - fill current path
+%---------------------------------------------------------------------
+/PolyF { 
+    /FillFlag exch def 
+    gs closepath FillArea OutLine gr 
+} bind def
+
+%---------------------------------------------------------------------
+%  x1 y1 x2 y2 ClipR % ClipRect 
+%---------------------------------------------------------------------
+/ClipR { 
+    cxy 6 2 roll       % cx cy x1 y1 x2 y2
+    gr gs
+    0 setlinewidth
+    np DrawRect eoclip np 
+    m 
+    %-- Reset graphics state
+    LineWidth SLW
+    LineColor SLC
+    FSXN FSXD FSYN FSYD SFX
+    CurFont   SCF
+    LineStyle 0 setdash
+} bind def
+
+%-PRIVATE-------------------------------------------------------------
+%  x1 y1 x2 y2 DrawRect 
+%---------------------------------------------------------------------
+/DrawRect { 
+    3 in 3 in moveto 
+    1 in 3 in lineto 
+    3 in 1 in 4 -2 roll lineto lineto pop pop closepath % lineto
+} bind def
+
+%-PRIVATE-------------------------------------------------------------
+%  xc yc sa ea rx ry DrawArc    
+%---------------------------------------------------------------------
+/DrawArc { 
+   /savematrix matrix currentmatrix def 
+   6 -2 roll translate    
+   scale 
+   0 0 1 5 -2 roll 
+   1 -1 scale arc 1 -1 scale
+   savematrix setmatrix
+}bind def
+
+%---------------------------------------------------------------------
+%  xc yc sa ea rx ry Arc
+%---------------------------------------------------------------------
+/Arc { gs np DrawArc [] 0 sd st gr } bind def   
+
+%---------------------------------------------------------------------
+%  xc yc sa ea rx ry flag Pie   (flag: 1-Outline,2-Fill,3-Both)
+%---------------------------------------------------------------------
+/Pie { 
+    /FillFlag exch def
+    gs np 6 -2 roll 2 copy 2 copy m 8 4 roll 
+    DrawArc cp FillArea OutLine gr 
+} bind def   
+
+%---------------------------------------------------------------------
+%  xc yc rx ry flag ELLIPSE (flag: 1-Outline,2-Fill,3-Both)
+%---------------------------------------------------------------------
+/Ellipse { 
+    /FillFlag exch def
+     gs np 0 360 4 2 roll DrawArc FillArea OutLine gr 
+}bind def   
+
+%-PRIVATE-------------------------------------------------------------
+%  OutLine
+%---------------------------------------------------------------------
+/OutLine  { 
+  FillFlag 1 and 1 eq { 
+    [] 0 sd LineColor SCC st 
+  }if 
+}bind def
+
+%-PRIVATE-------------------------------------------------------------
+%  FillArea  - fills current path
+%---------------------------------------------------------------------
+/FillArea { 
+  FillFlag 2 and 2 eq { 
+     gs 
+;     eoclip 
+     clippath
+     AreaColor SCC
+     PatternFill
+     gr
+  }if 
+}bind def
+
+%-PRIVATE-------------------------------------------------------------
+%  PatternFill 
+%---------------------------------------------------------------------
+/PatternFill {
+   /psize 8 PatSize mul def
+   /FillFont findfont psize scalefont setfont % set Pattern font
+   FillChar 0 FillStyle PatChar add put               % fill char index
+   FillMode 1 eq { gsave 1 setgray fill grestore }if  % erase background
+   pathbbox                                           % llx lly  urx ury
+   newpath              
+   ceiling cvi /fy2 exch def 
+   ceiling cvi /fx2 exch def 
+   cvi 7 not and /fy1 exch def 
+   cvi 7 not and /fx1 exch def
+   fx2 fx1 sub psize div ceiling cvi
+   /fwidth exch def
+   fy1 psize fy2                          %
+   {                                      %
+     fx1 exch moveto                      %
+     fwidth { FillChar show } repeat      %
+   } for                                  %
+} bind def
+
+%---------------------------------------------------------------------
+%  savePGL
+%---------------------------------------------------------------------
+/savePGL{
+   /saveObj save def
+}bind def
+
+%---------------------------------------------------------------------
+%  #copies newPage
+%---------------------------------------------------------------------
+/newPage{
+   /#copies exch def
+   showpage saveObj restore
+   /#copies 1 def
+}bind def
+
+%----------------------------------------------------------------------
+% x,y,npixels bmRow  % Bitmap row data, 1 row at a time...
+%----------------------------------------------------------------------
+/bmRow {
+  /bmPixels  exch def
+  /bmY       exch def
+  /bmX       exch def
+
+  currentpoint stroke moveto % save x,y stroke and moveto
+  gsave                      % save graphics state
+  1 setlinewidth             % linewidth
+  0 setlinecap               % but cap
+  [] 0 setdash               % solid style
+  bmX .5 add bmY .5 add moveto % move to start of row
+  %
+  %  Read & decompress  a whole row of pixel color data via RLE
+  %
+  currentfile rleFlag readhexstring pop 
+  0 get 1 eq 
+  { /cumBytes 0 def
+    { 
+      currentfile rleStr readhexstring pop 
+      dup 
+      0 get 1 add exch % count rleStr
+      1 get SCC        % count 
+      dup              % dup count
+      0 rlineto        % draw
+      currentpoint stroke moveto     
+      /cumBytes exch cumBytes add def 
+      cumBytes bmPixels ge { exit } if 
+    }loop 
+  }{ 
+    1 1 bmPixels
+    {
+      pop
+      currentfile bmStr readhexstring pop 
+      0 get SCC
+      1 0 rlineto
+      currentpoint stroke moveto     
+    }for
+  }ifelse 
+
+  grestore
+}bind def
+
+%----------------------------------------------------------------------
+% DPI PMAXX PMAXY PageHght TopMgn LftMgn LandFlag ColorModel initPGL
+%----------------------------------------------------------------------
+/initPGL {
+   %---Page Constants
+   /ColorModel exch def  /LandFlag exch def 
+   /LeftMgn exch def     /TopMgn exch def
+   /PageHeight exch def  /PY exch def       /PX exch def
+
+   %---Select/Set Color model
+   /ColorMap ColorChoices ColorModel get def   % default colors=b&w
+   
+   %---Save state & set output res
+   savePGL 
+   
+   %---Set output res scaling, dpi on stack(300?)
+   /dpiRes  exch def             % dots per inch
+   /dphiRes dpiRes 100 div def   % pots per 1/100 inches (hinches)
+   72 dpiRes div dup scale
+
+   %---Set coordinate origin, & dir
+   LandFlag 1 ne { 
+      % Portrait Setup
+      LeftMgn dphiRes mul PageHeight TopMgn sub dphiRes mul 
+   }{
+      % Landscape Setup
+      90 rotate LeftMgn dphiRes mul TopMgn dphiRes mul neg 
+   }ifelse
+   translate 1 -1 scale
+
+   %---Adjust font scale factor sizes, relative to 5000x5000
+   0 1 6 { dup FSX exch get 4999 PX div mul FSX 3 1 roll put } for
+   0 1 6 { dup FSY exch get 4999 PY div mul FSY 3 1 roll put } for
+
+   %---Set default graphics state
+   np 0 0 m
+   1  SLC
+   1  SLW
+   [] 0 SLS
+   1 1 1 1 SFX
+   0 SCF
+   <0000000000000000> SUF
+   10 setmiterlimit
+    0 setlinejoin 
+    1 setlinecap
+    gs  % save for clipping
+    xs 0 0 PX PY ClipR
+}bind def
+%%EndProlog
+%%Page: 1 1
+300 2559 1943 1100 100 123 1 0 initPGL
+0 SCF
+[] 0 SLS
+1 SLW
+<ffffffffffffffff> SUF
+1 SFC
+1 SFS
+1 SFC
+1 SFM
+0 0 2559 1943 ClipR
+0 0 2559 1943 ClipR
+xs 1 SLC
+[] 0 SLS
+1 SLW
+xs 0 SLC
+1 SLW
+xs 15 SLC
+257 1685 1678 1685 Ln
+257 270 1678 270 Ln
+257 1686 1678 1686 Ln
+257 269 1678 269 Ln
+256 1687 1678 1687 Ln
+256 268 1678 268 Ln
+255 1687 1678 1687 Ln
+255 268 1678 268 Ln
+255 1688 1678 1688 Ln
+255 267 1678 267 Ln
+328 1685 328 1699 Ln
+328 270 328 257 Ln
+398 1685 398 1699 Ln
+398 270 398 257 Ln
+469 1685 469 1699 Ln
+469 270 469 257 Ln
+540 1685 540 1699 Ln
+540 270 540 257 Ln
+257 1685 257 1705 Ln
+257 270 257 250 Ln
+683 1685 683 1699 Ln
+683 270 683 257 Ln
+754 1685 754 1699 Ln
+754 270 754 257 Ln
+824 1685 824 1699 Ln
+824 270 824 257 Ln
+895 1685 895 1699 Ln
+895 270 895 257 Ln
+612 1685 612 1705 Ln
+612 270 612 250 Ln
+273 1744 267 1745 Ln
+267 1745 264 1751 Ln
+264 1751 263 1759 Ln
+263 1759 263 1764 Ln
+263 1764 264 1773 Ln
+264 1773 267 1778 Ln
+267 1778 273 1779 Ln
+273 1779 276 1779 Ln
+276 1779 281 1778 Ln
+281 1778 285 1773 Ln
+285 1773 286 1764 Ln
+286 1764 286 1759 Ln
+286 1759 285 1751 Ln
+285 1751 281 1745 Ln
+281 1745 276 1744 Ln
+276 1744 273 1744 Ln
+301 1776 300 1778 Ln
+300 1778 301 1779 Ln
+301 1779 303 1778 Ln
+303 1778 301 1776 Ln
+327 1744 322 1745 Ln
+322 1745 319 1751 Ln
+319 1751 317 1759 Ln
+317 1759 317 1764 Ln
+317 1764 319 1773 Ln
+319 1773 322 1778 Ln
+322 1778 327 1779 Ln
+327 1779 331 1779 Ln
+331 1779 336 1778 Ln
+336 1778 339 1773 Ln
+339 1773 340 1764 Ln
+340 1764 340 1759 Ln
+340 1759 339 1751 Ln
+339 1751 336 1745 Ln
+336 1745 331 1744 Ln
+331 1744 327 1744 Ln
+363 1744 358 1745 Ln
+358 1745 354 1751 Ln
+354 1751 352 1759 Ln
+352 1759 352 1764 Ln
+352 1764 354 1773 Ln
+354 1773 358 1778 Ln
+358 1778 363 1779 Ln
+363 1779 366 1779 Ln
+366 1779 371 1778 Ln
+371 1778 375 1773 Ln
+375 1773 376 1764 Ln
+376 1764 376 1759 Ln
+376 1759 375 1751 Ln
+375 1751 371 1745 Ln
+371 1745 366 1744 Ln
+366 1744 363 1744 Ln
+565 1744 560 1745 Ln
+560 1745 557 1751 Ln
+557 1751 555 1759 Ln
+555 1759 555 1764 Ln
+555 1764 557 1773 Ln
+557 1773 560 1778 Ln
+560 1778 565 1779 Ln
+565 1779 569 1779 Ln
+569 1779 574 1778 Ln
+574 1778 577 1773 Ln
+577 1773 578 1764 Ln
+578 1764 578 1759 Ln
+578 1759 577 1751 Ln
+577 1751 574 1745 Ln
+574 1745 569 1744 Ln
+569 1744 565 1744 Ln
+594 1776 592 1778 Ln
+592 1778 594 1779 Ln
+594 1779 596 1778 Ln
+596 1778 594 1776 Ln
+611 1752 611 1751 Ln
+611 1751 613 1747 Ln
+613 1747 614 1745 Ln
+614 1745 618 1744 Ln
+618 1744 625 1744 Ln
+625 1744 628 1745 Ln
+628 1745 630 1747 Ln
+630 1747 632 1751 Ln
+632 1751 632 1754 Ln
+632 1754 630 1758 Ln
+630 1758 626 1763 Ln
+626 1763 609 1779 Ln
+609 1779 633 1779 Ln
+665 1744 648 1744 Ln
+648 1744 647 1759 Ln
+647 1759 648 1758 Ln
+648 1758 654 1756 Ln
+654 1756 659 1756 Ln
+659 1756 663 1758 Ln
+663 1758 667 1761 Ln
+667 1761 669 1766 Ln
+669 1766 669 1770 Ln
+669 1770 667 1775 Ln
+667 1775 663 1778 Ln
+663 1778 659 1779 Ln
+659 1779 654 1779 Ln
+654 1779 648 1778 Ln
+648 1778 647 1776 Ln
+647 1776 645 1773 Ln
+1038 1685 1038 1699 Ln
+1038 270 1038 257 Ln
+1109 1685 1109 1699 Ln
+1109 270 1109 257 Ln
+1179 1685 1179 1699 Ln
+1179 270 1179 257 Ln
+1250 1685 1250 1699 Ln
+1250 270 1250 257 Ln
+967 1685 967 1705 Ln
+967 270 967 250 Ln
+921 1744 915 1745 Ln
+915 1745 912 1751 Ln
+912 1751 910 1759 Ln
+910 1759 910 1764 Ln
+910 1764 912 1773 Ln
+912 1773 915 1778 Ln
+915 1778 921 1779 Ln
+921 1779 924 1779 Ln
+924 1779 929 1778 Ln
+929 1778 933 1773 Ln
+933 1773 934 1764 Ln
+934 1764 934 1759 Ln
+934 1759 933 1751 Ln
+933 1751 929 1745 Ln
+929 1745 924 1744 Ln
+924 1744 921 1744 Ln
+949 1776 948 1778 Ln
+948 1778 949 1779 Ln
+949 1779 950 1778 Ln
+950 1778 949 1776 Ln
+985 1744 968 1744 Ln
+968 1744 966 1759 Ln
+966 1759 968 1758 Ln
+968 1758 973 1756 Ln
+973 1756 978 1756 Ln
+978 1756 983 1758 Ln
+983 1758 987 1761 Ln
+987 1761 988 1766 Ln
+988 1766 988 1770 Ln
+988 1770 987 1775 Ln
+987 1775 983 1778 Ln
+983 1778 978 1779 Ln
+978 1779 973 1779 Ln
+973 1779 968 1778 Ln
+968 1778 966 1776 Ln
+966 1776 964 1773 Ln
+1010 1744 1005 1745 Ln
+1005 1745 1002 1751 Ln
+1002 1751 1000 1759 Ln
+1000 1759 1000 1764 Ln
+1000 1764 1002 1773 Ln
+1002 1773 1005 1778 Ln
+1005 1778 1010 1779 Ln
+1010 1779 1014 1779 Ln
+1014 1779 1019 1778 Ln
+1019 1778 1022 1773 Ln
+1022 1773 1023 1764 Ln
+1023 1764 1023 1759 Ln
+1023 1759 1022 1751 Ln
+1022 1751 1019 1745 Ln
+1019 1745 1014 1744 Ln
+1014 1744 1010 1744 Ln
+1393 1685 1393 1699 Ln
+1393 270 1393 257 Ln
+1464 1685 1464 1699 Ln
+1464 270 1464 257 Ln
+1535 1685 1535 1699 Ln
+1535 270 1535 257 Ln
+1605 1685 1605 1699 Ln
+1605 270 1605 257 Ln
+1322 1685 1322 1705 Ln
+1322 270 1322 250 Ln
+1275 1744 1270 1745 Ln
+1270 1745 1267 1751 Ln
+1267 1751 1265 1759 Ln
+1265 1759 1265 1764 Ln
+1265 1764 1267 1773 Ln
+1267 1773 1270 1778 Ln
+1270 1778 1275 1779 Ln
+1275 1779 1279 1779 Ln
+1279 1779 1284 1778 Ln
+1284 1778 1287 1773 Ln
+1287 1773 1289 1764 Ln
+1289 1764 1289 1759 Ln
+1289 1759 1287 1751 Ln
+1287 1751 1284 1745 Ln
+1284 1745 1279 1744 Ln
+1279 1744 1275 1744 Ln
+1304 1776 1302 1778 Ln
+1302 1778 1304 1779 Ln
+1304 1779 1306 1778 Ln
+1306 1778 1304 1776 Ln
+1343 1744 1326 1779 Ln
+1320 1744 1343 1744 Ln
+1376 1744 1358 1744 Ln
+1358 1744 1357 1759 Ln
+1357 1759 1358 1758 Ln
+1358 1758 1364 1756 Ln
+1364 1756 1369 1756 Ln
+1369 1756 1374 1758 Ln
+1374 1758 1378 1761 Ln
+1378 1761 1379 1766 Ln
+1379 1766 1379 1770 Ln
+1379 1770 1378 1775 Ln
+1378 1775 1374 1778 Ln
+1374 1778 1369 1779 Ln
+1369 1779 1364 1779 Ln
+1364 1779 1358 1778 Ln
+1358 1778 1357 1776 Ln
+1357 1776 1355 1773 Ln
+1678 1685 1678 1705 Ln
+1678 270 1678 250 Ln
+1625 1751 1629 1749 Ln
+1629 1749 1633 1744 Ln
+1633 1744 1633 1779 Ln
+1659 1776 1658 1778 Ln
+1658 1778 1659 1779 Ln
+1659 1779 1660 1778 Ln
+1660 1778 1659 1776 Ln
+1685 1744 1680 1745 Ln
+1680 1745 1676 1751 Ln
+1676 1751 1674 1759 Ln
+1674 1759 1674 1764 Ln
+1674 1764 1676 1773 Ln
+1676 1773 1680 1778 Ln
+1680 1778 1685 1779 Ln
+1685 1779 1688 1779 Ln
+1688 1779 1693 1778 Ln
+1693 1778 1697 1773 Ln
+1697 1773 1698 1764 Ln
+1698 1764 1698 1759 Ln
+1698 1759 1697 1751 Ln
+1697 1751 1693 1745 Ln
+1693 1745 1688 1744 Ln
+1688 1744 1685 1744 Ln
+1720 1744 1715 1745 Ln
+1715 1745 1712 1751 Ln
+1712 1751 1710 1759 Ln
+1710 1759 1710 1764 Ln
+1710 1764 1712 1773 Ln
+1712 1773 1715 1778 Ln
+1715 1778 1720 1779 Ln
+1720 1779 1724 1779 Ln
+1724 1779 1729 1778 Ln
+1729 1778 1732 1773 Ln
+1732 1773 1734 1764 Ln
+1734 1764 1734 1759 Ln
+1734 1759 1732 1751 Ln
+1732 1751 1729 1745 Ln
+1729 1745 1724 1744 Ln
+1724 1744 1720 1744 Ln
+257 1685 257 270 Ln
+1678 1685 1678 270 Ln
+257 1685 257 270 Ln
+1678 1686 1678 269 Ln
+256 1684 256 270 Ln
+1679 1687 1679 268 Ln
+255 1684 255 270 Ln
+1680 1687 1680 268 Ln
+255 1683 255 270 Ln
+1680 1688 1680 267 Ln
+257 1615 244 1615 Ln
+1678 1615 1691 1615 Ln
+257 1545 244 1545 Ln
+1678 1545 1691 1545 Ln
+257 1474 244 1474 Ln
+1678 1474 1691 1474 Ln
+257 1404 244 1404 Ln
+1678 1404 1691 1404 Ln
+257 1685 238 1685 Ln
+1678 1685 1697 1685 Ln
+193 1732 195 1738 Ln
+195 1738 201 1741 Ln
+201 1741 209 1743 Ln
+209 1743 214 1743 Ln
+214 1743 222 1741 Ln
+222 1741 228 1738 Ln
+228 1738 229 1732 Ln
+229 1732 229 1729 Ln
+229 1729 228 1724 Ln
+228 1724 222 1720 Ln
+222 1720 214 1719 Ln
+214 1719 209 1719 Ln
+209 1719 201 1720 Ln
+201 1720 195 1724 Ln
+195 1724 193 1729 Ln
+193 1729 193 1732 Ln
+226 1703 228 1705 Ln
+228 1705 229 1703 Ln
+229 1703 228 1703 Ln
+228 1703 226 1703 Ln
+193 1678 195 1684 Ln
+195 1684 201 1687 Ln
+201 1687 209 1689 Ln
+209 1689 214 1689 Ln
+214 1689 222 1687 Ln
+222 1687 228 1684 Ln
+228 1684 229 1678 Ln
+229 1678 229 1675 Ln
+229 1675 228 1670 Ln
+228 1670 222 1666 Ln
+222 1666 214 1665 Ln
+214 1665 209 1665 Ln
+209 1665 201 1666 Ln
+201 1666 195 1670 Ln
+195 1670 193 1675 Ln
+193 1675 193 1678 Ln
+193 1643 195 1648 Ln
+195 1648 201 1651 Ln
+201 1651 209 1653 Ln
+209 1653 214 1653 Ln
+214 1653 222 1651 Ln
+222 1651 228 1648 Ln
+228 1648 229 1643 Ln
+229 1643 229 1639 Ln
+229 1639 228 1634 Ln
+228 1634 222 1631 Ln
+222 1631 214 1630 Ln
+214 1630 209 1630 Ln
+209 1630 201 1631 Ln
+201 1631 195 1634 Ln
+195 1634 193 1639 Ln
+193 1639 193 1643 Ln
+257 1261 244 1261 Ln
+1678 1261 1691 1261 Ln
+257 1191 244 1191 Ln
+1678 1191 1691 1191 Ln
+257 1120 244 1120 Ln
+1678 1120 1691 1120 Ln
+257 1050 244 1050 Ln
+1678 1050 1691 1050 Ln
+257 1331 238 1331 Ln
+1678 1331 1697 1331 Ln
+193 1379 195 1384 Ln
+195 1384 201 1387 Ln
+201 1387 209 1389 Ln
+209 1389 214 1389 Ln
+214 1389 222 1387 Ln
+222 1387 228 1384 Ln
+228 1384 229 1379 Ln
+229 1379 229 1375 Ln
+229 1375 228 1370 Ln
+228 1370 222 1367 Ln
+222 1367 214 1365 Ln
+214 1365 209 1365 Ln
+209 1365 201 1367 Ln
+201 1367 195 1370 Ln
+195 1370 193 1375 Ln
+193 1375 193 1379 Ln
+226 1350 228 1352 Ln
+228 1352 229 1350 Ln
+229 1350 228 1348 Ln
+228 1348 226 1350 Ln
+202 1333 201 1333 Ln
+201 1333 197 1331 Ln
+197 1331 195 1330 Ln
+195 1330 193 1326 Ln
+193 1326 193 1319 Ln
+193 1319 195 1316 Ln
+195 1316 197 1314 Ln
+197 1314 201 1312 Ln
+201 1312 203 1312 Ln
+203 1312 207 1314 Ln
+207 1314 212 1318 Ln
+212 1318 229 1334 Ln
+229 1334 229 1311 Ln
+193 1279 193 1295 Ln
+193 1295 209 1297 Ln
+209 1297 207 1295 Ln
+207 1295 205 1290 Ln
+205 1290 205 1285 Ln
+205 1285 207 1281 Ln
+207 1281 210 1277 Ln
+210 1277 216 1275 Ln
+216 1275 219 1275 Ln
+219 1275 224 1277 Ln
+224 1277 228 1281 Ln
+228 1281 229 1285 Ln
+229 1285 229 1290 Ln
+229 1290 228 1295 Ln
+228 1295 226 1297 Ln
+226 1297 222 1299 Ln
+257 907 244 907 Ln
+1678 907 1691 907 Ln
+257 837 244 837 Ln
+1678 837 1691 837 Ln
+257 767 244 767 Ln
+1678 767 1691 767 Ln
+257 696 244 696 Ln
+1678 696 1691 696 Ln
+257 978 238 978 Ln
+1678 978 1697 978 Ln
+193 1024 195 1030 Ln
+195 1030 201 1033 Ln
+201 1033 209 1035 Ln
+209 1035 214 1035 Ln
+214 1035 222 1033 Ln
+222 1033 228 1030 Ln
+228 1030 229 1024 Ln
+229 1024 229 1021 Ln
+229 1021 228 1016 Ln
+228 1016 222 1012 Ln
+222 1012 214 1011 Ln
+214 1011 209 1011 Ln
+209 1011 201 1012 Ln
+201 1012 195 1016 Ln
+195 1016 193 1021 Ln
+193 1021 193 1024 Ln
+226 995 228 997 Ln
+228 997 229 995 Ln
+229 995 228 995 Ln
+228 995 226 995 Ln
+193 960 193 977 Ln
+193 977 209 979 Ln
+209 979 207 977 Ln
+207 977 205 972 Ln
+205 972 205 967 Ln
+205 967 207 962 Ln
+207 962 210 959 Ln
+210 959 216 957 Ln
+216 957 219 957 Ln
+219 957 224 959 Ln
+224 959 228 962 Ln
+228 962 229 967 Ln
+229 967 229 972 Ln
+229 972 228 977 Ln
+228 977 226 979 Ln
+226 979 222 981 Ln
+193 935 195 940 Ln
+195 940 201 943 Ln
+201 943 209 945 Ln
+209 945 214 945 Ln
+214 945 222 943 Ln
+222 943 228 940 Ln
+228 940 229 935 Ln
+229 935 229 932 Ln
+229 932 228 926 Ln
+228 926 222 923 Ln
+222 923 214 922 Ln
+214 922 209 922 Ln
+209 922 201 923 Ln
+201 923 195 926 Ln
+195 926 193 932 Ln
+193 932 193 935 Ln
+257 553 244 553 Ln
+1678 553 1691 553 Ln
+257 483 244 483 Ln
+1678 483 1691 483 Ln
+257 412 244 412 Ln
+1678 412 1691 412 Ln
+257 342 244 342 Ln
+1678 342 1691 342 Ln
+257 623 238 623 Ln
+1678 623 1697 623 Ln
+193 671 195 676 Ln
+195 676 201 679 Ln
+201 679 209 681 Ln
+209 681 214 681 Ln
+214 681 222 679 Ln
+222 679 228 676 Ln
+228 676 229 671 Ln
+229 671 229 667 Ln
+229 667 228 662 Ln
+228 662 222 659 Ln
+222 659 214 657 Ln
+214 657 209 657 Ln
+209 657 201 659 Ln
+201 659 195 662 Ln
+195 662 193 667 Ln
+193 667 193 671 Ln
+226 642 228 644 Ln
+228 644 229 642 Ln
+229 642 228 640 Ln
+228 640 226 642 Ln
+193 603 229 620 Ln
+193 627 193 603 Ln
+193 571 193 587 Ln
+193 587 209 589 Ln
+209 589 207 587 Ln
+207 587 205 583 Ln
+205 583 205 577 Ln
+205 577 207 573 Ln
+207 573 210 569 Ln
+210 569 216 567 Ln
+216 567 219 567 Ln
+219 567 224 569 Ln
+224 569 228 573 Ln
+228 573 229 577 Ln
+229 577 229 583 Ln
+229 583 228 587 Ln
+228 587 226 589 Ln
+226 589 222 591 Ln
+257 270 238 270 Ln
+1678 270 1697 270 Ln
+201 322 199 318 Ln
+199 318 193 313 Ln
+193 313 229 313 Ln
+226 287 228 289 Ln
+228 289 229 287 Ln
+229 287 228 287 Ln
+228 287 226 287 Ln
+193 262 195 268 Ln
+195 268 201 271 Ln
+201 271 209 273 Ln
+209 273 214 273 Ln
+214 273 222 271 Ln
+222 271 228 268 Ln
+228 268 229 262 Ln
+229 262 229 259 Ln
+229 259 228 254 Ln
+228 254 222 251 Ln
+222 251 214 249 Ln
+214 249 209 249 Ln
+209 249 201 251 Ln
+201 251 195 254 Ln
+195 254 193 259 Ln
+193 259 193 262 Ln
+193 227 195 232 Ln
+195 232 201 235 Ln
+201 235 209 237 Ln
+209 237 214 237 Ln
+214 237 222 235 Ln
+222 235 228 232 Ln
+228 232 229 227 Ln
+229 227 229 224 Ln
+229 224 228 218 Ln
+228 218 222 215 Ln
+222 215 214 214 Ln
+214 214 209 214 Ln
+209 214 201 215 Ln
+201 215 195 218 Ln
+195 218 193 224 Ln
+193 224 193 227 Ln
+815 1865 815 1907 Ln
+815 1885 818 1881 Ln
+818 1881 822 1879 Ln
+822 1879 828 1879 Ln
+828 1879 832 1881 Ln
+832 1881 837 1885 Ln
+837 1885 839 1891 Ln
+839 1891 839 1895 Ln
+839 1895 837 1900 Ln
+837 1900 832 1905 Ln
+832 1905 828 1907 Ln
+828 1907 822 1907 Ln
+822 1907 818 1905 Ln
+818 1905 815 1900 Ln
+852 1891 876 1891 Ln
+876 1891 876 1887 Ln
+876 1887 874 1883 Ln
+874 1883 872 1881 Ln
+872 1881 868 1879 Ln
+868 1879 862 1879 Ln
+862 1879 858 1881 Ln
+858 1881 854 1885 Ln
+854 1885 852 1891 Ln
+852 1891 852 1895 Ln
+852 1895 854 1900 Ln
+854 1900 858 1905 Ln
+858 1905 862 1907 Ln
+862 1907 868 1907 Ln
+868 1907 872 1905 Ln
+872 1905 876 1900 Ln
+894 1865 894 1898 Ln
+894 1898 896 1905 Ln
+896 1905 900 1907 Ln
+900 1907 904 1907 Ln
+888 1879 902 1879 Ln
+940 1879 940 1907 Ln
+940 1885 936 1881 Ln
+936 1881 932 1879 Ln
+932 1879 925 1879 Ln
+925 1879 922 1881 Ln
+922 1881 918 1885 Ln
+918 1885 916 1891 Ln
+916 1891 916 1895 Ln
+916 1895 918 1900 Ln
+918 1900 922 1905 Ln
+922 1905 925 1907 Ln
+925 1907 932 1907 Ln
+932 1907 936 1905 Ln
+936 1905 940 1900 Ln
+972 1857 968 1861 Ln
+968 1861 963 1867 Ln
+963 1867 960 1875 Ln
+960 1875 958 1885 Ln
+958 1885 958 1893 Ln
+958 1893 960 1903 Ln
+960 1903 963 1910 Ln
+963 1910 968 1916 Ln
+968 1916 972 1919 Ln
+987 1865 987 1907 Ln
+987 1885 991 1881 Ln
+991 1881 995 1879 Ln
+995 1879 1001 1879 Ln
+1001 1879 1005 1881 Ln
+1005 1881 1009 1885 Ln
+1009 1885 1011 1891 Ln
+1011 1891 1011 1895 Ln
+1011 1895 1009 1900 Ln
+1009 1900 1005 1905 Ln
+1005 1905 1001 1907 Ln
+1001 1907 995 1907 Ln
+995 1907 991 1905 Ln
+991 1905 987 1900 Ln
+1049 1879 1049 1907 Ln
+1049 1885 1045 1881 Ln
+1045 1881 1041 1879 Ln
+1041 1879 1035 1879 Ln
+1035 1879 1031 1881 Ln
+1031 1881 1027 1885 Ln
+1027 1885 1025 1891 Ln
+1025 1891 1025 1895 Ln
+1025 1895 1027 1900 Ln
+1027 1900 1031 1905 Ln
+1031 1905 1035 1907 Ln
+1035 1907 1041 1907 Ln
+1041 1907 1045 1905 Ln
+1045 1905 1049 1900 Ln
+1089 1865 1089 1907 Ln
+1089 1885 1085 1881 Ln
+1085 1881 1081 1879 Ln
+1081 1879 1075 1879 Ln
+1075 1879 1071 1881 Ln
+1071 1881 1068 1885 Ln
+1068 1885 1066 1891 Ln
+1066 1891 1066 1895 Ln
+1066 1895 1068 1900 Ln
+1068 1900 1071 1905 Ln
+1071 1905 1075 1907 Ln
+1075 1907 1081 1907 Ln
+1081 1907 1085 1905 Ln
+1085 1905 1089 1900 Ln
+1105 1857 1109 1861 Ln
+1109 1861 1113 1867 Ln
+1113 1867 1116 1875 Ln
+1116 1875 1118 1885 Ln
+1118 1885 1118 1893 Ln
+1118 1893 1116 1903 Ln
+1116 1903 1113 1910 Ln
+1113 1910 1109 1916 Ln
+1109 1916 1105 1919 Ln
+44 1150 86 1150 Ln
+64 1150 60 1146 Ln
+60 1146 58 1142 Ln
+58 1142 58 1136 Ln
+58 1136 60 1132 Ln
+60 1132 64 1127 Ln
+64 1127 71 1126 Ln
+71 1126 74 1126 Ln
+74 1126 80 1127 Ln
+80 1127 84 1132 Ln
+84 1132 86 1136 Ln
+86 1136 86 1142 Ln
+86 1142 84 1146 Ln
+84 1146 80 1150 Ln
+71 1112 71 1089 Ln
+71 1089 66 1089 Ln
+66 1089 62 1091 Ln
+62 1091 60 1093 Ln
+60 1093 58 1097 Ln
+58 1097 58 1103 Ln
+58 1103 60 1106 Ln
+60 1106 64 1110 Ln
+64 1110 71 1112 Ln
+71 1112 74 1112 Ln
+74 1112 80 1110 Ln
+80 1110 84 1106 Ln
+84 1106 86 1103 Ln
+86 1103 86 1097 Ln
+86 1097 84 1093 Ln
+84 1093 80 1089 Ln
+44 1070 78 1070 Ln
+78 1070 84 1068 Ln
+84 1068 86 1065 Ln
+86 1065 86 1060 Ln
+58 1077 58 1062 Ln
+58 1025 86 1025 Ln
+64 1025 60 1030 Ln
+60 1030 58 1033 Ln
+58 1033 58 1039 Ln
+58 1039 60 1043 Ln
+60 1043 64 1047 Ln
+64 1047 71 1049 Ln
+71 1049 74 1049 Ln
+74 1049 80 1047 Ln
+80 1047 84 1043 Ln
+84 1043 86 1039 Ln
+86 1039 86 1033 Ln
+86 1033 84 1030 Ln
+84 1030 80 1025 Ln
+36 993 40 997 Ln
+40 997 46 1001 Ln
+46 1001 54 1005 Ln
+54 1005 64 1007 Ln
+64 1007 72 1007 Ln
+72 1007 83 1005 Ln
+83 1005 90 1001 Ln
+90 1001 96 997 Ln
+96 997 100 993 Ln
+58 956 90 956 Ln
+90 956 96 958 Ln
+96 958 98 960 Ln
+98 960 100 964 Ln
+100 964 100 970 Ln
+100 970 98 974 Ln
+64 956 60 960 Ln
+60 960 58 964 Ln
+58 964 58 970 Ln
+58 970 60 974 Ln
+60 974 64 978 Ln
+64 978 71 980 Ln
+71 980 74 980 Ln
+74 980 80 978 Ln
+80 978 84 974 Ln
+84 974 86 970 Ln
+86 970 86 964 Ln
+86 964 84 960 Ln
+84 960 80 956 Ln
+58 930 60 934 Ln
+60 934 64 937 Ln
+64 937 71 939 Ln
+71 939 74 939 Ln
+74 939 80 937 Ln
+80 937 84 934 Ln
+84 934 86 930 Ln
+86 930 86 924 Ln
+86 924 84 920 Ln
+84 920 80 916 Ln
+80 916 74 914 Ln
+74 914 71 914 Ln
+71 914 64 916 Ln
+64 916 60 920 Ln
+60 920 58 924 Ln
+58 924 58 930 Ln
+58 890 60 894 Ln
+60 894 64 898 Ln
+64 898 71 899 Ln
+71 899 74 899 Ln
+74 899 80 898 Ln
+80 898 84 894 Ln
+84 894 86 890 Ln
+86 890 86 884 Ln
+86 884 84 880 Ln
+84 880 80 876 Ln
+80 876 74 874 Ln
+74 874 71 874 Ln
+71 874 64 876 Ln
+64 876 60 880 Ln
+60 880 58 884 Ln
+58 884 58 890 Ln
+44 837 86 837 Ln
+64 837 60 841 Ln
+60 841 58 845 Ln
+58 845 58 851 Ln
+58 851 60 855 Ln
+60 855 64 859 Ln
+64 859 71 861 Ln
+71 861 74 861 Ln
+74 861 80 859 Ln
+80 859 84 855 Ln
+84 855 86 851 Ln
+86 851 86 845 Ln
+86 845 84 841 Ln
+84 841 80 837 Ln
+36 820 40 817 Ln
+40 817 46 813 Ln
+46 813 54 809 Ln
+54 809 64 807 Ln
+64 807 72 807 Ln
+72 807 83 809 Ln
+83 809 90 813 Ln
+90 813 96 817 Ln
+96 817 100 820 Ln
+1 SLW
+xs 14 SLC
+257 1214 1678 1403 Ln
+257 978 1678 1685 Ln
+257 600 1678 1079 Ln
+257 270 1678 270 Ln
+541 270 1393 1685 Ln
+257 955 1678 1138 Ln
+257 759 1678 978 Ln
+257 978 888 1685 Ln
+257 742 1678 742 Ln
+257 1685 14 Pix
+257 1413 1678 1557 Ln
+257 828 1248 1685 Ln
+257 1411 1678 1457 Ln
+257 1058 912 1685 Ln
+257 978 1500 1685 Ln
+257 270 1419 1685 Ln
+257 1185 1424 1685 Ln
+257 1685 1678 1685 Ln
+257 1116 1678 1630 Ln
+1678 270 14 Pix
+257 270 1678 270 Ln
+257 552 998 1685 Ln
+257 270 1678 270 Ln
+257 674 1678 1146 Ln
+257 876 1678 978 Ln
+257 1060 1678 1214 Ln
+257 1331 1678 1685 Ln
+257 1097 1678 1514 Ln
+257 860 1022 1685 Ln
+257 1148 1678 1403 Ln
+257 527 1678 1042 Ln
+257 1685 1678 1685 Ln
+257 270 1678 270 Ln
+257 270 1678 978 Ln
+257 1214 967 1685 Ln
+257 876 671 1685 Ln
+257 270 731 1685 Ln
+257 1428 1032 1685 Ln
+257 1685 1678 1685 Ln
+257 652 1678 1303 Ln
+257 1331 1678 1331 Ln
+257 978 1678 978 Ln
+257 1049 1678 1119 Ln
+257 440 1678 1062 Ln
+257 1185 1678 1383 Ln
+257 1685 14 Pix
+257 270 1678 270 Ln
+257 978 967 1685 Ln
+257 978 1678 1685 Ln
+257 1685 1678 1685 Ln
+327 270 1678 1273 Ln
+257 1685 14 Pix
+257 866 1678 1164 Ln
+1678 1685 1678 270 Ln
+257 978 967 1685 Ln
+257 623 1678 1685 Ln
+xs 15 SLC
+1 newPage
+%%Trailer
+%!END
