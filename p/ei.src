@@ -598,8 +598,8 @@ proc checkinputs;
   if rows(_EisFac)/=1 or cols(_EisFac)/=1;
     retp("ei: _EisFac must be a scalar");
   endif;
-  if (_EisFac/=-1 or _EisFac/=2) and _EisFac<0;
-    retp("ei: _EisFac must be -1 or greater than zero");
+  if (_EisFac/=-1 or _EisFac/=-2) and _EisFac<0;
+    retp("ei: _EisFac must be -1, -2 or greater than zero");
   endif;
   
   if not(scalone(_EisChk) or scalzero(_EisChk));
