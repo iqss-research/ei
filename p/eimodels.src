@@ -3,23 +3,20 @@
 **  
 **    This proc adds a data buffer, called mod_d1, mod_d2, etc., 
 **    which contains a particular model specification to the nested data
-**    buffer.
+**    buffer bdres.
 **
 ** OUTPUT:
-**    dbres = updated data buffer containing an additional model
-**            specification. 
-**            titl="*MDB* Meta-Data Buffer from eimodels_def() *MDB*"
-**
+** dbres = updated data buffer containing an additional model
+**         specification, and any previous data buffers nbuf contained; and
+**         titl="*MDB* Meta-Data Buffer from eimodels_def() *MDB*"
 **   
 ** INPUTS:
 **    nduf = a data buffer to which the model specification should be added
 **    num = a scalar, the model number.
 **    t,x,n,Zb,Zw = usual inputs for ei().
-**
 */
-
 proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
-  
+
   /* data inputs */
   _Eres=vput(_Eres,t,"_EI_t");
   _Eres=vput(_Eres,x,"_EI_x");
@@ -66,12 +63,12 @@ proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
 
 
   /** name the buffer and store it in the nested buffer **/
-  format/rd 3,0; 
-  ?;
-  "Model " num "is successfully added to the data buffer.";
   ndbuf=vput(ndbuf,_Eres,"mod_d"$+ftos(num,"*.*lf",1,0));  
   ndbuf=vput(ndbuf,"*MDB* Meta-Data Buffer from eimodels_def() *MDB*","titl"); 
-
+  if _Eprt/=0;
+    ?;
+    "Model " num "is successfully added to the data buffer.";
+  endif;
   retp(ndbuf);
 endp;
 
@@ -80,8 +77,9 @@ endp;
 ** dbuf = eimodels_run(ndbuf);
 ** 
 ** This proc runs ei() for each of the models stored in a nested 
-** data buffer, named mod_r1, mod_r2, etc., the output is another 
-** nested buffer which has the results for all the ei() runs.
+** data buffer created by eimodels_def (with elements mod_r1, mod_r2,...); the
+** output is another nested buffer which has the results for all the ei()
+** runs.
 ** 
 ** OUTPUT:
 **   dbres = nested data buffer with the results of ei() runs of
@@ -94,9 +92,8 @@ endp;
 **
 ** GLOBAL:
 **   _EImodels_save = file name if you want to save the results at 
-**                    each iteration in a data buffer (with the 
-**                    extension ".fmt") on the disk (default = 
-**                    does not save on the disk).
+**           each iteration in a data buffer (assuming
+**           extension ".fmt") on the disk (default = no save).
 **
 */
  
@@ -105,11 +102,15 @@ proc eimodels_run(ndbuf);
   
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
+    if _Eprt/=0;
     "WARNING: the input data buffer is not a output buffer from eimodels_def().";
+    endif;
   else;
     titl=vread(ndbuf,"titl");
     if titl$/="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
+      if _Eprt/=0;
       "WARNING: the input data buffer is not a output buffer from eimodels_def().";
+      endif;
     endif;
   endif;
 
@@ -148,16 +149,16 @@ endp;
 /*
 ** dbres=eimodels_ave(ndbuf)
 **
-** Bayesian Model Averaging for Ecological Inference.
+** Bayesian Model Averaging for EI
 **
 ** INPUT:
-**  ndbuf  nested data buffer from eimodels_run() which contains num data
+**  ndbuf  nested data buffer from eimodels_run() which contains multiple data
 **         buffers from EI runs.
 **      
 ** OUTPUT:
 **   dbres = data buffer containing the following parameters as the
 **           result of Bayesian Model Averaging using the Harmonic
-**           mean estimator for the marginal likelihoods.
+**           mean estimator for the marginal likelihoods, and
 **           titl="*DB* Data Buffer from eimodels_ave() *DB*"
 **     t = t used for the estimation; if models use different t's, only t 
 **         from the first model is stored and used for eiread() calculation.
@@ -194,21 +195,27 @@ proc 1=eimodels_ave(ndbuf);
 
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
+    if _Eprt/=0;
     ?;
     "WARNING: the input data buffer is not a output buffer from eimodels_run().";
+    endif;
   else;
     titl=vread(ndbuf,"titl");
     if titl$/="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
+      if _Eprt/=0;
       ?;
       "WARNING: the input data buffer is not a output buffer from eimodels_run().";
+      endif;
     endif;
   endif;
 
   _eprt_temp=_Eprt;
   _Eprt=0;
-  ?;
-  "Starting the Bayesian Model Averaging...";
-  ?;
+  if _Eprt_temp/=0;
+    ?;
+    "Starting the Bayesian Model Averaging...";
+    ?;
+  endif;
   num = rows(vnamecv(ndbuf));  
 
   @ initialize local parameters @
@@ -237,7 +244,7 @@ proc 1=eimodels_ave(ndbuf);
         temp = eiread(dbtemp,"nobs");
         if (temp /= nobs);
           ?;
-          "ei: This Model uses the number of observation different from Model " frst;
+          "ei: This Model uses a different number of observations than Model " frst;
           "You cannot average the models with different number of observations.";
           "----- EIBMA Aborted -----";
           ?;
@@ -341,10 +348,11 @@ proc 1=eimodels_ave(ndbuf);
   mfreq = margllik[.,1] ~ zeros(j,1);
 
   @ resampling parameter values with posterior model probabilities @
-  ?;
-  "Sampling Betas from the averaged posterior distribution.";
-  "Please wait...";
-  ?;
+  if _Eprt/=0;
+    ?;
+    "Sampling Betas from the averaged posterior distribution...";
+    ?;
+  endif;
   for k (1,sims,1); 
     zi = 1;
     ratio = rndu(1,1);
@@ -361,9 +369,11 @@ proc 1=eimodels_ave(ndbuf);
     temp = eiread(dbtemp,"betaws");
     betaws[.,k] = temp[.,k];
   endfor;
-  ?;
-  "----- EIMODELS_AVE Completed -----";
-  ?;
+  if _Eprt/=0;
+    ?;
+    "----- EIMODELS_AVE Completed -----";
+    ?;
+  endif;
   @ store the results in data buffer @
   dbres = "";
   dbres = vput(dbres,t,"t");

@@ -23,9 +23,9 @@
 **
 ** GLOBAL
 ** _Eprt  = 0 don't print; 1 = do print selected items.
-** _EIMetaR = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
-**           this global denotes which of the imputed data buffers stored
-**           in dbuf should be accessed when running this procedure (default=1)
+** _EIMetaR = If dbuf is a meta-data buffer (output from ei2, eimodels_run, or
+**           eimodels_def), this global denotes which of the imputed data buffers 
+**           stored in dbuf should be accessed when running this procedure (default=1)
 **
 ** STORED (can also be retrieved with vread):
 ** _EalphaB  value of this global (prior on alphaB)

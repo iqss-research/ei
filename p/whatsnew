@@ -27,6 +27,9 @@ Please email King@Harvard.Edu (for EI) or KBenoit@Harvard.Edu (for EzI)
 *************************************
 * What's new in this version of EI? *
 *************************************
+
+7/31/01 Added Bayesian model averaging
+
 7/29/01 Fixed bug in handling of trap
 
 6/28/01 fixed bug in bounds2
