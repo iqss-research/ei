@@ -25,17 +25,7 @@
 ** _Eprt  = 0 don't print; 1 = do print selected items.
 ** _EIMetaR = If dbuf is a meta-data buffer (output from ei2, eimodels_run, or
 **           eimodels_def), this global denotes which of the imputed data buffers 
-**           stored in dbuf should be accessed when running this procedure
-**           (default=1)
-** _EIread_betabs = betabs with _EIread_Zb and _EIread_Zw
-** _EIread_Zb = recompute betabs based on new values of covariates, Zb,
-**              if {.} do not recompute;
-** _EIread_Zw = recompute betabs based on new values of covariates, Zw,
-**              if {.} do not recompute;
-** _EI_cov = 2x1 vector. specifies which covariate to use for tsimsz,
-**           expvarciz, and expvarcisz. The first element indicates the column 
-**           number of zb and the second element indicates the column
-**           number of zw (default={1,0}; use zb[.,1]).
+**           stored in dbuf should be accessed when running this procedure (default=1)
 **
 ** STORED (can also be retrieved with vread):
 ** _EalphaB  value of this global (prior on alphaB)
@@ -145,13 +135,8 @@
 ** Eaggbias  4 x 2:(b~se)|(b~se) for regs of est'd betaB,betaW on const. & X
 ** nobs      scalar: number of observations
 ** tsims     100 x _Esims+1:rows=seqase(0,1,100), cols=X~(sorted sims of T|X)
-** tsimsz    100 x _Esims+1:rows=seqase(min(Z),max(Z),100), 
-**           cols=Z~(sorted sims of T|Z,wmean(X,n))
 ** expvarci  100 x 4: X~20%CI~mean~80%CI of sims from p(T|X)
-** expvarciz 100 x 4: Z~20%CI~mean~80%CI of sims from p(T|Z,wmean(X,n))
 ** expvarcis 100 x 4: X~20%CI~mean~80%CI of sims from p(T|X) LOESS Smoothed
-** expvarcisz 100 x 4: Z~20%CI~mean~80%CI of sims from p(T|Z,wmean(X,n)) 
-**            LOESS Smoothed
 ** etaC      2x1 etaB|etaW to fix eta's at (derived from _Eeta)
 ** etaS      2x1 se(etaB|etaW) fixed se's for eta (derived from _Eeta)
 ** _Ez       2x1: n of covariates, including implied constant term for Zb|Zw
@@ -210,11 +195,11 @@
 */
 #include ei.ext;
 proc eiread(dbuf,str);
-  local vrs,a,res,tt,x,t,v,omx,b,bb,bw,sb,sw,rho,sbw,cv,Zb,Zw,titl,bs,p,d,z,
+  local vrs,a,res,tt,x,t,v,omx,b,bb,bw,sb,sw,rho,sbw,cv,Zb,Zw,titl,bs,p,d,
   tvap,n,nb,nw,c,c0,c1,bnds,bb0,bw0,invX,invT,meanX,meanT,p00,p11,p01,p10,x2,strtmp,
   strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,_t,_x,
   postp,priorp,mrgllk;
-    
+
   /* for ei2, pull out data buffer _eimetar from meta-data buffer */
   /* for eimodels_def, pull out data buffer from meta-data buffer for Model _eimetar */
   /* for eimodels_run, pull out data buffer from meta-data buffer for Model _eimetar */
@@ -251,7 +236,6 @@ proc eiread(dbuf,str);
   str=lower(str);
   
   cv=vnamecv(dbuf);
-  cv=delif(cv,cv.$=="betaBs  ");
   strc=strput(str,"        ",1);
   
   /* for the output of eimodels_avg, prevent users from reading inappropriate parameters */ 
@@ -262,9 +246,9 @@ proc eiread(dbuf,str);
       _edoml_phi _edoml_vcphi _eeta _ei_vc _eigraph_bvsmth _eischk _eisfac
       _eisn _eist emaxiter _enoneval _enonnumint _enonpar _enumtol _erho
       _eselrnd _esigma _estval _evtol _ei2_m _eimetar _eimodels_save zb zw
-      _t _x _ez x2 x2rn checkr dataset etac etas expvarci expvarciz 
-      expvarcis expvarcisz lnir loglik logliks meanir mppsiu parnames phi 
-      phisims pphi psi psitruth psiu r ri retcode tsims tsimsz vcphi;
+      _t _x _ez x2 x2rn checkr dataset etac etas expvarci expvarcis lnir
+      loglik logliks meanir mppsiu parnames phi phisims pphi psi psitruth
+      psiu r ri retcode tsims vcphi;
       vrs=lower(vrs);
       if in(str,vrs,0);
          "eiread: You cannot eiread " $strtmp " from the output buffer of eimodels_avg.";
@@ -282,11 +266,11 @@ proc eiread(dbuf,str);
     if titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
       let vrs=_t or _x _ez abounds abounds2 aggbias beta betab betabs
       betaw betaws, bounds checkr ci50b ci50w ci80b ci80bw ci95b ci95bw
-      coverage csbetab csbetaw eaggbias etac etas expvarci expvarciz 
-      expvarcis expvarcisz gebw gebwa gewb gewba goodman lnir loglik 
-      logliks maggs meanir mppsiu neighb paggs palmquist parnames phi 
-      phisims pphi psi psiu r ri resamp retcode rnbetabs rnbetaws sbetab 
-      sbetaw stbetabs stbetaws sum thomsen tsims tsimsz vcaggs vcphi;
+      coverage csbetab csbetaw eaggbias etac etas expvarci expvarcis gebw
+      gebwa gewb gewba goodman lnir loglik logliks maggs meanir mppsiu
+      neighb paggs palmquist parnames phi phisims pphi psi psiu r ri
+      resamp retcode rnbetabs rnbetaws sbetab sbetaw stbetabs stbetaws sum
+      thomsen tsims vcaggs vcphi;
       vrs=lower(vrs);
       if in(str,vrs,0);
          "ei: You cannot eiread " $strtmp " from the output buffer of eimodels_def.";
@@ -482,7 +466,7 @@ proc eiread(dbuf,str);
   elseif str$=="_ez";@ n of covariates, incl. implied constant for Zb|Zw @
     zb=eiread(dbuf,"zb");
     zw=eiread(dbuf,"zw");
-    clearg _Ez;
+    clearg _Ez;	
     _Ez=(cols(Zb)+1-(Zb==1))|(cols(Zw)+1-(Zw==1)); 
     res=_Ez;
   
@@ -569,44 +553,6 @@ proc eiread(dbuf,str);
     _Eselect=eiread(dbuf,"_Eselect");
     res=packdta(x,Zb,Zw,t);
   
-  elseif str$=="betabs";
-    if scalmiss(_EIread_Zb) and scalmiss(_EIread_Zw);
-      res=vread(dbuf,"betabs");   
-    elseif scalmiss(_eiread_betabs);
-      Zb=eiread(dbuf,"zb");
-      Zw=eiread(dbuf,"zw");
-      call eiread(dbuf,"_Ez");
-      if not(scalmiss(_EIread_Zb));
-	if rows(_EIread_Zb)/=rows(zb) or cols(_EIread_Zb)/=cols(zb);
-	  "eiread: bad input for _EIread_Zb. The dimension does not";
-          "        match with that of Zb.";
-	  res={.};
-	  retp(res);
-	endif;
-      endif;
-      if not(scalmiss(_EIread_Zw));
-	if rows(_EIread_Zw)/=rows(zw) or cols(_EIread_Zw)/=cols(zw);
-          "eiread: bad input for _EIread_Zw. The dimension does not";
-          "        match with that of Zw.";
-	  res={.};
-	  retp(res);
-	endif;
-      endif;
-
-      setglobals(dbuf);
-      t=eiread(dbuf,"t");
-      x=eiread(dbuf,"x");
-      n=eiread(dbuf,"n");
-      cv=eiread(dbuf,"vcphi");
-      p=eiread(dbuf,"phi");
-      {betabs, betaws}=psim1(t,x,n,Zb,Zw,p,cv);
-      _eiread_betabs=betabs;
-      res=betabs;
-    else;
-      res=_eiread_betabs;
-    endif;
-
-
   elseif str$=="betaws";		@ betaW simulations @
     t=vread(dbuf,"t");
     if vin(dbuf,"x2");
@@ -906,7 +852,7 @@ proc eiread(dbuf,str);
     n=eiread(dbuf,"n");
     {a,res}=bounds1(t,x,n);
     if _Eprt>0;
-      let vrs="       " betaBb betaW;
+      let vrs="       " betaBb etaW;
       "Aggregate bounds";
       $vrs';
       "Lower: ";;res[.,1]';
@@ -1047,7 +993,7 @@ proc eiread(dbuf,str);
       nb=eiread(dbuf,"nb");
       nw=eiread(dbuf,"nw");
     endif;
-    res=meanwc(eiread(dbuf,"betaBs"),nb)
+    res=meanwc(vread(dbuf,"betaBs"),nb)
        ~meanwc(eiread(dbuf,"betaWs"),nw);
     
   elseif str$=="maggs";		        @ 2 x 1: meanc(aggBs~aggWs) @
@@ -1242,48 +1188,36 @@ proc eiread(dbuf,str);
       endif;
     endif;
     
-  elseif str$=="tsims";	 @ sims from p(T|X=seqas(0,1,100)) @
-    a=100;               @ covariates held at weighted mean if specified @
+  elseif str$=="tsims";			@ sims from p(T|X=seqas(0,1,100))  @
+    c=eiread(dbuf,"_Eeta");
+    if scalzero(c) and
+      (not(scalone(eiread(dbuf,"Zb"))) or not(scalone(eiread(dbuf,"Zw"))));
+      "eiread: tsims only works without covariates.";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    a=100;
     x=seqase(0,1,a);
     b=eiread(dbuf,"phi");
-    c=eiread(dbuf,"_Eeta");   
-    zb=eiread(dbuf,"zb");
-    zw=eiread(dbuf,"zw");
     if scalmiss(b);
       res=miss(1,1);
-    elseif scalzero(c) and (not(scalone(zb)) or not(scalone(zw)));
-      n=eiread(dbuf,"n");
-    else; 
+    else;
       if c==1 or c==4;
-        b[rows(b)-1]=b[2];
+	b[rows(b)-1]=b[2];
       elseif c==2 or c==5;
 	b[rows(b)]=b[3];
       elseif c==3 and rows(c)==1;
-	b[rows(b)-1]=b[2]; 
+	b[rows(b)-1]=b[2];
 	b[rows(b)]=b[4];
       endif;
-    endif;
-    call eiread(dbuf,"_Ez");
-    let bnds[2,2]=0 1 0 1;
-    {bb0,bw0,sb,sw,rho}=eirepar(b,0,0,0);
-    res=zeros(a,_Esims);
-    if scalzero(c) and (not(scalone(zb)) or not(scalone(zw))); 
-      if scalone(zb);
-	bb=bb0;
-	bw=bw0+b[2:(1+cols(zw))]'*meanwc(zw,n); 
-      elseif scalone(zw);
-	bb=bb0+b[2:(1+cols(zb))]'*meanwc(zb,n);
-	bw=bw0;
-      else;
-	bb=bb0+b[2:(1+cols(zb))]'*meanwc(zb,n);
-	bw=bw0+b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
-      endif;      
-      bs=rndbtn(bb,bw,sb,sw,rho,bnds,_Esims);
-      for i (1, a, 1);
-	t=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
-	res[i+0,.]=sortc(t,1)';
-      endfor;
-    else;
+      call eiread(dbuf,"_Ez");
+      zb=eiread(dbuf,"zb");
+      zw=eiread(dbuf,"zw");
+      {bb0,bw0,sb,sw,rho}=eirepar(b,0,0,0);
+      res=zeros(a,_Esims);
+      let bnds[2,2]=0 1 0 1;
       e=meanc(vread(dbuf,"x"));
       for i (1, a, 1);
 	bb=bb0+b[rows(b)-1]*(x[i+0]-e);
@@ -1292,93 +1226,18 @@ proc eiread(dbuf,str);
 	t=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
 	res[i+0,.]=sortc(t,1)';
       endfor;
-    endif;	
-    res=x~res;
-
-  elseif str$=="tsimsz"; @ sims from p(T|wmeanc(X,N),Z=seqas(min(Z),max(Z),100) @       
-    c=eiread(dbuf,"_Eeta");
-    n=eiread(dbuf,"n");
-    x=eiread(dbuf,"x");   
-    zb=eiread(dbuf,"zb");
-    zw=eiread(dbuf,"zw");
-    if c==1 or c==2 or c==3 or (scalone(zb) and scalone(zw)); 
-      "ei: tsimsz only works with covariates other than x.";
+      res=x~res;
+    endif;
+      
+  elseif str$=="expvarci";		@ x~20%CI~mean~80%ci @
+    if rows(eiread(dbuf,"_Eeta"))==4 and
+      (not(scalone(eiread(dbuf,"Zb"))) or not(scalone(eiread(dbuf,"Zw"))));
+      "eiread: expvarci only works without covariates.";
       #ifdos;
         ndpclex;
       #endif;
       retp(miss(1,1));
-    endif;    
-    if rows(_ei_cov)/=2 or cols(_ei_cov)/=1;
-      "ei: _ei_cov must be a 2x1 vector";
-      retp(miss(1,1));
-    else; 
-      if _ei_cov[1]>cols(zb);
-	"ei: bad inputs for _ei_cov";
-        retp(miss(1,1));
-      elseif _ei_cov[2]>cols(zw);  
-	"ei: bad inputs for _ei_cov";
-        retp(miss(1,1));
-      elseif _ei_cov[1]==0 and _ei_cov[2]==0;
-	"ei: bad inputs for _ei_cov";	
-	retp(miss(1,1));      
-      elseif _ei_cov[1]/=0 and _ei_cov[2]/=0 and 
-        sumc(zb[.,_ei_cov[1]]./=zw[.,_ei_cov[2]])>0;
-        "ei: bad inputs for _ei_cov";
-        retp(miss(1,1));
-      elseif _ei_cov[1]==1 and scalone(zb);
-	"ei: bad inputs for _ei_cov";
-        retp(miss(1,1));
-      elseif _ei_cov[2]==1 and scalone(zw);
-	"ei: bad inputs for _ei_cov";  
-        retp(miss(1,1));
-      endif;	
     endif;
-
-    a=100;
-    x=meanwc(x,n);
-    if not(scalzero(_ei_cov[1]));
-      z=zb[.,_ei_cov[1]];
-    endif;
-    if not(scalzero(_ei_cov[2]));
-      z=zw[.,_ei_cov[2]];
-    endif;
-    e=meanc(z);
-    z=seqase(minc(z),maxc(z),a);
-    b=eiread(dbuf,"phi");
-    call eiread(dbuf,"_Ez");
-    {bb0,bw0,sb,sw,rho}=eirepar(b,0,0,0);
-    res=zeros(a,_Esims);
-    let bnds[2,2]=0 1 0 1;
-    for i (1, a, 1);
-      if scalzero(_ei_cov[1]);
-	if scalone(zb);
-	  bb=bb0;
-	else;
-	  bb=bb0+b[2:(1+cols(zb))]'*meanwc(zb,n);
-	endif;  
-	bw=bw0+b[(2+cols(zb)+_ei_cov[2])]*(z[i+0]-e-meanwc(zw[.,_ei_cov[2]],n))
-	    +b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
-      elseif scalzero(_ei_cov[2]);
-	if scalone(zw);
-	  bw=bw0;
-	else;
-	  bw=bw0+b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
-	endif;  
-	bb=bb0+b[(1+_ei_cov[1])]*(z[i+0]-e-meanwc(zb[.,_ei_cov[1]],n))
-	    +b[2:(cols(zb)+1)]'*meanwc(zb,n);
-      else;      
-	bb=bb0+b[(1+_ei_cov[1])]*(z[i+0]-e-meanwc(zb[.,_ei_cov[1]],n))
-	    +b[2:(cols(zb)+1)]'*meanc(zb);
-	bw=bw0+b[(1+cols(zb)+_ei_cov[2])]*(z[i+0]-e-meanwc(zw[.,_ei_cov[2]],n))
-	    +b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
-      endif;
-      bs=rndbtn(bb,bw,sb,sw,rho,bnds,_Esims);
-      t=bs[.,1].*x+bs[.,2].*(1-x);
-      res[i+0,.]=sortc(t,1)';
-    endfor;
-    res=z~res;          
-      
-  elseif str$=="expvarci";		@ x~20%CI~mean~80%ci @
     b=eiread(dbuf,"tsims");
     if scalmiss(b);
       res={.};
@@ -1387,48 +1246,9 @@ proc eiread(dbuf,str);
       b=b[.,2:_Esims+1];
       res=x~b[.,int(0.2*_Esims)]~meanc(b')~b[.,int(0.8*_Esims)];
     endif;
-
-  elseif str$=="expvarciz";		@ z~20%CI~mean~80%ci @
-    c=eiread(dbuf,"_Eeta");
-    x=eiread(dbuf,"x");
-    zb=eiread(dbuf,"Zb");
-    zw=eiread(dbuf,"Zw");
-    if c==1 or c==2 or c==3 or (scalone(zb) and scalone(zw)); 
-      "eigraph: ztc only works with covariates other than x.";
-      #ifdos;
-        ndpclex;
-      #endif;
-      retp(miss(1,1));
-    endif;    
-    b=eiread(dbuf,"tsimsz");
-    if scalmiss(b);
-      res={.};
-    else;
-      z=b[.,1];
-      b=b[.,2:_Esims+1];
-      res=z~b[.,int(0.2*_Esims)]~meanc(b')~b[.,int(0.8*_Esims)];
-    endif;
   
   elseif str$=="expvarcis";		@ x~20%CI~mean~80%ci LOESS smoothed @
     b=eiread(dbuf,"expvarci");
-    if scalmiss(b);
-      res={.};
-    else;
-      e=__output;
-      __output=0;
-      _loess_WgtType=2;
-      _loess_span=.45;
-      {tt,c,a}=loess(b[.,2],b[.,1]);
-      res=a~c;
-      {tt,c,tt}=loess(b[.,3],b[.,1]);
-      res=res~c;
-      {tt,c,tt}=loess(b[.,4],b[.,1]);
-      res=res~c;
-      __output=e;
-    endif;
-
-  elseif str$=="expvarcisz";		@ z~20%CI~mean~80%ci LOESS smoothed @
-    b=eiread(dbuf,"expvarciz");
     if scalmiss(b);
       res={.};
     else;
