@@ -895,7 +895,6 @@ proc eirepl(dbufin);
   n=eiread(dbufin,"n");
   Zb=vread(dbufin,"Zb");
   Zw=vread(dbufin,"Zw");
-  _Eeta=vread(dbufin,"_Eeta");
   clearg _Eres;
   _Eres=dbufin;
 
@@ -936,13 +935,15 @@ proc(0)=setglobals(dbufin);
   "_EdirTol"|"_EdoML"|"doml_phi"|"doml_vc"|"_EdoSim"|
   "bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"EmaxIter"|
   "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
-  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
+  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol"
+  |"_Eeta";
 
   nms1="_EalphaB"|"_EalphaW"|"_Ebeta"|"_Ebounds"|"_Ecdfbvn"|
   "_EdirTol"|"_EdoML"|"_EdoML_phi"|"_EdoML_vcphi"|"_EdoSim"|
   "_EIgraph_bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"_EmaxIter"|
   "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
-  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
+  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol"
+  |"_Eeta";
 
   r=rows(nms);
   for i (1, r, 1);    
