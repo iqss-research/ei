@@ -163,26 +163,28 @@ useful place to start:
   probably complete enough to be of use in many applications.
 \end{quotation}  
 
-HS add to the ideas in these paragraphs by pointing out that Bayesian
-estimates, such as those from EI, regress to the mean.  This
-``shrinkage'' property produces optimal estimates, in terms of mean
-square error.  Thus, we agree with HS that the best possible estimate
-of $\beta^b_i$, under HS's assumptions, is that produced by EI.  But
-HS also make the interesting and correct point that using Bayesian
-mean posterior estimates with this property, like those given by EI,
-as dependent variables in least squares regression can, under some
-circumstances, produce biased estimates.  This central
-point of HS's paper is an important contribution and one that we build
-on in this paper.
+HS add to the ideas in these paragraphs by pointing out that
+precinct-level estimates from EI regress to the mean.  This
+``shrinkage'' property is indeed a characteristic of EI, as it is for
+all Bayesian models (of which EI is one).  This shrinkage results in
+optimal estimates, in terms of generating estimates with the smallest
+possible mean square error.  Thus, we agree with the implication of
+HS's article that the best possible estimate of $\beta^b_i$, under
+HS's assumptions, is that produced by EI.  But HS also make the
+interesting and correct point that using Bayesian mean posterior
+estimates with this property, like those given by EI, as dependent
+variables in least squares regression can, under some circumstances,
+produce biased estimates.  This central point of HS's paper is an
+important contribution and one on which we build here.
 
 Instead of least squares regression, HS's suggested procedure is to
 use a bias adjusted slope for the second stage regression but to leave
-the constant term unchanged.  The adjustment is based on linear
-approximations within the classical linear regression econometric
-theory framework.  The problems we describe below with HS's approach
-are all due assuming linearity when modeling an inherently nonlinear
-and bounded relationship, and HS's decision to adjust the slope without
-adjusting the constant term too.
+the constant term unchanged.  Their adjustment is based on linear
+approximations within the classical linear econometric theory
+framework.  The problems we describe below with HS's approach are all
+due assuming linearity when modeling an inherently nonlinear and
+bounded relationship, as well as not completing the task they set for
+themselves within this framework.
 
 We replicated HS's simulations without trouble.  We then examined how
 well their adjusted regression procedure fit the observed data based
@@ -190,10 +192,8 @@ on $\hat\beta_i^b$ and the true (normally unobserved) $\beta_i^b$.  We
 find that correcting the slope but not the constant, as HS suggest, is
 considerably worse than an unadjusted regression of $\hat\beta_i^b$ on
 $Z$ and every other procedure discussed in HS's paper and the
-literature we have examined.  The regression line from HS's partially
-adjusted method often misses the point cloud of true $\beta_i^b$
-points in many simulations by a wide margin.  It often even misses
-the observed points, $\hat\beta_i^b$.
+literature we have examined.  The regression line from HS's method
+usually misses the cloud of true $\beta_i^b$ points by a wide margin.
 
 We therefore begin by extending HS's partial adjustment procedure,
 within their linear regression framework, by developing an adjustment
@@ -205,7 +205,7 @@ arise in practice.  Since each situation is easily detectable from the
 available aggregate data, users will know which situation they are in
 and can take the appropriate action.  As it turns out, the HS
 partially adjusted procedure is never called for.  The fully adjusted
-procedure is best for when the bounds are so wide that making any
+procedure is best only for data with bounds so wide that making any
 ecological inferences at all in the first stage is inadvisable (unless
 one has strong auxiliary information), due to extreme model
 dependence.  In the other three situations, the best procedures are
@@ -214,11 +214,12 @@ regression, and a logistic regression procedure, respectively.
 
 \section{A Fully Adjusted Second Stage Regression Procedure}
 \label{s:fulladj}
+
 HS consider models in which a researcher wishes to regress an EI-based
 estimate, $\hat\beta_i^b$, on some explanatory variable $Z_i$:
 \begin{equation}
-\label{eq:ssreg}
-\hat\beta_i^b=\alpha_U+\gamma_U Z_i + \nu_i,
+  \label{eq:ssreg}
+  \hat\beta_i^b=\alpha_U+\gamma_U Z_i + \nu_i,
 \end{equation}
 They argue that unless the measurement error in $\hat\beta_i^b$ is
 uncorrelated with the true $\beta_i^b$, $\gamma_U$ will be biased.
@@ -232,8 +233,8 @@ HS propose a correction for this attenuation bias based on the
 assumption that the measurement error in $\hat\beta_i^b$ is a linear
 function of the true $\beta_i^b$'s:
 \begin{equation}
-\label{eq:hserr}
-\hat\beta_i^b - \beta_i^b = \delta_0^b + \delta_1^b\beta_i^b + \zeta_i.
+  \label{eq:hserr}
+  \hat\beta_i^b - \beta_i^b = \delta_0^b + \delta_1^b\beta_i^b + \zeta_i.
 \end{equation}
 If this assumption holds, then it is easy to show that the true slope,
 $\gamma_R$, can be calculated as $\gamma_U/(1 + \delta_1^b)$; HS label
@@ -247,16 +248,10 @@ predictions of $\hat\beta_i^b$ from Eq.  \ref{eq:ssreg} than are
 consistent with the data, or even possible.  Only when $\bar Z \approx
 0$ is the unadjusted $\alpha$ approximately right.
 
-Since the procedure HS recommend in Section 7.2 produces estimates of
-both $\delta_0^b$ and $\delta_1^b$, researchers can make a full
-adjustment of a second-stage regression as easily as a partial
-adjustment.  In practice, there is no reason to correct only the
-slope.  Failure to adjust all parameters often leads to a worse fit
-than the unadjusted regression, and the fully adjusted procedure
-generally dominates slope correction alone.
-
-
-
+Since we can easily adapt the procedure HS recommend in Section 7.2
+to produce estimates of both $\delta_0^b$ and $\delta_1^b$, researchers
+can make a full adjustment of a second-stage regression as easily as a
+partial adjustment.
 \begin{table}[tb]
 \label{t:hsrep}
 \begin{center}
@@ -355,31 +350,34 @@ $\sigmau_w$, and $\rhou$.
 \item Repeat the following 100 times:
 
 \begin{enumerate}
-
-\item Draw $X_i$, $i=1,\ldots,500$ from the uniform distribution.  Various
-ranges of uniform random numbers are chosen to produce different
-mixtures of wide and narrow bounds.
-
-\item Draw $Z_i$ from the normal distribution.  Various means and variances are used in different scenarios.
-
-\item Calculate the untruncated means $\bbetau^b_i$ and $\bbetau^w_i$ from
-the extended EI model, as follows:
+  
+\item Draw $X_i$, $i=1,\ldots,500$ from the uniform distribution.
+  Various ranges of uniform random numbers are chosen to produce
+  different mixtures of wide and narrow bounds.
+  
+\item Draw $Z_i$ from the normal distribution.  Various means and
+  variances are used in different scenarios.
+  
+\item Calculate the untruncated means $\bbetau^b_i$ and $\bbetau^w_i$
+  from the extended EI model, as follows:
 \begin{align}
   \bbetau^b_i &= \left[\phi_1(\sigmau_b^2+0.25)+0.5\right]
-      +\phi_2Z_i^b\notag\\
+  +\phi_2Z_i^b\notag\\
   \bbetau^w_i &= \left[\phi_3(\sigmau_w^2+0.25)+0.5\right]
-      +\phi_4Z_i^w
+  +\phi_4Z_i^w
   \label{reparZ}
 \end{align}
 
-\item Draw $\beta_i^b$ and $\beta_i^w$ from the truncated bivariate normal
-given $\psiu = \(\bbetau^b,\bbetau^w,\sigmau_b,\sigmau_w,\rhou\)$.
-
+\item Draw $\beta_i^b$ and $\beta_i^w$ from the truncated bivariate
+  normal given $\psiu =
+  \(\bbetau^b,\bbetau^w,\sigmau_b,\sigmau_w,\rhou\)$.
+  
 \item Obtain estimates of $\hat\beta_i^b$ and $\hat\beta_i^w$ from EI,
-omitting the covariate $Z_i$.
-
-\item Estimate $\hat\delta_0^b$ and $\hat\delta_1^b$ using Eq. \ref{eq:hserr}.
-
+  omitting the covariate $Z_i$.
+  
+\item Estimate $\hat\delta_0^b$ and $\hat\delta_1^b$ using Eq.
+  \ref{eq:hserr}.
+  
 \item Estimate the following equations:
 \begin{align}
   \beta_i^b=\alpha_R+\gamma_R Z_i + \nu_i \textrm{by LS}\notag\\
@@ -387,7 +385,8 @@ omitting the covariate $Z_i$.
   \hat\beta_i^b=\alpha_W+\gamma_W Z_i + \nu_i \textrm{by WLS}
 \end{align}
 
-\item Finally, obtain adjusted slopes and coefficients according to the procedure described in Section \ref{s:fulladj}.
+\item Finally, obtain adjusted slopes and coefficients according to
+  the procedure described in Section \ref{s:fulladj}.
 
 \end{enumerate}
 \end{enumerate}
