@@ -768,10 +768,11 @@ perform relatively well compared with other methods in many situations
   likelihood without requiring such an effort.  The rate of
   approximation is $O(1/n)$, which is considerably better than
   easier-to-apply methods such as BIC, which has a rate of only
-  $O(1)$: For example, Kass and Raftery (1995,p.778) say that ``even
-  for very large samples, it [BIC] does not produce the correct
-  value.''  In our small-$n$ application, our use of the Laplace
-  approximation along with exact finite sample posterior simulation.}
+  $O(1/\sqrt{n})$: For example, Kass and Raftery (1995,p.778) say that
+  ``even for very large samples, it [BIC] does not produce the correct
+  value.''  In our small-$n$ application, the Laplace approximation
+  along with exact finite sample posterior simulation is more
+  appropriate.}
 % The Laplace-Metropolis estimator of the
 % marginal likelihood is based on the following Laplace asymptotic
 % approximation.
