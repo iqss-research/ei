@@ -1,13 +1,9 @@
 \documentclass[11pt]{article}
-\usepackage{graphicx,psfrag}
+\usepackage{graphicx}
 \addtolength{\oddsidemargin}{-.55in}
 \addtolength{\evensidemargin}{-.55in}
 \addtolength{\textwidth}{1.1in}
 \addtolength{\textheight}{.9in}
-
-\newcommand{\wt}{\widetilde}
-\newcommand{\al}{\alpha}
-\newcommand{\step}{\sc Step}
 
 \begin{document}
 
@@ -255,6 +251,121 @@ in roman type.
 
 \noindent {\bf Major Comments of and reply to Referee~2}
 
+\begin{enumerate}
+\item {\it This paper, like some others I have seen, seems to assume
+    that any question touching on the 2000 presidential vote in
+    Florida is inherently fascinating.  But the question here is
+    whether voiding 680 illegal ballots would have reversed a 537-vote
+    margin.  For that to be the case, the illegal ballots would have
+    had to split about 90-10 for Bush.  How likely is a 90-10 split in
+    a 50-50 state?  For that matter, how likely is a 90-10 split in
+    presidential votes in ANY social group?  Unless they happened to
+    be a boatload of Christian fundamentalist missionaries, not very.
+    We don't need ecological inference, Bayesian model averaging, or
+    high-priced political science of any kind to conclude that the
+    authors' question is not really all that interesting.}
+  
+  We do not want to discuss whether the question posed by the NYT is
+  interesting since it is purely a matter of subjective judgment.
+  Rather, our goal was to give a scientific answer to this question.
+  Having said that, a few points need to be clarified.  First, note
+  that $537/680 \approx 0.78$ and hence it is 80-20 split rather than
+  90-10 split. Second, we are looking at the Bush's vote share among
+  {\it bad} overseas ballots rather than all overseas ballots. More
+  than 25 NYT journalists spent six months gathering massive
+  qualitative evidence that the Bush campaign put significant amount
+  of pressure on local electoral officials to count those ballots that
+  were likely to be cast for Bush (e.g., military votes).  Based on
+  this evidence, they concluded that it may be possible that 80\% of
+  illegally counted overseas ballots is cast for Bush, and asked us to
+  investigate such possibility. The NYT then wrote the full four page
+  article - the longest since the Watergate - on this question and our
+  analysis. We believe that the NYT question is reasonable. In
+  Escambia, one of Bush's strongholds, about 78\% of all overseas
+  ballots were cast for Bush. If the Bush campaign's strategy is very
+  successful, 80-20 split is certainly possible if not highly likely.
+
+  
+\item {\it The authors evade this problem partly through misdirection
+    and partly through purple prose.  For example, on page 3, the
+    estimated probability that Gore should have won "is small, but we
+    know with mathematical certainty that it is greater than zero--a
+    conclusion that can only be seen as remarkable for the world's
+    premier democracy."  What does this mean?
+    
+    Since the number of invalid ballots was (according to the New York
+    Times) larger than the vote margin, and since we don't know how
+    the invalid ballots were cast, it is impossible in principle for
+    ANY statistical analysis to assign a probability of zero (or one)
+    to the proposition that Gore should have won.  I suppose that is a
+    ``mathematical certainty,'' but it is not a very interesting one,
+    and it owes nothing to the authors' analysis.  Nor is it very
+    remarkable.  Any coherent (i.e., Bayesian) worldview would, I
+    think, have to assign non-zero (albeit VERY small) probability to
+    the proposition that the candidate won EVERY presidential election
+    in American history due to erroneous or fraudulent vote counts.
+    The possibility doesn't keep me awake at night.}
+  
+  By ``mathematical certainty,'' we mean that the data alone (without
+  any statistical assumption) cannot tell whether Gore should have won
+  the election. This is not because ``the number of invalid ballots
+  was larger than the vote margin.'' Indeed, the analysis of bounds
+  can eliminate the possibility of Gore's victory. Since the analysis
+  of bounds does not impose any statistical assumption, we believe
+  that it is important to stress its conclusion. In fact, this kind of
+  identification analysis is a common practice in modern applied
+  statistics (see e.g., the works by Charles Manski).
+  
+\item {\it When I first saw the paper I was naturally intrigued by the
+    claim that "Formal Bayesian model averaging has not been used in
+    political science."  I thought that scholars had used it over the
+    past half-dozen years.  It turns out (footnote 7) that they used
+    "an approximation to formal Bayesian model averaging."  Why an
+    "approximation"?  The authors never say, but I conjecture from
+    some discussion in Appendix A that what they have in mind is that
+    previous work employed the BIC statistic to index the relative
+    likelihood of alternative models, whereas they use a Laplace
+    approximation.  (Isn't an "approximation" too?)  The Laplace
+    approximation is, indeed, more appropriate for their application,
+    but identical for others' (i.e., for ordinary regression models).
+    So the primary methodological selling point of the paper seems to
+    me to reduce, essentially, to tendentious self-promotion.}
+
+  We meant that the Laplace approximation provides a better way to
+  approximate the marginal likelihood. This is the conclusion of the
+  recent statistical literature (see e.g., ). To avoid the
+  misunderstanding, we changed this sentence to ...
+  
+\item {\it What seems most striking about the statistical analysis (pages
+  9-14) is the high ratio of wind-up to substance.  The authors
+  provide nice general descriptions of Gary King's EI model and of
+  Bayesian model averaging, but make NO mention in the text of what
+  models they actually estimated (these are listed very
+  telegraphically in a footnote) or what the results were (even in the
+  appendices)!  This must come close to absolute zero with respect to
+  a methodological standard that Gary King has admirably set forth in
+  his work: make it clear what the data are and how you got from the
+  data to the conclusions.}
+
+\item {\it The model space requires much more in the way of
+    substantive justification than it gets here.  I see no need to
+    consider every logically possible combination of the 27 available
+    covariates, but neither does it make sense to limit the analysis
+    to bivariate models.  Saying more about what the variables
+    actually measure, why they might be relevant, and which (if any)
+    produce significant results when considered in isolation and in
+    limited, substantively sensible combinations would be a good start
+    on a more interesting and potentially convincing analysis.
+    Whether this problem deserves that sort of work is unclear to me,
+    but that sort of work would, in my view, be necessary for the
+    statistical analysis to fly.}
+ 
+
+
+ 
+
+
+\end{enumerate}
 
 \end{document}
 
