@@ -1325,6 +1325,12 @@ proc eiread(dbuf,str);
         sumc(zb[.,_ei_cov[1]]./=zw[.,_ei_cov[2]])>0;
         "ei: bad inputs for _ei_cov";
         retp(miss(1,1));
+      elseif _ei_cov[1]==1 and scalone(zb);
+	"ei: bad inputs for _ei_cov";
+        retp(miss(1,1));
+      elseif _ei_cov[2]==1 and scalone(zw);
+	"ei: bad inputs for _ei_cov";  
+        retp(miss(1,1));
       endif;	
     endif;
 
@@ -1362,7 +1368,7 @@ proc eiread(dbuf,str);
 	    +b[2:(cols(zb)+1)]'*meanwc(zb,n);
       else;      
 	bb=bb0+b[(1+_ei_cov[1])]*(z[i+0]-e-meanwc(zb[.,_ei_cov[1]],n))
-	    +b[2:(cols(zb)+1)]'*meanwc(zb,n);
+	    +b[2:(cols(zb)+1)]'*meanc(zb);
 	bw=bw0+b[(1+cols(zb)+_ei_cov[2])]*(z[i+0]-e-meanwc(zw[.,_ei_cov[2]],n))
 	    +b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
       endif;

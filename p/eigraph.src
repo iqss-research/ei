@@ -1775,6 +1775,10 @@ proc checkginputs(dbuf);
     elseif _ei_cov[1]/=0 and _ei_cov[2]/=0 and 
            sumc(a[.,_ei_cov[1]]./=b[.,_ei_cov[2]])>0;
       retp("ei: bad inputs for _ei_cov");
+    elseif _ei_cov[1]==1 and scalone(a);
+      retp("ei: bad inputs for _ei_cov");
+    elseif _ei_cov[2]==1 and scalone(b);
+      retp("ei: bad inputs for _ei_cov");
     endif;	
   endif;
   
