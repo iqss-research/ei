@@ -391,8 +391,18 @@ proc 1=eigraph(dbuf,str);
     clearg _plctrl,_plotsiz;
     _plctrl=-1;
     _plotsiz={5,5};
+    x=eiread(dbuf,"x");
     zb=eiread(dbuf,"zb");
     zw=eiread(dbuf,"zw");
+    if (scalone(zb) and scalone(zw)) or sumc(x.==zb)==rows(x) or
+       sumc(x.==zb)==rows(x) or cols(zb)>1 or cols(zw)>1 or 
+       (cols(zb)==1 and cols(zw)==1 and sumc(zb.==zw)/=rows(zb));
+      "eigraph: ztc only works with one covariate other than x.";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;    
     if scalone(zb);
      z=zw;
     else;
