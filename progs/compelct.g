@@ -11,7 +11,8 @@
 **     dists = redistricting plan indicator variable.
 **          1=PLAN1001C, 2=PLAN1021C, 3=PLAN1025C, 4=PLAN1034C, 
 **          5=PLAN1040C, 6=PLAN1043C, 7=PLAN1044C, 8=PLAN1045C, 
-**          9=PLAN1046C, 10=PLAN1047C, 11=PLAN1048C 
+**          9=PLAN1046C, 10=PLAN1047C, 11=PLAN1048C, 12=PLAN1000C;
+**          13=PLAN1065C, 14=PLAN1073C;
 **     filenm = output file name.
 **
 **  OUTPUT
@@ -26,7 +27,8 @@ proc 0=compelct(dists,filenm);
   
   let plan_nm= P1001C, P1021C, P1025C, P1034C, 
                P1040C, P1043C, P1044C, P1045C, 
-               P1046C, P1047C, P1048C, P1000C; 
+               P1046C, P1047C, P1048C, P1000C,
+	       P1065C, P1073C; 
   _Eprt=0;
   output file = ^filenm on;
   "               ESTIMATES";
@@ -48,19 +50,19 @@ for distplan(1,rows(dists),1); @ loop for plans @
     for j (1,2,1);
      /*** Betas ***/
       if h==1;
-        name="c:/gauss36/kosuke/ac_98p/db"$+ftos(1+0,"*.*lf",1,0);
+        name="/home/kimai/texas/ac_98p/db"$+ftos(1+0,"*.*lf",1,0);
       elseif h==2;
-        name="c:/gauss36/kosuke/ag_98p/db"$+ftos(1+0,"*.*lf",1,0);
+        name="/home/kimai/texas/ag_98p/db"$+ftos(1+0,"*.*lf",1,0);
       elseif h==3;
-        name="c:/gauss36/kosuke/pr_96p/db"$+ftos(1+0,"*.*lf",1,0);
+        name="/home/kimai/texas/pr_96p/db"$+ftos(1+0,"*.*lf",1,0);
       elseif h==4;
-        name="c:/gauss36/kosuke/s_96p/db"$+ftos(1+0,"*.*lf",1,0);
+        name="/home/kimai/texas/s_96p/db"$+ftos(1+0,"*.*lf",1,0);
       elseif h==5;
-        name="c:/gauss36/kosuke/s_00p/db"$+ftos(1+0,"*.*lf",1,0);
+        name="/home/kimai/texas/s_00p/db"$+ftos(1+0,"*.*lf",1,0);
       elseif h==6;
-        name="c:/gauss36/kosuke/pr_00p/db"$+ftos(1+0,"*.*lf",1,0);
+        name="/home/kimai/texas/pr_00p/db"$+ftos(1+0,"*.*lf",1,0);
       else;
-        name="c:/gauss36/kosuke/s_96r/db"$+ftos(1+0,"*.*lf",1,0);
+        name="/home/kimai/texas/s_96r/db"$+ftos(1+0,"*.*lf",1,0);
       endif;
     
       loadm dbuf=^name;
@@ -75,19 +77,19 @@ for distplan(1,rows(dists),1); @ loop for plans @
 
       for k (2,30,1);
         if h==1;
-          name="c:/gauss36/kosuke/ac_98p/db"$+ftos(k+0,"*.*lf",1,0);
+          name="/home/kimai/texas/ac_98p/db"$+ftos(k+0,"*.*lf",1,0);
         elseif h==2;
-          name="c:/gauss36/kosuke/ag_98p/db"$+ftos(k+0,"*.*lf",1,0);
+          name="/home/kimai/texas/ag_98p/db"$+ftos(k+0,"*.*lf",1,0);
         elseif h==3;
-          name="c:/gauss36/kosuke/pr_96p/db"$+ftos(k+0,"*.*lf",1,0);
+          name="/home/kimai/texas/pr_96p/db"$+ftos(k+0,"*.*lf",1,0);
         elseif h==4;
-          name="c:/gauss36/kosuke/s_96p/db"$+ftos(k+0,"*.*lf",1,0);
+          name="/home/kimai/texas/s_96p/db"$+ftos(k+0,"*.*lf",1,0);
         elseif h==5;
-          name="c:/gauss36/kosuke/s_00p/db"$+ftos(k+0,"*.*lf",1,0);
+          name="/home/kimai/texas/s_00p/db"$+ftos(k+0,"*.*lf",1,0);
         elseif h==6;
-          name="c:/gauss36/kosuke/pr_00p/db"$+ftos(k+0,"*.*lf",1,0);
+          name="/home/kimai/texas/pr_00p/db"$+ftos(k+0,"*.*lf",1,0);
         elseif h==7;
-          name="c:/gauss36/kosuke/s_96r/db"$+ftos(k+0,"*.*lf",1,0);
+          name="/home/kimai/texas/s_96r/db"$+ftos(k+0,"*.*lf",1,0);
         endif;
 
         loadm dbuf=^name;
@@ -113,19 +115,19 @@ for distplan(1,rows(dists),1); @ loop for plans @
  
     else;
         if h==1;
-          name="c:/gauss36/kosuke/ac_98p/db"$+ftos(i+0,"*.*lf",1,0);
+          name="/home/kimai/texas/ac_98p/db"$+ftos(i+0,"*.*lf",1,0);
         elseif h==2;
-          name="c:/gauss36/kosuke/ag_98p/db"$+ftos(i+0,"*.*lf",1,0);
+          name="/home/kimai/texas/ag_98p/db"$+ftos(i+0,"*.*lf",1,0);
         elseif h==3;
-          name="c:/gauss36/kosuke/pr_96p/db"$+ftos(i+0,"*.*lf",1,0);
+          name="/home/kimai/texas/pr_96p/db"$+ftos(i+0,"*.*lf",1,0);
         elseif h==4;
-          name="c:/gauss36/kosuke/s_96p/db"$+ftos(i+0,"*.*lf",1,0);
+          name="/home/kimai/texas/s_96p/db"$+ftos(i+0,"*.*lf",1,0);
         elseif h==5;
-          name="c:/gauss36/kosuke/s_00p/db"$+ftos(i+0,"*.*lf",1,0);
+          name="/home/kimai/texas/s_00p/db"$+ftos(i+0,"*.*lf",1,0);
         elseif h==6;
-          name="c:/gauss36/kosuke/pr_00p/db"$+ftos(i+0,"*.*lf",1,0);
+          name="/home/kimai/texas/pr_00p/db"$+ftos(i+0,"*.*lf",1,0);
         elseif h==7;
-          name="c:/gauss36/kosuke/s_96r/db"$+ftos(i+0,"*.*lf",1,0);  
+          name="/home/kimai/texas/s_96r/db"$+ftos(i+0,"*.*lf",1,0);  
         endif;  
         loadm ndbuf=^name;
     endif;
