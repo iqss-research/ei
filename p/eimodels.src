@@ -241,7 +241,7 @@ endp;
     
 proc 1=eimodels_avg(ndbuf);
   local et, sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
-        aggs, betabs, betaws, mfreq, ratio, i, j, titl, t, x, n, eselect,
+        aggs, betabs, betaws, mfreq, ratio, j, titl, t, x, n, eselect,
         frst, prprob, _eprt_temp, tst;
 
   et=hsec;     @ timing start @
@@ -275,18 +275,16 @@ proc 1=eimodels_avg(ndbuf);
   sims = zeros(num,1);
 
   @ calculate the estimate of marginal likelihood for each model @
-  i = 1;
-  j = 1;
-  do while i <= num; 
-    clear dbtemp, dta, temp;
-
+  j=zeros(num,1); @ counter @
+  for i (1,num,1); 
+    clear dbtemp,dta;
     if vin(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0));
       dbtemp = vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0));
       "Estimating the marginal likelihood for Model" i;
       "using importance sampling...";
       ?;
 
-      if j==1;
+      if sumc(j)==0;
         nobs = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"nobs");
         t = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"t");
         x = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"x");         
@@ -340,28 +338,44 @@ proc 1=eimodels_avg(ndbuf);
           retp("");
         endif;
       endif; 
-
-      temp = vread(dbtemp,"lliksims"); 
-      sims[j] = eiread(dbtemp,"_Esims");
-      margllik[j,1]=i;
-      margllik[j,2]=1/(sumc(1/exp(temp))/sims[j]);  @ harmonic mean estimate (unnormalized) @
-      if margllik[j,2]<0;
+      /* check the conditional maximization */
+      temp=1/(sumc(1/exp(eiread(dbtemp,"lliksims")))/eiread(dbtemp,"_Esims"));      
+      if eiread(dbtemp,"retcode")/=0;
         ?;
-        "eimodels: The marginal likelihood is negative.";
-        "Check the specification and/or EI results of Model" j;
-        "----- EIMODELS_AVG Aborted -----";
+        "WARNING: The value of retcode for Model " i " is not zero: the problem with";
+        "         the conditional likelihood maximization (retcode =" temp ").";
+        "         This model is excluded from model averaging.";
         ?;
-        retp(ndbuf);
+      elseif scalmiss(eiread(dbtemp,"lnir"));
+        ?;
+        "WARNING: The value of lnir for Model " i " is missing: the problem with";
+        "         the conditional likelihood maximization (retcode =" temp ").";
+        "         This model is excluded from model averaging.";
+        ?;        
+      elseif temp<=0;
+        ?;
+        "WARNING: The marginal likelihood of Model " i " is not positive.";
+        "         This model is excluded from model averaging. Check";
+        "         the fit of the model and change its specification.";
+        ?;
+      else;
+        @temp=eiread(dbtemp,"lliksims"); 
+        sims[i]=eiread(dbtemp,"_Esims");@
+        @ harmonic mean estimate (unnormalized) @
+        margllik[i,1]=i;
+        margllik[i,2]=temp;
+        sims[i]=eiread(dbtemp,"_Esims");
+        @margllik[i,2]=1/(sumc(1/exp(temp))/sims[i]);@  
+        j[i]=1;
       endif;
-      j=j+1;
     endif;
-    i=i+1;
-  endo;
-  j=j-1;
-  margllik = margllik[1:j,.];
-  sims = sims[1:j];
- 
+  endfor;
+
+  margllik = selif(margllik,j);
+  sims = selif(sims,j);
+  j=sumc(j);
   prprob = margllik;
+  /* check the prior model probabilities */
   if _EI_bma_prior==0;
     prprob[.,2] = ones(j,1)/j;
   else;
@@ -431,6 +445,7 @@ proc 1=eimodels_avg(ndbuf);
     temp = eiread(dbtemp,"betaws");
     betaws[.,k] = temp[.,k];
   endfor;
+
   if _Eprt/=0;
     et=hsec-et;				@ timing end  @
     fmtt;
