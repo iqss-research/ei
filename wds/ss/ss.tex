@@ -124,8 +124,8 @@ Gary King\thanks{Department of Government, Harvard University and
 We take this opportunity to comment on Herron and Shotts (2002;
 hereinafter HS) because of its interesting and productive ideas and
 because of the potential to affect the way a considerable body of
-practical research is conducted.  Their article, and the literature
-they comment on, is based on the suggestions in three paragraphs in
+practical research is conducted.  This article, and the literature
+referenced therein, is based on the suggestions in three paragraphs in
 King (1997: 289--90).  Since these paragraphs were not summarized in
 HS, we thought they might be a useful place to start:
 \begin{quotation}
@@ -394,19 +394,19 @@ outside the field of ecological inference.
 
 We explain in this section that HS's Monte Carlo procedure is
 inappropriate for evaluating second stage regressions.  The procedure
-is to draw $\beta_i^b$ from the EI model without covariates.  Then
-they create the covariate for the second stage explanatory variable
-$Z_i$ endogenously as equal to $\beta_i^b$ plus random noise.  This
-procedure has three serious flaws.
+is to draw the true value of the dependent variable, $\beta_i^b$, from
+the EI model without covariates.  Then they create the covariate for
+the second stage explanatory variable $Z_i$ endogenously as equal to
+$\beta_i^b$ plus random noise.  This procedure has three serious
+flaws.
 
 The first flaw is that the Monte Carlo procedure can be interpreted in
-three logically consistent ways, and in addition none are appropriate.
-Since HS do not discuss which interpretation they intended, we
-consider all three.  The first, and in our view most plausible,
-interpretation is that by creating $Z_i$ with random error, they are
-inducing immense errors-in-variables attenuation bias, quite apart
-from any attenuation bias that may occur due to the Bayesian shrinkage
-in the EI estimate.
+three logicially inconsistent ways.  HS do not discuss which
+interpretation they intended, but none of the three are appropriate.
+The first, and in our view most plausible, interpretation is that by
+creating $Z_i$ with random error, the procedure induces immense
+errors-in-variables attenuation bias, quite apart from any attenuation
+bias that may occur due to the Bayesian shrinkage in the EI estimate.
 
 This problem can be seen clearly by studying the parameters of the
 model HS created from which to draw their Monte Carlo data.  In this
@@ -447,7 +447,7 @@ $\breve\psi$  & $\gamma_R$ & $\hat\gamma_R$ \\\hline
 \end{tabular}
 \end{center}
 \caption{Comparing the true slope on $Z$ in a 
-second-stage regression in Herron and Shott's Monte Carlo 
+second-stage regression in the HS Monte Carlo 
 procedure with the estimate based on $\beta_i^b$ 
 (rather than $\hat\beta_i^b$) as the dependent variable.
 This table replicates the results of simulations presented in
@@ -456,50 +456,55 @@ The difference and ratios presented in HS Table 2 were
 successfully replicated, and are not shown here.}
 \end{table}
 
-A second interpretation of the HS Monte Carlo procedure is that
-$\gamma_R$ is the causal effect of $Z_i$ on $\beta_i^b$.  In fact,
-since many second stage regressions are intended to be causal, this is
-the most appropriate intepretation in some situations.  Since $Z_i$
-was created endogenously, no matter how one exogenously changes $Z_i$,
-$\beta_i^b$ will not budge, and hence, by this interpretation, the
-Monte Carlo procedure is setting the causal effect to zero:
-$\gamma_R=0$.  Thus, because the rightmost column of Table
-\ref{t:hsrep} is uniformly greater than zero, we know that regressing
-the true $\beta_i^b$ on $Z_i$ overestimates $\gamma_R$.  Thus, since
-the unadjusted method is unable to recover the true coefficients when
-using the true value of the dependent variable (i.e., even though no
-shrinkage occurs or estimation error in the dependent variable
-exists), the Monte Carlo setup under this second interpretation also
-is inappropriate for assessing a dependent variable that is estimated
-(by EI or otherwise).
-
-A third way to interpret the true value in HS's simulations is
-conditional on \emph{each} randomly generated set of $\eta_i$'s
-($i=1,\dots,n$), and hence conditional on each randomly generated
-$Z_i$: $E(\beta_i^b|Z_i)=\alpha_R+\gamma_R Z_i$.  By this
-interpretation, each random draw of a set of $n$ observations from the
-Monte Carlo data generating process produces a \emph{different} true
-value of $\gamma_R$, the value of which is neither set nor observed by
-the researcher.  This parameter vector can be estimated by a LS
-regression of the the true $\beta_i^b$ on $Z_i$, and it can also be
-estimated by EI-R.  Even if we assume that the LS estimator is better
-(because it uses the true $\beta_i^b$), comparing the two estimators
-does not reveal which is closer to the unknown $\gamma_R$.  Since they
-are probably correlated, the Monte Carlo procedure can only reveal how
-close the estimators are to each other, not to the truth, since it is
-unknown.  By this interpretation, the procedure misses the whole point
-of running Monte Carlo experiments in the first place --- creating a
-world where we know the true quantity being estimated and then seeing
-how good an estimator is at recovering its known value.  (Although by
-this interpretation we cannot know the true $\gamma_R$ in each
-iteration, we can compute the expected value by averaging over the
-variability in $\eta_i$ over Monte Carlo iterations, but this then
-implies that the average $\gamma_R=1$, and leads exactly to the first
-interpretation.\footote{That is,
+The Monte Carlo procedure can also be interpreted in two other ways,
+neither of which alters the conclusion that it is inappropriate for
+the purpose of evaluating second-stage regressions.\footnote{A second
+  interpretation of the HS Monte Carlo procedure is that $\gamma_R$ is
+  the causal effect of $Z_i$ on $\beta_i^b$.  In fact, since many
+  second stage regressions are intended to be causal, this is the most
+  appropriate intepretation in some situations.  Since $Z_i$ was
+  created endogenously, no matter how one exogenously changes $Z_i$,
+  $\beta_i^b$ will not budge, and hence, by this interpretation, the
+  Monte Carlo procedure is setting the causal effect to zero:
+  $\gamma_R=0$.  Thus, because the rightmost column of Table
+  \ref{t:hsrep} is uniformly greater than zero, we know that
+  regressing the true $\beta_i^b$ on $Z_i$ overestimates $\gamma_R$.
+  Thus, since the unadjusted method is unable to recover the true
+  coefficients when using the true value of the dependent variable
+  (i.e., even though no shrinkage occurs or estimation error in the
+  dependent variable exists), the Monte Carlo setup under this second
+  interpretation also is inappropriate for assessing a dependent
+  variable that is estimated (by EI or otherwise).
+  
+  A third way to interpret the true value in HS's simulations is
+  conditional on \emph{each} randomly generated set of $\eta_i$'s
+  ($i=1,\dots,n$), and hence conditional on each randomly generated
+  $Z_i$: $E(\beta_i^b|Z_i)=\alpha_R+\gamma_R Z_i$.  By this
+  interpretation, each random draw of a set of $n$ observations from
+  the Monte Carlo data generating process produces a \emph{different}
+  true value of $\gamma_R$, the value of which is neither set nor
+  observed by the researcher.  This value can be estimated by a LS
+  regression of the the true $\beta_i^b$ on $Z_i$, and it can also be
+  estimated by EI-R.  Even if we assume that the LS estimator is
+  better (because it uses the true $\beta_i^b$), comparing the two
+  estimators does not reveal which is closer to the unknown
+  $\gamma_R$.  Since they are probably correlated, the Monte Carlo
+  procedure can only reveal how close the estimators are to each
+  other, not to the truth, since it is unknown.  By this
+  interpretation, the procedure misses the whole point of running
+  Monte Carlo experiments in the first place --- creating a world
+  where we know the true quantity being estimated and then seeing how
+  good an estimator is at recovering its known value.  Although by
+  this interpretation we cannot know the true $\gamma_R$ in each
+  iteration, we can compute the expected value by averaging over the
+  variability in $\tau_i$ over Monte Carlo iterations, but this then
+  implies that on average $\gamma_R=1$, and leads exactly to the first
+  interpretation and to a regression of $\beta_i^b$ on $Z_i$
+  underestimating the truth.  (That is,
   $E_\eta[E(\beta_i^b|Z_i)]=\alpha_R+\gamma_R \beta_i$ which implies
-  that $\alpha_R=0$ and $\gamma_R=1$.}
+  that $\alpha_R=0$ and $\gamma_R=1$.)}
 
-Whichever interpretation one has of the HS Monte Carlo prcedure, it
+Whichever interpretation one has of the HS Monte Carlo procedure, it
 also suffers from two other serious problems.  First, it artificially
 rules out the possibility of nonlinear relationships between
 $\beta_i^b$ and $Z_i$ created by the bounds.  That is, by constructing
