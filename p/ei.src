@@ -131,6 +131,9 @@
 **          {5 _GhFall}=use wide step lengths, but compute the length by
 **               checking the gradient at each point.  Start at _GhFall
 **               falloff in the likelihood function.
+**          {-1 0}=do not compute the variance covariance matrix and return 
+**               -hessian instead which will be used for the multivariate 
+**               normal sampling with singular value decomposition.
 **          (If the likelihood is normal, i.e., quadratic, all options
 **           will give nearly the same answers.)
 **          DEFAULT={1 0, 4 0, 2 0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2};
@@ -553,10 +556,13 @@ proc checkinputs;
   endif;
   
   if cols(_ei_vc)/=2;
-    retp("ei: _ei_vc must have 2 columns");
+    retp("ei: _EI_vc must have 2 columns");
   endif;
-  if minc(_ei_vc[.,1])<1 or maxc(_ei_vc[.,1])>5;
-    retp("ei: _ei_vc may only have integers 1,...,5 in first column");
+  if minc(_ei_vc[.,1])<-1 or maxc(_ei_vc[.,1])>5;
+    retp("ei: _EI_vc may only have integers -1,1,...,5 in first column");
+  endif;
+  if minc(_ei_vc[.,1])==-1 and _eist/=0;
+    retp("ei: _EI_vc = {-1 0} option is allowed only when _EIsT = 0"); 
   endif;
   
   if not(scalone(_EdoML) or scalzero(_EdoML));

@@ -238,7 +238,11 @@ proc 2=quadcml(x,Zb,Zw,y);
     "log-likelihood:           ";;logl;
     "Number of observations:   ";;_cml_NumObs;
     "Number of iterations:     ";;_cml_IterData[1];
-    "Variance computed from:   ";;_ei_vc[_Ghactual,.];
+    if _ei_vc[_Ghactual,1]/=-1;
+      "Variance computed from:   ";;_ei_vc[_Ghactual,.];
+    else;
+      "-Hessian computed from:   ";;_ei_vc[_Ghactual,.];
+    endif;
     ?;
     "*** Parameter values in scale of estimation ***";
     mask=0~1~1;
@@ -318,6 +322,9 @@ endp;
 **                {5 _GhFall}=use wide step lengths, but compute the length by
 **                   checking the gradient at each point.  Start at _GhFall
 **                   falloff in the likelihood function.
+**                {-1 0}=do not compute the variance covariance matrix and return 
+**                   -hessian instead which will be used for the multivariate 
+**                   normal sampling with singular value decomposition.
 **               (If the likelihood is normal, i.e., quadratic, all options
 **               will give nearly the same answers.)
 **              DEFAULT={1 0, 2 0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2};
@@ -451,6 +458,14 @@ proc gvc(&f,b,dataset);
     local oldt;
     oldt = trapchk(1);
     trap 1,1;
+    if _ei_vc[i+0,1] == -1;          @ do not compute the vc matrix @
+      hessian=hessp(&_gvc_procedure,b);
+      if _Eprt>=2;
+	printfl "gvc: avoided computing the variance covariance matrix.";
+      endif;
+      _GhActual = i+0;
+      retp(-hessian);                @ return -hessian instead @
+    endif;
     if _ei_vc[i+0,1] ne 4;           @ did not use generalized approach @
       vc=invpd(-hessian);
     endif;

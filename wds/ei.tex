@@ -559,7 +559,7 @@ interactively (or with a separate program) using \texttt{eiread} and
     \texttt{zw}=\texttt{x}, to estimate $\alpha^w$, and fix
     $\alpha^b=$a and its standard error to b.
   \end{itemize}
-
+  
 \item[\_EI\_vc] $M\times 2$ matrix ($M\geq 1$), each row of which
   represents instructions for one attempt to compute an estimated
   positive definite variance matrix of $\phi$.  The procedure exits
@@ -574,9 +574,15 @@ interactively (or with a separate program) using \texttt{eiread} and
   generalized cholesky (to deal with non-positive definateness) based
   on work in progress by Jeff Gill and Gary King; \{5 0\} use wide
   step lengths but check that the gradients for each are correct (and
-  if necessary search for better ones).  DEFAULT=\texttt{\{1 0, 4 0, 2
-    0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2\}}.  The variance computation
-  only very rarely gets beyond the second try.
+  if necessary search for better ones); \{-1 0\} avoid the computation
+  of the variance covariance matrix in case of non-positive
+  definiteness and use the singular value decomposition for the
+  multinomial normal sampling (i.e. _EisT has to be set to 0). In
+  order to use this option, also make sure to define relatively narrow
+  upper and lower bounds of the parameters by using \_Ebounds.
+  DEFAULT=\texttt{\{1 0, 4 0, 2 0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2\}}.
+  The variance computation only very rarely gets beyond the second
+  try.
 
   When the likelihood surface is normal (i.e., quadratic), which is
   true asymptotically, all options produce identical results.  In
