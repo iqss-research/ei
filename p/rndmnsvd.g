@@ -41,6 +41,7 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
    endif;
 
    {s,u}=eighv(invvc); @ eigen value decomposition @
+   s=recode(s, s.<tol, tol);
    indx=makefac(k,2);
    dist=zeros(2^k,1);
    for i(1,rows(indx),1);
@@ -58,13 +59,7 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
      limsim=1;
      do while (sumc((bounds[.,1] .< res[.,i])+(bounds[.,2] .> res[.,i]))>0)
               or limsim==1;
-       for j(1,k,1);
-         if (s[j] > tol);
-           res[j,i]=rndtni(mean[j],1/s[j],bnds[2]~bnds[1]);
-         else;
-           res[j,i]=rndu(1,1)*(2*bnds[1])+bnds[2];
-         endif;
-       endfor;
+       res[.,i]=rndtni(mean,1/s,(bnds[2]~bnds[1]).*ones(k,2));
        res[.,i]=u*res[.,i];
        limsim=limsim+1;
        if limsim==100000;
