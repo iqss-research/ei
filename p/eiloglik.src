@@ -31,7 +31,7 @@ proc eiloglik(b,dta);
     cT1=selif(c,y[c].>(1-_EnumTol));
     c=selif(c,(y[c].>=_EnumTol).and(y[c].<=(1-_EnumTol)));
   endif;
-    
+
   /* compute likelihood for different categories */
   if not(scalmiss(c0));			@ X=0 @
     epsilon=y[c0]-bw[c0];
