@@ -951,9 +951,9 @@ while writing the book.)
   mean posterior contours, except for those sampled from outlier
   tomography lines. Homogeneous precincts are excluded.
 
-\item[fit] Combination of xtfit and tomogP
+\item[fit] Combination of xtfit and tomogP (and ztfit if applicable).
 
-\item[fitT] Combination of xtfit and tomogT
+\item[fitT] Combination of xtfit and tomogT (and ztfit if applicable).
 
 \item[goodman] $X_i$ by $T_i$ plot with Goodman's regression line
   plotted. See Figure 4.1, page 60.
@@ -1126,14 +1126,29 @@ while writing the book.)
 \item[XgraphC] a scattercross with data plotted, with size
   proportional to $N_i$.
 
-\item[xt] basic $X_i$ by $T_i$ scatterplot
+\item[xt] basic $X_i$ by $T_i$ scatterplot.
+
+\item[zt] basic $Z_i$ by $T_i$ scatterplot. The same restriction as
+\texttt{zt} applies. Available if $Z$ is the only covariate common for
+\texttt{zb} and \texttt{zw}, or if $Z$ is the only covariate for
+either \texttt{zb} or \texttt{zw} and no covariate for the other.
 
 \item[xtC] basic $X_i$ by $T_i$ scatterplot with circles sized
   proportional to $\Npp$ or some other variable defined by the global
   \texttt{\_eigraph\_circ}.
 
+\item[ztC] basic $Z_i$ by $T_i$ scatterplot with circles sized
+proportional to $\Npp$ or some other variable defined by the global
+\texttt{\_eigraph\_circ}. The same restriction as \texttt{zt} applies.
+
+
 \item[xtfit] $X_i$ by $T_i$ plot with estimated $\rE(T_i|X_i)$ and
   conditional 80\% confidence intervals.  See Figure 10.3, page 206.
+
+\item[ztfit] $Z_i$ by $T_i$ plot with estimated $\rE(T_i|Z_i,
+\rE(X|n))$ where $\rE(X|n)$ is the weighted average of $X$ and
+conditional 80\% confidence intervals. The same restriction as
+\texttt{zt} applies.
 
 \item[xtfitg] xtfit with Goodman's regression line superimposed
 \end{description}
@@ -1191,10 +1206,15 @@ not be changed for the most common uses.
 
 \item[\_eigraph\_X] string: xlabel for xt plots. Default=\texttt{"X"}
 
+\item[\_eigraph\_Z] string: xlabel for zt plots. Default=\texttt{"Z"}
 
 \item[\_eigraph\_Xhi] High end of X graphs. Default=1.
 
 \item[\_eigraph\_Xlo] How end of X graphs. Default=0.
+
+\item[\_eigraph\_Zhi] High end of Z graphs. Default=max(Z).
+
+\item[\_eigraph\_Zlo] How end of X graphs. Default=min(Z).
 
 \item[\_eigraphC] scalar: Multiply by circle size to change sizes.
   Default=1, which means do not change.  set to (0,1) to reduce circle
@@ -1852,6 +1872,11 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   between zero and one, columns are $X_i$ and sorted simulations of
   $T_i|X_i$.  See Section 8.5.  (Uses \texttt{x2} simulations when
   used with \texttt{ei2}).
+
+\item[tsimsz] $100\times$\texttt{\_Esims}$+1$: simulations of $T_i$
+given $Z_i$.  rows correspond to 100 values of $Z_i$ equally spaced
+between min(Z) and max(Z), columns are $Z_i$ and sorted simulations of
+$T_i|Z_i$. (Uses \texttt{x2} simulations when used with \texttt{ei2}).
 
 \item[VCaggs] $2\times 2$: variance matrix of 2 district-level
   parameters, $\hat{B}^b$ and $\hat{B}^w$.  See Section 8.3.  (Uses
