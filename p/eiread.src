@@ -478,7 +478,7 @@ proc eiread(dbuf,str);
   elseif str$=="_ez";@ n of covariates, incl. implied constant for Zb|Zw @
     zb=eiread(dbuf,"zb");
     zw=eiread(dbuf,"zw");
-    clearg _Ez;	
+    clearg _Ez;
     _Ez=(cols(Zb)+1-(Zb==1))|(cols(Zw)+1-(Zw==1)); 
     res=_Ez;
   
@@ -571,6 +571,7 @@ proc eiread(dbuf,str);
     elseif scalmiss(_eiread_betabs);
       Zb=eiread(dbuf,"zb");
       Zw=eiread(dbuf,"zw");
+      call eiread(dbuf,"_Ez");
       if not(scalmiss(_EIread_Zb));
 	if rows(_EIread_Zb)/=rows(zb) or cols(_EIread_Zb)/=cols(zb);
 	  "eiread: bad input for _EIread_Zb. The dimension does not";
