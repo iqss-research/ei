@@ -545,50 +545,56 @@ the most votes in the 2000 election.
 The lack of any statistical assumptions puts the analysis in Section
 \ref{s:noassump} on extremely firm footing.  In fact, measurement
 error aside, the conclusions there contain no inferential
-uncertainties at all, which is of course quite unusual or social
+uncertainties at all, which is of course quite unusual for social
 science research.  If the resulting bounds excluded the possibility of
-one candidate winning, our paper would end right here, but
-unfortunately the bounds include both Gore and Bush victories.  Thus,
-all we know from the bounds is that there exists a \emph{possibility}
-that either Gore or Bush received more votes.  Indeed, even of all but
-a tiny piece of the bounded interval reflected a Bush (or a Gore)
-victory, it would provide no information whatsoever about the
-\emph{probability} that one candidate or the other won (since the
-bounds alone do not imply any probability distribution over the
-interval).  As such, the \emph{Times} needed us to go further than the
-bounds.  They and their readers needed a bottom line, the probability
-that Gore really won.
+one candidate winning, our [paper] analysis would end right here.
+Unfortunately, [the bounds include suggest both Gore and Bush
+victories.  Thus,] all we know from the bounds is that there exists a
+\emph{possibility} that either Gore or Bush received more votes.
+Indeed, even of all but a tiny piece of the bounded interval reflected
+a Bush (or a Gore) victory, it would provide no information
+[whatsoever] about the \emph{probability} that a particular [one]
+candidate [or the other] won (since the bounds alone do not imply any
+probability distribution over the interval).  As such, the
+\emph{Times} needed us to go further than the bounds [. They and their
+readers needed] to obtain a bottom line, the probability that Gore
+really won.
 
-In order to learn more about who actually won the election --- the
-likely margins of victory within the deterministic bounds --- the only
+In order to learn more about who actually won the election -- the
+likely margins of victory within the deterministic bounds -- the only
 option is to add some statistical assumptions.  With these
-assumptions, we can make precise probabilistic statements about our
-quantities of interest.  The problem, of course, is that readers might
-not agree with us that the assumptions we choose, and so the price of
-the more precise conclusions that follow is the additional uncertainty
-about who won due to uncertainty about model specification.  This is
-of course an extremely common situation in social science research,
-but it is particularly salient when attempting to provide independent
-nonpartisan advice in the midst of one of the most highly charged
-partisan debates in modern times.  We now introduce our model and its
-associated assumptions.  Then we show how to include the uncertainties
-due to model specification in our final inferences.
+assumptions, we can make [precise] probabilistic statements about our
+quantities of interest.  The problem {\bf of any statistical
+  analysis}, of course, is that {\bf there might be a disagreement
+  about} [readers might not agree with us that] the assumptions {\bf
+  to be made} [we choose], and so the price of the more precise
+conclusions that follow is the additional uncertainty [about who won
+due to uncertainty about] model specification.  This is [of course]
+a[n] [extremely] common [situation] {\bf problem} in social science
+research, but it is particularly salient when attempting to provide
+independent nonpartisan advice in the midst of one of the most highly
+charged partisan debates in modern times. {\bf Our approach to this
+  problem is to formally incorporate uncertainty due to model
+  specification into our final estimate.}  [We now introduce our model
+and its associated assumptions.  Then we show how to include the
+uncertainties due to model specification in our final inferences.]
 
 We use the class of ecological inference models given in King
-(1997)\nocite{king:97}, which have come to called EI, after the
-software that implements them.  To begin, we summarize everything we
+(1997)\nocite{king:97}, which have come to called EI after the
+software that implements them.  To begin, we summarize [everything we
 know about the quantities of interest without making any statistical
-assumptions, as in Section \ref{s:noassump}, and portray the result
-graphically.  Thus, for each Florida county, we summarize what the
-data tell us in terms of all \emph{possible} values of $\bg_i$ and of
+assumptions, as in Section \ref{s:noassump}, and] [portray the result]
+{\bf the bounds obtained in Section~\ref{s:noassump}} [graphically].
+Thus, for each Florida county, we {\bf show} [summarize what the data
+tell us in terms of] all \emph{possible} values of $\bg_i$ and of
 $\bb_i$.  As it turns out, the data tell us more than merely the
-bounds on each separately since Equation \ref{eq:identity} says that
+bounds on each separately since Equation~\ref{eq:identity} says that
 if $\bg_i$ is near the top of its bounds, $\bb_i$ must be near the
 bottom of its bounds.  In fact, the two are perfectly correlated and
-fall on a line defined precisely by that equation.  To illustrate, we
-plot one line for each county in Florida in the tomography plot in
-Figure \ref{fg:tomog}, which merely re-expresses the data in the form
-closest to the answers we seek.
+fall on a line defined [precisely] by that equation.  To illustrate,
+we plot one line for each county in Florida in the tomography plot
+[in] of Figure~\ref{fg:tomog}], which merely re-expresses the data in
+the form closest to the answers we seek.
 \begin{figure}[t]
   %\vspace{-1in}\hspace{0.5in}
   \begin{minipage}[c]{6.5in}
@@ -606,31 +612,32 @@ closest to the answers we seek.
 \end{figure}
 
 All of the above is as far as it is possible to go without making
-statistical assumptions.  Thus, we now add three assumptions, all
-conditional on $X$ and a specified set of control variables $Z$.  We
-could begin with the assumption that $\bb_i$ and $\bg_i$ are the same
-for all counties, which is essentially Goodman's regression.  This
-would be enough to identify the model, but it would be a very strong
-assumption, and indeed in our application it can be rejected with
-certainty by merely examining at Figure \ref{fg:tomog}.
+statistical assumptions.  {\bf Next} [Thus], we now add three
+assumptions, all conditional on $X$ and a specified set of control
+variables $Z$.  We could begin with the assumption that $\bb_i$ and
+$\bg_i$ are the same for all counties, which is essentially Goodman's
+regression.  This would be enough to identify the model, but it would
+be a very strong assumption, and indeed in our application it can be
+rejected with certainty by merely examining at Figure \ref{fg:tomog}.
 
-Thus, as an alternative, we do not assume that $\bb_i$ and $\bg_i$ are
-the same over counties, but instead that they come from the same
-distribution (the truncated bivariate normal distribution, with
-truncation kept to the square in the figure).  The idea here is that
-whatever the values of the unknown parameters from Florida's 67
-counties on their respective tomography lines, they all have something
-in common --- since they are all in the same state, subject to almost
-the same electoral campaign, etc.  Differences across the counties in
-these parameters of any size are thus allowed so long as they are
-either random and fit the distributional assumption or they are
-systematic and picked up by control variables.  The main constraints
-of this assumption are that the bivariate density is unimodal (which
-is our formalization of the assumption that the counties ``have
-something in common'') and that all volume under the density appears
-over the square represented by the tomography plot.  Violations of
-this distributional assumption do not seem to affect the quantities we
-need for this application (see King, 1997: Table 9.2).
+Thus, [as an alternative, we do not assume] {\bf instead of assuming}
+that $\bb_i$ and $\bg_i$ are the same over counties, [but instead]
+{\bf we assume} that they come from the same distribution (the
+truncated bivariate normal distribution, with truncation kept to the
+square in the figure).  The idea here is that whatever the values of
+the unknown parameters from Florida's 67 counties on their respective
+tomography lines, they all have something in common -- since they are
+all in the same state, subject to almost the same electoral campaign,
+etc.  Differences {\bf of any size} across the counties in these
+parameters [of any size] are thus allowed so long as they are either
+random and fit the distributional assumption or they are systematic
+and [picked up] {\bf taken into account} by control variables.  The
+main constraints of this assumption are that the bivariate density is
+unimodal (which is our formalization of the assumption that the
+counties ``have something in common'') and that all volume under the
+density appears over the square represented by the tomography plot.
+Violations of this distributional assumption do not seem to affect the
+quantities we need for this application (see King, 1997: Table 9.2).
 
 The second assumption is that the absence of residual spatial
 correlation in $T$ after taking into account $X$ and $Z$.  King's
