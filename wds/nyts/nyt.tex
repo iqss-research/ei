@@ -181,8 +181,8 @@ month that followed the voting.
 %   literally dozens of papers, many written within days of the election
 %   and posted on the web.  For links to many on this growing list, see
 %   \url{http://www.polsci.wvu.edu/PolyCy/psrecount.html}.}
-In contrast, the overseas absentee ballots were spared most of this
-attention and all litigation.  Yet, they clearly determined the
+In contrast, Florida's overseas absentee ballots were spared most of
+this attention and all litigation.  Yet, they clearly determined the
 election outcome: If only the votes cast on election day were counted,
 Al Gore would have beat George W.\ Bush by 202 votes and become the
 next president.  According to official results from the State of
@@ -246,28 +246,25 @@ find out.  Our conclusions were presented as part of the story
 described in a sidebar (Barbanel, 2001)\nocite{Barbanel01}.  In this
 paper, we discuss in detail the methods we developed for this project
 so that others might use them for similar problems.  The situation
-calls for ecological inference: we observe the number of bad ballots
+calls for ecological inference: We observe the number of bad ballots
 in each of Florida's counties and the number of ballots cast and
 counted for each of the candidates.  From these variables, and a
 variety of other auxiliary information, we try to infer the total
 number of bad ballots that had been cast for each candidate and see
-whether this is enough to make up for Bush's 537 official vote margin.
+whether this is enough to make up for Bush's official 537 vote margin.
 
 Since the partisan atmosphere surrounding public discourse on this
 issue was so highly charged, we knew that our work would be subject to
-more than the usual academic scrutiny, and so we sought a method that
-was less vulnerable to partisan criticism.  No such statistical method
-exists of course, especially for an area as uncertain as ecological
-inference, but much can be done.  Our approach, {\bf in addition to
-  the analysis of the bounds}, is to introduce formal Bayesian model
-averaging procedures and to include a wide range of models that any
-partisan might have considered.  The procedure then computes a
-combined estimate from these models based on their relative
-probability of being correct, as indicated by the data.  So that
-others can use the methods we introduce here to analyze other
-problems, we have included all methods introduced here in the program
-\emph{EI: A Program for Ecological Inference} (available at
-\url{http://GKing.Harvard.edu}).
+more than the usual academic scrutiny, and so we sought out methods
+that were less vulnerable to partisan criticism.  We therefore used
+three separate approaches --- using no statistical assumptions, using
+a succession of single models, and full Bayesian model averaging that
+enable one to average over all models that any partisan might have
+considered weighted according to their relative probability of being
+correct, as indicated by the data.  So that others can use the methods
+we introduce here to analyze other problems, we have included all
+methods introduced here in the program \emph{EI: A Program for
+  Ecological Inference}.
 
 We estimate the probability that Gore would have won the election if
 the law had been followed in this instance.  This probability is
