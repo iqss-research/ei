@@ -340,6 +340,7 @@ einormal.src
     pdfNorm                          : proc
     lpdfnorm                         : proc
     lnpdfmn                          : proc
+    lnpdfmn2                         : proc
     lnpdfmt                          : proc
     lpdfbvn                          : proc
     cdfnorm                          : proc

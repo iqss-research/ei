@@ -183,11 +183,23 @@ proc lnpdfmn(y,mu,vc);
     ivc=_Eivc;
   endif;
   ymu=y-mu;
-
   res=-(rows(mu)*1.83787706640934548+ln(detl)+ymu'ivc*ymu)/2;
-  
   retp(res);
 endp;
+
+/* another version without scale factor for importance sampling */
+proc lnpdfmn2(y,mu,vc);
+  local a,b,c,k,ivc,w,ymu,res;
+  if ismiss(_Eivc);
+    ivc=invpd(vc);
+  else;
+    ivc=_Eivc;
+  endif;
+  ymu=y-mu;
+  res=-(ymu'ivc*ymu)/2;
+  retp(res);
+endp;
+
 
 /* ---------------------------------------------------------------
    y = lnpdfmt(y,mu,vc,df);

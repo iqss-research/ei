@@ -1,6 +1,6 @@
 /*
 **  This archive is part of the program EI
-**  (C) Copyright 1995-99 Gary King
+**  (C) Copyright 1995-2001 Gary King
 **  All Rights Reserved.
 */
 /*
@@ -59,8 +59,8 @@ proc 2=psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
          1:rows(MLpsi)-3],dataset,_Esims);
   else;
     _EisFix=MLpsi[(rows(MLpsi)-1):rows(MLpsi)];
-    temp=rndisamp(&eiloglik,trimr(MLpsi,0,3),MLvc[1:rows(MLpsi)-3,
-         1:rows(MLpsi)-3],dataset,_Esims);
+    temp=rndisamp(&eiloglik,trimr(MLpsi,0,2),MLvc[1:rows(MLpsi)-2,
+         1:rows(MLpsi)-2],dataset,_Esims);
   endif;
 
   if ismiss(temp); @ if _ei_vc={-1 0} fails try _ei_vc={4 0} @ 
@@ -74,7 +74,7 @@ proc 2=psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
       MLvc[rows(MLvc),cols(MLvc)]=0.00000000001;
     endif;
     if scalmiss(MLvc);
-      "guadml: couldn't compute positive definite variance matrix";
+      "quadml: couldn't compute positive definite variance matrix";
       MLvc=miss(1,1);
     endif;
     _Eres=vput(_Eres,MLvc,"vcphi");  
@@ -205,7 +205,7 @@ endp;
 */
 proc rndisamp(&f,b,vc,dataset,sims);
   local f:proc;
-  local lik,norm,i,max,psis,u,tst,r,lnir,ir,k,radd,keepsi,inf,ii,x,t,bb,meanir,
+  clearg lik,norm,i,max,psis,u,tst,r,lnir,ir,k,radd,keepsi,inf,ii,x,t,bb,meanir,
         resamp,vc0,keeplik;
   if rows(vc)/=rows(b) or cols(vc)/=rows(b);
     "rndisamp: input error";
@@ -220,7 +220,11 @@ proc rndisamp(&f,b,vc,dataset,sims);
   elseif _EisFac==-2;                 @ use maximum posterior estimates @
     retp(b'.*ones(_Esims,1));
   else;
-    vc=vc*_EisFac;
+    if _ei_vc[_Ghactual,1]/=-1;
+      vc=vc/_EisFac;  @ "vc" is -Hessian @
+    else;
+      vc=vc*_EisFac;  @ "vc" is a variance matrix @
+    endif;
   endif;
   
   k=sims*_Eisn;
@@ -230,8 +234,10 @@ proc rndisamp(&f,b,vc,dataset,sims);
     else;                     @ use when _ei_vc={-1 0} @
       psis=rndtsn(b,vc,k,_cml_bounds[1:rows(b),.],1e-3);
       if ismiss(psis);
-        "ei: _EI_vc={-1 0} option failed. trying {-4 0} instead.";
-        retp(miss(1,1));
+	if _Eprt>=2;
+	  "ei: _EI_vc={-1 0} option failed. trying {-4 0} instead.";
+	endif;
+	retp(miss(1,1));
       endif;
     endif;
   else;
@@ -245,19 +251,19 @@ proc rndisamp(&f,b,vc,dataset,sims);
   if _ei_vc[_Ghactual,1]/=-1;
     _Eivc=invpd(vc);
   else;
-    _Eivc={.};
+    _Eivc=vc;
   endif;
   
   for i (1, k, 1);
     if int(i/100)==i/100 and _Eprt>=2;
       i/10;
     endif;
-    bb=(psis[i+0,.]'|_EisFix);
-    lik[i+0]=sumc(packr(f(bb,dataset)));
+    bb=(psis[i,.]'|_EisFix);
+    lik[i]=sumc(packr(f(bb,dataset)));
     if _Eist==0;
-      norm[i+0]=lnpdfmn(psis[i+0,.]',b,0);
+      norm[i]=lnpdfmn2(psis[i,.]',b,0); @ var from _Eivc above @
     else;
-      norm[i+0]=lnpdfmt(psis[i+0,.]',b,0,_Eist);
+      norm[i]=lnpdfmt(psis[i,.]',b,0,_Eist);
     endif;
   endfor;
   lnir=lik-norm;	@ ln(imptce ratio)  @
