@@ -1,0 +1,929 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+*/
+/*
+    {b,vc}=quadcml(x,Zb,Zw,y);
+**  Ecological Inference Likelihood Maximization via CML
+**  With variance-covariance computed via global methods.
+** 
+**  MODEL:
+**  mean function:  E(Y)=Bb*X + Bw*(1-x)
+**  var  function:  V(Y)=vb*X^2 + c(b,w)*2*X*(1-X) + vw*(1-X)^2
+**                  var params reparam'd: vars>0 and p.d.
+**  distribution:   distribution implied on Y if Bb,Bw are bivariate 
+**                  truncated normal
+**  INPUT:
+**  x = explanatory variable 
+**  Zb = 1 or covariates for Bb (constant term included automatically)
+**  Zw = 1 or covariates for Bw (constant term included automatically)
+**  y = dependent variable
+**
+**  OUTPUT:
+**  b = {Bb, Bw, sb, sw, rho}, where Bb, Bw are vectors if Zb,Zw have vars
+**  vc = estimation global var cov matrix of b
+**
+**  where params of interest are reparameterized as eirepar.g
+**
+**  GLOBALS
+**  _Erho[1]=standard deviation of normal prior on phi_5 (default=0.5)
+**        0 fix it to _Erho[2] and don't estimate
+**       <0 estimate without prior
+**  _Ebounds=1 set bounds automatically unless z's are included
+**           0 don't use bounds
+**           kx2 or 1x2 matrix to indicate upper~lower bounds 
+**  _Eprt=0 print nothing
+**        1 print only final output from each stage
+**        2 print everything useful plus friendly iteration numbers etc
+**        3 print everything useful, iterations, and all sorts of checks
+**  _Estval = 1 use default starting values or set to vector
+**  _Eselect = scalar 1 to use all observations
+**             vector of 1's to select and 0's to discard observations during
+**             likelihood estimation.
+*/
+#include ei.ext;
+proc 2=quadcml(x,Zb,Zw,y);
+  local vars,stval,ret,stb,t,bb,bw,sb,sbw,sw,vc,bnds,nbnds,tdiag,logl,
+  b,tt1,tt2,tt,dataset,vrs,Dvrs,r,rho,pb,mlogl,grds,se,mask,fmt,eta,
+  gridl,gr1;
+
+  if _Eprt>=2;
+    printfl "Likelihood estimation...";
+  endif;
+
+  /* prepare data */
+  dataset = packdta(x,Zb,Zw,y);
+  if _Eprt>=2;
+    if _EselRnd/=1;
+      fmtt;
+      "_EselRnd: Modifying _Eselect with random selection = ";;_EselRnd;
+    endif;
+    tt=sumc(1-_Eselect);
+    if (rows(_Eselect)/=1) and (tt/=0);
+      fmtt;
+      "_Eselect: deleting " tt " observations "\
+      "from estimation stage;";
+      "                   " sumc(_Eselect) "observations remain";
+    endif;
+  endif;
+  
+  /* starting values OR grid search */
+  if rows(_Estval)==1 and not(scalone(_Estval));  @ grid search @
+    if _Estval==0;
+      gridl=5;      @ default number of gridlines for grid search @
+    else;
+      gridl=_Estval;
+    endif;
+  else;    
+    gridl=0;        @ no grid search @
+  endif;
+
+  if scalone(_Estval) or gridl/=0;
+    stval=zeros(sumc(_Ez),1)|-1.2|-1.2|0;
+  else;
+    stval=_Estval;
+  endif;
+  if rows(_Eeta)==4;
+    stval=stval|_Eeta[1 2];
+  elseif _Eeta[1]==4;
+    stval=stval|0|_Eeta[2];
+  elseif _Eeta[1]==5;
+    stval=stval|_Eeta[2]|0;
+  else;
+    stval=stval|0|0;
+  endif;
+  
+  /* cml globals */
+  __title=" ** Ecological Inference Likelihood Maximization ** ";
+  _cml_Active=ones(rows(stval)-2,1)|0|0;
+  _cml_MaxIters=_Emaxiter;
+  _cml_DirTol=_EdirTol;
+  _cml_CovPar=0;
+  _cml_ParNames=(0+"Zb"$+ftosm(seqa(0,1,_Ez[1]),0,0))|
+           (0+"Zw"$+ftosm(seqa(0,1,_Ez[2]),0,0))|(0+"sigB")|
+	   (0+"sigW")|(0+" rho")|(0+"etaB")|(0+"etaW");
+
+  @ if change this code, change also eiread @
+  if scalzero(_Ebounds);    @ don't use bounds  @
+    _cml_bounds={-1e256 1e256};
+  elseif cols(_Ebounds)==2;
+    _cml_bounds=_Ebounds;
+  elseif scalone(_Ebounds);     @ automatic bounds calculation @
+    bnds={-10 10};
+    nbnds={-20 20};   @{ -1e256 1e256 };@
+    if _Ez[1]==1;
+      _cml_Bounds=bnds;
+    else;
+      _cml_Bounds=nbnds.*ones(_Ez[1],1);
+    endif;
+    if _Ez[2]==1;
+      _cml_Bounds=_cml_Bounds|bnds;
+    else;
+      _cml_Bounds=_cml_Bounds|(nbnds.*ones(_Ez[2],1));
+    endif;
+    _cml_Bounds=_cml_Bounds|(-6~3)|(-6~3)|(-2~2);
+  else;
+    "quadcml: problem with _Ebounds";
+    end;
+  endif;
+
+  if gridl==0 and cols(_Ebounds)/=2;  @ sneak past CML checks on parameters @
+    tt=rows(stval);
+    tt=tt-1|tt;
+    _cml_bounds=_cml_bounds|(stval[tt]~stval[tt]);
+    tt=rows(_cml_bounds);
+    tt=tt-1|tt;
+    _cml_bounds[tt,2]=_cml_bounds[tt,2]+_Edirtol;
+  endif;
+  
+  if _Eprt==0;
+    __output=0;
+  elseif _Eprt<=2;
+    #ifdos;
+      _cml_Diagnostic={.};
+      __output=2;
+    #else;
+      _cml_Diagnostic=2;
+      __output=1;
+    #endif;
+  elseif _Eprt==3;
+    _cml_Diagnostic=3;
+    __output=2;
+  else;
+    "quadcml: problem with _Eprt";
+    end;
+  endif;
+  
+  if _Erho[1]==0;
+    r=rows(stval)-2;
+    stval[r]=_Erho[2];
+    _cml_bounds[r,.]=(_Erho[2]-__macheps)~(_Erho[2]+__macheps);
+    _cml_active[r]=0;
+  endif;
+
+  if gridl==0;         /* run CML */
+    {b,mlogl,grds,vc,ret}=cml(dataset,0,&eiloglik,stval);
+    if in(ret,3|4|6|7|10,1);
+      ?;
+      "*********************************************";
+      "CML return code: ";;ret;
+      "Restarting iterations with trust algorithm on";
+      "*********************************************";
+      _cml_options={ trust };
+      {b,mlogl,grds,vc,ret}=cml(dataset,0,&eiloglik,stval);
+      _cml_options=0;
+    endif;
+    _Eres=vput(_Eres,ret,"retcode");
+    logl=mlogl*_cml_NumObs;
+    _Eres=vput(_Eres,logl,"loglik");
+    if _Eprt>=2;
+      printfl "CML converged; Computing variance-covariance matrix...";
+      ?;
+    endif;
+  
+  else;                /* run GRID search */
+    if _Eprt>=2;
+      "Preliminary mean grid search (on 2 parameters)...";
+    endif;
+    tt=rows(_cml_bounds);
+    gr1=meanc(_cml_bounds[3:tt,.]');
+    gr1=_cml_bounds[1 2,.]|(gr1~gr1);
+    {b,logl}=eigrid(dataset,gr1,53,_Edirtol);
+    _cml_bounds[1 2,.]=b[1 2]+((-1~1)|(-1~1));
+    if _Eprt>=2;
+      ?;"Main grid search (on all parameters)...";
+    endif;
+    {b,logl}=eigrid(dataset,_cml_bounds,gridl,_Edirtol);
+    ret=3333;
+    _Eres=vput(_Eres,ret,"retcode");
+    _Eres=vput(_Eres,logl,"loglik");
+    grds=b*0+_Edirtol;
+  endif;
+  
+  /* compute var cov matrix */
+  if _EdoSim/=-1;
+    clearg _GhFix;
+    _GhFix=ones(rows(stval)-2,1)|0|0;
+    if _Erho[1]==0;
+      _GhFix[r]=0;
+    endif;
+    vc=gvc(&eiloglik,b,dataset);
+    if _Erho[1]==0;
+      vc=vc~zeros(rows(vc),1);
+      vc=vc|zeros(1,cols(vc));
+      vc[rows(vc),cols(vc)]=0.00000000001;
+    endif;
+    _Eres=vput(_Eres,_GhActual,"GhActual");
+    if scalmiss(vc);
+      "quadcml: couldn't compute positive definite variance matrix";
+      retp(miss(1,1),miss(1,1));
+    endif;
+  else;
+    vc=zeros(rows(b)-2,rows(b)-2);
+  endif;
+  
+  /* print likelihood results */
+  if _Eprt>=1 or ret/=0;
+    if ret/=0 and ret/=3333;
+      "Overriding no print instructions.  See CML return code";
+    endif;
+    if ret==20;
+      ret=1;
+    endif;
+    format/ro 7,4;
+    ?;
+    __title;
+    "CML Return code:          ";;ret;
+    "log-likelihood:           ";;logl;
+    "Number of observations:   ";;_cml_NumObs;
+    "Number of iterations:     ";;_cml_IterData[1];
+    "Variance computed from:   ";;_ei_vc[_Ghactual,.];
+    ?;
+    "*** Parameter values in scale of estimation ***";
+    mask=0~1~1;
+    fmt=("*.*s"~  1~8)|
+        ("*.*lf"~ 10~4)|
+	("*.*lf"~ 10~4);
+    se=sqrt(diag(vc))|0|0;	
+    call printfm(_cml_ParNames~b~se,mask,fmt);
+    ?;
+    {bb,bw,sb,sw,rho}=eirepar(b,Zb,Zw,x);
+    let vrs=bb bw sb sw rho;
+    "Reparameterization back to the truncated scale, parameterized";
+    "        according to the underlying untruncated distribution.";
+    $vrs';
+    pb=meanc(bb)|meanc(bw)|sb|sw|rho;
+    pb';
+    if _Eprt>=3;
+      ?;
+      "Reparameterization back to ultimate truncated scale";
+      pb=eirepart(b,Zb,Zw,x);
+      $vrs';
+      pb';
+    endif;
+  endif;  
+
+  _Eres=vput(_Eres,_cml_parnames,"parnames");
+  _Eres=vput(_Eres,b,"phi");
+  _Eres=vput(_Eres,vc,"vcphi");
+  
+  retp(b,vc);
+endp;
+
+
+/* 
+    vc = gvc( &f, b, dataset );)
+**    
+** Various methods of computing variance matrix of parameters.
+** Calculates a "global variance matrix".
+**
+** These procedures generate a positive definite hessian more often
+** than hessp.src for non-normal likelihoods, while giving identical results
+** for normal p.d. likelihoods.  In theory at least they should also be more
+** accurate summaries of the likelihood surface than hessp, which gives
+** the quadradic approximation to the likelihood but only within epsilon
+** of the maximum.  If a p.d. hessian isn't found on the first round, 
+** additional tries are made with different values of the globals.
+** Allows for wide step lengths, quadratic approximation, gradient
+** checks, generalized inverses, and generalized choleskey's.
+**
+** Calls ghessp() to do most of the heavy lifting.
+** 
+** 
+** Inputs:     &f -- pointer to a log likelihood function f(b,dataset),
+**                   a procedure, taking a Kx1 vector and Nxk matrix as
+**                   arguments (f:Kx1,Nxk -> 1x1).
+**
+**           b -- Kx1 vector specifying the point at which the Hessian 
+**                 of f() is to be computed. (usually the maximum likelihood
+**                 estimates)
+**
+**           dataset -- a Nxk set of data, the same input as in CML and MAXLIK
+** 
+** Output:   vc -- KxK variance covariance matrix
+** 
+** GLOBALS:  _EI_vc = Mx2, M>=1: Each row represents globals for 1 instruction 
+**                 for an attempt to compute a positive definite variance 
+**                 matrix.  The procedure exits after the first p.d. matrix
+**                 is found.  Options to include in various rows:
+**                {1 0}=usual hessian computation, 
+**                {1 _GhDelta}=use usual hessian and then adjust eigenvalues
+**                   simultaneously so they are > _GhDelta. 
+**   		  {2 _GhFall}=use wide step lengths at _GhFall falloff in
+**	  	     the likelihood function
+**		  {3 _GhFall}=use quadradic approximation to wide step lengths 
+**                   with falloff in likelihood function set at _GhFall
+**                {4 0}=use generalized inverse and cholesky approach
+**                {5 _GhFall}=use wide step lengths, but compute the length by
+**                   checking the gradient at each point.  Start at _GhFall
+**                   falloff in the likelihood function.
+**               (If the likelihood is normal, i.e., quadratic, all options
+**               will give nearly the same answers.)
+**              DEFAULT={1 0, 2 0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2};
+**
+**           _GhFix = vector of same size as b with 1 for the estimated coeffs
+**                    and 0 for those fixed and to be deleted prior to gvc
+**                    computation; or set to 1 for keep them all (default)
+**                (presently only works if fixed coeff's are at end of vector)
+**
+** OUTPUT GLOBALS:
+**           _GhActual = row of _ei_vc at which pos.def. hessian was found
+**
+*/
+proc gvc(&f,b,dataset);
+  local hessian,vc,m,i,q1,q2,mq,eigvals,not_pd,j;
+  clearg _gvc_dataset,_gvc_procname,_GhActual,_gvc_fixKeep,
+  _GhFall,_GhQuad,GhDelta;
+  _gvc_dataset=dataset;
+  _gvc_ProcName=f;
+  if scalone(_Ghfix) or _Ghfix==1;
+    _gvc_fixKeep=miss(1,1);
+  elseif rows(_GhFix)/=rows(b) or cols(_GhFix)/=1;
+    "gvc: _GhFix error";
+    stop;
+  else;
+    _gvc_fixKeep=delif(b,_GhFix);
+    b=selif(b,_Ghfix);
+  endif;
+
+  #ifdos;
+  i=1;  do while i<=rows(_ei_vc);
+  #else;
+  for i (1, rows(_ei_vc), 1);
+  #endif;
+
+    if _ei_vc[i+0,1]==1;                  @ use hessp @
+      if _Eprt>=2;
+	printfl "gvc: trying numerical hessian";
+      endif;
+      hessian=hessp(&_gvc_procedure,b);
+      _GhDelta=_ei_vc[i+0,2];
+      if _GhDelta>0;
+	if _Eprt>=2;
+	  "     with eigenvalue floor of ";;_GhDelta;;
+	  printfl;
+	endif;
+	{q1,q2}=eighv(-hessian);
+	mq=minc(q1);
+	if mq<_GhDelta;
+	  q1=q1+0.1-minc(q1);
+	  hessian=-q2*diagrv(eye(rows(q1)),q1)*q2';
+	endif;
+      endif;
+      
+    elseif _ei_vc[i+0,1]==2;		@ use wide step lengths @
+      _GhFall=_ei_vc[i+0,2];
+      if _Eprt>=2;
+	"gvc: trying wide step lengths with likelihood falloff of "\
+	""$+ftos(_GhFall,"*.*lf",1,2);;
+	printfl;
+      endif;
+      _GhQuad=0;
+      _GhDelta=0;
+      hessian=ghessp(&_gvc_procedure,b,0,0);
+      
+    elseif _ei_vc[i+0,1]==3;		@ use quadratic approximation @
+      if _Eprt>=2;
+	"gvc: trying quadratic approximation with likelihood falloff of "\
+	""$+ftos(_GhFall,"*.*lf",1,2);;
+	printfl;
+      endif;
+      _GhFall=_ei_vc[i+0,2];
+      _GhQuad=1;
+      _GhDelta=0;
+      hessian=ghessp(&_gvc_procedure,b,0,0);
+      
+    elseif _ei_vc[i+0,1]==4;           @ use generalized approach @
+      if _Eprt>=1;
+	"gvc: trying generalized inverse of -hessian matrix";
+      endif;
+      hessian=hessp(&_gvc_procedure,b);
+      vc=pinv(-hessian);
+      if _Eprt>=3;
+        print("hessian:",hessian);
+        print("first vc:",vc);
+      endif;
+      eigvals=eig(vc);
+      not_pd = 0;
+      #ifdos;
+      j=1;  do while j<=rows(eigvals);
+      #else;
+      for j (1, rows(eigvals), 1);
+      #endif;
+        if _Eprt>=3;
+          print("gvc: vc eigenvalue ", eigvals[j+0]);
+        endif;
+        if eigvals[j+0] <= 0;
+          not_pd = 1;
+	endif;
+     #ifdos;
+     j=j+1; endo;
+     #else;
+     endfor;
+     #endif;
+      if not_pd == 1;
+        if _Eprt>=1;
+	  "gvc:   -hessian matrix not p.d.; trying generalized cholesky also";
+        endif;
+        vc = sechol(vc);
+	vc = vc'vc;
+	if _Eprt>=3;
+          print("new vc:");
+	  print(vc);
+	endif;
+      endif;
+      
+    elseif _ei_vc[i+0,1]==5;  @ use wide step lengths with gradient check @
+      _GhFall=_ei_vc[i+0,2];
+      if _Eprt>=2;
+	"gvc: trying wide step lengths with gradient checks"\
+	" and likelihood falloff of "\
+	""$+ftos(_GhFall,"*.*lf",1,2);;
+	printfl;
+      endif;
+      _GhQuad=0;
+      _GhDelta=0;
+      hessian=ghessp(&_gvc_procedure,b,1,1);
+      
+    endif;
+    
+    trap 1;
+    if _ei_vc[i+0,1] ne 4;           @ did not use generalized approach @
+      vc=invpd(-hessian);
+    endif;
+    if not(scalmiss(vc));
+      trap 0;
+      clearg _gvc_dataset;  @ to save space  @
+      _GhActual = i+0;
+      if _Eprt>=2;
+	printfl "gvc: success.";
+      endif;
+
+      retp(vc);
+    endif;
+  
+  #ifdos;   
+    i=i+1;endo;
+  #else;
+  endfor;
+  #endif;
+  
+  "gvc: positive definite Hessian not found.  Change _ei_vc and rerun"; 
+  _GhActual=-1; 
+  retp(miss(1,1)); 
+  
+endp;
+
+/* dummy procedure for input to ghessp */  
+proc _gvc_procedure(b);
+  local loglik;
+  b=packr(b|_gvc_FixKeep);
+  loglik=_gvc_ProcName;
+  local loglik:proc;
+  retp(sumc(loglik(b,_gvc_dataset)));
+endp;
+
+/* ghessp()
+**
+** calculates a "global hessian", i.e. with wide step length evaluations.
+** Also allows for quadratic approximation and will optionally verify
+** that the gradient is correct for each step length computation.
+** These procedures will generate a positive definite hessian more often
+** than hessp.src for non-normal likelihoods, while giving identical results
+** for normal likelihoods.  In theory at least they should also be more
+** accurate summaries of the likelihood surface than hessp, which gives
+** the quadradic approximation to the likelihood but only within epsilon
+** of the maximum.
+** 
+** Purpose:    Computes the matrix of second partial derivatives 
+**             (Hessian matrix) of a function defined by a procedure.
+** 
+** Format:     h = ghessp( &f, x0, wf, grad );
+** 
+** Inputs:     &f -- pointer to a single-valued function f(x), defined
+**                   as a procedure, taking a single Kx1 vector
+**                   argument (f:Kx1 -> 1x1).  It is acceptable for
+**                   f(x) to have been defined in terms of global
+**                   arguments in addition to x:
+** 
+**                      proc f(x); 
+**                          retp( exp(x'b) ); 
+**                      endp;.
+**
+**           x0 -- Kx1 vector specifying the point at which the Hessian 
+**                 of f(x) is to be computed.
+** 
+**	     wf --  1= wide step algorithm used, 0=not
+** 
+**	     grad -- 1=gradient check algorithm used, 0=not
+** 
+** Output:   h -- KxK matrix of second derivatives of f with respect
+**                to x at x0. This matrix will be symmetric.
+** 
+** Globals:  _GhFall = .5; fraction falloff in likelihood function to the
+**               left and right (at possibly different distances) at which
+**               backwards and forwards steps are chosen.  If the 
+**               likelihood is quadradic (normal), this parameter will have 
+**               no effect.
+**
+**           _GhQuad = 1; use quadradic approximation (should set _GhFall=0.1);
+**                     0; use direct approach.
+**           
+**           _GhDelta = 0.1; if nonzero, force -hessian to be positive definite
+**                    by setting _GhDelta to be the floor for the eigenvalues
+**                    of the Hessian.
+**
+*/
+proc ghessp(&f,x0,wf,grad);
+    local k,hessian,dh,f0,i,j,prop,delta,x1,f1,ok,eeF,eeB,num,
+       den,del,mp,df1,df2,wideflag,sign,extra,dhB,dhF,b,rll,ll,p,x,
+       ixx,ii,ox,mq,q1,q2;
+    local f:proc;
+
+/* initializations */
+    extra=1;				@ set the added increment extra value @
+    sign=1;				@ set the step sign product variable @
+    wideflag=wf;			@ set the flag indicating steps to 0 @
+    k = rows(x0);
+    hessian = zeros(k,k);
+    dh=zeros(k,1);			@ stores step sizes @
+    dhF=zeros(k,1);			@ stores step sizes @
+    dhB=zeros(k,1);			@ stores step sizes @
+    if _GhFall<=0;
+      prop=.5;				@ proportion drop in lik for step @
+    elseif _GhFall>1;
+      "ghessp: _ghfall error";
+      stop;
+    else;
+      prop=_GhFall;
+    endif;
+    if _GhDelta<0;
+      "ghessp: problem with _GhDelta";
+      end;
+    endif;
+    delta=0.001; 		        @ increment to search for step size  @
+    f0 = f(x0);				@ loglikelihood at starting values  @
+    ok=ln(prop)+f0;			@ loglikelihood goal at step _GhFall @
+
+/* calculation of step sizes */
+    if grad > 0;			@ gradient check step calculations @ 			
+      gosub step2;
+    else;				@ otw do standard check calculation @
+      mp=1;				@ forward @
+      gosub step;
+      dhF=dh;
+      mp=-1;				@ backward @
+      gosub step;
+      dhB=dh;
+    endif;
+    
+    dhF=(dhF+dhB)/2;
+    dhB=dhF;
+    
+/* Compute hessian */
+    if _GhQuad;		@ use quad approximation @ 
+      rll=round(3^k);
+      ll=zeros(rll,1);
+      p=((x0-dhB)~x0~(x0+dhF))';
+      
+      /* create x matrix */
+      x=makefacn(cols(p),p);
+      i=1;		@ add quad terms  @
+      do while i<=k;
+	#ifdos;
+	j=i; do while j<=k;
+	#else;
+	for j (i, k, 1);
+	#endif;
+	  x=x~((x[.,i]-x0[i]).*(x[.,j+0]-x0[j+0]));
+	#ifdos;
+        j=j+1; endo;
+	#else;
+	endfor;
+	#endif;
+	i=i+1;
+      endo;
+      x=x~ones(rll,1);	@ add constant term @
+      ox=x[.,1:k];
+      x=x[.,k+1:cols(x)];
+      
+      /* do likelihood evaluations */
+      #ifdos;
+      i=1;  do while i<=rll;
+      #else;
+      for i (1, rll, 1);
+      #endif;
+	ll[i+0]=f(ox[i+0,.]');
+      #ifdos;
+      i=i+1;  endo;
+      #else;
+      endfor;
+      #endif;
+
+      /* compute quad regression */
+      trap 1;
+      ixx=invpd(moment(x,0));
+      if scalerr(ixx);
+	errorlog "X'X matrix not invertable, returning missing values";
+	retp(x);
+      endif; 
+      trap 0;
+      b=ixx*x'll;
+
+      /* form hessian */
+      ii=0;
+      i=1;	
+      do while i<=k;
+	#ifdos;
+        j=i; do while j<=k;
+        #else;
+	for j (i, k, 1);
+        #endif;
+	  ii=ii+1;
+	  hessian[i,j+0]=b[ii];
+	  if i/=j;
+	    hessian[j+0,i] = hessian[i,j+0];
+	  else;
+	    hessian[j+0,i]=2*hessian[j+0,i];
+	  endif;
+        #ifdos;
+	j=j+1;endo;
+        #else;
+        endfor;
+        #endif;
+	i=i+1;
+      endo;
+      
+    elseif _GhQuad==0;	@ use direct method  @
+      eeF=eye(k).*dhF;
+      eeB=eye(k).*dhB;
+      i=1;
+      do while i<=k;
+	#ifdos;
+        j=i; do while j<=k;
+        #else;
+	for j (i, 1, k);
+        #endif;
+	  num = f(x0+eeF[.,i]+eeF[.,j+0]) - f(x0+eeF[.,i]-eeB[.,j+0])
+	      - f(x0-eeB[.,i]+eeF[.,j+0]) + f(x0-eeB[.,i]-eeB[.,j+0]);
+	  den= (eeF[i,i]+eeB[i,i])*(eeF[j+0,j+0]+eeB[j+0,j+0]);
+	  hessian[i,j+0] = num/den;
+	  if i/=(j+0);
+	    hessian[j+0,i] = hessian[i,j+0];
+	  endif;
+	#ifdos;
+        j=j+1; endo;
+	#else;
+        endfor;
+        #endif;
+
+	i=i+1;
+      endo;
+      
+    else;
+      "ghessp: problem with _GhQuad";
+    endif;
+    
+    /* ensure -hessian is positive definite */
+    if _GhDelta>0;
+	{q1,q2}=eighv(-hessian);
+	mq=minc(q1);
+	if mq<_GhDelta;
+	  q1=q1+0.1-minc(q1);
+	  hessian=-q2*diagrv(eye(rows(q1)),q1)*q2';
+	endif;
+    endif;
+    
+    retp( hessian );
+
+/* subroutine: step size calcuation */    
+step:
+    i=1; @ useless command to make the label work with ifdos @
+    #ifdos;
+    i=1;do while i<=k;		@ once for each parameter  @
+    #else;
+    for i (1, k, 1);
+    #endif;
+      x1=x0;
+      f1=f0;
+      del=delta;
+      do until f1<=ok;          @ search until ok @
+	del=del*1.5;
+	x1[i+0]=x1[i+0]+(del*mp);  @ search backwards (-) or forwards (+) @
+	f1=f(x1);
+      endo;
+      dh[i+0]=mp*(x1[i+0]-x0[i+0]);
+    #ifdos;
+    i=i+1; endo;
+    #else;
+    endfor;
+    #endif;
+    return;
+  
+/* subroutine: step size calcuation with gradient check */    
+step2:
+    i=1;   @ irrelevant command to fix gauss bug @
+    #ifdos;
+    i=1;do while i<=k;
+    #else;
+    for i (1, k, 1);			@ loop through parameter space @
+    #endif;
+      do while sign > 0;	@ loop while first deriv signs are equal @
+        mp=1;				@ go forwards @
+        x1=x0;
+        f1=f0;
+        del=delta;
+        do until f1<=ok;          	@ search until ok @
+	  del=del*1.5*extra;
+	  x1[i+0]=x1[i+0]+(del*mp);		@ search forwards (+) @
+	  f1=f(x1);
+        endo;
+        dhF[i+0]=mp*(x1[i+0]-x0[i+0]);
+        mp=-1;				@ go backwards @
+        x1=x0;
+        f1=f0;
+        del=delta;
+        do until f1<=ok;          	@ search until ok @
+	  del=del*1.5*extra;
+	  x1[i+0]=x1[i+0]+(del*mp);		@ search backwards (-) @
+	  f1=f(x1);
+        endo;
+        dhB[i+0]=mp*(x1[i+0]-x0[i+0]);
+        if wideflag==1;			@ using wide step lengths @
+          df1=gradp(&f,dhF); 
+          df2=gradp(&f,dhB); 
+          sign=df1[i+0]*df2[i+0];
+	  extra=extra*1.1;
+	else;
+	    sign=-1;
+        endif;
+      endo;
+      if wideflag==1;			@ using wide step lengths @
+        sign = 1;
+        extra=1;
+        if _Eprt>=2;
+	  "gvc: gradient dhF[i+0] "\
+	  ""$+ftos(df1[i+0],"*.*lf",1,2);;
+	  printfl;
+	  "              dhB[i+0] "\
+	  ""$+ftos(df2[i+0],"*.*lf",1,2);;
+	  printfl;
+        endif;
+      endif; 
+    #ifdos;
+    i=i+1;endo;
+    #else;
+    endfor;
+    #endif;
+    return;
+  endp;
+
+/*
+**  y = sechol(A);
+**  by Jeff Gill
+**
+**  This procedure produces:
+**
+**  y = chol(A+E), where E is a diagonal matrix with each element as small
+**  as possible, and A and E are the same size.  E diagonal values are 
+**  constrained by iteravely updated Gerschgorin bounds.  
+**
+**  REFERENCES:
+**
+**  Jeff Gill and Gary King. 1998. "`Hessian not Invertable.' Help!"
+**  manuscript in progress, Harvard University.
+**
+**  Robert B. Schnabel and Elizabeth Eskow. 1990. "A New Modified Cholesky
+**  Factorization," SIAM Journal of Scientific Statistical Computating,
+**  11, 6: 1136-58.
+*/
+  proc sechol(A);
+  local h,i,j,k,m,n,gamm,E,L,P,temp_vector,tau,eigens,delta,deltaprev,xi_j,
+         sum,R,theta_j,norm_A,normj,phi_j,beta_j,gersch,sum2;
+   n = rows(A);
+   m = cols(A);
+   E = zeros(n,n);
+   gersch = zeros(n,1);
+   R = zeros(n,n);
+   deltaprev=0;
+   gamm = maxc(abs(diag(A))); 
+   tau = __macheps^(1/3);
+   if m ne n;
+     print("sechol: input matrix must be square");
+     retp(A);
+   endif;
+   norm_A = maxc(sumc(abs(A)));
+   gamm = maxc(abs(diag(A))); 
+   delta = maxc(maxc(__macheps*norm_A~__macheps));
+  
+   j = 1;
+   do while j <= n;
+     /* calculate E[j,j] to add to A[j,j] */
+     #ifdos;
+       i=j; do while i<=n;
+     #else;
+       for i (j, n, 1);
+     #endif;
+       sum = 0;
+       #ifdos;
+	 k=(j+1); do while k<=(i-1);
+       #else;
+         for k ((j+1), (i-1), 1);
+       #endif;
+	 sum = sum + abs(A[i+0,k+0]);
+       #ifdos;
+	 k=k+1; endo;
+       #else;
+	 endfor;
+       #endif;
+       sum2 = 0;
+       #ifdos;
+	 k=(i+1); do while k<=n;
+       #else;
+         for k ((i+1), n, 1);
+       #endif;
+	 sum2 = sum2 + abs(A[k+0,i+0]);
+       #ifdos;
+	 k=k+1; endo;
+       #else;
+         endfor;
+       #endif;
+       gersch[i+0] = A[j,j] - sum - sum2;
+     #ifdos;
+       i=i+1; endo;
+     #else;
+       endfor;
+     #endif;
+     if (j+1) <= n;
+       normj = sumc(abs(A[(j+1):n,j]));
+     else;
+       normj = (abs(A[n,j])');
+     endif;
+     delta = maxc(0|-A[j,j]+maxc(normj|tau*gamm|deltaprev)|deltaprev);
+     A[j,j] = A[j,j] + delta;
+     deltaprev = delta;
+
+     /* update Gerschgorin bound */
+     if A[j,j] ne normj;
+       sum = 1 - normj/A[j,j];
+       if (j+1) <= n;
+	 #ifdos;
+	   i=(j+1); do while i<=n;
+         #else;
+           for i ((j+1), n, 1);
+         #endif;
+	   gersch[i+0] = gersch[i+0] + abs(A[i+0,j])*sum; 
+         #ifdos;
+	   i=i+1; endo;
+         #else;
+           endfor;
+         #endif;
+       endif;
+     endif;
+
+     /* continue normally with cholesky algorithm */
+     #ifdos;
+       i=1; do while i<=(j-1);
+     #else;
+       for i (1, (j-1), 1);
+     #endif;
+       sum = 0;
+       #ifdos;
+	 k=1; do while k<=(i-1);
+       #else;
+         for k (1, (i-1), 1);	
+       #endif;
+         sum = sum + R[k+0,i+0]*R[k+0,j];
+       #ifdos;
+	 k=k+1; endo;
+       #else;
+         endfor;
+       #endif;
+       R[i+0,j] = (A[i+0,j] - sum)/R[i+0,i+0];
+       if i+0 > j; 
+	 R[i+0,j] = 0; 
+       endif; 
+     #ifdos;
+       i=i+1; endo;
+     #else;
+       endfor;
+     #endif;
+     sum = 0;
+     #ifdos;
+       k=1; do while k<=(j-1);
+     #else;
+       for k (1, (j-1), 1);	
+     #endif;
+       sum = sum + R[k+0,j]^2;
+     #ifdos;
+       k=k+1; endo;
+     #else;
+       endfor;
+     #endif;
+     R[j,j] = sqrt(abs(A[j,j] - sum));  @ added abs() for rounding error @
+     j = j + 1;
+
+   endo;
+   retp(R);
+endp;

@@ -1,0 +1,177 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+*/
+/*
+    {Bs,aggs}=bounds1(t,x,n);
+**
+** computes bounds on parameters given aggregate data
+**
+** INPUTS: nx1 vectors, unit of analysis is precinct
+** see output of sumvar()
+**
+** OUTPUTS: bounds on precinct-level parameters
+** Bs   = cols: lower-black ~ upper-black ~ lower-white ~ upper-white 
+** aggs =  bounds on district aggregates
+**         cols: lower ~ upper
+**         rows: beta-b, beta-w
+*/
+#include ei.ext;
+proc 2=bounds1(t,x,n);
+  local LbetaB,UbetaB,LbetaW,UbetaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,tomx,z,o,m;
+  omx=1-x;
+  Nb=x.*N;
+  Nw=omx.*N;
+  {c,c0,c1} = homoindx(x);
+  p=rows(x);
+  
+  LbetaB=zeros(p,1);
+  UbetaB=zeros(p,1);
+  LbetaW=zeros(p,1);
+  UbetaW=zeros(p,1);
+  z=zeros(p,1);
+  o=ones(p,1);
+  m=o*miss(1,1);
+  
+  if not(scalmiss(c));			@ heterogeneous precincts @
+    tx=t[c]./x[c];
+    tomx=t[c]./omx[c];
+    LbetaB[c]=maxr(z[c],tx-(omx[c]./x[c]));
+    UbetaB[c]=minr(tx,o[c]);
+    LbetaW[c]=maxr(z[c],tomx-(x[c]./(1-x[c])));
+    UbetaW[c]=minr(tomx,o[c]);
+  endif;
+    
+  if not(scalmiss(c0));			@ homogeneously white @
+    LbetaB[c0]=m[c0];
+    UbetaB[c0]=m[c0];
+    LbetaW[c0]=t[c0];
+    UbetaW[c0]=t[c0];
+  endif;
+    
+  if not(scalmiss(c1));			@ homogeneously black @
+    LbetaB[c1]=t[c1];
+    UbetaB[c1]=t[c1];
+    LbetaW[c1]=m[c1];
+    UbetaW[c1]=m[c1];
+  endif;
+
+  /* fix rounding errors due to machine precision */
+  LbetaB=recode(LbetaB,(LbetaB.<0)~(LbetaB.>1),0|1);
+  UbetaB=recode(UbetaB,(UbetaB.<0)~(UbetaB.>1),0|1);
+  LbetaW=recode(LbetaW,(LbetaW.<0)~(LbetaW.>1),0|1);
+  UbetaW=recode(UbetaW,(UbetaW.<0)~(UbetaW.>1),0|1);
+  
+  aggs=(meanwc(LbetaB,Nb)~meanwc(UbetaB,Nb))|
+       (meanwc(LbetaW,Nw)~meanwc(UbetaW,Nw));
+       
+  retp(LbetaB~UbetaB~LbetaW~UbetaW,aggs);
+endp;
+
+/*
+**  {bnds,aggs} = bounds2(v,t,x,n);
+**
+**  INPUTS:
+**  v = democratic fraction of the two party vote
+**  t = fraction of people turning out to vote
+**  x = fraction of people who are black
+**  n = number of voting age people in each precinct
+**
+**  OUTPUTS: 
+**  Bounds on fraction of blacks (lambdaB) and whites (lambdaW) voting for the dems
+**  bnds = lower_lambdaB ~ upper_lambdaB ~ lower_lambdaW ~ upper_lambdaW
+**  aggs =  bounds on district aggregates
+**         cols: lower ~ upper
+**         rows: lambdaB, lambdaW
+*/
+proc 2=bounds2(v,t,x,n);
+  clearg LlambdaB,UlambdaB,LlambdaW,UlambdaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,
+  tomx,z,o,m,d;
+  omx=1-x;
+  Nb=x.*N;
+  Nw=omx.*N;
+  {c,c0,c1} = homoindx(x);
+  p=rows(x);
+  
+  LlambdaB=zeros(p,1);
+  UlambdaB=zeros(p,1);
+  LlambdaW=zeros(p,1);
+  UlambdaW=zeros(p,1);
+  z=zeros(p,1);
+  o=ones(p,1);
+  m=o*miss(1,1);
+  
+  if not(scalmiss(c));			@ heterogeneous precincts @
+    d=v[c].*t[c];
+    LlambdaB[c]=maxr(z[c],d-(1-x[c]))./(maxr(z[c],d-(1-x[c]))+minr(t[c]-d,x[c]));
+    UlambdaB[c]=minr(d,x[c])./(minr(d,x[c])+maxr(z[c],(t[c]-d)-(1-x[c])));
+    LlambdaW[c]=maxr(z[c],d-x[c])./(maxr(z[c],d-x[c])+minr(t[c]-d,1-x[c]));
+    UlambdaW[c]=minr(d,1-x[c])./(minr(d,1-x[c])+maxr(z[c],(t[c]-d)-x[c]));
+  endif;
+    
+  if not(scalmiss(c0));			@ homogeneously white @
+    LlambdaB[c0]=m[c0];
+    UlambdaB[c0]=m[c0];
+    LlambdaW[c0]=v[c0];
+    UlambdaW[c0]=v[c0];
+  endif;
+    
+  if not(scalmiss(c1));			@ homogeneously black @
+    LlambdaB[c1]=v[c1];
+    UlambdaB[c1]=v[c1];
+    LlambdaW[c1]=m[c1];
+    UlambdaW[c1]=m[c1];
+  endif;
+
+  /* fix rounding errors due to machine precision */
+  LlambdaB=recode(LlambdaB,(LlambdaB.<0)~(LlambdaB.>1),0|1);
+  UlambdaB=recode(UlambdaB,(UlambdaB.<0)~(UlambdaB.>1),0|1);
+  LlambdaW=recode(LlambdaW,(LlambdaW.<0)~(LlambdaW.>1),0|1);
+  UlambdaW=recode(UlambdaW,(UlambdaW.<0)~(UlambdaW.>1),0|1);
+  
+  aggs=(meanwc(LlambdaB,Nb)~meanwc(UlambdaB,Nb))|
+       (meanwc(LlambdaW,Nw)~meanwc(UlambdaW,Nw));
+       
+  retp(LlambdaB~UlambdaB~LlambdaW~UlambdaW,aggs);
+endp;
+
+/* support proc
+** row maximum
+*/
+proc maxr(a,b);
+  retp(maxc( (a~b)' ));
+  endp;
+  
+/* support proc
+** row minimum
+*/
+proc minr(a,b);
+  retp(minc( (a~b)' ));
+  endp;
+
+  /******************************  
+/*
+     {D,T,X,N}=sumvar(bvap,wvap,Dvote,Rvote);
+**
+** INPUTS:
+** bvap = number of blacks of voting age  (Nb)
+** wvap = number of whites of voting age  (Nw)
+** Dvote = number votes for Democratic candidate (Nd)
+** Rvote = number votes for Republican candidate (Nr)
+**
+** OUTPUTS:
+** D = Dvote/N
+** T = (Dvote + Rvote) / N
+** X = Bvap/N
+** N = Bvap + Wvap
+*/
+proc 4=sumvar(bvap,wvap,Dvote,Rvote);
+  local w,t,x,tvap;
+  Tvap=Bvap+Wvap;
+  W=Dvote./Tvap;
+  X=Bvap./Tvap;
+  T=(Dvote+Rvote)./Tvap;
+  retp(w,t,x,tvap);
+endp;
+*******************/

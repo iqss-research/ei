@@ -1,0 +1,374 @@
+/* 
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+**
+** (unstandardized) truncated normal distributions & random numbers
+**
+** y = invcdfnm(p,mu,sigma2);             inverse normal CDF
+** p = cdftnorm(y,mu,sigma2,left,right);  truncated normal CDF
+** y = invcdftn(p,mu,sigma2,left,right);  Inverse truncated normal CDF
+** a = rndtn(r,c,mu,sigma2,left,right);   random truncated normal
+** b = rndtni0(m,v,bounds);              independent random truncated normalS
+**                                        (sample rejection method)
+** c = rndtni1(mu,sigma2,bounds);        independent random truncated normalS
+**                                        (CDF method)
+** d = rndtni(m,v,bounds);               independent random truncated normalS
+**                                        (combined methods)
+** e = rndbtn(bb,bw,sb,sw,rho,bounds,sims); truncated bivariate normal
+**                                            random numbers
+** f = rndbtni(bb,bw,sb,sw,rho,bounds); truncated bivar normal random numbers
+**                                       of one simulation per row of bb~bb
+*/
+#include ei.ext;
+/* The inverse normal CDF (not standardized)
+**
+** usage:  y = invcdfnm(p,mu,sigma2);
+**
+** INPUTS:
+** mu = mean
+** sigma2 = variance
+** p = Prob(Y<y|mu,sigma2), where y is a realization
+**                          of the random variable Y
+**
+** OUTPUT:
+** y = normal variate
+**
+*/
+proc invcdfnm(p,mu,sigma2);
+  local sigma;
+  sigma=sqrt(sigma2);
+  retp( cdfni(p).*sigma+mu );
+  endp;
+
+/*
+** cumulative truncated normal distribution
+**
+** USAGE:  p = cdftnorm(y,mu,sigma2,left,right);
+**
+** INPUTS:
+** y = truncated normal variate
+** mu = mean
+** sigma2 = variance
+** left = left truncation bound
+** right = right truncation bound, left <= Y <= right
+**
+** OUTPUT:
+** p = Prob(Y<y|mu,sigma2), where y is a realization
+**                          of the truncated random variable Y
+*/
+proc cdftnorm(y,mu,sigma2,lft,rgt);
+  local res;
+  if lft>=rgt;
+    "cdftnorm: left must be < right";
+    end;
+  endif;
+  lft=cdfnorm(lft,mu,sigma2);
+  rgt=cdfnorm(rgt,mu,sigma2);
+  res=(cdfnorm(y,mu,sigma2)-lft)./(rgt-lft);
+  res=res.*(y.>=lft);
+  retp(res);
+endp;
+
+/*
+** inverse of the truncated normal CDF
+**
+** USAGE:    y = invcdftn(p,mu,sigma2,left,right);
+**
+** INPUTS: all Nx1
+** mu = mean
+** sigma2 = variance
+** p = Prob(Y<y|mu,sigma2), where y is a realization
+**                          of the random variable Y
+** left = left truncation bound
+** right = right truncation bound, left <= Y <= right
+**
+** OUTPUT: Nx1
+** y = normal variate
+*/
+proc invcdftn(p,mu,sigma2,lft,rgt);
+  local t,res,ok,tL,tR,clft,crgt;
+  if lft>=rgt;
+    "invcdftn: left must be < right";
+    stop;
+  endif;
+  if sumc(p.>=1)/=0 or sumc(p.<=0)/=0;
+    "invcdftn: input must be (0,1)";
+    stop;
+  endif;
+  clft=cdfnorm(lft,mu,sigma2);
+  crgt=cdfnorm(rgt,mu,sigma2);
+  res=invcdfnm(p.*(crgt-clft)+clft,mu,sigma2);
+  tL=(res.<lft);
+  tR=(res.>rgt);
+  ok=(res.>=lft).and(res.<=rgt);
+  res=res.*ok+lft.*tL+rgt.*tR;
+  tL=(tL+tR);
+  t=sumc(tL);
+  if t/=0;
+    /*t=seqa(1,1,rows(p));
+    t=selif(t,tL);*/
+    "invcdftn: Warning: Some bounds are very far from distribution mean.";
+    "          Forcing "$+ftos(t,"*.*lf",1,0)$+" simulations"\
+    " to their closest bound";
+  endif;
+  retp(res);
+endp;
+
+/*
+** random truncated normal numbers
+** via inverse CDF method (fastest for hard-to-draw numbers)
+**
+** USAGE: a = rndtn(r,c,mu,sigma2,left,right);
+**
+** INPUTS:
+** r = rows of output
+** c = columns of output
+** mu = mean
+** sigma2 = variance
+** left = left truncation bound
+** right = right truncation bound, left <= Y <= right
+**
+** OUTPUT:
+** a = r x c matrix of random numbers from a truncated normal distribution
+**     with mean mu, variance sigma2, bounds (left,right)
+*/
+proc rndtn(r,c,mu,sigma2,lft,rgt);
+  retp( invcdftn(rndu(r,c),mu,sigma2,lft,rgt) );
+endp;
+
+/*
+** random numbers from independent truncated normal distributions
+** via inverse CDF method (fastest for hard-to-draw numbers)
+**
+** USAGE:  a = rndtni1(mu,sigma2,bounds);
+**
+** INPUTS:
+** mu = Nx1 mean vector
+** sigma2 = Nx1 variance vector
+** bounds=left~right Nx2, where
+**    left = left truncation bounds
+**    right = right truncation bounds, left <= Y <= right
+**
+** OUTPUT:
+** a = rows(mu)x1 vector of random numbers from a truncated normal distribution
+**     with mean mu, variance sigma2, bounds (left,right)
+*/
+proc rndtni1(mu,sigma2,bnds);
+  local r,lft,rgt;
+  lft=bnds[.,1];
+  rgt=bnds[.,2];
+  if sumc(sigma2.<0)/=0;
+    "rndtni1: negative variance";
+    stop;
+  endif;
+  if lft>=rgt;
+    "rndtn: left must be < right";
+    stop;
+  endif;
+  if rows(mu)/=rows(sigma2) or rows(mu)/=rows(bnds) or cols(mu)>1 or
+    cols(sigma2)>1 or cols(bnds)>2;
+    "rndtn: input vectors wrong sizes";
+    stop;
+  endif;
+  r=rndu(rows(mu),1);
+  retp( invcdftn(r,mu,sigma2,lft,rgt) );
+endp;
+
+/*
+** random numbers from independent truncated normal distributions
+** via sample rejection method (fastest for easy-to-draw numbers)
+**
+** USAGE:  r = rndtni0(m,v,bounds);
+**
+** INPUT: all inputs have N rows
+** m = vector of means
+** v = vector of variances
+** bounds = upper-bound ~ lower-bound
+**
+** OUTPUT:
+** r = nx1 vector of independent random numbers with means m and variances v
+**
+*/
+proc rndtni0(m,v,bnds);
+  local r,t,sigma,i,lbound,ubound;
+  lbound=bnds[.,1];
+  ubound=bnds[.,2];
+  if sumc(v.<0)/=0;
+    "rndtni0: negative variance";
+    stop;
+  endif;
+  t=lbound.>ubound;
+  if sumc(t)/=0;
+    "rndtni: upper bound less than lower bound!";
+    stop;
+  endif;
+  sigma=sqrt(v);
+  t=(lbound./=ubound);
+  sigma=t.*sigma;
+  m=t.*m+(1-t).*lbound;
+
+  r=m+rndn(rows(m),1).*sigma;
+  i=1;
+  retry:
+  t=(r.<lbound).or(r.>ubound);
+  if sumc(t)/=0;
+    r=(1-t).*r+t.*(m+rndn(rows(m),1).*sigma);
+    i=i+1;
+    if i>5000;
+      "rndtni0: couldn't find an admissable random number, problem rows:";;
+      selif(seqa(1,1,rows(t)),t)';"trying again...";
+      i=1;
+    endif;
+    goto retry;
+  endif;
+  retp(r);
+endp;
+
+/*
+** random numbers from truncated normal distribution
+** via sample rejection method with hard cases done via CDF method
+**
+** USAGE:  r = rndtni(m,v,bounds);
+**
+** INPUT: all inputs have N rows
+** m = vector of means
+** v = vector of variances
+** bounds = upper-bound ~ lower-bound
+**
+** OUTPUT:
+** r = nx1 vector of independent random numbers with means m and variances v
+**
+*/
+proc rndtni(m,v,bnds);
+  local r,t,sigma,i,lb,ub,inds;
+  lb=bnds[.,1];
+  ub=bnds[.,2];
+  if rows(lb)==1;
+    lb=lb*ones(rows(m),1);
+  endif;
+  if rows(ub)==1;
+    ub=ub*ones(rows(m),1);
+  endif;
+  if sumc(v.<0)/=0;
+    printfl "rndtni: negative variance; see _rndtni_v";
+    clearg _rndtni_v;
+    _rndtni_v=v;
+    @v=recode(v,v.<0,1e-10);@
+    stop;
+  endif;
+  t=lb.>ub;
+  if sumc(t)/=0;
+    printfl "rndtni: upper bound less than lower bound!";
+    stop;
+  endif;
+  sigma=sqrt(v);
+  _fcmptol=1e-12;
+  t=1-dotfeq(lb,ub);
+  sigma=t.*sigma;
+  m=t.*m+(1-t).*lb;
+
+  r=m+rndn(rows(m),1).*sigma;
+  t=(r.<lb).or(r.>ub);
+  i=1;
+  do until i==5 or sumc(t)==0;
+    /* sample rejection method */
+    inds=indexcat(t,1);
+    r[inds]=m[inds]+rndn(rows(inds),1).*sigma[inds];
+    t=(r.<lb).or(r.>ub);
+    i=i+1;
+  endo;
+  if sumc(t)/=0;
+    /* sample rejection fails for some elements; try CDF method */
+    inds=indexcat(t,1);
+    r[inds]=invcdftn(rndu(rows(inds),1),m[inds],v[inds],lb[inds],ub[inds]);
+  endif;
+  retp(r);
+endp;
+
+/*
+    a =  rndbtn(bb,bw,sb,sw,rho,bounds,sims);
+**
+** bivariate truncated normal random numbers
+**
+** inputs: bb = 1st mean
+**         bw = 2nd mean
+**         sb = 1st standard deviation
+**         sw = 2nd standard deviation
+**        rho = correlation
+**     bounds = 2x2 lower~upper for 1st mean in 1st row and 2nd in 2nd
+**       sims = number of simulations
+**
+** output:  a = sims x 2 matrix of  BIvariate Truncated Normal Random Variables
+**              each row of a is one 1x2 simulation
+**
+*/
+proc rndbtn(bb,bw,sb,sw,rho,bounds,sims);
+  local sbw,sb2,sw2,vrs,b,t,vc,mu,r,m,bbsims,bwsims,o,v;
+  o=ones(sims,1);
+  sb2=sb^2;
+  sw2=sw^2;
+  sbw=rho*sb*sw;
+  
+  bwsims=rndtni(bw*o,sw2*o,bounds[2,.].*o);
+
+  m=bb+(sbw./sw2).*(bwsims-bw);
+  v=sb2-((sbw^2)./sw2);
+  bbsims=rndtni(m,v.*o,bounds[1,.].*o);
+  
+  retp(bbsims~bwsims);
+endp;
+
+/*
+    a =  rndbtni(bb,bw,sb,sw,rho,bnds);
+**
+** bivariate truncated normal random numbers
+**
+** inputs: bb = 1st mean  (px1)
+**         bw = 2nd mean
+**         sb = 1st standard deviation
+**         sw = 2nd standard deviation
+**        rho = correlation
+**       bnds = bbLO~bbHI~bwLO~bwHI
+**
+** output:  a = p x 2 matrix of  BIvariate Truncated Normal Random Variables
+**              each row of a is one 1x2 simulation
+**
+*/
+proc rndbtni(bb,bw,sb,sw,rho,bnds);
+  local sbw,sb2,sw2,vrs,b,t,vc,mu,r,m,bbsims,bwsims,o,v;
+
+  if rows(bb)/=rows(bw);
+    "rndbtni: input error";
+    stop;
+  endif;
+  o=ones(rows(bb),1);
+  if rows(sb)==1;
+    sb=sb*o;
+  endif;
+  if rows(sw)==1;
+    sw=sw*o;
+  endif;
+  if rows(rho)==1;
+    rho=rho*o;
+  endif;
+  if cols(bnds)/=4;
+    "rndbtni: bnds input error";
+    stop;
+  endif;
+  if rows(bnds)==1;
+    bnds=bnds.*o;
+  endif;
+  
+  sb2=sb^2;
+  sw2=sw^2;
+  sbw=rho.*sb.*sw;
+  
+  bwsims=rndtni(bw,sw2,bnds[.,1 2]);
+  
+  m=bb+(sbw./sw2).*(bwsims-bw);
+  v=sb2-((sbw^2)./sw2);
+  bbsims=rndtni(m,v,bnds[.,3 4]);
+  
+  retp(bbsims~bwsims);
+endp;

@@ -1,0 +1,1069 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-2001 Gary King
+**  All Rights Reserved.
+*/
+/*
+   dbuf = ei(t,x,n,Zb,Zw);
+**
+** Ecological Inference Estimates
+** gives observation-level estimates of betaB and betaW given T & X in
+**     T = betaB.*X   + betaW.*(1-X)
+**
+** INPUTS:
+** T    = outcome variable (p x 1) (Fraction of vap turning out)
+** X    = explanatory variable       (black fraction of Vap) 
+** N    = denominator of T and X     (total voting age population)
+** Zb   = 1 (for no covariates)
+**        or matrix of covariates to predict betaB (constant term is implied)
+** Zw   = 1 (for no covariates)
+**        or matrix of covariates to predict betaW (constant term is implied)
+**
+** OUTPUT:
+**  dbuf = packed data buffer. 
+**         Read contents with eiread(); graph with eigraph()
+**         If items are vput into _Eres after eiset and before ei(), they will
+**         be passed through into dbuf.
+**
+** ESSENTIAL GLOBALS:
+**  _EalphaB = (cols(Zb)x2) means~StanDevs of normal prior for 
+**          each alphaB, corresponding to each included Zb (default={.})
+**  _EalphaW = (cols(Zw)x2) means|StanDevs of normal prior for 
+**          each alphaW, corresponding to each included Zw (default={.})
+**  _Ebeta = standard deviation of flat normal prior on the constants in
+**           phi_1 and phi_2; default=0 (no prior)
+**  _Ebounds=1 set bounds on CML estimation automatically unless z's/=1
+**           0 don't use bounds
+**           kx2 or 1x2 matrix to indicate upper~lower bounds
+**           (These are bounds for the constrained maximization algorithm,
+**           not bounds on the quantities of interest)
+**           Also used for bounds on grid search (Controlled by _Estval).
+**  _Ecdfbvn = proc to use for bivariate normal integral
+**     1 use cdfbvn(); (fast, innacurate for small values)
+**     2 use cdfbvn_div();(Martin van der Ende's method, more accurate)
+**     3 use lcdfbvnorma(); (integration of ln on unit square, experimental)
+**     4 use cdfbvnunit(); (integration on unit square)
+**     5 use lncdfbvn2(); (internal Gauss proc)  DEFAULT
+**     6 use cdfbvng(); (slow, most accurate of the options)
+**  _EcdfTol = tolerance for cdfbvn functions; smaller values truncated
+**           (DEFAULT=3e-15)
+**  _EdirTol = 0.0001; direction tolerance for maximization convergence
+**  _EvTol = tolerance for variance calculation; smaller values truncated
+**           (DEFAULT=5e-307)
+**  _EdoML   = 1 do maxlik (default)
+**             0 don't do maxlik; use phi in _EdoML_phi
+**                              and vcphi in _EdoML_vcphi
+**  _EdoSim  = 1 do simulations (default)
+**             0 don't do simulations
+**            -1 don't do simulations or compute the maxlik variance (use this
+**               option for computing conditional loglik of eta's)
+**  _Eeta = 4x1 vector of etaB|etaW|se(etaB)|se(etaW);
+**          0 = set eta=zeros(4,1) (default)
+**          1 = set Zb=X and eta=0
+**          2 = set Zw=X and eta=0
+**          3 = set Zb=Zw=X and eta=0
+**          4|a|b = set Zb=X, Zw=1; etaB=0(se=0), etaW=a(se=b)
+**          5|a|b = set Zb=1, Zw=X, etaB=a(se=b), etaW=0(se=0)
+**          (If you set this, consider setting _EalphaB & _EalphaW also)
+**  _Eigraph_bvsmth = bivariate density smoothing parameter (default=0.08)
+**  _EisChk = Check importance sampling results; 0 = do nothing
+**            1 = change lnir entry in dbuf to
+**            ln(imptce ratio) ~ phi' (_Esims*_Eisn x rows(phi)+1)
+**            and change dbuf PhiSims entry to means~stdcs.
+**  _EImarg = 1 calc likelihood at each sim (for calc'ing marg'l lik), or
+**            0 to store only the mean of these likelihoods
+**  _EisFac = factor to multiply normal variance matrix by in imptce sampling
+**            or -1 to use normal approximation (default=4)
+**  _Eisn   = factor to multiply by _Esims to compute the number of normals 
+**          to draw before resampling to try to get _Esims samples from
+**          exact posterior (default _Eisn=10)
+**  _Eist   = 0 (default) for normal random numbers for importance sampling,
+**            >2 for multivariate t random numbers, _Eist degrees of freedom
+**  _EmaxIter = maximum number of iterations for CML default=500
+**  _EnonEval = number of nonparametric density evaluations for each 
+**           tomography line (default = 11)
+**  _EnonNumInt = number of points to evaluate for numerical integration in
+**           computing the denominator for the bivariate kernel density 
+**           (default=11)
+**  _EnonPar = 0 (default) do not run nonparametric model
+**             1 run nonparametric model
+**  _EnumTol = 0.0001; numerical tolerance for homogeneous precincts
+**  _Erho[1] = standard deviation of normal prior on phi_5 (default=0.5)
+**        0 fix to _Erho[2] and don't estimate
+**       <0 estimate without prior
+**       (_Erho should be scalar unless _Erho[1]=0 in which case it is 2x1)
+**  _Eselect = scalar 1 to use all observations (default)
+**             vector of 1's to select and 0's to discard observations during
+**             estimation stage; all observations are used for stage 2.
+**  _EselRnd   scalar (0,1]:  randomly keep this fraction of the observations
+**             in the dataset.  default=1 means keep all observations indicated
+**             by _Eselect. useful for speeding estimation in large datasets
+**  _Esigma = standard deviation of an underlying normal distribution, 
+**           from which a half normal is constructed as a prior for both
+**           sigma^b and sigma^w (on the untruncated scale).  Note: E(prior)
+**           = _Esigma*sqrt(2/pi) \approx _Esigma*0.8. (Default = 0.5)
+**           set to zero or negative for no prior.
+**  _Esims  = number of simulations (default = 100)
+**  _Estval = 1 use default starting values or set to kx1 vector where
+**        if _Eeta[1]=0, k=5; if _Eeta[1]=1,2,4,5, k=6; if _Eeta[1]=3, k=7;
+**        if covariates are used, k=5+(number of covariates), Zb before Zw
+**        For GRID SEARCH, _Estval=0 (uses 5 gridlines for each zoom)
+**        (or _Estval >=3 for that number of gridlines)
+** _EI_vc = Mx2.  Each row represents globals for 1 attempt
+**          to compute a positive definite variance matrix.  The 
+**          exits after the first one is found. options to include 
+**          in various rows are:
+**          {1 0}=usual hessian computation, 
+**          {1 _GhDelta}=use usual hessian and then adjust eigenvalues
+**             simultaneously so they are > _GhDelta. 
+**          {2 _GhFall}=use wide step lengths at _GhFall falloff in
+**	  	the likelihood function
+**	    {3 _GhFall}=use quadradic approximation to wide step lengths 
+**               with falloff in likelihood function set at _GhFall
+**          {4 0}=use generalized inverse and cholesky approach
+**          {5 _GhFall}=use wide step lengths, but compute the length by
+**               checking the gradient at each point.  Start at _GhFall
+**               falloff in the likelihood function.
+**          (If the likelihood is normal, i.e., quadratic, all options
+**           will give nearly the same answers.)
+**          DEFAULT={1 0, 4 0, 2 0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2};
+**
+**  INESSENTIAL GLOBALS (not vput into data buffer):
+**  _Eprt=0 print nothing
+**        1 print only final output from each stage
+**        2 also prints friendly iteration numbers etc (default)
+**        3 also prints all sorts of checks along the way
+**  _Echeck = 1 check inputs & give nice error messages if problems (default)
+**          = 0 don't check (saves a small amount of time)
+**
+** OUTPUT GLOBALS:
+** _Eres =  data buffer with time of completion, if procedure finishes.
+**          If the procedure fails or is stopped, _Eres is a data buffer
+**          containing all items computed up to that point.
+**
+** INTERNAL GLOBALS
+** _Ez = n of covariates, incl. implied constant term for Zb|Zw
+** _Eivc = stored invpd(vc) to save time for importance sampling
+*/
+#include ei.ext;
+proc ei(t,x,tvap,Zb,Zw);
+  local res,et,MLpsi,MLvc,betaBs,betaWs,tst,Eselect,flat;
+  if _Eprt>0;
+    "----- EI Begins -----";
+    _Eversion;
+  endif;
+
+  et=hsec;	@ timing start @
+  if not(scalzero(_Eres));
+    if vin(_Eres,"titl") and _Eprt>0;
+      vread(_Eres,"titl");
+    endif;
+  endif;
+  
+  /* inputs */
+  _Eres=vput(_Eres,t,"t");
+  _Eres=vput(_Eres,x,"x");
+  _Eres=vput(_Eres,tvap,"n");
+  _Eres=vput(_Eres,Zb,"Zb");
+  _Eres=vput(_Eres,Zw,"Zw");
+  
+  /* essential globals */
+  _Eres=vput(_Eres,_EalphaB,"_EalphaB");
+  _Eres=vput(_Eres,_EalphaW,"_EalphaW");
+  _Eres=vput(_Eres,_Ebeta,"_Ebeta");
+  _Eres=vput(_Eres,_Ebounds,"_Ebounds");
+  _Eres=vput(_Eres,_Ecdfbvn,"_Ecdfbvn");
+  _Eres=vput(_Eres,_EdirTol,"_EdirTol");
+  _Eres=vput(_Eres,_EcdfTol,"_EcdfTol");
+  _Eres=vput(_Eres,_EvTol,"_EvTol");
+  _Eres=vput(_Eres,_EdoML,"_EdoML");
+  _Eres=vput(_Eres,_EdoML_phi,"doml_phi");    @ **  @
+  _Eres=vput(_Eres,_EdoML_vcphi,"doml_vc");   @ **  @
+  _Eres=vput(_Eres,_EdoSim,"_EdoSim");
+  _Eres=vput(_Eres,_Eeta,"_Eeta");
+  _Eres=vput(_Eres,_Eigraph_bvsmth,"bvsmth"); @ **  @
+  _Eres=vput(_Eres,_EisChk,"_EisChk");
+  _Eres=vput(_Eres,_EImarg,"_Eimarg");
+  _Eres=vput(_Eres,_EisFac,"_EisFac");
+  _Eres=vput(_Eres,_Eisn,"_Eisn");
+  _Eres=vput(_Eres,_Eist,"_Eist");
+  _Eres=vput(_Eres,_EmaxIter,"EmaxIter");
+  _Eres=vput(_Eres,_EnonEval,"_EnonEva");     @ **  @
+  _Eres=vput(_Eres,_EnonNumInt,"_EnonNum");   @ **  @
+  _Eres=vput(_Eres,_EnonPar,"_EnonPar");
+  _Eres=vput(_Eres,_EnumTol,"_EnumTol");
+  _Eres=vput(_Eres,_Erho,"_Erho");
+  _Eres=vput(_Eres,_Eselect,"_Eselect");
+  _Eres=vput(_Eres,_EselRnd,"_EselRnd");
+  _Eres=vput(_Eres,_Esigma,"_Esigma");
+  _Eres=vput(_Eres,_Esims,"_Esims");
+  _Eres=vput(_Eres,_Estval,"_Estval");
+  _Eres=vput(_Eres,_ei_vc,"_ei_vc");
+
+  /* verify inputs */
+  if _Echeck;
+    tst = checkinputs;
+    if tst$/="";
+      tst;
+      "----- EI Aborted -----";
+      retp(_Eres);
+    elseif _Eprt>0;
+      if _EnonPar;
+	printfl "Inputs ok, beginning nonparametric estimation...";
+      else;
+	printfl "Inputs ok, beginning preliminary estimation...";
+      endif;
+    endif;
+  endif;
+
+  /* augment _Eselect if _EselRnd<1 */
+  Eselect=_Eselect;  @ save existing value @
+  _Eselect=ones(rows(x),1).*_Eselect;
+  if _EselRnd<1;
+    _Eselect=_Eselect .and (rndu(rows(x),1).<_EselRnd);
+  endif;
+  
+  /* nonparametric estimation */
+  if _EnonPar;
+    betaBs=einonp(t,x);
+    _Eres=vput(_Eres,betaBs,"betabs");
+    _Eres=vput(_Eres,miss(1,1),"retcode");
+    _Eres=vput(_Eres,miss(1,1),"phi");
+    _Eres=vput(_Eres,miss(1,1),"loglik");
+    _Eres=vput(_Eres,miss(1,1),"ghactual");
+    _Eres=vput(_Eres,miss(1,1),"vcphi");  
+    _Eres=vput(_Eres,_Esims,"_Esims");
+    gosub timing;
+    retp(res);
+  endif;
+  
+  /* parametric estimation: */
+  
+  /* eta's influence on Zb,Zw */
+  if rows(_Eeta)==4;
+    /* all unchanged */
+  elseif _Eeta[1]==1;
+    Zb=x;
+    Zw=1;
+  elseif _Eeta[1]==2;
+    Zb=1;
+    Zw=x;
+  elseif _Eeta[1]==3;
+    Zb=x;
+    Zw=x;
+  elseif _Eeta[1]==4;
+    Zb=x;
+    Zw=1;
+  elseif _Eeta[1]==5;
+    Zb=1;
+    Zw=x;
+  endif;
+    
+  /* set internal global */
+  clearg _Ez;	@ n of covariates, incl. implied constant term for Zb|Zw @
+  _Ez=(cols(Zb)+1-scalone(Zb))|(cols(Zw)+1-scalone(Zw));
+
+  /* likelihood estimation */
+  if _EdoML==1;
+    {MLpsi,MLvc}=quadcml(x,Zb,Zw,T);
+    if scalmiss(MLvc);
+      _Eres=vput(_Eres,MLpsi,"phi");
+      _Eres=vput(_Eres,MLvc,"vcphi");
+      retp(_Eres);
+    endif;
+  else;
+    "Skipping likelihood estimation..";;
+    _Eres=vput(_Eres,miss(1,1),"retcode");
+    _Eres=vput(_Eres,_EdoML_phi,"phi");
+    _Eres=vput(_Eres,miss(1,1),"loglik");
+    _Eres=vput(_Eres,miss(1,1),"ghactual");
+    _Eres=vput(_Eres,_EdoML_vcphi,"vcphi");
+    MLpsi=_EdoML_phi;
+    MLvc=_EdoML_vcphi;
+    if rows(mlvc)/=rows(mlpsi);
+      "ei: _EdoML_phi or _EdoML_vcphi input error";
+      end;
+    endif;
+  endif;
+
+  /* simulation */
+  if _EdoSim==1;
+    {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
+    _Eres=vput(_Eres,betaBs,"betaBs");@ no need to save betaWs; see eiread @
+  endif;
+
+  gosub timing;                         @ subroutine @
+  retp(res);
+
+  timing:
+  if _Eprt>0;
+    et=hsec-et;				@ timing end  @
+    fmtt;
+/*
+    flat=eicheckr(__macheps);
+    if flat;
+      "WARNING: the CDFBVN function is imprecise for your problem near";
+      "  the maximum likelihood value.";
+    endif;
+*/    
+    if _GhActual/=(1~0);?;
+      "WARNING: Your -hessian was not positive definite, and so a variance";
+      "  matrix could not be computed by the usual methods.  Most statistical";
+      "  software will bomb out at this point.  However, the importance";
+      "  sampling can often draw from the correct posterior anyway, and so";
+      "  EI computed a pseudo-variance matrix as a first approximation.  (See";
+      "  eiread's ghactual and the _EI_vc global for methods of computation.)";
+      "  Check eigraph's 'tomogS' and 'fit' to verify that the model fits";
+      "  the data and the simulations are reasonable. Use only with caution";
+      "  and if you are comfortable taking these steps.";?;
+    endif;
+    
+    "Done. Time in minutes=";;et/100/60;
+    "----- EI Completed -----";
+  endif;
+
+  tst="Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+_Eversion;
+  _Eres=vput(_Eres,tst,"date");
+  res=_Eres;
+  _Eres=vput("",tst,"date");
+
+  _Eselect=Eselect;
+  #ifdos;
+    ndpclex;
+  #endif;
+  return;
+
+endp;
+
+
+/* ----------------------------------------------------------------
+**  tst = checkinputs;
+**
+**  support proc for ei(), used to check inputs
+**
+**  required Global:  _Eres, a packed data buffer
+**
+**  tst = "" if all inputs are ok
+**        string with error message, if problem with inputs  
+*/
+proc checkinputs;
+  local t,x,tvap,zb,zw,tst,r,bnd,a,betaB,betaW,tol;
+  t=vread(_Eres,"t");
+  x=vread(_Eres,"x");
+  tvap=vread(_Eres,"n");
+  Zb=vread(_Eres,"Zb");
+  Zw=vread(_Eres,"Zw");
+  
+  if sumc(t.>1)>0 or sumc(t.<0)>0;
+    retp("ei: 't' input must be between 0 and 1");
+  endif;    
+  if sumc(x.>1)>0 or sumc(x.<0)>0;
+    retp("ei: 'x' input must be between 0 and 1");
+  endif;    
+
+  if rows(_EnonPar)>1 or cols(_EnonPar)>1;
+    retp("ei: _EnonPar must be a scalar");
+  endif;
+  if _EnonPar/=0 and _EnonPar/=1;
+    retp("ei: _EnonPar must be 0 or 1");
+  endif;
+  
+  r=rows(t);
+  if r/=rows(x) or
+    (r/=rows(Zb) and not(scalone(Zb))) or (r/=rows(Zw) and not(scalone(Zw)));
+    retp("ei: inputs do not have the right dimensions");
+  endif;
+  
+  if _Enonpar==0;
+    if  sumc(tvap.<=0)>0;
+      retp("ei: 'n' input must be greater than zero");
+    endif;
+    if r/=rows(tvap);
+      retp("ei: input 'n' does not have the right dimensions");
+    endif;
+  endif;
+    
+  if ismiss(x) or ismiss(t) or ismiss(tvap) or ismiss(zb) or ismiss(zw);
+    retp("ei: missing data detected. Delete and rerun.");
+  endif;
+  
+  if _Esims<1 or rows(_Esims)/=1 or cols(_Esims)/=1;
+    retp("ei: _Esims must be a scalar integer");
+  endif;
+  
+  if rows(_Eselect)>1 or cols(_Eselect)>1;
+    if rows(_Eselect)/=r or cols(_Eselect)/=1 
+      or (sumc(_Eselect.==0)+sumc(_Eselect.==1))/=r;
+      retp("ei: _Eselect must be scalar or px1 vector of 0's and 1's");
+    endif;
+  elseif not(scalone(_Eselect));
+    retp("ei: _Eselect must be px1 or scalar 1");
+  endif;
+  
+  if rows(_EselRnd)>1 or cols(_EselRnd)>1;
+    retp("ei: _EselRnd must be a scalar");
+  endif;
+  if _EselRnd>1 or _EselRnd<=0;
+    retp("ei _EselRnd must be in the interval (0,1]");
+  endif;
+  
+  if cols(_Eeta)/=1;
+    retp("ei: _Eeta has the wrong dimensions");
+  elseif rows(_Eeta)==4;
+    if not(_Eeta[3:4]>=0);
+      retp("ei: _Eeta[3:4] must be >=0");
+    endif;
+  elseif rows(_Eeta)/=1 and rows(_Eeta)/=3;
+    retp("ei: _Eeta has the wrong dimensions");
+  elseif rows(_Eeta)==1;
+    if _Eeta/=0 and _Eeta/=1 and _Eeta/=2 and _Eeta/=3;
+      retp("ei: _Eeta is wrong");
+    endif;
+    if _Eeta/=0 and not(scalone(Zb)) and not(scalone(Zw));
+      retp("ei: if _Eeta=1,2,or 3, Zb and Zw must be set to 1");
+    endif;
+  elseif _Eeta[1]==4 and not(scalone(Zw));
+    retp("ei: if _Eeta[1]=4, Zw must = 1");
+  elseif _Eeta[1]==5 and not(scalone(Zb));
+    retp("ei: if _Eeta[1]=5, Zb must = 1");
+  endif;
+
+  if not(scalmiss(_EalphaB));
+    if scalone(Zb) and _Eeta==0;
+      retp("ei: _EalphaB should be specified only when Zb is");
+    endif;
+    if cols(_EalphaB)/=2;
+      retp("ei: _EalphaB must be missing or have 2 columns");
+    else;
+      if sumc(_EalphaB[.,2].<=0)>1;
+	retp("ei: Elements in the second column of _EalphaB must be > 0");
+      endif;
+    endif;
+    if rows(_EalphaB)/=cols(Zb) and _Eeta==0;
+      retp("ei: rows(_EalphaB) must equal cols(Zb)");
+    endif;
+  else;
+    if not(scalone(Zb));
+      "WARNING:  Including covariates (Zb) without priors works but is";
+      "          not generally recommended.  See _EalphaB";
+    endif;
+  endif;
+  
+  if not(scalmiss(_EalphaW));
+    if scalone(Zw) and _Eeta==0;
+      retp("ei: _EalphaW should be specified only when Zw is");
+    endif;
+    if cols(_EalphaW)/=2;
+      retp("ei: _EalphaW must be missing or have 2 columns");
+    else;
+      if sumc(_EalphaW[.,2].<=0)>1;
+	retp("ei: Elements in the second column of _EalphaW must be > 0");
+      endif;
+    endif;
+    if rows(_EalphaW)/=cols(Zw) and _Eeta==0;
+      retp("ei: rows(_EalphaW) must equal cols(Zw)");
+    endif;
+  else;
+    if not(scalone(Zw));
+      "WARNING:  Including covariates (Zw) without priors works but is";
+      "          not generally recommended.  See _EalphaW";
+    endif;
+  endif;
+
+  if rows(_Ebeta)/=1 or cols(_Ebeta)/=1;
+    retp("ei: _Ebeta must be a scalar");
+  endif;
+  if _Ebeta<0;
+    retp("ei: _Ebeta cannot be negative");
+  endif;
+  
+  if _Ecdfbvn>6 or _Ecdfbvn<1 or rows(_Ecdfbvn)/=1;
+    retp("ei: problem with _Ecdfbvn");
+  endif;
+  
+  if rows(_Eeta)==4 or _Eeta==0;
+    a=5+cols(zb)+cols(zw)-scalone(zb)-scalone(zw);
+  elseif _Eeta[1]==1;
+    a=6;
+  elseif _Eeta[1]==2;
+    a=6;
+  elseif _Eeta[1]==3;
+    a=7;
+  elseif _Eeta[1]==4;
+    a=6;
+  elseif _Eeta[1]==5;
+    a=6;
+  endif;
+  
+  if rows(_Esigma)/=1 or cols(_Esigma)/=1;
+    retp("ei: _Esigma must be a scalar");
+  endif;
+  if _Esigma>0 and _Esigma<0.000001;
+    retp("ei: _Esigma must be <= 0 (for no prior) or > 0.000001");
+  endif;
+  
+  if (_Erho[1]==0 and rows(_Erho)/=2) or (_Erho[1]/=0 and rows(_Erho)/=1);
+    retp("ei: problem with _Erho");
+  endif;
+  
+  if cols(_Estval)/=1;
+    retp("ei: _Estval may have only one column");
+  endif;
+  if rows(_Estval)==1;
+    if _Estval<0 or _Estval==2 or (_Estval)/=int(_Estval*10)/10;
+      retp("ei: _Estval as a scalar must be 0 or an integer >=3");
+    endif;
+  elseif rows(_Estval)/=a;
+    retp("ei: _Estval has wrong dimensions");
+  endif;
+  
+  if rows(_Ebounds)==1 and cols(_Ebounds)==1;
+    if _Ebounds/=0 and _Ebounds/=1;
+      retp("ei: _Ebounds must be 0, 1, 1x2, or kx2");
+    endif;
+  else;
+    if cols(_Ebounds)/=2;
+      retp("ei: _Ebounds must have 1 or two columns");
+    endif;
+    if rows(_Ebounds)/=1 and rows(_Ebounds)/=a;
+      retp("ei: _Ebounds must have 1 row or one row for each parameter");
+    endif;
+  endif;
+  
+  if rows(_EdirTol)/=1 or cols(_EdirTol)/=1;
+    retp("ei: _EdirTol must be a scalar");
+  endif;
+  if _EdirTol<=0 or _EdirTol>1;
+    retp("ei: _EdirTol must be >0 and <1");
+  endif;
+  
+  if rows(_EcdfTol)/=1 or cols(_EcdfTol)/=1;
+    retp("ei: _EcdfTol must be a scalar");
+  endif;
+  if _EcdfTol<=0 or _EcdfTol>1;
+    retp("ei: _EcdfTol must be >0 and <1");
+  endif;
+  
+  if rows(_EvTol)/=1 or cols(_EvTol)/=1;
+    retp("ei: _EvTol must be a scalar");
+  endif;
+  if _EvTol<=0;
+    retp("ei: _EvTol must be >0");
+  endif;
+  
+  if cols(_ei_vc)/=2;
+    retp("ei: _ei_vc must have 2 columns");
+  endif;
+  if minc(_ei_vc[.,1])<1 or maxc(_ei_vc[.,1])>5;
+    retp("ei: _ei_vc may only have integers 1,...,5 in first column");
+  endif;
+  
+  if not(scalone(_EdoML) or scalzero(_EdoML));
+    retp("ei: _EdoML must be scalar zero or one");
+  endif;
+  
+  if scalzero(_EdoML);
+    if rows(_EdoML_phi)/=rows(_EdoML_vcphi) or 
+       rows(_EdoML_phi)/=cols(_EdoML_vcphi);
+      retp("ei: _EdoML, _EdoML_phi, or _EdoML_vcphi are incorrect");
+    endif;
+  endif;
+  
+  if not(scalone(abs(_Edosim)) or scalzero(_Edosim));
+    retp("ei: _Edosim must be scalar -1, 0, or 1");
+  endif;
+  
+  if rows(_eigraph_bvsmth)/=1 or cols(_eigraph_bvsmth)/=1;
+    retp("ei: _EIgraph_bvsmth must be a scalar");
+  endif;
+  if _EIgraph_bvsmth<0.0000001;
+    retp("ei: _EIgraph_bvsmth must be greater than zero");
+  endif;
+  
+  if rows(_Eisn)/=1 or cols(_Eisn)/=1;
+    retp("ei: _Eisn must be a scalar");
+  endif;
+  if _Eisn<1;
+    retp("ei: _Eisn must be an integer greater than or equal to one");
+  endif;
+  
+  if rows(_Eist)/=1 or cols(_Eist)/=1;
+    retp("ei: _Eist must be a scalar");
+  endif;
+  if _Eist<=2.00001 and _Eist/=0;
+    retp("ei: _EisT must be 0 or greater than 2");
+  endif;
+  
+  if rows(_EisFac)/=1 or cols(_EisFac)/=1;
+    retp("ei: _EisFac must be a scalar");
+  endif;
+  if _EisFac/=-1 and _EisFac<0;
+    retp("ei: _EisFac must be -1 or greater than zero");
+  endif;
+  
+  if not(scalone(_EisChk) or scalzero(_EisChk));
+    retp("ei: _EisChk must be scalar zero or one");
+  endif;
+  
+  if rows(_Emaxiter)/=1 or cols(_Emaxiter)/=1;
+    retp("ei: _Emaxiter must be a scalar");
+  endif;
+  if _Emaxiter<0;
+    retp("ei: _Emaxiter cannot be negative");
+  endif;
+  
+  if rows(_EnumTol)/=1 or cols(_Enumtol)/=1;
+    retp("ei: _EnumTol must be a scalar");
+  endif;
+  if _EnumTol<0;
+    retp("ei: _EnumTol cannot be negative");
+  endif;
+  
+  if rows(_Eprt)/=1 or cols(_Eprt)/=1;
+    retp("ei: _Eprt must be a scalar");
+  endif;
+  if sumc(_Eprt.==(0|1|2|3))/=1;
+    retp("ei: _Eprt must be 0, 1, 2, or 3");
+  endif;
+
+  if rows(_EnonEval)>1 or cols(_EnonEval)>1;
+    retp("ei: _EnonEval must be a scalar");
+  endif;
+  if _EnonEval<1;
+    retp("ei: _EnonEval must be a positive integer");
+  endif;
+  
+  if rows(_EnonNumInt)>1 or cols(_EnonNumInt)>1;
+    retp("ei: _EnonNumInt must be a scalar");
+  endif;
+  if _EnonNumInt<1;
+    retp("ei: _EnonNumInt must be a positive integer");
+  endif;
+
+  if rows(_Ei2_m)/=1 or cols(_Ei2_m)/=1;
+    retp("ei: _EI2_m must be a scalar");
+  endif;
+  if _EI2_m<1 or _ei2_m/=int(_ei2_m);
+    retp("ei: _EI2_m must be a positive integer");
+  endif;
+  
+  if rows(_Ei2_r)/=1 or cols(_Ei2_r)/=1;
+    retp("ei: _EI2_r must be a scalar integer");
+  endif;
+  
+  if vin(_Eres,"truth");
+    betaB=eiread(_Eres,"truthB");
+    betaW=eiread(_Eres,"truthW");
+    if rows(betaB)/=rows(x) or rows(betaW)/=rows(x);
+      retp("ei: stored 'truth' must have same dimensions as x & t");
+    endif;
+    if sumc(betaB.>1)>0 or sumc(betaB.<0).>0;
+      retp("ei: 'truthB' input must be between 0 and 1");
+    endif;    
+    if sumc(betaW.>1)>0 or sumc(betaW.<0).>0;
+      retp("ei: 'truthW' input must be between 0 and 1");
+    endif;    
+    {bnd,a}=bounds1(t,x,tvap);
+    a=packr(betaB~bnd[.,1]);
+    tol=_Enumtol;
+    if sumc((a[.,1]+tol.<a[.,2]))>0;
+      clearg truthB,truthW,bnds;
+      truthB=betaB;
+      truthW=betaW;
+      bnds=bnd;
+      retp("ei: truthB < lower bound");
+    endif;
+    a=packr(betaB~bnd[.,2]);
+    if sumc((a[.,1]-tol.>a[.,2]))>0;
+      clearg truthB,truthW,bnds;
+      truthB=betaB;
+      truthW=betaW;
+      bnds=bnd;
+      retp("ei: truthB > upper bound");
+    endif;
+    a=packr(betaW~bnd[.,3]);
+    if sumc((a[.,1]+tol.<a[.,2]))>0;
+      clearg truthB,truthW,bnds;
+      truthB=betaB;
+      truthW=betaW;
+      bnds=bnd;
+      retp("ei: truthW < lower bound");
+    endif;
+    a=packr(betaW~bnd[.,4]);
+    if sumc((a[.,1]-tol.>a[.,2]))>0;
+      clearg truthB,truthW,bnds;
+      truthB=betaB;
+      truthW=betaW;
+      bnds=bnd;
+      retp("ei: truthW > upper bound");
+    endif;
+  endif;
+
+  retp("");
+endp;
+
+/*----------------------------------------------------------------
+**  eiset;
+**
+** clear globals; set defaults for ei run
+*/
+proc 0=eiset;
+  
+  /* general */
+  _Eversion="EI Version: 1.65, 5/17/2001";
+  _Eres=vput("","Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+_Eversion,
+              "date");
+  _Echeck=1;
+  _Esims=100;
+  _Eprt=2;
+  _Eselect=1;
+  _EselRnd=1;
+  _EdoSim=1;
+  _EdoML=1;
+  _EdoML_phi=0;
+  _EdoML_vcphi=0;
+  _Ecdfbvn=5;
+  _EnumTol=0.0001;
+  _EnonEval=11;
+  _EnonNumInt=11;
+  _EnonPar=0;
+  _Ei2_m=4;
+  _ei2_r=1;
+  _ei2_mta=0;
+  
+  /* priors */
+  _Erho=0.5;
+  _Esigma=0.5;
+  _Ebeta=0;
+  _EalphaB={.};
+  _EalphaW={.};
+ 
+  /* quadcml */
+  cmlset;
+  _Estval=1;
+  _Ebounds=1;
+  _Eeta=0;
+  _EdirTol=0.0001;
+  _EcdfTol=3e-15;
+  _EvTol=5e-307;
+  _Ez=1|1;  @ internal @
+  _Emaxiter=500;
+
+  /* gvc */
+  _EI_vc = {1 0, 4 0, 2 0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2};
+  _GhQuad=0;
+  _GhFall=0.1;
+  _GhDelta=0;
+  _GhStart=0;
+  _GhFix=1;
+  _GhActual=0;
+  _gvc_dataset=0;
+  _gvc_procname=0;
+  _gvc_fixKeep=0;
+  
+  /* psim1 */
+  _EbetaWs=0;
+  
+  /* rndisamp */
+  _Eist=0;
+  _Eisn=10;
+  _EisFac=4;
+  _EisChk=0;
+  
+  /* lnpdfmn */
+  _Eivc={.};
+
+  /* internal global */
+  _EisFix={.};
+
+  /* graphics */
+  graphset;
+  graphgk;  
+
+  /* eigraph */
+  _eigraphC=1;
+  _eigraph_thick=1;
+  _eigraph_Xlo=0;
+  _eigraph_Xhi=1;
+  _eigraph_Tlo=0;
+  _eigraph_Thi=1;
+  _eigraph_bblo=0;
+  _eigraph_bbhi=1;
+  _eigraph_bwlo=0;
+  _eigraph_bwhi=1;
+  _eigraph_x="X";
+  _eigraph_t="T";
+  _eigraph_bb="betaB";
+  _eigraph_bw="betaW";
+  _eigraph_loess=0;
+  _eigraph_eval=31;
+  _eigraph_bvsmth=0.08;
+  _eigraph_smpl=1;
+  _eigraph_dbuf=0;
+  _tomogPct={.5, .95};
+  _tomogClr={ 12, 9, 10, 11, 13, 5 }; 
+  _eigraph_pro={.};
+  
+  /* eibias */
+  _Evc=1;
+  _Etruth=0;
+  
+  /* eicond */
+  _eicond_nums={ -1.5, 1.5, 50 };
+  
+  /* internal globals */
+  _eigraph_circ = 0;
+  _eigraph_psiu = 0;
+  
+  /* dens */
+  _smth = 0.03;
+  _strt = 0;
+  _endd = 0;
+  _pts  = 100;
+  _Tleft = 0;
+  _Tright = 0;
+  _kern = "E";
+  _whiskr = -1;
+  _jitter = 0;
+  _output = 1;
+  
+  /* loess */
+  _loess_Span = .6667;
+  _loess_NumEval = 50;
+  _loess_Degree = 1;
+  _loess_WgtType = 2;
+  
+  /* reg */
+  _Rweight = 1;
+  _Rxnames = 0;
+  _Ryname  = 0;
+  _Rfmt    = 4;
+  _Rselect = 1;
+  _Rrobust = -1;
+  _Rtheta  = 0;
+  _Routput = 1;
+  _Rconst  = 1;
+ 
+  /* token2 */
+  _tokdel={32,10,13,44,9};
+  _tokwds=-1;
+
+endp;
+
+/* ----------------------------------------------------------------
+**  dbuf = eirepl(dbufIN);
+**
+**  The purpose of this proc is to replicate results from an existing EI data
+**  buffer.  It extracts and sets all globals variables from the data 
+**  buffer, extracts t, x, n, Zb, and Zw, and then runs ei().  The results
+**  stored in dbufIN are not used.
+**
+** INPUT: dbufIN = a Gauss data buffer output from ei(), containing
+**          t, x, n, Zb, Zw, the inputs to ei(), and all globals
+**
+** OUTPUT: dbuf = output data buffer that contains the replicated results.  
+**
+** Since ei uses simulation to approximate various quantities, you should not
+** expect to replicate anything to the last decimal point.  If you wish
+** replication to more decimal points, increase _Esims before running ei().
+**
+** This procedure has no globals.
+*/
+proc eirepl(dbufin);
+  local t,x,n,r,i,d,Zb,Zw,dbuf,nms,tst;
+  eiset;
+  "EI now running:           ";;
+  "Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+_Eversion;
+  if vin(dbufin,"date");
+    tst=eiread(dbufin,"date");
+  else;
+    tst="Prior to 5/20/96";
+  endif;
+  "EI when dbuf was created: ";;tst;
+  t=vread(dbufin,"t");
+  x=vread(dbufin,"x");
+  n=eiread(dbufin,"n");
+  Zb=vread(dbufin,"Zb");
+  Zw=vread(dbufin,"Zw");
+  _Eeta=vread(dbufin,"_Eeta");
+  clearg _Eres;
+  _Eres=dbufin;
+
+/*
+  /* CHANGE THIS TO $| WHEN NEW VERSION OF GAUSS COMES!!! */
+  
+  /*  names of essential globals (_Eeta is vread above) */
+  nms="_EalphaB"$|"_EalphaW"$|"_Ebeta"$|"_Ebounds"$|"_Ecdfbvn"$|
+  "_EdirTol"$|"_EdoML"$|"_EdoML_phi"$|"_EdoML_vcphi"$|"_EdoSim"$|
+  "_Eigraph_bvsmth"$|"_EisChk"$|"_EisFac"$|"_Eisn"$|"_EisT"$|"_EmaxIter"$|
+  "_EnonEval"$|"_EnonNumInt"$|"_EnonPar"$|"_EnumTol"$|"_Erho"$|"_Eselect"$|
+  "_EselRnd"$|"_Esigma"$|"_Esims"$|"_Estval"$|"_EI_vc"|_EdirTol;
+*/
+
+  /*  names of essential globals (_Eeta is vread above) */
+  nms="_EalphaB"|"_EalphaW"|"_Ebeta"|"_Ebounds"|"_Ecdfbvn"|
+  "_EdirTol"|"_EdoML"|"_EdoML_phi"|"_EdoML_vcphi"|"_EdoSim"|
+  "_Eigraph_bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"_EmaxIter"|
+  "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
+  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
+
+  r=rows(nms);
+
+  #ifdos;
+    i=1; 
+    do while i<=r;
+  #else;
+    for i (1, r, 1);
+  #endif;
+
+    tst=vin(dbufin,nms[i]);
+    if tst==1;
+      d = eiread(dbufin,nms[i]);
+      tst = varput(d,nms[i]);
+      if tst==0;
+	"eirepl: problem creating globals";
+	#ifdos;
+	ndpclex;
+	#endif;
+	retp(miss(1,1));
+      endif;
+    else;
+      format/rd 7,10;
+      "eirepl warning: Essential global not in input data buffer: ";;$nms[i];
+      "   Results may not replicate exactly unless you get the version";
+      "   of EI used to create the data buffer. Using current default.";
+    endif;
+  #ifdos;
+    i=i+1;endo;
+  #else;  
+    endfor;
+  #endif;
+    
+  dbuf=ei(t,x,n,Zb,Zw);
+  retp(dbuf);
+endp;
+
+/* -----------------------------------------------------------------------
+   dbuf2 = ei2(V,dbuf,Gb,Gw);
+**
+** Ecological Inference Estimates for 2xC tables via multiple imputation.
+** Gives observation-level estimates of lambdaB and lambdaW given T & X in
+**     V = lambdaB.*x   + lambdaW.*(1-x), 
+** where x is estimated from a first stage EI() run from
+**     T = betaB.*X + betaW.*(1-X), and using x = HbetaB.*X./T 
+**     where HbetaB are multiply imputed estimates.
+**
+** INPUTS:
+** V    = outcome variable (p x 1) (Democratic fraction of vote)
+** dbuf = data buffer from first stage EI run (with inputs ei(t,x,n,Zb,Zw))
+** Gb   = 1 (for no covariates)
+**        or matrix of covariates to predict lambdaB (constant term is implied)
+** Gw   = 1 (for no covariates)
+**        or matrix of covariates to predict lambdaW (constant term is implied)
+**
+** OUTPUT:
+**  dbuf2 = packed data buffer. 
+**       Read contents with eiread(); graph with eigraph().
+**       Because these programs work for BOTH ei() and ei2(), reading
+**       estimates from dbuf2 requires using the names "betaB" and "betaW",
+**       even tho they might really be called "lambdaB" and "lambdaW".
+**       In addition, in EIREAD,
+**       _t        p x 1: variable that was originally t in dbuf
+**       _x        p x 1: variable that was originally x in dbuf
+**       _n        p x 1: variable that was originally n in dbuf 
+**       t         p x 1: redefined as V (dem proportion of two party vote)
+**       x2        p x _Esims: simulations of x from prior stage analysis
+**       x2rn      p x _Esims: x2 randomly horizontally permuted 
+**       x         p x 1: redefined as mean posterior
+**       Nb2       p x _Esims: denominator of x & t; x.*n (voting age blacks)
+**       Nw2       p x _Esims: (1-x).*n = n-Nb (voting age whites)
+**       see additional documentation under eiread and eigraph
+**        
+** GLOBALS:  all the globals from EI() work here too.  In addition,
+** _EI2_m   = 4; number of data sets to multiply impute (must be <=_Esims)
+**
+** OUTPUT GLOBAL:
+** _ei2_mta = a "meta-data buffer" with elements data buffers named dbuf#, 
+**            where #=1,2,...,_EI2_m.  Each is the output from a 
+**	      separate imputation run.  If ei2() fails, _ei2_mta will
+**            contain results from the imputation runs that completed.
+*/ 
+proc ei2(V,dbuf,Gb,Gw);
+  local i,idbuf,filenm,nm,t,x,nt,betabs,x2,Esims,lambdaBs,mpx,x2k,Eres,_t,_x,_n;
+  clearg _ei2_mta;
+
+  Eres=_Eres;
+  _Eres=vput("","Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+_Eversion,
+              "date");
+  
+  if ismiss(v);
+    "ei2: 'V' should have no missing values";
+    retp(miss(1,1));
+  endif;
+  
+  _ei2_mta=vput("","*MDB* Meta-Data Buffer from 2nd Stage *MDB*","titl");
+  Esims=_Esims;
+  _Esims=int(_Esims/_ei2_m);
+  
+  /* get data from first stage analysis data buffer */
+  if vin(dbuf,"x2");
+    x=eiread(dbuf,"x2rn");
+  else;
+    x=eiread(dbuf,"x");
+  endif;
+  _x=x;
+  t=eiread(dbuf,"t");
+  _t=t;
+  t=recode(t,t.<=_Enumtol,_Enumtol/2);
+  _n=eiread(dbuf,"n");
+  betabs=eiread(dbuf,"rnbetabs");
+  x2=missrv(betabs[.,1:_ei2_m],0).*x./t;
+  nt=eiread(dbuf,"nt");
+  lambdaBs=t*0;
+  x2k=lambdaBs;
+  
+  /* run second stage analyses */
+  #ifdos;
+  i=1; do while i<=_ei2_m;
+  #else;
+  for i (1, _ei2_m, 1);
+  #endif;
+    if (i+0)==_ei2_m;
+      _Eres=Eres;
+      _Esims=Esims-_Esims*(_ei2_m-1);
+    endif;
+    if _Eprt>0;
+      ?;"==================> Starting ei2 imputation ";;(i+0);?;
+    endif;
+    
+    idbuf = ei(V,x2[.,i+0],nt,Gb,Gw);
+    if scalmiss(idbuf) or not(vin(idbuf,"betabs"));
+      "ei2: problem with EI run (noted above), terminating EI2.";
+      retp(miss(1,1));
+    endif;
+    _ei2_mta=vput(_ei2_mta,idbuf,"dbuf"$+ftos(i+0,"*.*lf",1,0));
+    lambdaBs=lambdaBs~eiread(idbuf,"betabs");
+    x2k=x2k~(x2[.,i+0].*ones(1,_Esims));
+    _Estval=trimr(eiread(idbuf,"phi"),0,2);
+
+  #ifdos;
+  i=i+1;  endo;
+  #else;
+  endfor;
+  #endif;
+
+  /* prepare output */
+  idbuf=vput(idbuf,lambdaBs[.,2:cols(lambdaBs)],"betaBs");
+  idbuf=vput(idbuf,x2k[.,2:cols(x2k)],"x2");
+  mpx=missrv(eiread(dbuf,"betab"),0).*eiread(dbuf,"x")./t;
+  idbuf=vput(idbuf,mpx,"x");
+  idbuf=vput(idbuf,Esims,"_Esims");
+  idbuf=vput(idbuf,_t,"_t");
+  idbuf=vput(idbuf,_x,"_x");
+  idbuf=vput(idbuf,_n,"_n");
+  
+  "===== EI2 Estimation Complete =====";
+  clear Eres;
+  retp(idbuf);
+endp;
+

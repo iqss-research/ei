@@ -1,0 +1,941 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+**
+**  Utility procs
+*/
+/* 
+**   z = fisherzi(x);
+**   inverse of fisher's z transformation
+**
+*/
+proc fisherzi(x);
+  local t;
+  t=exp(2*x);
+  t=(t-1)./(t+1);
+  retp(t);
+endp;
+
+/* 
+**   z = fisherz(x);
+**   fisher's z transformation
+*/
+proc fisherz(x);
+  local t;
+  t=0.5*ln((1+x)./(1-x));
+  retp(t);
+endp;
+
+/*  graphgk;
+**
+** reset gk's graphics globals from pline() and plines()
+*/
+proc 0=graphgk;
+  clearg _plinet,_plineth,_plinec,_plines,_plinesc,_plinesTh,_plineRev;
+
+  /* for pline() */
+  _plinet=6;
+  _plineth=0;
+  _plinec=14;
+  _plineRev=0;
+  
+  /* for plines() */
+  _plines=0;
+  _plinesc=12;
+endp;
+
+/*
+**  y = ismissm(x)
+**
+**      x = an n x m matrix
+**
+**      y = an n x m matrix of 0's (indicating not missing) and 1's (missing)
+**
+*/
+proc ismissm(x);
+    retp(missrv(x*0,1));
+    endp;
+
+/*
+    y = meanWc(x,wt);
+**
+**  x = NxM matrix to be avg'd
+**  wt = scalar 1 or Nx1 or NxM weight used in averaging
+**
+**  works with missing values; packs rowwise.
+*/
+proc meanWc(x,wt);
+  local a,wwt;
+  if scalmiss(packr(wt)) or wt==1;
+    wt=ones(rows(x),1);
+  endif;
+  wwt=missrv(wt,0);
+  a=sumc(missrv(x,0).*wwt)./sumc((1-ismissm(x+wt)).*wwt);
+  retp(a);
+endp;    
+
+/*
+** sims = rndchi(r,c,v);
+**
+** inputs: r = row
+**         c = column
+**         v = df
+**
+** output: sim = kxk matrix of independent chi-square simulations with v
+df
+**
+** 4/13/99 KS
+*/
+proc rndchi(r,c,v);
+    retp(2*rndgam(r,c,v/2));
+endp;
+
+
+/*
+**  create vector of PTS evenly spaced points between STRT and ENDD,
+**  including the end points.
+*/
+proc seqase(strt,endd,pts);local t;t=(endd-strt)/(pts-1);
+  retp( seqa(strt,t,pts) );
+endp;
+
+/*
+** in.g
+**
+** usage:  tst = in(y,vars,flag);
+**
+**         y    = a scalar or matrix
+**         vars = a scalar or matrix
+**         flag = 0 for character, 1 for numeric.  if flag=0, y and vars will
+**                all be converted to upper case for comparison.
+**
+**         tst  = 1 if y is contained in vars and 0 otherwise
+*/
+proc in(y,vars,flag);
+  local t;
+  if flag==0;
+    y=upper(y);
+    vars=upper(vars);
+  endif;
+  t=ismiss(setdif(y,vars,flag));
+  retp(t);
+endp;
+
+/*
+    t = scalone(y);
+**
+**  y = matrix
+**  t = 1 if y is a scalar one and 0 otw
+**
+*/
+proc scalone(y);
+    if ismiss(y);
+        retp(0);
+    endif;
+    if rows(y)==1 and cols(y)==1 and y==1;
+        retp(1);
+    else;
+        retp(0);
+    endif;
+    endp;
+
+/* ftosm - matrix field to string
+**
+** y = ftosm(sym,num,num2);
+**
+**  input:  sym = a character vector
+**          num = number of characters to use
+**
+**  output: y = a character vector of numbers
+*/
+proc ftosm(sym,num,num2);
+  local i,res;
+  res=zeros(rows(sym),1);
+  #ifdos;
+  i=1;do while i<=rows(sym);
+  #else;
+  for i (1, rows(sym), 1);
+  #endif;
+    res[i+0]=ftos(sym[i+0],"*.*lf",num,num2);
+  #ifdos;
+  i=i+1; endo;
+  #else;
+  endfor;
+  #endif;
+  retp(res);
+endp;
+
+/*
+   y = makefacn(vars,nums);
+**
+**  vars  = number of columns to make in y
+** nums   = (levels x 1) vector of numbers to use in place of 1,2,3... in
+**          makefac().
+**       OR (levels x vars) matrix
+**
+** example:
+**
+**  nums=(1~ 2 ~3)|
+**       (9~10~11);
+**  call makefacn(3,nums);
+**   
+**   1    2    3 
+**   9    2    3 
+**   1   10    3 
+**   9   10    3 
+**   1    2   11 
+**   9    2   11 
+**   1   10   11 
+**   9   10   11 
+**
+*/
+proc makefacn(vars,nums);
+  local x,k,i,c;
+  c=cols(nums);
+  k=rows(nums);
+  
+  if c==1;
+    x=makefac(vars,k);
+    #ifdos;
+    i=1; do while i<=vars;
+    #else;
+    for i (1, vars, 1);
+    #endif;
+      x[.,i+0]=nums[x[.,i+0]];
+    #ifdos;
+    i=i+1; endo;
+    #else;
+    endfor;
+    #endif;
+  
+  elseif c==vars;
+    x=makefac(vars,k);
+    #ifdos;
+    i=1; do while i<=vars;
+    #else;
+    for i (1, vars, 1);
+    #endif;
+      x[.,i+0]=nums[x[.,i+0],i+0];
+    #ifdos;
+    i=i+1; endo;
+    #else;
+    endfor;
+    #endif;
+  
+  else;
+    "makefacn: input error, cols(nums) must = 1 or vars";
+    stop;
+  endif;
+
+  retp(x);
+endp;
+
+/*
+       y = makefac(vars,levels);
+**
+**  vars = number of columns to make in y
+** levels= number of levels of y
+**
+** y = (levels^vars x vars).  first column is 1,2,3,...,vars,
+**     second column is 1,1,1,1(vars times),2,2,2,, etc
+**    third column...
+**   
+** example:
+** y = makefac(2,4);
+**   y;
+**  1   1
+**  2   1
+**  3   1
+**  4   1
+**  1   2
+**  2   2
+**  3   2
+**  4   2
+**  1   3
+**  2   3
+**  3   3
+**  4   3
+**  1   4
+**  2   4
+**  3   4
+**  4   4
+**
+** NOTE: round() corrects for numerical inaccuracies.
+**       i+0 works around a Gauss bug
+*/
+proc (1) = makefac(vars,levels);
+  local i,tmp;
+  if rows(vars)/=1 or rows(levels)/=1 or cols(vars)/=1 or cols(levels)/=1;
+    "makefac: arguments must be scalars";
+    stop;
+  endif;
+  tmp=ones(round(levels^vars),1);
+  #ifdos;
+  i=1; do while i<=vars;
+  #else;
+  for i (1, vars, 1);
+  #endif;
+    tmp=tmp~facvec(i+0,vars,levels);
+  #ifdos;
+  i=i+1; endo;
+  #else;
+  endfor;
+  #endif;
+  retp(tmp[.,2:cols(tmp)]);
+endp;
+
+
+/*  facvec: support proc for makefac
+**  
+   y = facvec(i,v,l);
+**
+** i = var number
+** v = value
+** l = level
+**
+** y = output column vector
+**
+** round() corrects for numerical inaccuracies.
+*/
+fn facvec(i,v,l)=vec(vec((seqa(1,1,l)'
+                 .*ones(round(l^(i-1)),l)))
+		 .*ones(1,round(l^(v-i))));
+
+/*
+    y = mkmissm(x,m);
+**
+**  x = n x k data matrix
+**  m = n x k matrix of 0's and 1's
+**
+**  y[i,j] = missing if m[i,j]=1; else y[i,j]=x[i,j]
+**
+**  example:
+**
+**  m=ismissm(d);       /* remember which are missing */
+**  d2=missrv(d,-9)     /* change missing to -9's */
+**  /* do recodes to d2 as if no missing values were present */
+**  d3=mkmissm(data2,m)  /* after recodes, return to missing*/
+**
+*/
+proc mkmissm(x,m);
+  local y;
+  y=miss(m,1)+x;
+  retp(y);
+endp;
+
+/*
+** favorite format
+*/
+proc 0=fmtt;
+format/rd 7,4;
+endp;
+
+/*
+**  tst = vin(dbuf,"var");
+**
+**  dbuf = gauss data buffer
+**  var  = name of variable
+**
+**  tst = 1 if var is in dbuf and 
+**        0 if not
+*/
+proc vin(dbuf,str);
+  local cv,strc;
+  cv=vnamecv(dbuf);
+  strc=strput(str,"        ",1);
+  retp(in(strc,cv,0));
+endp;
+
+/*
+    y = propit(x);
+**
+**  x = n by 2 matrix where valid values range [0,1]
+**  y = x[.,1]./(x[.,1]+x[.,2])
+**      with y[i]=missing if x[i,1]==x[i,2]==0
+**                        or either column is missing
+**                        or either column = -9
+*/
+proc propit(x);
+    local t;
+    x=missrv(x,-9);
+    t=(((x[.,1].==0).and(x[.,2].==0)).or (x[.,1].==-9).or (x[.,2].==-9));
+    x=recode(x,t~t,-9);
+    x=x[.,1]./(x[.,1]+x[.,2]);
+    x=mkmissm(x,t);
+    retp(x);endp;
+
+/*
+**  subdatv
+**
+**  purpose:    creates vectors in memory from a dataset on disk.
+**
+**  format:     dta = subdatv(dataset,vars);
+**
+**  example:    dataset="c:\\data\\myfile";
+**              clear age,sex,race;  @ must clear if not used interactively @
+**              let vars=age sex race;      @ vars to read in  @
+**              call subdatv(dataset,vars); @ creates age, sex, and race @
+**
+**  example 2:  call subdatv("mydata","age"|"sex");
+**
+**  example 3:  dta = subdatv("mydata","age"|"sex");
+**              'age' and 'sex' are created and dta=age~sex;
+**
+*/
+proc subdatv(dataset,vars);
+    local f1,d,nm,inx;
+    if vars==0;  vars=getname(dataset);  endif;
+    open f1=^dataset for read;
+    {nm,inx}=indices(dataset,vars);
+    d=subdat(f1,0,inx);
+    call makevars(d,0,vars);
+    closeall f1;   ndpclex;
+    retp(d);endp;
+
+/*
+** SUBDAT() copied from Aptech Newsletter
+**
+** Purpose:     Returns a submatrix of a data set.
+** 
+** Format :     y = SUBDAT(file,rv,cv);
+**
+** Input  :     file -- string, name of data set
+**                           or
+**                      scalar, file handle of an open file
+**
+**                      If a file handle is passed, each call will begin
+**                      reading from the current position in the file.  If
+**                      a vector of row indices is passed in they will also
+**                      be relative to the current position in the file.
+**
+**               rv -- Nx1 numeric vector, the row indices of the rows to read
+**                              or
+**                     negative scalar, |rv| rows will be read
+**                              or
+**                     scalar 0, all of the rows will be read
+**
+**               cv -- Nx1 numeric vector, the column indices
+**                              or
+**                     scalar 0, all of the columns will be read
+**
+** Output :      y -- the data read from the file
+**
+** Remarks :
+**               If a file handle (fp) and a 3x1 vector of row indices (rv)
+**               are passed, then 3 rows will be read and the row indices
+**               will be interpreted relative to the current position in
+**               the file.  Row 1 in the vector of indices is interpreted
+**               as the current row.
+**
+**               For example, if the next sequential row to be read from the
+**               file is the 100th row:
+**
+**                   rv = { 1,3,5 };
+**                   cv = { 3,4,7,11 };
+**                   y  = subdat(fp,rv,cv);
+**
+**               y will be a 3x4 matrix from rows 100,102,104.
+**
+**                   rv = { -1,3,-5 };
+**                   cv = { 3,4,7,11 };
+**                   y  = subdat(fp,rv,cv);
+**
+**               y will be a 3x4 matrix from rows 98,102,94.
+**
+**               In general the actual row indices read are:
+**
+**                    (current_row -1) + rv
+**
+**               Error returns are controlled by the trap flag:
+**
+**                   Trap 0     exit with error message
+**
+**                   Trap 1     return error code
+**
+**                              98  seeks out of range
+**
+**                              99  file can't be opened
+*/
+
+proc subdat(file,rv,cv);
+  local oneshot,i,k,nr,fp,x,temp;
+  if type(file) == 13;      /* string, file name */
+    open fp = ^file;
+    if fp == -1;
+      if trapchk(1);
+	retp(error(99));
+      else;
+	errorlog "ERROR: SUBDAT can't open file";
+	end;
+      endif;
+    endif;
+    oneshot = 1;
+  else;              /* should be scalar, file handle */
+    fp = file;
+    oneshot =0;
+  endif;
+  k = colsf(fp);
+  nr = floor(minc(coreleft/(k*8*5)|8000/(k+1)));
+  if rv == 0;      /* read all rows */
+    temp = readr(fp,nr);
+    x = temp[.,cv];
+    do until eof(fp);
+      temp = readr(fp,nr);
+      x = x|temp[.,cv];
+    endo;
+  elseif rows(rv)*cols(rv) == 1 and rv < 0;   /* read |rv| rows */
+    rv = abs(rv);
+    if nr > rv;
+      nr = rv;
+    endif;
+    temp = readr(fp,nr);
+    x = temp[.,cv];
+    rv = rv-rows(temp);
+    do until not(rv) or eof(fp);
+      print "loop";
+      if nr > rv;
+	nr = rv;
+      endif;
+      temp = readr(fp,nr);
+      rv = rv-rows(temp);
+      x = x|temp[.,cv];
+    endo;
+  else;          /* read selected rows  */
+    rv = (seekr(fp,-1)-1)+rv;
+    if not(rv >0) or not(rv <= rowsf(fp));
+      if oneshot;
+	fp =  close(fp);
+      endif;
+      if trapchk(1);
+	retp(error(98));
+      else;
+	errorlog "ERROR: seeks out of range in SUBDAT";
+	end;
+      endif;
+    endif;
+    call seekr(fp,rv[1]);
+    temp = readr(fp,1);
+    x = temp[1,cv];
+    #ifdos;
+    i = 2; do while i <= rows(rv);
+    #else;
+    for i (2, rows(rv), 1);
+    #endif;
+      call seekr(fp,rv[i+0]);
+      temp = readr(fp,1);
+      x = x|temp[1,cv];
+    #ifdos;
+    i= i + 1; endo;
+    #else;
+    endfor;
+    #endif;
+
+  endif;
+  if  oneshot;
+    fp = close(fp);
+  endif;
+  retp(x);
+endp;
+
+    
+/*
+** triple   triple scatter plot
+**
+** Usage:  call triple(x,y,z);
+**
+**         x is plotted horizontally,
+**         y is plotted vertically,
+**         z is the size of the circle to be plotted at the x,y coordinate.
+**           it should be linearly scaled to be from about 0.5 to about 10.
+**
+**         xtics and ytics should be set before running this proc.
+*/
+proc 0=triple(x,y,z);
+  local os,min,max;
+  if rows(z)==1;
+    os=ones(rows(x),1);
+    z=os*z;
+  endif;
+  {x,y,z}=listwis3(x,y,z);
+  os=ones(rows(x),1);
+  
+  if cols(_psym)==6;    
+    _psym=_psym|(x~y~os*1~z~os*15~os~os);
+  else;                       
+    _psym=(x~y~os*1~z~os*15~os~os);  
+  endif;
+  if _pxscale==0;
+    min=floor(minc(x)*10)/10;max=ceil(maxc(x)*10)/10;
+    call xtics(min,max,(max-min)/10,2);
+  endif;
+  if _pyscale==0;
+    min=floor(minc(y)*10)/10;max=ceil(maxc(y)*10)/10;
+    call ytics(min,max,(max-min)/10,2);
+  endif;
+  draw();
+endp;
+
+/*
+    t = scalzero(y);
+**
+**  y = matrix
+**  t = 1 if y is a scalar zero and 0 otw
+**
+*/
+proc scalzero(y);
+    if ismiss(y);
+        retp(0);
+    endif;
+    if rows(y)==1 and cols(y)==1 and y==0;
+        retp(1);
+    else;
+        retp(0);
+    endif;
+    endp;
+
+/*
+** {a1,b1}=listwis2(a,b);
+**
+** INPUTS:  a,b have same number of rows
+**
+** a1,b2, equal a,b except rows with any missing values are deleted.
+*/
+proc 2=listwis2(a,b);
+  local ma,mb,m;
+  ma=ismissm(a);
+  mb=ismissm(b);
+  m=sumc((ma~mb)').>0;
+  a=delif(a,m);
+  b=delif(b,m);
+  retp(a,b);
+endp;
+
+/*
+** {a1,b1,c1}=listwis3(a,b,c);
+**
+** INPUTS:  a,b,c have same number of rows
+**
+** a1,b1,c1 equal a,b,c except rows with any missing values are deleted.
+*/
+proc 3=listwis3(a,b,c);
+  local ma,mb,mc,m;
+  ma=ismissm(a);
+  mb=ismissm(b);
+  mc=ismissm(c);
+  m=sumc((ma~mb~mc)').>0;
+  a=delif(a,m);
+  b=delif(b,m);
+  c=delif(c,m);
+  retp(a,b,c);
+endp;
+
+/*
+**  create vector of PTS evenly spaced points between STRT and ENDD,
+**  not including the end points.
+*/
+proc seqas(strt,endd,pts);
+  local res;
+  res=(endd-strt)/pts;
+  res=seqa(strt+0.5*res,res,pts);
+  retp(res);
+endp;
+
+/* graphon;
+**
+** graphics setup: open window & switch to it
+**
+** OUTPUT GLOBAL: _graphon_pqg = graphics window number
+*                 (used automatically for other procedures)
+*/
+proc 0=graphon;
+  local wattr;
+  #ifunix;
+    wincloseall;
+    clearg _graphon_pqg;
+    let wattr=0 0 640 480 0 0 1 6 15 0 1 0 2;	  
+    _graphon_pqg = winopenpqg(wattr,"Graphics","Graphics");
+    call winsetactive(_graphon_pqg);
+  #endif;
+  graphset;
+endp;
+
+/* graphons;
+**
+** graphics setup: open SMALL window & switch to it
+**
+** OUTPUT GLOBAL: _graphon_pqg = graphics window number
+*                 (used automatically for other procedures)
+*/
+proc 0=graphons;
+  local wattr;
+  #ifunix;
+    wincloseall;
+    clearg _graphon_pqg;
+    let wattr=0 0 320 240 0 0 1 6 15 0 1 0 2;	  
+    _graphon_pqg = winopenpqg(wattr,"Graphics","Graphics");
+    call winsetactive(_graphon_pqg);
+  #endif;
+  graphset;
+endp;
+
+/* graphclr;
+**
+** switch to pqg window and clear
+*/
+proc 0=graphclr;
+  graphset;
+  #ifunix;
+    winclear(_graphon_pqg);
+    call winsetactive(_graphon_pqg);
+  #endif;
+endp;
+
+
+/* graphno;
+**
+** set text window active
+**/
+proc 0=graphno;
+  #ifunix;
+    call winsetactive(1);
+  #endif;
+endp;
+
+
+/* graphwait;
+**
+** switch to text; wait for key; switch back to pqg and clear;
+** (use for batch files of multiple graphs)
+**
+** output global:
+** _graphwait = text of what user entered before hitting return
+*/
+proc 0=graphwait;
+  clearg _graphwait;
+  #ifunix;
+    call winsetactive(1);
+  #endif;
+  _graphwait=cons;
+  graphset;
+  #ifunix;
+    winclear(_graphon_pqg);
+    call winsetactive(_graphon_pqg);
+  #endif;
+endp;
+
+
+/* graphoff;
+**
+** graphics off: switch to text, wait for key, close window
+** (use for last graphics command)
+*/
+proc 0=graphoff;
+  #ifunix;
+    call winsetactive(1);
+  #endif;
+  printfl "Press a key to continue...";
+  wait;
+  #ifunix;
+    wincloseall;
+  #endif;
+endp;
+
+/* printfl "to print ";
+**
+** prints immediately on unix and dos
+*/
+keyword printfl(s);
+  #ifunix;
+    print/flush s;
+  #else;
+    print s;
+  #endif;
+endp;
+
+/* y = exist("filename")
+** does file exist?
+*/
+proc exist(filename);
+    retp(not files(filename,0) $== 0);
+endp;
+
+/*
+    dta = loada(file,vars);
+**
+**  file = string with ascii file name
+**  vars = number of variables in file
+**
+**  dta = dataset in memory
+*/
+proc loada(file,vars);
+  local d,n;
+  loadm d[]=^file;
+  n=rows(d)/vars;
+  if n/=int(n);
+    "loada: Wrong number of vars, or not the same number in each row";
+    stop;
+  endif;
+  d=reshape(d,n,vars);
+  retp(d);
+endp;
+
+/*
+**      loadvars file var1 var2 var3 ...;   
+** OR   loadvars file;
+**
+** Load ascii data file into vectors (variables) with names designated on
+** command line or on the first line in the ascii file.
+**
+**
+** INPUTS:
+**
+**    file = string with file name of ascii data, tab, column, or blank-
+**           delimited (delimitors can be changed via globals in token2).
+**
+**    var1 var2 var2 ... = names of variables to label columns of data in file
+**
+**             This variable list may be omitted from the command line if it
+**             is included as the first line of the ASCII file.  Do NOT include
+**             the names in both places or the first observation of each loaded
+**             variable will be incorrect.
+**
+** NOTES:
+**
+** The number of vars named must equal the number of variables in the file.
+** Unless the latter is not a multiple of the former, errors will be missed.
+*/
+keyword loadvars(s);
+  local file,vars,tok,dta,i,str;
+  {file,s}=token2(s);
+  if not(exist(file));
+    "loadvrs error: file does not exist";
+  endif;
+  
+  /* Get var names from file */
+  if s $== "";				
+    str=getf(file,0);
+    i=strindx(str,chrs(10),1);
+    if i==1;
+      "loadvars: need var names on command line or on 1st line of datafile";
+      stop;
+    endif;
+    vars=str2mat(strsect(str,1,i));
+    dta=trimr(loada(file,rows(vars)),1,0);
+    
+  /* Get var names from command line */
+  else;
+    {vars,s}=token2(s);
+    do until s $== "";
+      {tok,s}=token2(s);
+      vars=vars|tok;
+    endo;
+    dta=loada(file,rows(vars));
+  
+  endif;
+  call makevars(dta,0,vars);
+endp;
+
+/*
+    y = str2mat(x);
+**
+**  x = string with elements delimited by blanks or commas or tabs etc
+**
+**  y = character vector
+*/
+proc str2mat(x);
+  local y,tok;
+  y=0; 
+  tok="aaa";
+  do while tok$/="";
+    {tok,x}=token2(x);
+    if tok$/="";    
+      y=y|tok;    
+    endif;
+  endo;
+  y=trimr(y,1,0);
+  retp(y);
+endp;
+
+/*
+** TOKEN2.SRC - String parser
+** faster version of the original TOKEN for large strings,
+** with more flexibility in defining tokens and delimiters
+**
+** Purpose:    To extract the first token from a string.
+**
+** Format:     { token,str_left } = TOKEN2(str);
+**
+** Input:      str         string, the string to parse.
+**
+** Output:     token       string, the first token in <str>.
+**
+**             str_left    string, the remainder of the input string.
+**
+** GLOBALS:    _tokdel = ascii values of acceptable delimiters
+**                       default={32,10,13,44,9}; @ space, lf, cr, comma, tab@
+**             _tokwds = ascii values of individual characters taken to be
+**                       tokens, regardless of delimiter placement,
+**                       default=-1 (meaning none)
+*/
+proc (2) = token2(str);
+  local st,en,t,skwds,tok,str_left,slen;
+  /*
+  if _tokwds/=-1;
+    skwds=_tokdel|_tokwds;
+  else;
+    skwds=_tokdel;
+  endif;
+  */
+  skwds=_tokdel|_tokwds;
+  slen=strlen(str);
+  if str$=="";
+    retp("","");
+  endif;
+  st=1;
+  do while in(vals(strsect(str,st,1)),_tokdel,1);
+    st=st+1;
+    if st>slen;
+      retp("","");
+    endif;
+  endo;
+  t=str$+" ";
+  en=st;
+  do until in(vals(strsect(t,en,1)),skwds,1);
+    en=en+1;
+  endo;   
+  if in(vals(strsect(t,en,1)),_tokwds,1) and st==en; 
+    en=en+1; 
+  endif;
+  tok=strsect(str,st,en-st);
+  str_left=strsect(str,en,slen);
+  retp(tok,str_left);
+endp;
+
+/* reverse infinities
+**
+** y = infrv(x,minus,plus);
+** x = input vector
+** minus, plus = scalars
+** y = an ExE conformable matrix with -INF changed to minus and +INF changed
+**       to plus
+*/
+proc infrv(x,m,p);
+  local plus,minus,res,s,pinf,minf;
+  plus = 0v7ff0000000000000;
+  minus = 0vfff0000000000000;
+  s=seqa(1,1,rows(x));
+
+  pinf=selif(s,(.not(x ./= plus)));
+  minf=selif(s,(.not(x ./= minus)));
+  res=x;
+  
+  if not(scalmiss(pinf));
+    res[pinf]=p.*ones(rows(pinf),1);
+  endif;
+  
+  if not(scalmiss(minf));
+    res[minf]=m.*ones(rows(minf),1);
+  endif;
+  retp(res);
+endp;

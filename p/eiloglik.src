@@ -1,0 +1,189 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+*/
+/* 
+** log-likelihood function for ecological inference model
+**
+*/
+#include ei.ext;
+proc eiloglik(b,dta);
+  local sb2,sw2,sbw,x,y,llik,s2,bb,bw,mu,sb,sw,c0,c,c1,cT0,cT1,Zb,Zw,
+     rho,tt,bnds,R,omega,epsilon,Ebb,Vbb,res,prior,rs,z,o;
+
+  {Zb,Zw,x,y} = pluckdta(dta);
+  rs=rows(y);
+
+  /* reparameterize */
+  {bb,bw,sb,sw,rho}=eirepar(b,Zb,Zw,x);
+  sb2=sb^2;
+  sw2=sw^2;
+
+  /* divide up types of observations */
+  llik=zeros(rs,1);
+  {c,c0,c1} = homoindx(x);
+  if scalmiss(c);
+    cT0={.};
+    cT1={.};
+  else;
+    cT0=selif(c,y[c].<_EnumTol);
+    cT1=selif(c,y[c].>(1-_EnumTol));
+    c=selif(c,(y[c].>=_EnumTol).and(y[c].<=(1-_EnumTol)));
+  endif;
+    
+  /* compute likelihood for different categories */
+  if not(scalmiss(c0));			@ X=0 @
+    epsilon=y[c0]-bw[c0];
+    llik[c0]=-0.5*(ln(sw2)+(epsilon^2)./sw2); @ ln N(T|Bw,sigmaW) @
+    bnds=zeros(rows(c0),1)~ones(rows(c0),1);
+    Ebb=bb[c0]+rho.*(sb./sw).*epsilon;
+    Vbb=sb2*(1-rho^2);
+    res=lcdfnormi(bnds,Ebb,Vbb);           @ ln S'(Bu,Sigmau) @
+    R=lncdfbvnu(bb[c0],bw[c0],sb,sw,rho);  @ ln R(Bu,Sigmau) @
+    llik[c0]=llik[c0]+res-R;
+  endif;
+
+  if not(scalmiss(c1));			@ X=1 @
+    epsilon=y[c1]-bb[c1];
+    llik[c1]=-0.5*(ln(sb2)+(epsilon^2)./sb2); @ ln N(T|Bb,sigmaB) @
+    bnds=zeros(rows(c1),1)~ones(rows(c1),1);
+    Ebb=bw[c1]+rho.*(sw./sb).*epsilon;
+    Vbb=sw2*(1-rho^2);
+    res=lcdfnormi(bnds,Ebb,Vbb);           @ ln S'(Bu,Sigmau) @
+    R=lncdfbvnu(bb[c1],bw[c1],sb,sw,rho);  @ ln R(Bu,Sigmau) @
+    llik[c1]=llik[c1]+res-R;
+  endif;
+
+  if not(scalmiss(cT0));		@ T=0, 0<X<1 @
+    z=zeros(rows(cT0),1);
+    llik[cT0]=lpdfbvn(z,z,bb[cT0],bw[cT0],sb,sw,rho)
+               -lncdfbvnu(bb[cT0],bw[cT0],sb,sw,rho);
+  endif;
+
+  if not(scalmiss(cT1));		@ T=1, 0<X<1 @
+    o=ones(rows(cT1),1);
+    llik[cT1]=lpdfbvn(o,o,bb[cT1],bw[cT1],sb,sw,rho)
+               -lncdfbvnu(bb[cT1],bw[cT1],sb,sw,rho);
+  endif;
+  
+  if not(scalmiss(c));			@ 0<T<1, 0<X<1 @
+    {mu,s2,epsilon,omega,Ebb,Vbb} = exvar(y[c],x[c],bb[c],bw[c],sb,sw,rho);
+    llik[c]=-0.5*(ln(s2)+(epsilon^2)./s2);     @ ln N(T|mu,sigma) @
+    {bnds,tt}=bounds1(y[c],x[c],ones(rows(c),1));
+    res=lcdfnormi(bnds[.,1 2],Ebb,Vbb);             @ ln S(Bu,Sigmau) @
+    R=lncdfbvnu(bb[c],bw[c],sb,sw,rho);             @ ln R(Bu,Sigmau) @
+    llik[c]=llik[c]+res-R;
+  endif;
+
+  /* priors */
+  prior=0;
+  if _Esigma>0;
+    prior=prior-(1/(2*_Esigma^2))*(sb2+sw2);	      @ sb, sw @
+  endif;
+  if _Erho[1]>0;
+    prior=prior+lpdfnorm(b[rows(b)-2],0,_Erho[1]^2);  @ rho @
+  endif;
+  if _Ebeta>0;			        	      @ bb, bw @
+    prior=prior+flatnorm(meanc(bb),_Ebeta);
+    prior=prior+flatnorm(meanc(bw),_Ebeta);
+  endif;
+  if not(scalmiss(_EalphaB));                         @ alphaB @
+    prior=prior+sumc(lpdfnorm(b[2:_Ez[1]],_EalphaB[.,1],_EalphaB[.,2]^2));
+  endif;
+  if not(scalmiss(_EalphaW));                         @ alphaW @
+    prior=prior
+       +sumc(lpdfnorm(b[(_Ez[1]+2):sumc(_Ez)],_EalphaW[.,1],_EalphaW[.,2]^2));
+  endif;
+  llik=llik+(prior/rs);
+
+  retp(llik);
+endp;
+
+/*
+**  {c,c0,c1} = homoindx(x);
+** 
+**  c  = vector of index numbers for heterogeneous precincts
+**  c0 = vector of index numbers for homogenous white (x=0) precincts
+**  c1 = vector of index numbers for homogenous black (x=1) precincts
+*/
+proc 3=homoindx(x);
+  local indx,c,c0,c1;
+  indx=seqa(1,1,rows(x));
+  c0=(x.<_EnumTol);
+  c1=(x.>(1-_EnumTol));
+  c=1-c0-c1;
+  c0=selif(indx,c0);
+  c1=selif(indx,c1);
+  c=selif(indx,c);
+  retp(c,c0,c1);
+endp;  
+
+/*
+**  prior = flatnorm(bb,sig);
+**  support proc for eiloglik()
+**
+** INPUT:
+** bb = parameter to put a flat normal prior on
+** sig = standard deviation of normal
+**
+** OUTPUT: log of flat normal prior
+**
+** the prior is flat in [0,1] and falls off with the normal distribution
+** outside that range
+*/
+proc flatnorm(bb,sig);
+  local prior,sig2;
+  sig2=sig^2;
+  if bb<0;
+    prior=-0.5*((bb^2)/sig2);
+  elseif bb>1;
+    prior=-0.5*(((bb-1)^2)/sig2);
+  else;
+    prior=0;
+  endif;
+  retp(prior);
+endp;
+
+/*
+    {mu,s2,epsilon,omega,Ebb,Vbb} = exvar(T,x,bbetaB,bbetaW,sigb,sigw,rho);
+or call as:
+    {mu,s2,epsilon,omega,Ebb,Vbb} = exvar(T,x,eirepar(params,Zb,Zw));
+**
+**  reparameterize & compute expected value and variance
+**  support proc for psim1() and eiloglik()
+**
+** INPUTS:
+** T = dep var
+** x = explanatory variable
+** bbetaB,bbetaW,sigb,sigw,rho = output of eirepar
+**
+** OUTPUTS:
+** mu = E(T|X), all on untruncated scale
+** s2 = V(T|X)
+** epsilon = t-mu
+** omega = cov(t,betaB)
+** Ebb = E(betaB)
+** Vbb = V(betaB)
+**  
+*/
+proc 6=exvar(t,x,bbetaB,bbetaW,sigb,sigw,rho);
+  local sigb2,sigw2,sigbw,omega,epsilon,Ebb,Vbb,varw,mu,s2,omx;
+
+  sigb2=sigb^2;
+  sigw2=sigw^2;
+  sigbw=rho*sigb*sigw;
+  
+  omx=1-x;
+
+  mu=bbetaB.*x+bbetaW.*omx;
+  epsilon=t-mu;
+  s2=(sigb2.*(x^2))+(sigw2.*(omx^2))+(2*sigbw.*x.*omx);
+  omega=sigb2*x+sigbw.*omx;
+  Ebb=bbetaB+((omega./s2).*epsilon);
+  Vbb=sigb2-((omega^2)./s2);
+
+  Vbb=recode(Vbb,Vbb.<_EvTol,_EvTol);  @ fix numerical innacuracies @
+  
+  retp(mu,s2,epsilon,omega,Ebb,Vbb);
+endp;

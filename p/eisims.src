@@ -1,0 +1,279 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+*/
+/*
+   {betaBs,betaWs} = psim1(T,X,N,Zb,Zw,MLpsi,MLvc);
+**
+** precinct-level parameter simulations
+**
+** INPUTS:
+** T    = dependent variable (p x 1)
+** X    = explanatory variable (p x 1)
+** N    = denominator of T and X (e.g., total voting age population) (p x 1)
+** Zb   = 1 or explanatory vars to predict beta-b 
+** Zw   = 1 or explanatory vars to predict beta-w 
+** MLpsi,MLvc = output from quadcml()
+**
+** GLOBAL:
+** _EbetaWs = 1 compute betaws as output
+**            0 set to missing (default) (can use eiread to compute)
+**            
+** OUTPUT:
+** betaBs,betaWs  =  (p x sims) matrices of simulations
+**
+*/
+#include ei.ext;
+proc 2=psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
+  local PSIsims,k,betaBs,betaWs,Bbeta,aggs,Ebb,Vbb,tt,dataset,
+  etaB,etaW,etaBs,etaWs,c,c0,c1,i,rs,r;
+  
+  /* ESTIMATION VARIABILITY */
+  if _Eprt>=2;
+    "Simulating estimation variation...";
+  endif;
+  /* _Eselect is applied within packdta, so dataset is _Eselect'd but
+      x,Zb,Zw,t, which are used for fundamental variability, are not */
+  dataset=packdta(x,Zb,Zw,t);
+  
+  /* importance sampling for b's and normal for eta's:  sims x rows(MLpsi) */
+  etaB=MLpsi[rows(MLpsi)-1];
+  etaW=MLpsi[rows(MLpsi)];
+  if rows(_Eeta)==1;
+    etaBs=0;
+    etaWs=0;
+  elseif rows(_Eeta)==4;
+    etaBs=_Eeta[3];
+    etaWs=_Eeta[4];
+  elseif _Eeta[1]==4;
+    etaBs=0;
+    etaWs=_Eeta[3];
+  elseif _Eeta[1]==5;
+    etaBs=_Eeta[3];
+    etaWs=0;
+  endif;
+  if _Erho[1]==0;
+    _EisFix=MLpsi[(rows(MLpsi)-2):rows(MLpsi)];
+    PSIsims=rndisamp(&eiloglik,trimr(MLpsi,0,3),
+    MLvc[1:rows(MLpsi)-3,1:rows(MLpsi)-3],dataset,_Esims)~
+    rndmn(_Erho[2],0,_Esims)~rndmn(etaB,etaBs,_Esims)~rndmn(etaW,etaBs,_Esims);
+  else;
+    _EisFix=MLpsi[(rows(MLpsi)-1):rows(MLpsi)];
+    PSIsims=rndisamp(&eiloglik,trimr(MLpsi,0,2),MLvc,dataset,_Esims)~
+    rndmn(etaB,etaBs,_Esims)~rndmn(etaW,etaBs,_Esims);
+  endif;	  
+  if _EisChk;                          
+    _Eres=vput(_Eres,psisims,"PhiSims");  @ save name corresponds to book @ 
+  else;
+    _Eres=vput(_Eres,meanc(psisims)~stdc(psisims),"PhiSims");
+  endif;
+  
+  /* FUNDAMENTAL VARIABILITY */
+  /* Applies to all observations */
+  if _Eprt>=2;
+    "Simulating fundamental variability...";
+  endif;
+  rs=rows(x);
+  betaBs=zeros(rs,_Esims);
+  betaWs=betaBs;
+  {Bbeta,aggs}=bounds1(t,x,tvap);
+  #ifdos;
+  k=1; do while k<=_Esims;
+  #else;
+  for k (1, _Esims, 1);
+  #endif;
+    {tt,tt,tt,tt,Ebb,Vbb} = exvar(T,x,eirepar(PSIsims[k+0,.]',Zb,Zw,x));
+    betaBs[.,k+0] = rndtni(Ebb,Vbb,Bbeta[.,1 2]);
+  #ifdos;
+  k=k+1; endo;
+  #else;
+  endfor;
+  #endif;
+
+  /* compute betaWs from betaBs deterministically */
+  if _Ebetaws;
+    betaWs=betab2w(t,x,betaBs);
+  else;
+    betaWs=miss(1,1);
+  endif;
+  
+  retp(betaBs,betaWs);
+endp;
+
+/*
+** betaw = betab2w(t,x,betab);
+**
+** compute betaw deterministically given betab
+**
+** INPUT DIMENSIONS:
+** rows of all inputs must be p
+** cols(t) must equal 1
+** cols(x) must be 1 (for ei) or _Esims (for ei2)
+** cols(betab) must be 1 (for mean posterior) or _Esims (for betaBs)
+*/
+proc betab2w(t,x,betab);
+  local c,c0,c1,betaw,i,col,x1;
+  col=cols(x);
+  x1=1-x;
+  betaW=betaB;
+  
+  if col==1;
+    {c,c0,c1} = homoindx(x);
+    if not(scalmiss(c));
+      betaW[c,.] = (t[c]./x1[c])-((betaB[c,.].*x[c])./x1[c]);
+    endif;
+    if not(scalmiss(c0));
+      betaW[c0,.] = t[c0].*ones(rows(c0),cols(betaB));
+    endif;
+    if not(scalmiss(c1));
+      betaW[c1,.] = miss(1,1).*ones(rows(c1),cols(betaB));
+    endif;
+    
+  else;
+    if col/=cols(betaB);
+      "EI internal error, betab2w";
+      stop;
+    endif;
+    #ifdos;
+    i=1;do while i<=col;
+    #else;
+    for i (1, col, 1);
+    #endif;
+      {c,c0,c1} = homoindx(x[.,i+0]);
+      if not(scalmiss(c));
+	betaW[c,i+0] = (t[c]./x1[c,i+0])-((betaB[c,i+0].*x[c,i+0])./x1[c,i+0]);
+      endif;
+      if not(scalmiss(c0));
+	betaW[c0,i+0] = t[c0].*ones(rows(c0),1);
+      endif;
+      if not(scalmiss(c1));
+	betaW[c1,i+0] = miss(1,1).*ones(rows(c1),1);
+      endif;
+    #ifdos;
+    i=i+1; endo;
+    #else;
+    endfor;
+    #endif;
+    
+  endif;
+  retp(betaW);
+endp;
+
+
+/* -----------------------------------------------------------------------
+   y = rndisamp(&f,b,vc,dataset,sims);
+**
+** random numbers generated via importance sampling
+** using the multivariate normal or t as the first approximation.
+** 
+** inputs: f() = likelihood function with arguments b(kx1),dataset
+**         mu = kx1 means
+**         vc = kxk variance matrix
+**    dataset = input to f()
+**       sims = number of simulations
+**
+** output:  y = nxk matrix of dependent Multivariate Normal Random Variables
+**              each row of y is one 1xk simulation
+**
+** globals:  _Eprt if >=2 print progress reports
+**           _Eisn = sims*_Eisn is the number of normals to draw before 
+**                   resampling (default _Eisn=10)
+**           _EisFac = factor to multiply normal variance matrix by
+**                     or -1 to do normal approximation only
+**           _EisChk = 1 if save ln(imptce Ratio)~phi in lnir;
+**                     0 otherwise save means
+**           _Eist   = 0 (default) for normal random numbers; 
+**                    >2 for multivariate t, with _Eist degrees of freedom
+**           _EImarg = 1 save "marglik" marginal likelihood in dbuf
+**                     0 save mean(marglik) in dbuf
+*/
+proc rndisamp(&f,b,vc,dataset,sims);
+  local f:proc;
+  local lik,norm,i,max,psis,u,tst,r,lnir,ir,k,radd,keepsi,inf,ii,x,t,bb,meanir,
+        resamp,vc0,keeplik;
+  if rows(vc)/=rows(b) or cols(vc)/=rows(b);
+    "rndisamp: input error";
+    end;
+  endif;
+
+  if _EisFac==-1;                     @ normal approximation only @
+    _Eres=vput(_Eres,miss(1,1),"lnir");
+    _Eres=vput(_Eres,miss(1,1),"meanIR");
+    _Eres=vput(_Eres,miss(1,1),"resamp");
+    retp(rndmn(b,vc,sims));
+  else;
+    vc=vc*_EisFac;
+  endif;
+  
+  k=sims*_Eisn;
+  if _Eist==0;
+    psis=rndmn(b,vc,k);
+  else;
+    vc=vc*(_Eist-2)/_Eist;
+    psis=rndmt(b,vc,_Eist,k);
+  endif;
+  lik=zeros(k,1);
+  norm=zeros(k,1);
+  keepsi=0*b';
+  keeplik=0;
+  _Eivc=invpd(vc);
+  
+  #ifdos;
+  i=1; do while i<=k;
+  #else;
+  for i (1, k, 1);
+  #endif;
+    if int(i/100)==i/100 and _Eprt>=2;
+      i/10;
+    endif;
+    bb=(psis[i+0,.]'|_EisFix);
+    lik[i+0]=sumc(packr(f(bb,dataset)));
+    if _Eist==0;
+      norm[i+0]=lnpdfmn(psis[i+0,.]',b,0);
+    else;
+      norm[i+0]=lnpdfmt(psis[i+0,.]',b,0,_Eist);
+    endif;
+  #ifdos;
+  i=i+1; endo;
+  #else;
+  endfor;
+  #endif;
+  lnir=lik-norm;	@ ln(imptce ratio)  @
+
+  if scalone(_EisChk);
+    _Eres=vput(_Eres,lnir~psis,"lnir");
+  else;
+    max=maxc(lnir);
+    meanIR=max+ln(meanc(exp(lnir-max)));    @ = ln(meanc(exp(lnir)) @
+    _Eres=vput(_Eres,meanIR,"lnir");
+  endif;
+
+  resamp=0;
+  r=0;
+  do while r-1<sims;
+    lnir=lnir-maxc(lnir);
+    ir=exp(lnir);	        @ imptce ratio  @
+    tst=(rndu(rows(ir),1).<=ir);
+    keepsi=keepsi|selif(psis,tst);
+    keeplik=keeplik|selif(lik,tst);
+    r=rows(keepsi);
+    lnir=delif(lnir,tst);
+    psis=delif(psis,tst);
+    lik=delif(lik,tst);
+    if _Eprt>=2;
+      resamp=resamp+1;
+      "Got " r-1 ", resampling...";
+    endif;
+  endo;
+  _Eres=vput(_Eres,resamp,"resamp");
+  
+  keepsi=keepsi[2:sims+1,.];
+  keeplik=keeplik[2:sims+1,.];
+  if _EImarg==1;
+    _Eres=vput(_Eres,keeplik,"marglik");
+  else;
+    _Eres=vput(_Eres,meanc(keeplik),"marglik");
+  endif;    
+  retp(keepsi);
+endp;  

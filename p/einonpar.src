@@ -1,0 +1,265 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+*/
+
+#include ei.ext;
+/*
+** arcsin.  included in gauss, but works only if #ifcmplx is working
+**
+*/
+proc arcsin(x);
+    if abs(x) <= 1;
+        retp( atan2( x, sqrt(1 - x.*x) ) );
+    else;
+        errorlog("ARCSIN argument out of range");
+        end;
+    endif;
+endp;
+
+/* arc-cosign.  included in Gauss, but works only if #ifcmplx is working
+*/
+proc arccos(x);
+  if abs(x) <= 1;
+    retp(atan2(sqrt(1-x.*x),x));
+  else;
+    errorlog("ARCCOS argument out of range");
+    end;
+  endif;
+endp;
+
+/* dist = perpdist(t,x,px,py);
+**
+** INPUTS:  t,x   = (px1) turnout, race
+**          px,py = (Mx1) coordinates of points to compute distance
+**
+** OUTPUT: dist = (PxM) perpendicular distance from each point in px,py
+**                 to the tomography line betaW=(t./(1-x))-(x./(1-x))*betaB
+**/
+proc perpdist(t,x,px,py);
+  local A,B,C,D,uB,uW,lB,lW,acarg,tst1,tst2,tt,bnds;
+  {bnds,tt}=bounds1(t,x,1);
+  lB=bnds[.,1];
+  uB=bnds[.,2];
+  lW=bnds[.,3];
+  uW=bnds[.,4];
+  A=sqrt((uW-lW)^2+(uB-lB)^2);
+  A=recode(A,A.<=0.0001,0.0001);
+  B=sqrt((uW-py')^2+(lB-px')^2);
+  B=substute(B,B.<0.00001,B*0+0.00001);
+  C=sqrt((lW-py')^2+(uB-px')^2);
+  acarg=(a^2+b^2-c^2)./(2.*a.*b);
+  tst1=(acarg.>1);
+  tst2=(acarg.<-1);
+  acarg=substute(acarg,(tst1.or tst2),0*acarg+tst1-tst2);
+  D=B.*sin(arccos(acarg));
+  retp(D);
+endp;
+
+/*  area = unitarea(t,x);
+**  
+**  t,x = (px1) turnout, race
+**
+**  area = (px1) area within unit square of truncated nonparametric 
+**         normal-sheet kernel for each tomography line
+*/
+proc unitarea(t,x);
+  local lB,uB,lW,uW,c,d,tt,a,k,g,x1,betabS,betawS,z,o,xx1,x1x,minbetaw,
+        maxbetaw,minbetab,maxbetab,b,S,area,bnds,i,nobs,var;
+  x=recode(x,(x.<_Enumtol)~(x.>(1-_Enumtol)),_Enumtol|(1-_Enumtol));
+  {bnds,tt}=bounds1(t,x,1);
+  lB=bnds[.,1];
+  uB=bnds[.,2];
+  lW=bnds[.,3];
+  uW=bnds[.,4];
+  x1=1-x;
+  xx1=x./x1;
+  x1x=x1./x;
+  nobs=rows(x);
+  area=zeros(nobs,1);
+  var=_eigraph_bvsmth^2;
+
+  #ifdos;
+  i=1;do while i<=nobs;
+  #else;
+  for i (1, nobs, 1);
+  #endif;
+    
+    c=maxr(1-uB[i+0],lW[i+0])~maxr(lB[i+0],1-uW[i+0]);
+    c=substute(c,c.<0.00001,c*0+0.00001);
+    d=perpdist(t[i+0],x[i+0],,1|0,0|1);
+    a=sqrt(c^2-d^2);
+    k=a.*cos(arcsin(a./c));
+    g=sqrt(a^2-k^2);
+    
+    /* coordinates of tomography line extended so that the end points
+    are perpendicular to the 1,0 0,1 coordinates of the unit square:
+    (uB+k[.,1])~(lW-g[.,1])~(lB-k[.,2])~(uW+g[.,2]);  */
+    
+    /* points to evaluate on the tomography line */
+    betabS=seqas(lb[i+0]-k[.,2],ub[i+0]+k[.,1],_EnonNumInt);
+    betawS=(t[i+0]./x1[i+0])-(x[i+0]./x1[i+0]).*betabS;
+    z=zeros(_EnonNumInt,1);
+    o=ones(_EnonNumInt,1);
+    
+    /* lengths of perpendicular lines within the unit square */
+    minbetaw=maxr(z,betawS-x1x[i+0].*betabS);
+    maxbetaw=minr(o,betawS+x1x[i+0].*(1-betabS));
+    minbetab=maxr(z,betabS-xx1[i+0].*betawS);
+    maxbetab=minr(o,betabS+xx1[i+0].*(1-betawS));
+    a=sqrt((maxbetaw-betawS)^2+(maxbetab-betabS)^2);
+    b=sqrt((betabS-minbetab)^2+(betawS-minbetaw)^2);
+    S=(betabS.>=minbetab).and(betabS.<=maxbetab);
+    
+    /* area within square for each perpendicular line */
+    area[i+0]=meanc(cdfnorm(maxr(a,b),0,var)
+    +((S-0.5)*2).*cdfnorm(minr(a,b)-S,0,var));
+    
+  #ifdos;
+  i=i+1; endo;
+  #else;
+  endfor;
+  #endif;
+
+  retp(area);
+endp;
+
+/*
+** pz = nonbiv(t,x,px,py);
+**
+** INPUTS: t, x, = (px1) turnout, race
+**         px,py = (MxQ) coordinates to evaluate nonparametric biv density at
+**
+** OUTPUT: pz = (MxQ) height of the nonparametric bivariate density at px,py,
+**               which is f(px,py), using a sheet-normal kernel.
+*
+** If memory is available, use vec(px) and vec(py) and reshape pz upon output
+** to make this proc run faster.
+*/
+proc nonbiv(t,x,px,py);
+  local b,c,d,pz,z,r,col,i;
+  col=cols(px);
+  pz=zeros(rows(px),col);
+  c = unitarea(t,x);         @ scale factor to divide by @ 
+  r=rows(x);
+  #ifdos;
+  i=1; do while i<=col;
+  #else;
+  for i (1, col, 1);
+  #endif;
+    d = perpdist(t,x,px[.,i+0],py[.,i+0]);  @ perpendicular distance to line @
+
+    /* sheet-normal kernel */
+    z = d ./ _eigraph_bvsmth;
+    pz[.,i+0] = ((1 / sqrt(2*pi)) * sumc(exp(-0.5*(z.*z))./c)) / r;
+
+  #ifdos;
+  i=i+1;  endo;  
+  #else;
+  endfor;
+  #endif;
+
+  pz=pz./_eigraph_bvsmth^2;
+  retp(pz);
+endp;
+
+
+/*
+** betabs = einonp(t,x);
+**
+** INPUTS: t,x = (p X 1) turnout, race
+**
+** OUTPUTS: betabs = (p x _Esims) simulations of beta^b, 
+**                   computed nonparametrically
+*/
+proc einonp(t,x);
+  local nobs,bnds,tt,i,j,betab,betabs,x1,pz,areas,cnts,fa,fb,a,b,d,e,c,ce,cd,
+        betaw,res;
+  nobs=rows(t);
+
+  if _Eprt>=2;
+    printfl "Nonparametric Density Estimation...";
+  endif;
+
+  x=recode(x,(x.<_Enumtol)~(x.>(1-_Enumtol)),_Enumtol|(1-_Enumtol));
+  t=recode(t,(t.<_Enumtol)~(t.>(1-_Enumtol)),_Enumtol|(1-_Enumtol));
+  {bnds,tt}=bounds1(t,x,1);
+  betab=zeros(_EnonEval,nobs);
+  #ifdos;
+  i=1; do while i<=nobs;
+  #else;
+  for i (1, nobs, 1);
+  #endif;
+    betab[.,i+0]=seqase(bnds[i+0,1],bnds[i+0,2],_EnonEval);
+  #ifdos;
+  i=i+1; endo;
+  #else;
+  endfor;
+  #endif;
+
+  x1=1-x;
+  betaw=(t./x1)'-(x./x1)'.*betab;
+
+  if _Eprt>=2;
+    printfl "Computing conditional density for each line...";
+  endif;
+  pz=nonbiv(t,x,betab,betaw);
+
+  if _Eprt>=2;
+    printfl "Drawing simulations...";
+  endif;
+  /* compute interpolated trapazoidal areas */
+  areas=(betab[2,.]-betab[1,.]).*packr(pz+0.5*abs(pz-lag(pz)));
+  areas=cumsumc(areas./sumc(areas)');
+  
+  betabs=zeros(nobs,_Esims);
+  #ifdos;
+  i=1; do while i<=nobs;
+  #else;
+  for i (1, nobs, 1);
+  #endif;
+  
+    /* count within categories defined by areas of interpolated trapazoids */
+    cnts=counts(rndu(_Esims,1),areas[.,i+0]);
+
+    /* use inverse CDF to draw from trapazoidal dist  within categories */
+    fa=trimr(lag(pz[.,i+0]),1,0);
+    fb=trimr(pz[.,i+0],1,0);
+    a=trimr(lag(betab[.,i+0]),1,0);
+    b=trimr(betab[.,i+0],1,0);
+    D=fa.*b-fb.*a;
+    E=fb-fa;
+    E=recode(E,abs(E).<0.000001,0.000001); @ fix for uniform distribution @
+    C=1./( (b-a).*D+0.5*(b^2-a^2).*E );
+    CE=C.*E;
+    CD=C.*D;
+    
+    res=0;
+    #ifdos;
+    j=1;do while j<=_EnonEval-1;
+    #else;
+    for j (1, _EnonEval-1, 1);
+    #endif;
+      if cnts[j+0]>0;
+	res=res|(-CD[j+0]+sqrt((C[j+0]^2).*(D[j+0]^2)
+	+ 2*CE[j+0].*(CD[j+0].*a[j+0]+0.5*CE[j+0].*(a[j+0]^2)+rndu(cnts[j+0],1))))./CE[j];
+      endif;
+    #ifdos;
+    j=j+1; endo;
+    #else;
+    endfor;
+    #endif;
+
+
+    res=trimr(res,1,0)';
+    betabs[i+0,.]=res[sortind(rndu(_Esims,1))];
+
+  #ifdos;  
+  i=i+1;endo;
+  #else;
+  endfor;
+  #endif;
+
+  retp(betabs);
+endp;

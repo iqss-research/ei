@@ -1,0 +1,1471 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-99 Gary King
+**  All Rights Reserved.
+*/
+/*
+   v = eiread(dbuf,"name");
+**
+** Extracts, computes, or prints results from EI or EI2 output data buffers
+**
+** When used with an EI2 output data buffer (i.e., for 2xC tables), most
+** eiread items use the mean posterior estimate for X; the
+** multiply imputed values (x2) are used only for these options and their
+** many derivatives: betaBs, betaWs, CI80bw, CI95bw, coverage, aggs.
+**
+** INPUTS:
+** dbuf     a data buffer created by ei()
+** name     a string with the name of the element to read or compute.
+**          choose from this lists below (*=option prints output to screen
+**          if _Eprt>0)
+** OUTPUT
+** v = chosen item, or missing value if item is not available
+**
+** GLOBAL
+** _Eprt  = 0 don't print; 1 = do print selected items.
+** _Ei2_r = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
+**         this global denotes which of the imputed data buffers stored
+**         in dbuf should be accessed when running this procedure (default=1)
+**
+** STORED (can also be retrieved with vread):
+** _EalphaB  value of this global (prior on alphaB)
+** _EalphaW  value of this global (prior on alphaW)
+** _Ebeta    value of this global (priors on bb,bw)
+** _Ebounds  value of this global (bounds)
+** _Ecdfbvn  value of this global (method for CDF of bivariate normal calc)
+** _EdirTol  value of this global (tolerance of CML convergence)
+** _EdoML    value of this global (do maxlik)
+** _EdoML_phi value of this global (input phi's)
+** _EdoML_vcphi value of this global  (input vc of phi's)
+** _Eeta     value of this global (slope coeff on X in betab|betaw eqns)
+** _EIgraph_bvsmth value of this global (bivariate smoothing parameter)
+** _EisChk   value of this global (check importance sampling)
+** _EImarg   value of this global (marginal likelihood)
+** _EisFac   value of this global (variance factor in importance sampling)
+** _EisN     value of this global (extra sims factor for importance sampling)
+** _Eist     value of this global (multivar t or normal for imptce samplng)
+** _EmaxIter value of this global (maximum number of iterations for CML)
+** _EnonEval value of this global (nonpar point evaluations)
+** _EnonNumInt value of this global (nonpar numerical integration points)
+** _EnonPar  value of this global (nonparametric estimation)
+** _EnumTol  value of this global (numerical tolerance for homogeneous pcts)
+** _Erho     value of this global (prior on rho)
+** _Eselect  value of this global (observations to select)
+** _EselRnd  value of this global (delete randomly selected obs)
+** _Esigma   value of this global (priors on sb,sw)
+** _Esims    value of this global (simulations)
+** _Estval   value of this global (starting values or grid search)
+** _EI_vc    value of this global (parameters for variance computation)
+** date      a string containing the date and time execution completed,
+**           and the EI version number and date
+** t         p x 1: outcome var proportion (turnout) (this gives V if ei2)
+** x         p x 1: explanatory var proportion (black vap)
+** n         p x 1: number of individuals per observation (precinct)
+** GhActual  value of output global _GhActual from gvc()
+** retcode   CML return code or 3333 for grid search
+** parnames  character vector of names for phi (=_cml_parnames)
+** phi       MLE's from CML
+** vcphi     global vc matrix of coeff's phi from gvc()
+** loglik    value of log-likelihood at the maximum (unnormalized)
+** PhiSims   if _EisChk==1:  _Esims x rows(phi): sims of phi; 
+**           else            meanc(phi)~stdc(phi)
+** lnir      if _EisChk==1: ln(Importance Ratio)~(normal simulations of phi') 
+**           [_Esims*_Eisn x rows(phi)+1], or scalar zero otherwise.
+** marglik   _Esims x 1: marginal likelihood, or scalar mean if _EImarg=0
+** resamp    scalar: number of resampling tries
+** betaBs    p x _Esims: simulations of betaB
+**
+** CALCULATED OR CHANGED:
+** Zb        matrix of covariates for betaB or 1 for none
+** Zw        matrix of covariates for betaW or 1 for none
+** meanIR    scalar: ln of mean importance ratio
+** betaWs    p x _Esims: simulations of betaW
+** RNbetaBs  p x _Esims: randomly horizontally permuted simulations of betaB
+** RNbetaWs  p x _Esims: randomly horizontally permuted simulations of betaW
+** STbetaBs  p x _Esims: SORTED simulations of betaB 
+**           (e.g., 80% CI, lower bound is STbetaBs[int(0.1*_Esims)]);
+** STbetaWs  p x _Esims: SORTED simulations of betaW
+**           (e.g., 80% CI, upper bound is STbetaWs[int(0.9*_Esims)]);
+** CI95b     p x 2: lower~upper 95% confidence intervals for betaB
+** CI95w     p x 2: lower~upper 95% confidence intervals for betaW
+** CI95bw    p x 4: lowerB~upperB~lowerW~upperW 95% conf ints for betaB betaW
+** CI80b     p x 2: lower~upper 80% confidence intervals for betaB
+** CI80w     p x 2: lower~upper 80% confidence intervals for betaW
+** CI80bw    p x 4: lowerB~upperB~lowerW~upperW 80% conf ints for betaB betaW
+** CI50b     p x 2: lower~upper 50% confidence intervals for betaB
+** CI50w     p x 2: lower~upper 50% confidence intervals for betaW
+** checkR    rows(phi)x2 precision of R (for +/- _Edirtol) is ok (1) or not (0)
+** R         scalar: sum(ln(R)), where R=volume above the unit square
+** Ri        p x 1: ln(R), where R=volume above the unit square
+** dataset   Zb~Zw~x~t, used for input to eiloglik(); _EselRnd<1 is ignored
+** loglikS   value of log-likelihood at the maximum for each i (unnormalized)
+** Ebounds   params x 2: lower~upper constraints on maxlik searching routines
+** Nb        p x 1: denominator of x and t; x.*n (blacks of voting age)
+** Nw        p x 1: (1-x).*n = n-Nb (whites of voting age)
+** Nt        p x 1: n.*t (number of people who Turnout)
+** beta      p x 2 E(betaB)~E(betaW) for each precinct
+** betaB     p x 1 E(betaB) for each precinct
+** betaW     p x 1 E(betaW) for each precinct
+** sbetaB    p x 1 stand deviation of betaB
+** sbetaW    p x 1 stand deviation of betaW
+** CsbetaB   p x 1 CI-based stand deviation of betaB
+** CsbetaW   p x 1 CI-based stand deviation of betaW
+** GEbw      p x 3 betaB~betaW~Nsims based on sims where betaB>=betaW
+** GEbwa     2 x 1 aggregate B^b ~ B^w based on sims where betaB>=betaW
+** GEwb      p x 3 betaB~betaW~Nsims based on sims where betaW>=betaB
+** GEwba     2 x 1 aggregate B^w ~ B^b based on sims where betaW>=betaB
+** bounds    p x 4: bounds on betaB & betaW, lowerB~upperB~lowerW~upperW
+** bounds2   p x 4: same as bounds but for ei2 bounds on the lambdas
+** abounds   2 x 2: aggregate bounds rows:lower,upper; cols:betab,betaw
+** abounds2  2 x 2: aggregate bounds, ei2 rows:lower,upper;cols:lambdab,lambdaw
+** Pphi      2 x 5 row 1: phi, row 2: stand errors
+** psiu      reparameterized phi into untruncated scale (average for bb bw)
+** mpPsiu    psiu from Mean Posterior rather than MLEs
+** psi       reparameter'd phi into ultimate truncated scale (avg for bb bw)
+** aggs      _Esims x 2: sims of district-level weighted avg of betaBs~betaWs
+** Maggs     2 x 1: point est of 2 dist-level parameters: meanc(aggs);
+** VCaggs    2 x 2: var-cov matrix of 2 dist-level params vcx(aggBs~aggWs)
+** Paggs     2 x 2: row 1: ec inf coeff's; row 2: standard errors
+** Goodman   2 x 2: row 1: Goodman's Regression coeff's, row 2: stan errors
+** double    2 x 1: double Regression coefficients (takes ei2 dbuf as input)
+** Thomsen   2 x 1: Thomsen's Ecological logit Estimates (bb|bw)
+** Neighbor  2 x 1: Freedman et al.'s neighborhood model estimates (bb|bw)
+** Palmquist scalar: Palmquist's Inflation factor
+** Eaggbias  4 x 2:(b~se)|(b~se) for regs of est'd betaB,betaW on const. & X
+** nobs      scalar: number of observations
+** tsims     100 x _Esims+1:rows=seqase(0,1,100), cols=X~(sorted sims of T|X)
+** expvarci  100 x 4: X~20%CI~mean~80%CI of sims from p(T|X)
+** expvarcis 100 x 4: X~20%CI~mean~80%CI of sims from p(T|X) LOESS Smoothed
+** etaC      2x1 etaB|etaW to fix eta's at (derived from _Eeta)
+** etaS      2x1 se(etaB|etaW) fixed se's for eta (derived from _Eeta)
+** _Ez       2x1: n of covariates, including implied constant term for Zb|Zw
+**                also sets this global
+** sum       prints a summary of selected results
+**
+** OPTIONAL: if desired, must be vput these into data buffer before eiread()
+** titl      string: descriptive info about run
+** truth     p x 2: true precinct betaB~betaW
+**
+** CALCULATED FROM OPTIONAL:
+** truthB    truth[.,1] truth for blacks
+** truthW    truth[.,2] truth for whites
+** NbT       px1 number of blacks who Turnout
+** NbN       px1 number of blacks who don't Turnout
+** NwT       px1 number of whites who Turnout
+** NwN       px1 number of whites who don't Turnout
+** aggtruth  2 x 1: true aggregate coeff for blacks|whites
+** psitruth  5 x 1: true values of psi on truncated scale
+** coverage  2 x 4: %w/in CI's: 50b~80b~50w~80w (1st row=means,2nd=wtd means)
+** aggbias   4 x 2:(b~se)|(b~se) for regressions of betaB,betaW on const. & X
+** truPtile  p x 2: true percentile at which true value falls, betaB~betaW
+**
+** ADDITIONAL OPTIONS IF DATA BUFFER WAS CREATED BY EI2:
+** x2        p x _Esims: simulations of x from prior stage analysis
+** x2rn      p x _Esims: x2 randomly horizontally permuted 
+** x         p x 1: redefined as mean posterior
+** Nb2       p x _Esims: denominator of x and t; x.*n (blacks of voting age)
+** Nw2       p x _Esims: (1-x).*n = n-Nb (whites of voting age)
+** _t        p x 1: the original variable T from the first stage
+** _x        p x 1: the original variable X from the first stage
+** _n        p x 1: the original variable N from the first stage
+**
+*/
+#include ei.ext;
+proc eiread(dbuf,str);
+  local vrs,a,res,tt,x,t,omx,b,bb,bw,sb,sw,rho,sbw,cv,Zb,Zw,titl,bs,p,d,
+  tvap,n,nb,nw,c,c0,c1,bnds,bb0,bw0,invX,invT,meanX,meanT,p00,p11,p01,p10,x2,
+  strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,
+  _t,_x,v;
+
+  /* for ei2, pull out data buffer _ei2_r from meta-data buffer */
+  if vin(dbuf,"titl");
+    titl=vread(dbuf,"titl");
+    if titl$=="*MDB* Meta-Data Buffer from 2nd Stage *MDB*";
+      dbuf=vread(dbuf,"dbuf"$+ftos(_ei2_r,"*.*lf",1,0));
+    endif;
+  endif;
+  
+  str=lower(str);
+  
+  cv=vnamecv(dbuf);
+  strc=strput(str,"        ",1);
+
+  /***** changes in stored globals *****/
+  
+  if str$=="_eeta";			@ _Eeta @
+    if vin(dbuf,"_Eeta");
+      res=vread(dbuf,"_eeta");
+    else;
+      res=zeros(4,1);
+    endif;
+    if scalmiss(res);
+      res=zeros(4,1);
+    elseif cols(res)==2;
+      res=vec(res);
+    elseif rows(res)==2;
+      res=res|zeros(2,1);
+    endif;
+    
+  elseif str$=="zb";			@ Zb supplemented with _Eeta @
+    e=eiread(dbuf,"_Eeta");
+    res=vread(dbuf,"Zb");
+    if e==1 or e==3 or e==4;
+      res=vread(dbuf,"x");
+    endif;
+    
+  elseif str$=="zw";			@ Zw supplemented with _Eeta @
+    e=eiread(dbuf,"_Eeta");
+    res=vread(dbuf,"Zw");
+    if e==2 or e==3 or e==5;
+      res=vread(dbuf,"x");
+    endif;
+
+  elseif str$=="titl" or str$=="__title";
+    if vin(dbuf,"titl");
+      res=vread(dbuf,"titl");
+    else;
+      res="";
+    endif;
+    
+  /***** stored globals *****/
+  
+  elseif in(strc,cv,0);
+    res=vread(dbuf,str);
+
+  /***** computed results *****/
+
+  elseif str$=="x2";
+    if vin(dbuf,"x2");
+      res=vread(dbuf,"x2");
+    else;
+      "eiread: 'x2' option is only available in data buffers created by ei2";
+      res={.};
+    endif;
+  
+  elseif str$=="x2rn";			@ horizontally randomly permuted x2  @
+    if vin(dbuf,"x2");
+      res=vread(dbuf,"x2");
+      a=rows(res);
+      c=cols(res);
+      #ifdos;
+      i=1;do while i<=a;
+      #else;
+      for i (1, a, 1);
+      #endif;
+	res[i+0,.]=res[i+0,sortind(rndu(c,1))];
+      #ifdos;
+      i=i+1;endo;
+      #else;
+      endfor;
+      #endif;
+    else;
+      "eiread: 'x2' option is only available in data buffers created by ei2";
+      res={.};
+    endif;
+  
+  elseif str$=="_emaxiter" or str$=="emaxiter";
+    if vin(dbuf,"emaxiter");
+      res=vread(dbuf,"emaxiter");
+    else;
+      res={.};
+    endif;
+  
+  elseif str$=="_eigraph_bvsmth" or str$=="bvsmth";
+    if vin(dbuf,"bvsmth");
+      res=vread(dbuf,"bvsmth");
+    else;
+      res={.};
+    endif;
+    
+  elseif str$=="_edoml_phi" or str$=="doml_phi";
+    if vin(dbuf,"doml_phi");
+      res=vread(dbuf,"doml_phi");
+    else;
+      res={.};
+    endif;
+    
+  elseif str$=="_enoneval" or str$=="_enoneva";
+    if vin(dbuf,"_enoneva");
+      res=vread(dbuf,"_enoneva");
+    else;
+      res={.};
+    endif;
+    
+  elseif str$=="_enonnumint" or str$=="_enonnum";
+    if vin(dbuf,"_enonnum");
+      res=vread(dbuf,"_enonnum");
+    else;
+      res={.};
+    endif;
+    
+  elseif str$=="meanir";
+    if vin(dbuf,"meanir");
+      res=vread(dbuf,"meanir");
+    elseif vin(dbuf,"_EmeanIR");
+      res=vread(dbuf,"_emeanir");
+    elseif vin(dbuf,"lnir") and eiread(dbuf,"_EisChk")==0;
+      res=vread(dbuf,"lnir");
+    elseif vin(dbuf,"lnir") and eiread(dbuf,"_EisChk")==1;
+      a=eiread(dbuf,"lnir");
+      a=a[.,1];
+      max=maxc(a);
+      res=max+ln(meanc(exp(a-max)));    @ = ln(meanc(exp(lnir)) @
+    else;
+      res={.};
+    endif;
+
+  elseif str$=="logliks";       @ loglik for each i @
+    a=eiread(dbuf,"phi");
+    b=eiread(dbuf,"dataset");
+    res=eiloglik(a,b);
+    
+  elseif str$=="resamp";
+    if vin(dbuf,"resamp");
+      res=vread(dbuf,"resamp");
+    elseif vin(dbuf,"_Eresamp");
+      res=vread(dbuf,"_eresamp");
+    else;
+      res={.};
+    endif;
+  
+  elseif str$=="_enonpar";
+    if not(vin(dbuf,"_enonpar"));
+      res=0;
+    else;
+      res=vread(dbuf,"_enonpar");
+    endif;
+  
+  elseif str$=="etac";			@ 2x1 vect to fix coeff's at @
+    res=eiread(dbuf,"_Eeta");
+    if rows(res)==1;
+      res=0|0;
+    elseif rows(res)==3 and res[1]==4;
+      res=0|res[2];
+    elseif rows(res)==3 and res[1]==5;
+      res=res[2]|0;
+    elseif rows(res)==4;
+      res=res[1 2];
+    endif;
+
+  elseif str$=="etas";			@ 2x1 vect to fix se's of eta at @
+    res=eiread(dbuf,"_Eeta");
+    if rows(res)==1;
+      res=0|0;
+    elseif rows(res)==3 and res[1]==4;
+      res=0|res[3];
+    elseif rows(res)==3 and res[1]==5;
+      res=res[3]|0;
+    elseif rows(res)==4;
+      res=res[3 4];
+    endif;
+    
+  elseif str$=="_ez";@ n of covariates, incl. implied constant for Zb|Zw @
+    zb=eiread(dbuf,"zb");
+    zw=eiread(dbuf,"zw");
+    clearg _Ez;	
+    _Ez=(cols(Zb)+1-(Zb==1))|(cols(Zw)+1-(Zw==1)); 
+    res=_Ez;
+  
+  elseif str$=="ebounds";   @ _cml_bounds (repeated code from eicml.src @
+    call eiread(dbuf,"_Ez");
+    b=eiread(dbuf,"_Ebounds");
+    if scalzero(b);    @ don't use bounds  @
+      res={-1e256 1e256};
+    elseif cols(b)==2;
+      res=b;
+    elseif scalone(b);     @ automatic bounds calculation @
+      e={-10 10};
+      f={-20 20};   @{ -1e256 1e256 };@
+      if _Ez[1]==1;
+	res=e;
+      else;
+	res=f.*ones(_Ez[1],1);
+      endif;
+      if _Ez[2]==1;
+	res=res|e;
+      else;
+	res=res|(f.*ones(_Ez[2],1));
+      endif;
+      res=res|(-6~3)|(-6~3)|(-2~2);
+    else;
+      "eiread: problem with _Ebounds";
+      end;
+    endif;
+  
+  elseif str $=="nobs";			@ number of observations  @
+    res=rows(vread(dbuf,"t"));
+    if _Eprt>0;
+      "number of observations: ";;res;
+    endif;
+
+  elseif str$=="tvap";			@ total vap, old notation @
+    strc=strput(str,"        ",1);
+    if in(strc,cv,0);
+      res=vread(dbuf,"tvap");
+    else;
+      res=vread(dbuf,"n");
+    endif;
+  
+  elseif str$=="n";			@ total vap @
+    strc=strput(str,"        ",1);
+    if in(strc,cv,0);
+      res=vread(dbuf,"n");
+    else;
+      res=vread(dbuf,"tvap");
+    endif;
+    
+  elseif str$=="bvap" or str$=="nb";	@ black vap  @
+    x=vread(dbuf,"x");
+    n=eiread(dbuf,"n");
+    res=x.*n;
+
+  elseif str$=="nb2";	@ black vap sims from ei2 @
+    x=eiread(dbuf,"x2");
+    n=eiread(dbuf,"n");
+    res=x.*n;
+
+  elseif str$=="wvap" or str$=="nw";	@ white vap  @
+    x=vread(dbuf,"x");
+    n=eiread(dbuf,"n");
+    res=(1-x).*n;
+
+  elseif str$=="nw2";	@ white vap  @
+    x=eiread(dbuf,"x2");
+    n=eiread(dbuf,"n");
+    res=(1-x).*n;
+
+  elseif str$=="nt";			@ number of people who Turnout @
+    t=eiread(dbuf,"t");
+    n=eiread(dbuf,"n");
+    res=t.*n;
+    
+  elseif str$=="dataset";		@ dataset for input to eiloglik() @
+    x=vread(dbuf,"x");                  @ ignore _EselRnd @
+    t=vread(dbuf,"t");
+    Zb=eiread(dbuf,"Zb");
+    Zw=eiread(dbuf,"Zw");
+    call eiread(dbuf,"_Ez");
+    clearg _Eselect;
+    _Eselect=eiread(dbuf,"_Eselect");
+    res=packdta(x,Zb,Zw,t);
+  
+  elseif str$=="betaws";		@ betaW simulations @
+    t=vread(dbuf,"t");
+    if vin(dbuf,"x2");
+      x=vread(dbuf,"x2");
+    else;
+      x=vread(dbuf,"x");
+    endif;
+    betaBs=eiread(dbuf,"betabs");
+    if scalmiss(betabs);
+      res={.};
+    else;
+      res=betab2w(t,x,betaBs);
+    endif;
+      
+  elseif str$=="beta";                  @ E(betab)~E(betaw) by precinct @
+    res=eiread(dbuf,"betab")~eiread(dbuf,"betaw");
+    
+  elseif str$=="betab";			@ E(betab) for each precinct @
+    res=meanc(eiread(dbuf,"betabs")');
+    
+  elseif str$=="betaw";			@ E(betaW) for each precinct @
+    res=meanc(eiread(dbuf,"betaws")');
+    
+  elseif str$=="sbetab";		@ sd(betab) for each precinct @
+    res=stdc(eiread(dbuf,"betabs")');
+    
+  elseif str$=="sbetaw";		@ sd(betaW) for each precinct @
+    res=stdc(eiread(dbuf,"betaws")');
+  
+  elseif str$=="rnbetabs";		@ randomly permuted betabs sims @
+    res=eiread(dbuf,"betabs");
+    a=rows(res);
+    c=cols(res);
+    #ifdos;
+    i=1;do while i<=a;
+    #else;
+    for i (1, a, 1);
+    #endif;
+      res[i+0,.]=res[i+0,sortind(rndu(c,1))];    
+    #ifdos;
+    i=i+1; endo;
+    #else;
+    endfor;
+    #endif;
+    
+  elseif str$=="rnbetaws";		@ randomly permuted betabs sims @
+    res=eiread(dbuf,"betaws");
+    a=rows(res);
+    c=cols(res);
+    #ifdos;
+    i=1;do while i<=a;
+    #else;
+    for i (1, a, 1);
+    #endif;
+      res[i+0,.]=res[i+0,sortind(rndu(c,1))];
+    #ifdos;
+    i=i+1; endo;
+    #else;
+    endfor;
+    #endif;    
+
+  elseif str$=="stbetabs";		@ sorted betaB simulations  @
+    betaBs=eiread(dbuf,"betaBs");
+    if scalmiss(betabs);
+      res={.};
+    else;
+      a=rows(betabs);
+      #ifdos;
+      i=1;do while i<=a;
+      #else;
+      for i (1, a, 1);
+      #endif;
+	betabs[i+0,.]=sortc(betabs[i+0,.]',1)';
+	betabs[i+0,.]=sortc(betabs[i+0,.]',1)';
+      #ifdos;
+      i=i+1; endo;
+      #else;
+      endfor;
+      #endif;    
+      res=betabs;
+    endif;
+
+  elseif str$=="stbetaws";		@ sorted betaW simulations  @
+    betaWs=eiread(dbuf,"betaWs");
+    if scalmiss(betaws);
+      res={.};
+    else;
+      a=rows(betaWs);
+      #ifdos;
+      i=1;do while i<=a;
+      #else;
+      for i (1, a, 1);
+      #endif;
+	betaWs[i+0,.]=sortc(betaWs[i+0,.]',1)';
+	betaWs[i+0,.]=sortc(betaWs[i+0,.]',1)';
+      #ifdos;
+      i=i+1; endo;
+      #else;
+      endfor;
+      #endif;    
+      res=betaWs;
+    endif;
+      
+  elseif str$=="truptile";	@ percentile at which true value falls @
+    if not(vin(dbuf,"truth"));
+      "eiread: truth needs to be stored first";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    stbetabs=eiread(dbuf,"stbetabs");
+    stbetaws=eiread(dbuf,"stbetaws");
+    truth=eiread(dbuf,"truth");
+    b=cols(stbetabs);
+    res=minindc(abs(stbetabs-truth[.,1])')/b;    
+    res=res~(minindc(abs(stbetaws-truth[.,2])')/b);
+    res[.,1]=recode(res[.,1],stdc(stbetabs').<=_EnumTol,0.5); @ homog prects @
+    res[.,2]=recode(res[.,2],stdc(stbetaws').<=_EnumTol,0.5);
+
+  elseif str$=="ci50b";			@ 50% confidence intervals for betab @
+    stbetabs=eiread(dbuf,"stbetabs");
+    e=cols(stbetabs);
+    res=stbetabs[.,int(0.25*e)]~stbetabs[.,int(0.75*e)];
+    
+  elseif str$=="ci80b";			@ 80% confidence intervals for betab @
+    stbetabs=eiread(dbuf,"stbetabs");
+    e=cols(stbetabs);
+    res=stbetabs[.,int(0.1*e)]~stbetabs[.,int(0.9*e)];
+    
+  elseif str$=="ci95b";			@ 95% confidence intervals for betab @
+    stbetabs=eiread(dbuf,"stbetabs");
+    e=cols(stbetabs);
+    res=stbetabs[.,int(0.05*e)]~stbetabs[.,int(0.95*e)];
+    
+  elseif str$=="ci50w";			@ 50% confidence intervals for betaw @
+    stbetaws=eiread(dbuf,"stbetaws");
+    e=cols(stbetaws);
+    res=stbetaws[.,int(0.25*e)]~stbetaws[.,int(0.75*e)];
+    
+  elseif str$=="ci80w";			@ 80% confidence intervals for betaw @
+    stbetaws=eiread(dbuf,"stbetaws");
+    e=cols(stbetaws);
+    res=stbetaws[.,int(0.1*e)]~stbetaws[.,int(0.9*e)];
+
+  elseif str$=="ci95w";			@ 95% confidence intervals for betaw @
+    stbetaws=eiread(dbuf,"stbetaws");
+    e=cols(stbetaws);
+    res=stbetaws[.,int(0.05*e)]~stbetaws[.,int(0.95*e)];
+
+  elseif str$=="ci80bw";		@ 80% conf intervals for betab betaw  @
+    res=eiread(dbuf,"ci80b")~eiread(dbuf,"ci80w");
+
+  elseif str$=="ci95bw";		@ 95% conf intervals for betab betaw  @
+    res=eiread(dbuf,"ci95b")~eiread(dbuf,"ci95w");
+
+  elseif str$=="coverage";		@ CI coverage @
+    truth=eiread(dbuf,"truth");
+    if scalmiss(truth);
+      res={.};
+    else;
+      if vin(dbuf,"x2");
+	nb=eiread(dbuf,"nb2");
+	nw=eiread(dbuf,"nw2");
+      else;
+	nb=eiread(dbuf,"nb");
+	nw=eiread(dbuf,"nw");
+      endif;
+      a=eiread(dbuf,"ci50b");
+      bb=ismissm(sumc((a~truth)'));
+      a=delif(a,bb);
+      e=delif(truth,bb);
+      f=(e[.,1].>=a[.,1]).and(e[.,1].<=a[.,2]);
+      res=meanc(f)|(meanc(meanwc(f,delif(nb,bb)))');
+      a=eiread(dbuf,"ci80b");
+      bb=ismissm(sumc((a~truth)'));
+      a=delif(a,bb);
+      e=delif(truth,bb);
+      f=(e[.,1].>=a[.,1]).and(e[.,1].<=a[.,2]);
+      res=res~(meanc(f)|(meanc(meanwc(f,delif(nb,bb))))');
+      a=eiread(dbuf,"ci50w");
+      bb=ismissm(sumc((a~truth)'));
+      a=delif(a,bb);
+      e=delif(truth,bb);
+      f=(e[.,2].>=a[.,1]).and(e[.,2].<=a[.,2]);
+      res=res~(meanc(f)|(meanc(meanwc(f,delif(nw,bb))))');
+      a=eiread(dbuf,"ci80w");
+      bb=ismissm(sumc((a~truth)'));
+      a=delif(a,bb);
+      e=delif(truth,bb);
+      f=(e[.,2].>=a[.,1]).and(e[.,2].<=a[.,2]);
+      res=res~(meanc(f)|(meanc(meanwc(f,delif(nw,bb))))');
+      if _Eprt>0;
+	"CI coverage; % true values within each confidence interval";
+	let vrs="      " "50%Black" "80%Black" "50%White" "80%White";
+	$vrs';
+	"    %: ";;res[1,.];
+	"Wtd %: ";;res[2,.];
+      endif;
+    endif;
+      
+  elseif str$=="checkr";                @ check R function precision @
+    _Edirtol=eiread(dbuf,"_Edirtol");
+    res=checkr(dbuf,_Edirtol);
+
+  elseif str$=="ri";                     @ ln(R) @    
+    a=eiread(dbuf,"phi");
+    {Zb,Zw,x,t} = pluckdta(eiread(dbuf,"dataset"));
+    res=packr(lncdfbvnu(eirepar(a,zb,zw,x)));
+
+  elseif str$=="r";                     @ sum(ln(R)) @    
+    res=sumc(eiread(dbuf,"r"));
+
+  elseif str$=="aggbias";		@ aggregation bias regressions @
+    truth=eiread(dbuf,"truth");
+    if scalmiss(truth);
+      res={.};
+    else;
+      x=vread(dbuf,"x");
+      clearg _Routput,_Rconst;
+      _Rconst=1;
+      {b,bb,t,t,t,t}=reg(x,truth[.,1]);
+      res=b~bb;
+      {b,bb,t,t,t,t}=reg(x,truth[.,2]);
+      res=res|(b~bb);
+      if _Eprt>0;
+	let vrs="TRUEDepV" "       " "coeffs" "se's";
+	$vrs';
+	let vrs=const x const x;
+	a=vrs~res;
+	let vrs="betaB" "   " "betaW" "   ";
+	a=vrs~a;
+	b=ones(4,1);
+	mask=zeros(4,2)~ones(4,2);
+	let fmt[4,3]="-*.*s " 8 8
+                     "-*.*s " 8 8
+                     "*.*lf" 7 4
+                     "*.*lf" 7 4;
+        call printfm(a,mask,fmt);		   
+      endif;
+    endif;
+    
+  elseif str$=="eaggbias";	@ estimated aggregation bias regressions @
+    betab=eiread(dbuf,"betab");
+    betaw=eiread(dbuf,"betaw");
+    if scalmiss(betaw);
+      res={.};
+    else;
+      x=eiread(dbuf,"x");
+      clearg _Routput,_Rconst;
+      _Rconst=1;
+      {b,bb,t,t,t,t}=reg(x,betab);
+      res=b~bb;
+      {b,bb,t,t,t,t}=reg(x,betaw);
+      res=res|(b~bb);
+      if _Eprt>0;
+	let vrs="ESTDepV" "       " "coeffs" "se's";
+	$vrs';
+	let vrs=const x const x;
+	a=vrs~res;
+	let vrs="betaB" "   " "betaW" "   ";
+	a=vrs~a;
+	b=ones(4,1);
+	mask=zeros(4,2)~ones(4,2);
+	let fmt[4,3]="-*.*s " 8 8
+                     "-*.*s " 8 8
+                     "*.*lf" 7 4
+                     "*.*lf" 7 4;
+        call printfm(a,mask,fmt);		   
+      endif;
+    endif;
+    
+  elseif str$=="csbetab";		@ CI-based sd(betaB)  @
+    stbetabs=eiread(dbuf,"stbetabs");
+    a=stbetaBs[.,int(cols(stbetabs)*0.3413)]; @ 34th percentile @
+    b=stbetaBs[.,int(cols(stbetabs)*0.6827)]; @ 68th percentile @
+    res=(b-a)/2;
+    
+  elseif str$=="csbetaw";		@ CI-based sd(betaW)  @
+    stbetaws=eiread(dbuf,"stbetaws");
+    a=stbetaWs[.,int(cols(stbetaws)*0.3413)]; @ 34th percentile @
+    b=stbetaWs[.,int(cols(stbetaws)*0.6827)]; @ 68th percentile @
+    res=(b-a)/2;    
+    
+  elseif str$=="gebw";                  @ betaB~betaB for sims betab>=betaw @
+    betaBs=eiread(dbuf,"betabs");
+    betaWs=eiread(dbuf,"betaws");
+    a=betaBs.<betaWs;
+    betaBs=mkmissm(betaBs,a);
+    betaWs=mkmissm(betaWs,a);
+    res=meanwc(betaBs',1)~meanwc(betaWs',1)~sumc(1-a');
+    
+  elseif str$=="gebwa";                 @ B^b ~ B^w for sims betaB >= betaW @
+    a=eiread(dbuf,"gebw");
+    res=meanwc(a[.,1],a[.,3])~meanwc(a[.,2],a[.,3]);
+    
+  elseif str$=="gewb";                  @ betaB~betaW for sims betaW>=betaB @
+    betaBs=eiread(dbuf,"betabs");
+    betaWs=eiread(dbuf,"betaws");
+    a=betaBs.>betaWs;
+    betaBs=mkmissm(betaBs,a);
+    betaWs=mkmissm(betaWs,a);
+    res=meanwc(betaBs',1)~meanwc(betaWs',1)~sumc(1-a');
+    
+  elseif str$=="gewba";                 @ B^b ~ B^w for sims betaW >= betaB @
+    a=eiread(dbuf,"gewb");
+    res=meanwc(a[.,1],a[.,3])~meanwc(a[.,2],a[.,3]);
+  
+  elseif str$=="bounds";		@ compute precinct bounds  @
+    t=vread(dbuf,"t");
+    x=vread(dbuf,"x");
+    n=eiread(dbuf,"n");
+    {res,a}=bounds1(t,x,n);
+  
+  elseif str$=="bounds2";		@ compute precinct bounds for ei2 @
+    if vin(dbuf,"_t");
+      v=vread(dbuf,"t");
+      x=vread(dbuf,"_x");
+      n=eiread(dbuf,"_n");
+      t=eiread(dbuf,"_t");
+      {res,a}=bounds2(v,t,x,n);
+    else;
+      res={.};
+    endif;
+    
+  elseif str$=="abounds";		@ compute aggregate bounds  @
+    t=vread(dbuf,"t");
+    x=vread(dbuf,"x");
+    n=eiread(dbuf,"n");
+    {a,res}=bounds1(t,x,n);
+    if _Eprt>0;
+      let vrs="       " betaB betaW;
+      "Aggregate bounds";
+      $vrs';
+      "Lower: ";;res[.,1]';
+      "Upper: ";;res[.,2]';
+    endif;
+    res=res';
+    
+  elseif str$=="abounds2";		@ compute aggregate bounds for ei2  @
+    if vin(dbuf,"_t");
+      v=vread(dbuf,"t");
+      x=vread(dbuf,"_x");
+      n=eiread(dbuf,"_n");
+      t=eiread(dbuf,"_t");
+      {a,res}=bounds2(v,t,x,n);
+    else;
+      res={.};
+    endif;
+    if _Eprt>0;
+      let vrs="       " lambdaB lambdaW;
+      "Aggregate bounds";
+      $vrs';
+      "Lower: ";;res[.,1]';
+      "Upper: ";;res[.,2]';
+    endif;
+    res=res';
+    
+  elseif str$=="pphi";			@ prints phi and se's  @
+    b=eiread(dbuf,"phi");
+    if scalmiss(b);
+      res={.};
+    else;
+      e=eiread(dbuf,"etas");
+      a=sqrt(diag(vread(dbuf,"vcphi")))|e;
+      res=b'|a';
+      if _Eprt>0;
+	"Maximum likelihood results in scale of estimation (and se's)";;
+	if vin(dbuf,"parnames");
+	  a=vread(dbuf,"parnames");
+	  ?;
+	  $a';;
+	else;
+	  ?;
+	endif;
+	res;
+      endif;
+    endif;
+      
+  elseif str$=="psiu";			@ untruncated psi  @
+    if vin(dbuf,"phi");
+      b=eiread(dbuf,"phi");
+    else;
+      retp(miss(1,1));
+    endif;
+    clearg _Erho;
+    _Erho=eiread(dbuf,"_Erho");
+    if _Erho[1]==0;
+      c=eiread(dbuf,"parnames");
+      b=selif(b,c.$/="Rho");
+    endif;
+    Zb=vread(dbuf,"Zb");
+    Zw=vread(dbuf,"Zw");
+    x=vread(dbuf,"x");
+    call eiread(dbuf,"_Ez");
+    {bb,bw,sb,sw,rho} = eirepar(b,Zb,Zw,x);
+    res=bb|bw|sb|sw|rho;
+    if _Eprt>0;
+      "Untruncated psi's";
+      a=meanc(bb)|meanc(bw)|sb|sw|rho;
+      let vrs=bb bw sb sw rho;
+      $vrs';
+      a';
+    endif;
+      
+  elseif str$=="mppsiu";		@ Mean Posterior untruncated psi  @
+    b=eiread(dbuf,"phisims");
+    if scalmiss(b);
+      res={.};
+    else;
+      if cols(b)==2;  @ i.e., if _EisChk @
+	b=b[.,1];
+      else;
+	b=meanc(b);
+      endif;
+      clearg _Erho;
+      _Erho=eiread(dbuf,"_Erho");
+      if _Erho[1]==0;
+	c=eiread(dbuf,"parnames");
+	b=selif(b,c.$/="Rho");
+      endif;
+      Zb=eiread(dbuf,"Zb");
+      Zw=eiread(dbuf,"Zw");
+      x=vread(dbuf,"x");
+      call eiread(dbuf,"_Ez");
+      {bb,bw,sb,sw,rho} = eirepar(b,Zb,Zw,x);
+      res=bb|bw|sb|sw|rho;
+      if _Eprt>0;
+	"Mean Posterior Untruncated psi's";
+	a=meanc(bb)|meanc(bw)|sb|sw|rho;
+	let vrs=bb bw sb sw rho;
+	$vrs';
+	a';
+      endif;
+    endif;
+    
+  elseif str$=="psi";			@ ultimate truncated psi  @
+    b=eiread(dbuf,"phi");
+    if scalmiss(b);
+      res={.};
+    else;
+      clearg _Erho;
+      _Erho=eiread(dbuf,"_Erho");
+      if _Erho[1]==0;
+	c=eiread(dbuf,"parnames");
+	b=selif(b,c.$/="Rho");
+      endif;
+      Zb=eiread(dbuf,"Zb");
+      Zw=eiread(dbuf,"Zw");
+      x=vread(dbuf,"x");
+      call eiread(dbuf,"_Ez");
+      res = eirepart(b,Zb,Zw,x);
+      if _Eprt>0;
+	let vrs=bb bw sb sw rho;
+	"Truncated psi's (ultimate scale)";
+	$vrs';
+	res';
+      endif;
+    endif;
+    
+  elseif str$=="aggs";			@ sims x 2 of wtd mean of (betaB&W)  @
+    if vin(dbuf,"x2");
+      nb=eiread(dbuf,"nb2");
+      nw=eiread(dbuf,"nw2");
+    else;
+      nb=eiread(dbuf,"nb");
+      nw=eiread(dbuf,"nw");
+    endif;
+    res=meanwc(vread(dbuf,"betaBs"),nb)
+       ~meanwc(eiread(dbuf,"betaWs"),nw);
+    
+  elseif str$=="maggs";		        @ 2 x 1: meanc(aggBs~aggWs) @
+    a=eiread(dbuf,"aggs");
+    res=meanc(a);
+  
+  elseif str$=="vcaggs";		@ 2 x 2: vcx(aggBs~aggWs)  @
+    a=eiread(dbuf,"aggs");
+    res=vcx(a);
+    
+  elseif str$=="paggs";			@ 2 x 2: ests (se's)  @
+    a=eiread(dbuf,"Maggs");
+    b=eiread(dbuf,"VCaggs");
+    b=sqrt(diag(b));
+    res=a'|b';
+    if _Eprt>0;
+      "Estimates of Aggregate Quantities of Interest";
+      let vrs=betab betaw;
+      $vrs';;
+      res;
+    endif;
+
+  elseif str$=="goodman";		@ 2 x 2 of Goodman's ests (se's)  @
+    clearg _Routput,_Rconst;
+    x=vread(dbuf,"x");
+    omx=1-x;
+    t=vread(dbuf,"t");
+    {res,a,tt,tt,tt,tt}=reg(x~omx,t);
+    res=(res')|(a');
+    if _Eprt>0;
+      "Goodman's Regression";
+      let vrs=betab betaw;
+      $vrs';;
+      res;
+    endif;
+    
+  elseif str$=="double";		@ 2 x 1 of Double regression ests @
+    clearg _Routput,_Rconst;
+    if vin(dbuf,"_t");
+      t=vread(dbuf,"_t");
+      x=vread(dbuf,"_x");
+      v=eiread(dbuf,"t");
+      omx=x~(1-x);
+      {a,tt,tt,tt,tt,tt}=reg(omx,t);
+      {b,tt,tt,tt,tt,tt}=reg(omx,v.*t);
+      res=b./a;
+      if _Eprt>0;
+	"Double Regression";
+	let vrs=lambdaB lambdaW;
+	$vrs';
+	res';
+      endif;
+    else;
+      res={.};
+    endif;
+      
+  elseif str$=="neighbor";              @ 2 x 1 of Neighborhood estimates @
+    t=eiread(dbuf,"t");
+    b=eiread(dbuf,"Nb");
+    a=eiread(dbuf,"Nw");
+    res=meanwc(t,b)|meanwc(t,a);
+    if _Eprt>0;
+      "Freedman et al.'s Neighborhood Model Estimates";
+      let vrs=betab betaw;
+      $vrs';
+      res';
+    endif;
+    
+  elseif str$=="thomsen";		@ 2 x 1 of Thomsen's estimates @
+    x=vread(dbuf,"x");
+    t=vread(dbuf,"t");
+    a=(x.==0).or(x.==1).or(t.==0).or(t.==1);
+    invX=cdfni(delif(x,a));
+    invT=cdfni(delif(t,a));
+    meanX=-meanc(invX);
+    meanT=-meanc(invT);
+    rho=corrx(invX~invT);
+    rho=rho[1,2];
+    p00=cdfbvn(meanX,meanT,rho);
+    p10=cdfn(meanT)-p00;
+    p01=cdfn(meanX)-p00;
+    p11=1-p00-p10-p01;
+    bb=p11/(p11+p10);
+    bw=p01/(p01+p00);
+    res=bb|bw;
+    if _Eprt>0;
+      "Thomsen's Ecological Logit Approach Estimates";
+      let vrs=betab betaw;
+      $vrs';
+      res';
+    endif;
+    
+  elseif str$=="palmquist";		@ Palmquist's inflation factor  @
+    x=vread(dbuf,"x");
+    n=eiread(dbuf,"n");
+    b=meanwc(x,n);
+    a=(meanwc(x^2,n)-b^2)/(b*(1-b));
+    res=(1/a)-1;
+    if _Eprt>0;
+      "Palmquist's Inflation Factor: ";;res;
+    endif;
+    
+  elseif str$=="truthb";		@ true betab  @
+    if not(vin(dbuf,"truth"));
+      "eiread: truth needs to be stored first";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    truth=eiread(dbuf,"truth");
+    res=truth[.,1];
+    
+  elseif str$=="truthw";		@ true betaw @
+    if not(vin(dbuf,"truth"));
+      "eiread: truth needs to be stored first";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    truth=eiread(dbuf,"truth");
+    res=truth[.,2];
+    
+  elseif str$=="nbv" or str$=="nbt";	@ number of blacks who Turnout @
+    b=eiread(dbuf,"truthb");
+    nb=eiread(dbuf,"nb");
+    res=nb.*b;
+    
+  elseif str$=="nbn";			@ number of blacks who don't vote @
+    b=eiread(dbuf,"truthb");
+    nb=eiread(dbuf,"nb");
+    res=nb.*(1-b);
+    
+  elseif str$=="nwv" or str$=="nwt";	@ number of whites who Turnout @
+    if not(vin(dbuf,"truth"));
+      "eiread: truth needs to be stored first";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    b=eiread(dbuf,"truthw");
+    nw=eiread(dbuf,"nw");
+    res=nw.*b;
+    
+  elseif str$=="nwn";			@ number of blacks who don't vote @
+    if not(vin(dbuf,"truth"));
+      "eiread: truth needs to be stored first";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    b=eiread(dbuf,"truthw");
+    nw=eiread(dbuf,"nw");
+    res=nw.*(1-b);
+    
+  elseif str$=="aggtruth";		@ aggregate truths  @
+    if not(in("truth   ",cv,0));
+      "eiread: truth needs to be stored first";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    n=eiread(dbuf,"n");
+    x=vread(dbuf,"x");
+    nb=x.*n;
+    nw=(1-x).*n;
+    res=vread(dbuf,"truth");
+    res=meanwc(res[.,1],nb)|meanwc(res[.,2],nw);
+    if _Eprt>0;
+      "Aggregate Truth";
+      let vrs=betab betaw;
+      $vrs';
+      res';
+    endif;
+    
+  elseif str$=="psitruth";		@ true psi's, truncated scale  @
+    a=eiread(dbuf,"truth");
+    if scalmiss(a);
+      res={.};
+    else;
+      b=corrx(packr(a));
+      res=meanc(packr(a))|stdc(packr(a))|b[2,1];
+      if _Eprt>0;
+	"TRUE truncated psi's (ultimate scale)";
+	let vrs=bb bw sb sw rho;
+	$vrs';
+	res';
+      endif;
+    endif;
+    
+  elseif str$=="tsims";			@ sims from p(T|X=seqas(0,1,100))  @
+    c=eiread(dbuf,"_Eeta");
+    if scalzero(c) and
+      (not(scalone(eiread(dbuf,"Zb"))) or not(scalone(eiread(dbuf,"Zw"))));
+      "eiread: tsims only works without covariates.";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    a=100;
+    x=seqase(0,1,a);
+    b=eiread(dbuf,"phi");
+    if scalmiss(b);
+      res=miss(1,1);
+    else;
+      if c==1 or c==4;
+	b[rows(b)-1]=b[2];
+      elseif c==2 or c==5;
+	b[rows(b)]=b[3];
+      elseif c==3 and rows(c)==1;
+	b[rows(b)-1]=b[2];
+	b[rows(b)]=b[4];
+      endif;
+      call eiread(dbuf,"_Ez");
+      zb=eiread(dbuf,"zb");
+      zw=eiread(dbuf,"zw");
+      {bb0,bw0,sb,sw,rho}=eirepar(b,0,0,0);
+      res=zeros(a,_Esims);
+      let bnds[2,2]=0 1 0 1;
+      e=meanc(vread(dbuf,"x"));
+      #ifdos;
+      i=1; do while i<=a;
+      #else;
+      for i (1, a, 1);
+      #endif;
+	bb=bb0+b[rows(b)-1]*(x[i+0]-e);
+	bw=bw0+b[rows(b)]*(x[i+0]-e);
+	bs=rndbtn(bb,bw,sb,sw,rho,bnds,_Esims);
+	t=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
+	res[i+0,.]=sortc(t,1)';
+      #ifdos;
+      i=i+1; endo;
+      #else;
+      endfor;
+      #endif;
+      res=x~res;
+    endif;
+      
+  elseif str$=="expvarci";		@ x~20%CI~mean~80%ci @
+    if rows(eiread(dbuf,"_Eeta"))==4 and
+      (not(scalone(eiread(dbuf,"Zb"))) or not(scalone(eiread(dbuf,"Zw"))));
+      "eiread: expvarci only works without covariates.";
+      #ifdos;
+        ndpclex;
+      #endif;
+      retp(miss(1,1));
+    endif;
+    b=eiread(dbuf,"tsims");
+    if scalmiss(b);
+      res={.};
+    else;
+      x=b[.,1];
+      b=b[.,2:_Esims+1];
+      res=x~b[.,int(0.2*_Esims)]~meanc(b')~b[.,int(0.8*_Esims)];
+    endif;
+  
+  elseif str$=="expvarcis";		@ x~20%CI~mean~80%ci LOESS smoothed @
+    b=eiread(dbuf,"expvarci");
+    if scalmiss(b);
+      res={.};
+    else;
+      e=__output;
+      __output=0;
+      _loess_WgtType=2;
+      _loess_span=.45;
+      {tt,c,a}=loess(b[.,2],b[.,1]);
+      res=a~c;
+      {tt,c,tt}=loess(b[.,3],b[.,1]);
+      res=res~c;
+      {tt,c,tt}=loess(b[.,4],b[.,1]);
+      res=res~c;
+      __output=e;
+    endif;
+  
+  elseif str$=="sum";			@ prints all printable items @
+    if _Eprt<1;
+      _Eprt=1;
+    endif;
+    if in("titl    ",cv,0);
+      titl=vread(dbuf,"titl");
+      "** "$+titl$+" **";
+    endif;
+    if scalone(eiread(dbuf,"_Enonpar"));
+      "Nonparametric Estimation";
+      "_EnonNumInt:   ";;eiread(dbuf,"_EnonNum");
+      "_EnonEval:     ";;eiread(dbuf,"_EnonEva");
+      "N:             ";;rows(vread(dbuf,"x"));
+      "_Esims:        ";;vread(dbuf,"_Esims");
+      ?;
+    else;
+      "CML return: ";;vread(dbuf,"retcode");;"     ";;
+      "N:          ";;rows(vread(dbuf,"x"));;"      ";;
+      "_Esims:     ";;vread(dbuf,"_Esims");
+      if in("_ebeta  ",cv,0);
+	"_Ebeta      ";;vread(dbuf,"_Ebeta");;"     ";;
+      endif;
+      "_Esigma:    ";;vread(dbuf,"_Esigma");;"       ";;
+      "_Erho:      ";;vread(dbuf,"_Erho")';
+      "_Eisn:      ";;vread(dbuf,"_Eisn");;"     ";;
+      "resamp:     ";;eiread(dbuf,"resamp")';
+      "_GhActual:  ";;vread(dbuf,"ghactual")';
+      "_Estval:    ";;vread(dbuf,"_Estval")';
+      if in("_eeta   ",cv,0);
+	"_Eeta:      ";;vec(eiread(dbuf,"_Eeta"))';
+      endif;
+      "log-likelihood:         ";;vread(dbuf,"loglik");
+      "ln(mean(Imptce Ratio)): ";;eiread(dbuf,"meanIR")';
+      ?;
+      call eiread(dbuf,"pphi");
+      ?;
+      call eiread(dbuf,"psiu");
+      ?;
+      call eiread(dbuf,"psi");
+      ?;
+    endif;
+    if in("truth   ",cv,0);
+      call eiread(dbuf,"psitruth");
+      ?;
+      call eiread(dbuf,"aggbias");
+      ?;
+      call eiread(dbuf,"eaggbias");
+      ?;
+      call eiread(dbuf,"coverage");
+      ?; 
+      call eiread(dbuf,"aggtruth");
+      ?;
+    endif;
+    call eiread(dbuf,"abounds");
+    ?;
+    call eiread(dbuf,"paggs");
+    res="";
+    
+  else;
+    if _Eprt>0;
+      "eiread: no such name, ";;str;
+    endif;
+    res={.};
+  
+  endif;
+  
+  #ifdos;
+    ndpclex;
+  #endif;
+  retp(res);
+endp;
+
+/*
+** {b,se,vc,yhat,e,sig} = reg(x,y);
+**
+**  input:  x = NxK explanatory variable matrix (no constant term by default)
+**          y = Nx1 dependent variable
+**
+**  output: b = regression coefficients
+**          se = sqrt(diag(vc)), standard errors
+**          vc = variance-covariance matrix (see _Rrobust, below)
+**          yhat = X'b, predicted values
+**          e = y-yhat = residuals
+**          sig = sqrt(e'e/(n-k))
+**
+** globals:
+**          _Rweight = sd(y), the weight vector for Weighted Least Squares
+**          _RXnames = vector of x variable names
+**          _RYname  = vector of y variable names
+**          _Rfmt    = digits to the right of decimal point for output
+**          _Rselect = vector of 1's to select and 0's to delete
+**          _Rrobust = defines VC.  if -1 (default) use usual method;
+**                     if 0 use White's heteroskedasticity-consistent VC matrx;
+**                     if an integer >0, use MA(N)-time-series and
+**                        heteroskedasticity-consistent VC matrix
+**          _Rtheta = if _Rrobust>0 doesn't produce a non-neg.definate VC matrix
+**                    then set this to some value >0 and usually <1.  Possibly
+**                    also increase _Rrobust.  (Default _Rtheta=0)
+**          _Routput = 0 if none; 1 (default) if print output
+**          _Rconst =  1 if include constant term (default), 0 don't include
+**
+** example:     let _RYname = income;
+**              let _RXnames = educat race;
+**              call reg(educat~race,income);
+**
+*/
+proc 6=reg(x,y);
+   local t,e,sig2,yhat,vc,se,b,ixx,mask,fmt,vbls,r2,yvar,xy,bin,wt,xx,yy,i,twt,
+          sel,m,my,j,damp,rxnames,ryname;  m={.};
+   if type(_rXnames)==13;rXnames=stof(_rXnames); else; rXnames=_rXnames; endif;
+    rXnames=reshape(rXnames,rows(rXnames)*cols(rXnames),1);
+   if type(_rYname)==13; rYname =stof(_rYname);  else; rYname= _rYname;  endif;
+
+    if _Rconst==1;   x=ones(rows(x),1)~x;    endif;
+    wt=_Rweight;  sel=_rselect;
+    if rows(sel)/=1;
+        if ((rows(y)/=rows(x)).and(rows(sel)/=rows(Y)));
+            "Rows of x, y, and _Rselect must be identical";end;endif;
+        if rows(wt)>1;
+            if (rows(y)/=rows(wt));"rows(_Rweight)/=rows(y or x)";end;endif;
+        endif;
+        t=((sumc(ismissm(x)').>=1).or ismissm(y).or (1-sel));
+        if rows(wt)>1;t=t.or ismissm(wt);endif;
+        x=delif(x,t);y=delif(y,t);
+        if rows(wt)>1;wt=delif(wt,t);endif;
+        if rows(sel)>1;sel=delif(sel,t);endif;
+    else;
+        t=((sumc(ismissm(x)').>=1).or ismissm(y));
+        if rows(wt)>1;t=t.or ismissm(wt);endif;
+        x=delif(x,t);y=delif(y,t);if rows(wt)>1;wt=delif(wt,t);endif;
+        if rows(sel)>1;sel=delif(sel,t);endif;
+    endif;
+    if rows(wt)>1;
+        if sumc(wt.<=0)>0;
+            errorlog "can't run WLS with zero or negative weights.";
+            errorlog "returning missing values.";
+            retp(m*ones(cols(x),1),m,m,m,m,m); 
+	    #ifdos;
+  	      ndpclex;
+	    #endif;
+        endif;
+    endif;
+
+    xx=x;       yy=y;     @ y & x unweighted @
+    x=x./wt;    y=y./wt;  @   and weighted @
+    trap 1;
+        ixx=invpd(moment(x,0));
+        if scalerr(ixx);
+            errorlog "X'X matrix not invertable, returning missing values";
+            retp(m*ones(cols(x),1),m,m,m,m,m); 
+	    #ifdos;
+  	      ndpclex;
+	    #endif;
+        endif; trap 0;
+    b=ixx*x'y;
+    yhat=x*b;
+    e=y-yhat;
+    sig2=e'e/(rows(x)-cols(x));
+    vc=sig2*ixx;
+    my=meanc(y);
+    r2=(yhat-my)'(yhat-my)/(y-my)'(y-my);
+    if _Rweight/=1;
+        yhat=xx*b;
+        e=yy-yhat;
+    endif;
+    if _Rrobust>=0;
+        if int(_Rrobust)/=_Rrobust;
+            errorlog "_Rrobust must be an integer ";endif;
+        if _Routput/=0;
+            "Robust se's (_Rrobust=";;_Rrobust;;"; _Rtheta=";;_Rtheta;;"), ";
+        endif;
+        bin=0;
+
+
+	#ifdos;
+	j=-_Rrobust;do while j<=_Rrobust;
+	  i=1+_Rrobust; do while i<rows(y)-_Rrobust;
+        #else;
+	for j (-_Rrobust, _Rrobust, 1);
+	  for i (1+_Rrobust, rows(y)-_Rrobust, 1);
+	#endif;
+	    damp=((_Rrobust+1-abs(j+0))/(_Rrobust+1))^_Rtheta;
+	    bin=bin+e[i+0]*x[i+0,.]'x[i-j+0,.]*e[i-j+0]*damp;
+	#ifdos;
+	  i=i+1; endo;
+	j=j+1; endo;
+	#else;
+	  endfor;
+	endfor;
+	#endif;
+
+        vc=ixx*bin*ixx;
+        trap 1;
+        if scalerr(chol(vc));
+            errorlog "VC isn't Non-Neg.Definate: increase _Rtheta";
+            retp(b,m,m,m,m,m); 
+	    #ifdos;
+  	      ndpclex;
+	    #endif;
+        endif;   trap 0;
+    endif;
+    se=sqrt(diag(vc));
+    if _Routput==1;
+    if rxnames==0;
+        if wt==1;"LS: b=";;b';
+        else;"WLS: b=";;b';endif;
+        "    se=";;se';
+        "     t=";;(b./se)';format /ld 6,0;
+        "n=";;rows(y);;format /rd 6,_rfmt;"sig=";;sqrt(sig2);;" R^2=";;r2;
+    else;
+        if rows(rxnames)+_Rconst/=cols(x);
+            errorlog "ERROR: _rxnames incorrect.";stop;endif;
+        if wt/=1;"WLS: ";;else;"LS: ";;endif;
+        if ryname==0;"";
+            else;"Dependent Variable: ";;$lower(ryname);endif;
+        "     vars         b          se         t";
+        if _Rconst==1;
+            vbls=lower("const"|rxnames);
+        else;
+            vbls=lower(rxnames);
+        endif;
+        mask=0~1~1~1;
+                 fmt=("*.*s"~  10~ 8)|
+                     ("*.*lf"~ 10~ _rfmt)|
+                     ("*.*lf"~ 10~ _rfmt)|
+                     ("*.*lf"~ 10~ _rfmt);
+        call printfm(vbls~b~se~(b./se),mask,fmt);format /ld 6,0;
+        "n=";;rows(y);;format /rd 6,_rfmt;"sig=";;sqrt(sig2);;" R^2=";;r2;
+    endif;endif;
+    #ifdos;
+      ndpclex;
+    #endif;
+    retp(b,se,vc,yhat,e,sqrt(sig2));
+  endp;
+
+/*
+** checkr(dbuf,eps)
+**
+** Procedure to calculate value of R function  +/- eps
+** for each parameter, holding other parameter values at their MLEs and
+** report whether cdfbvn is sufficiently precise for each parameter.
+** 
+** Inputs: dbuf = EI data buffer
+**         eps  = tolerance check (probably use _EdirTol)
+** 
+** Output: rchk, rows(phi)x2 matrix with rows correspnding to phi, cols
+** corresponding to slightly less~more (by eps) than the MLEs, and
+** each element indicating that the CDFBVN function is sufficiently
+** precise (when 1) and insufficiently precise (when 0)
+*/
+proc checkr(dbuf,eps);
+  local phi,R,rr,zb,zw,x,y,k,kk,loparms,hiparms,loR,hiR,rchk;
+
+  phi=eiread(dbuf,"phi");
+  rr=rows(phi);
+  {Zb,Zw,x,y} = pluckdta(eiread(dbuf,"dataset"));
+
+  loR=ones(rr-2,1);
+  hiR=ones(rr-2,1);
+  loparms=phi-eps;
+  hiparms=phi+eps;
+  R=sumc(packr(lncdfbvnu(eirepar(phi,zb,zw,x))));
+  for kk(1,rr-2,1);
+    k=kk;
+    loR[k]=sumc(packr(lncdfbvnu(eirepar(loparms,zb,zw,x))));
+    hiR[k]=sumc(packr(lncdfbvnu(eirepar(hiparms,zb,zw,x))));
+  endfor;
+
+  rchk=((loR~hiR)./=R);
+
+retp(rchk);
+endp;
