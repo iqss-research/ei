@@ -254,14 +254,14 @@ Since the partisan atmosphere surrounding public discourse on this
 issue was so highly charged, we knew that our work would be subject to
 more than the usual academic scrutiny, and so we sought out methods
 that were less vulnerable to partisan criticism.  We therefore used
-three separate approaches --- using no statistical assumptions, using
-a succession of single models, and full Bayesian model averaging that
-enable one to average over all models that any partisan might have
-considered weighted according to their relative probability of being
-correct, as indicated by the data.  So that others can use the methods
-we introduce here to analyze other problems, we have included all
-methods introduced here in the program \emph{EI: A Program for
-  Ecological Inference}.
+three separate approaches --- inference with no statistical
+assumptions, with a succession of single models, and with Bayesian
+model averaging that enable us to average over all models that any
+partisan might have considered weighted according to their relative
+probability of being correct, as indicated by the data.  So that
+others can use the methods we introduce here to analyze other
+problems, we have included all methods introduced here in the program
+\emph{EI: A Program for Ecological Inference}.
 
 We estimate the probability that Gore would have won the election if
 the law had been followed in this instance.  This probability is
@@ -299,22 +299,22 @@ had his strongest voting base.  For example, in counties such as
 Escambia and Santa Rosa, Bush lawyers argued that every vote cast by
 Americans in uniform should be counted, regardless of the letter of
 the law.  In Democratic counties, Bush's lawyers argued exactly the
-opposite -- that local election officials must follow the letter of
+opposite --- that local election officials must follow the letter of
 the law and disqualify any ballot not meeting the rules.
 
 According to \emph{The Times}, this unequal pressure led to unequal
-treatment by local officials of citizens who cast their ballots from
-overseas.  That partisans would pursue their interests creatively,
-relentlessly, and even inconsistently in different places is neither a
-novel claim nor remotely illegal.  That local election officials would
-respond to this pressure by treating voters unequally is a more
-serious claim. \emph{The Times'} view -- ``The result was unequal
-treatment of ballots with the same flaws.'' -- contradicts statements
-by Florida Secretary of State, Katherine Harris, that the rules were
-applied uniformly.  It also would seem to violate the Equal Protection
-Clause of the U.S.\ Constitution, which was part of the stated grounds
-under which the United States Supreme Court in \emph{Bush v.\ Gore}
-stopped the manual recounts.
+treatment by local officials of overseas voters.  That partisans would
+pursue their interests creatively, relentlessly, and even
+inconsistently in different places is neither a novel claim nor
+remotely illegal.  That local election officials would respond to this
+pressure by treating voters unequally is a more serious claim.
+\emph{The Times'} view --- ``The result was unequal treatment of
+ballots with the same flaws'' --- contradicts statements by Florida
+Secretary of State, Katherine Harris, that the rules were applied
+uniformly.  It also would seem to violate the Equal Protection Clause
+of the U.S.\ Constitution, which was part of the stated grounds under
+which the United States Supreme Court in \emph{Bush v.\ Gore} stopped
+the manual recounts.
 
 The 680 ballots that \emph{The Times} judged as flawed fell into one
 or more of these categories (Barstow and Van Natta, Jr.,
@@ -361,7 +361,6 @@ also have data available for election-day voters in the 67 counties.
 Finally, \emph{The Times} also provided us indicator variables for
 four regions in Florida and some other measures.  We use this extra
 information to improve our ecological inferences.
-
 \begin{table}[t]
   \begin{center}
     \begin{tabular}{ccccc}
@@ -459,7 +458,6 @@ Thus, without any statistical assumptions, we can derive the upper and
 lower bounds of $\bg_i$ and $\bb_i$ for each county $i$, which in turn
 imply the bounds for our quantity of interest, Bush's margin after
 dropping flawed overseas absentee ballots.
-
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{l c |ccc|ccc|ccc}
@@ -516,15 +514,13 @@ included in the official count.\footnote{Indeed, the name, address,
   record.  This is because the bounds have zero width whenever either
   $X_i$ or $T_i$ is zero or one.}
 
-
-From these county level bounds, we can derive the aggregate bounds for
-the total number of invalid ballots for each candidate at the state
-level. The result shows that at least 8 percent, or 128 votes of
-Bush's 1,575 absentee ballots, should not have been counted, whereas
-for Gore the minimum number of invalid ballots is only 5 out of his
-total 836 votes (0.6 percent).  Furthermore, Bush could have
-inappropriately benefited from up to 668 out of the 680 invalid
-ballots.
+From these county level bounds, we derive aggregate bounds for the
+total number of invalid ballots for each candidate at the state level.
+The result shows that at least 8 percent, or 128 votes of Bush's 1,575
+absentee ballots, should not have been counted, whereas for Gore the
+minimum number of invalid ballots is only 5 out of his total 836 votes
+(0.6 percent).  Furthermore, Bush could have inappropriately benefited
+from up to 668 out of the 680 invalid ballots.
 
 The most significant conclusion from this analysis is that we cannot
 exclude the possibility that Gore actually won the election.  That is,
@@ -544,54 +540,44 @@ The lack of any statistical assumptions puts the analysis in Section
 error aside, the conclusions there contain no inferential
 uncertainties at all, which is of course quite unusual for social
 science research.  If the resulting bounds excluded the possibility of
-one candidate winning, our [paper] analysis would end right here.
-Unfortunately, [the bounds include suggest both Gore and Bush
-victories.  Thus,] all we know from the bounds is that there exists a
+one candidate winning, our analysis would end right here.
+Unfortunately, all we know from the bounds is that there exists a
 \emph{possibility} that either Gore or Bush received more votes.
 Indeed, even of all but a tiny piece of the bounded interval reflected
-a Bush (or a Gore) victory, it would provide no information
-[whatsoever] about the \emph{probability} that a particular [one]
-candidate [or the other] won (since the bounds alone do not imply any
-probability distribution over the interval).  As such, the
-\emph{Times} needed us to go further than the bounds [. They and their
-readers needed] to obtain a bottom line, the probability that Gore
-really won.
+a Bush (or a Gore) victory, it would provide no information about the
+\emph{probability} that a particular candidate won (since the bounds
+alone do not imply any probability distribution over the interval).
+As such, the \emph{Times} needed us to go further than the bounds and
+to make an inference about the probability that Gore really won.  For
+that quantity of interest, the bounds are in sufficient.
 
-In order to learn more about who actually won the election -- the
-likely margins of victory within the deterministic bounds -- the only
+In order to learn more about who actually won the election --- the
+likely margins of victory within the deterministic bounds --- the only
 option is to add some statistical assumptions.  With these
-assumptions, we can make [precise] probabilistic statements about our
-quantities of interest.  The problem {\bf of any statistical
-  analysis}, of course, is that {\bf there might be a disagreement
-  about} [readers might not agree with us that] the assumptions {\bf
-  to be made} [we choose], and so the price of the more precise
-conclusions that follow is the additional uncertainty [about who won
-due to uncertainty about] model specification.  This is [of course]
-a[n] [extremely] common [situation] {\bf problem} in social science
-research, but it is particularly salient when attempting to provide
-independent nonpartisan advice in the midst of one of the most highly
-charged partisan debates in modern times. {\bf Our approach to this
-  problem is to formally incorporate uncertainty due to model
-  specification into our final estimate.}  [We now introduce our model
-and its associated assumptions.  Then we show how to include the
-uncertainties due to model specification in our final inferences.]
+assumptions, we can make probabilistic statements about our quantities
+of interest.  The problem with any model-based statistical analysis,
+of course, is that there might be a disagreement about the assumptions
+to be made, and so the price of the more precise conclusions that
+follow is the additional uncertainty due to model specification.  This
+is a common problem in social science research, but it is particularly
+salient when attempting to provide independent nonpartisan advice in
+the midst of one of the most highly charged partisan debates in modern
+times.  Our approach to this problem is to formally incorporate
+uncertainty due to model specification into our final estimate.
 
 We use the class of ecological inference models given in King
 (1997)\nocite{king:97}, which have come to called EI after the
-software that implements them.  To begin, we summarize [everything we
-know about the quantities of interest without making any statistical
-assumptions, as in Section \ref{s:noassump}, and] [portray the result]
-{\bf the bounds obtained in Section~\ref{s:noassump}} [graphically].
-Thus, for each Florida county, we {\bf show} [summarize what the data
-tell us in terms of] all \emph{possible} values of $\bg_i$ and of
-$\bb_i$.  As it turns out, the data tell us more than merely the
-bounds on each separately since Equation~\ref{eq:identity} says that
-if $\bg_i$ is near the top of its bounds, $\bb_i$ must be near the
-bottom of its bounds.  In fact, the two are perfectly correlated and
-fall on a line defined [precisely] by that equation.  To illustrate,
-we plot one line for each county in Florida in the tomography plot
-[in] of Figure~\ref{fg:tomog}], which merely re-expresses the data in
-the form closest to the answers we seek.
+software that implements them.  To begin, we summarize graphically the
+bounds obtained in Section~\ref{s:noassump}.  For each Florida
+county, we show all \emph{possible} values of $\bg_i$ and of $\bb_i$.
+As it turns out, the data tell us more than merely the bounds on each
+separately since Equation~\ref{eq:identity} says that if $\bg_i$ is
+near the top of its bounds, $\bb_i$ must be near the bottom of its
+bounds.  In fact, the two are perfectly correlated and fall on a line
+defined by that equation.  To illustrate, we plot one line for each
+county in Florida in the tomography plot of Figure~\ref{fg:tomog},
+which merely re-expresses the data in the form closest to the answers
+we seek.
 \begin{figure}[t]
   %\vspace{-1in}\hspace{0.5in}
   \begin{minipage}[c]{6.5in}
@@ -609,32 +595,31 @@ the form closest to the answers we seek.
 \end{figure}
 
 All of the above is as far as it is possible to go without making
-statistical assumptions.  {\bf Next} [Thus], we now add three
-assumptions, all conditional on $X$ and a specified set of control
-variables $Z$.  We could begin with the assumption that $\bb_i$ and
-$\bg_i$ are the same for all counties, which is essentially Goodman's
-regression.  This would be enough to identify the model, but it would
-be a very strong assumption, and indeed in our application it can be
-rejected with certainty by merely examining at Figure \ref{fg:tomog}.
+statistical assumptions.  Next, we add three assumptions, all
+conditional on $X$ and a specified set of control variables $Z$.  We
+could begin with the assumption that $\bb_i$ and $\bg_i$ are the same
+for all counties, which is essentially Goodman's regression.  This
+would be enough to identify the model, but it would be a very strong
+assumption, and indeed in our application it can be rejected with
+certainty by merely examining Figure \ref{fg:tomog}.
 
-Thus, [as an alternative, we do not assume] {\bf instead of assuming}
-that $\bb_i$ and $\bg_i$ are the same over counties, [but instead]
-{\bf we assume} that they come from the same distribution (the
+Thus, instead of assuming that $\bb_i$ and $\bg_i$ are the same over
+counties, we assume that they come from the same distribution (the
 truncated bivariate normal distribution, with truncation kept to the
-square in the figure).  The idea here is that whatever the values of
-the unknown parameters from Florida's 67 counties on their respective
-tomography lines, they all have something in common -- since they are
+square in the figure).  The idea is that whatever the values of the
+unknown parameters from Florida's 67 counties on their respective
+tomography lines, they all have something in common --- since they are
 all in the same state, subject to almost the same electoral campaign,
-etc.  Differences {\bf of any size} across the counties in these
-parameters [of any size] are thus allowed so long as they are either
-random and fit the distributional assumption or they are systematic
-and [picked up] {\bf taken into account} by control variables.  The
-main constraints of this assumption are that the bivariate density is
-unimodal (which is our formalization of the assumption that the
-counties ``have something in common'') and that all volume under the
-density appears over the square represented by the tomography plot.
-Violations of this distributional assumption do not seem to affect the
-quantities we need for this application (see King, 1997: Table 9.2).
+etc.  Differences of any size across the counties in these parameters
+are thus allowed so long as they are either random and fit the
+distributional assumption or they are systematic and taken into
+account by control variables.  The main constraints added by this
+assumption is that the bivariate density is unimodal (which is the
+formalization of the assumption that the counties ``have something in
+common'') and that all volume under the density appears over the
+square represented by the tomography plot.  Violations of this
+distributional assumption do not seem to affect the quantities we need
+for this application (see King, 1997: Table 9.2).
 
 The second assumption is that the absence of residual spatial
 correlation in $T$ after taking into account $X$ and $Z$.  King's
@@ -661,56 +646,52 @@ Sensitivity to model specification in quantitative political science
 is perhaps most commonly seen when minor changes among the explanatory
 variables in regression-type analyses result in large differences in
 the resulting estimates.  The endemic nature of such model dependent
-inferences [in the field] makes a decision to base all inferences on a
-single model in most situations highly dubious.  This is all the more
-so in ecological inference where model dependence is more frequently
-an issue.  Yet, almost all applications of ecological inference use a
-single specification.  Indeed, few use any explanatory variables, $Z$,
-at all.
+inferences makes a decision to base inferences on a single model in
+most situations highly dubious.  This is all the more so in ecological
+inference where model dependence is more frequently an issue.  Yet,
+almost all existing applications of ecological inference use a single
+specification.  Indeed, few use any explanatory variables, $Z$, at
+all.
 
 The partisan nature of the controversy in which we were providing
 advice makes the issue of model dependence especially salient,
 although it is not markedly different from other applications.  We
 began by following the most common procedure of estimating many models
-and assessing the degree to which our ultimate quantities of interest
-depend on the specification.  This was informative but insufficient,
-since our assignment was to provide a single inference[, such as] {\bf
-  with} a[n] {\bf point} estimate and confidence interval.  
+(i.e., with different $Z$) and assessing the degree to which our
+ultimate quantities of interest depend on the specification.  This was
+informative but insufficient, since our assignment was to provide a
+single inference with a point estimate and confidence interval.
 
-[The literature includes] {\bf There are} three basic ways of drawing
-inferences in the presence of model uncertainty.  Some researchers
-persist in choosing a single model, perhaps on the basis of
-qualitative arguments about its merits, and draw inferences assuming
-its veracity.  This optimistic approach typically overestimates the
-degree to which the researcher is certain of the correct model
-specification, and hence typically gives {\bf imprecise estimates and}
-overly [precise] {\bf narrow} confidence intervals.  Other researchers
-use a formal model selection criterion, such as stepwise regression,
-Mallow's Cp, AIC, etc., to pick the best model.  Although these
-procedures are inappropriate when estimating causal effects, they are
-reasonable when the quantity of interest is predictive, such as
-ecological inference.  Unfortunately, even in these situations the
-result of applying these criteria is one model, {\bf and} [which] thus
-also ignores model uncertainty.
+Three basic ways of drawing inferences in the presence of model
+uncertainty have been discussed.  Some researchers persist in choosing
+a single model, perhaps on the basis of qualitative arguments about
+its merits, and draw inferences assuming its veracity.  This
+optimistic approach typically overestimates the degree to which the
+researcher is certain of the correct model specification, and hence
+typically gives high variance estimates and overly narrow confidence
+intervals.  Other researchers use a formal model selection criterion,
+such as stepwise regression, Mallow's Cp, AIC, etc., to pick the best
+model.  Although these procedures are inappropriate when estimating
+causal effects, they are reasonable when the quantity of interest is
+predictive, such as ecological inference.  Unfortunately, even in
+these situations the result of applying these criteria is one model,
+which also ignores model uncertainty.
 
 An approach now widely recognized to be superior to any model
-selection criterion is Bayesian model averaging, {\bf which we apply
-  to our ecological inference problem} [and so we also use this
-approach].  The basic idea is to estimate a large number of potential
-models and to take the weighted average of their results, with weights
-based on probability that a model is correct.  The correctness of the
-model is not assumed ex ante; nor is it merely based on goodness of
-fit; it is instead calculated from the data via Bayesian analysis.
-The key result of Bayesian model averaging is that the inferences it
-produces (1) are more accurate than those produced by [any known] {\bf
-  standard} model selection criterion, (2) {\bf formally incorporate}
-[include] all model uncertainties in our inferences, (3) outperform
-any of the individual models {\bf that are } [in the set being]
-averaged over.  {\bf The last property does not depend on whether }
-[Moreover, even if] the true model generating the data lies
-\emph{outside} the models averaged over. {\bf That is}, inferences
-from Bayesian model averaging {\bf always} outperform any individual
-model {\bf considered} [in the set]
+selection criterion is Bayesian model averaging, which we apply to our
+ecological inference problem.  The basic idea is to estimate a large
+number of potential models and to take the weighted average of their
+results, with weights based on probability that a model is correct.
+The correctness of the model is not assumed ex ante; nor is it merely
+based on goodness of fit; it is instead calculated from the data via
+Bayesian analysis.  The key result of Bayesian model averaging is that
+the inferences it produces (1) are more accurate than those produced
+by standard model selection criterion, (2) formally incorporate all
+model uncertainties in our inferences, (3) outperform any of the
+individual models that are averaged over.  The last property does not
+depend on whether the true model generating the data lies inside or
+outside models averaged over. That is, inferences from Bayesian model
+averaging always outperform any individual model considered
 \citep{madi:raft:94}.\footnote{This result is similar to insights from
   the closely related literature on committee methods \citep{bish:95},
   although surprisingly the literatures have relatively few
@@ -725,43 +706,38 @@ model {\bf considered} [in the set]
 consider a wide range of models, while still producing one set of
 results.
 
-{\bf Of course, one can never cover the entire model space, which is
-  of infinite size, since Bayesian model averaging only allows one to
-  include a finite number of models.} [Bayesian model averaging] {\bf
-  Therefore, the resulting inferences} can always be improved by
-[including] {\bf adding} additional models. {\bf This is not a unique
-  feature of Bayesian model averaging since it is always possible to
-  come up with a better model in any statistical analysis. However,
-  Bayesian model averaging presents significant improvement over a
-  standard analysis resulting from one assumed model.} [and of course
-we are vulnerable to being proven wrong by someone who finds a
-different model to include that turns out to have both a high
-probability of being correct and yields different inferences.  But we
-are content to put forward our conclusions based as they are on all
-specifications that we were able to ellicit at the time.]
+Of course, one can never cover the entire model space, which is
+normally of infinite size, since Bayesian model averaging only allows
+one to include a finite number of models.  Therefore, the resulting
+inferences can always be improved by adding additional models, no
+matter how many models have already been included.  This is not a
+unique feature of Bayesian model averaging since it is always possible
+to come up with a better model in any statistical analysis.  However,
+Bayesian model averaging offers a significant improvement over the
+usual approach of basing inferences on one assumed model, no matter
+how that model is chosen.
 
 Bayesian model averaging is especially important in our application
-since political scientists have [only] rarely studied absentee ballots
-and we therefore have little prior theory with which to assist in
-model specification.  The procedure thus enables us to conduct an
-analysis without having to defend one particular specification, or
-even a small set of specifications.  We came up with our list of
-models by talking in detail to reporters and partisans on both sides.
-We then formalized \emph{every} intuition any of them mentioned in an
-ecological inference model (by defining $Z$) and we included them all
+since political scientists have rarely studied absentee ballots and we
+therefore have little prior theory with which to assist in model
+specification.  The procedure thus enables us to conduct an analysis
+without having to defend one particular specification, or even a small
+set of specifications.  We came up with our list of models by talking
+in detail to reporters and partisans on both sides.  We then
+formalized \emph{every} intuition any of them mentioned in an
+ecological inference model (by defining $Z$) and we included every one
 in our analysis.  We also included a number of others we came up with
-independently.  
+independently.
 
 Our search for models identified 31 possibilities for $Z$, including
 including race, sex, and party registration for the overseas absentee
-voters as well as 24 county level election and demographic variables.
-We also include a model with no covariates and 3 models with $X_i$ as
-the covariate for the mean of $\bb$, $\bg$, and for both.  For each of
-the 31 models, we use the same independent prior
-distribution.\footnote{\label{f:models}A list of all 31 models
-  follows: (1) no covariate, (2) $X_i$ for $\bb$, (3) $X_i$ for $\bg$,
-  (4) $X_i$ for both $\bb$ and $\bg$, (5) military absentee voters,
-  (6) registered Republican absentee voters, (7) registered Democratic
+voters as well as models based on 24 county level election and
+demographic variables.  We also include a model with no covariates and
+3 models with $X_i$ as the covariate for the mean of $\bb$, $\bg$, and
+for both.\footnote{\label{f:models}A list of all 31 models follows:
+  (1) no covariate, (2) $X_i$ for $\bb$, (3) $X_i$ for $\bg$, (4)
+  $X_i$ for both $\bb$ and $\bg$, (5) military absentee voters, (6)
+  registered Republican absentee voters, (7) registered Democratic
   absentee voters, (8) female absentee voters, (9) White absentee
   voters, (10) Black absentee voters, (11) Hispanic absentee voters,
   (12) rejected military absentee voters, (13) rejected registered
@@ -786,27 +762,26 @@ distribution.\footnote{\label{f:models}A list of all 31 models
   invalid and valid ballots; we used the former group to predict $\bb$
   and the latter to predict $\bg$.  We reran each model with different
   starting values to verify that we found the global maximum.  We also
-  examined each of the tomography plots with contours or confidence
-  intervals to search for outliers or bad model fits.  In addition, we
-  plotted $E(T|X)$ or $E(T|X,Z)$ by $X$ or $Z$, and checked whether
-  the observed $T$ fell within the (say) 90\% confidence interval 90\%
-  of the time.}  Each of our models includes at most two covariates in
-the model.  In part this is because no one {\bf including journalists
-  and academics} proposed a model that clearly was defined by more.
-But more importantly, we know that {\bf better} predictions {\bf can
-  be obtained} [are better] when not overfitting the data with {\bf
-  too} many variables.  Hoeting et al (1999) and Madigan and Raftery
-(1994) and others have shown that Bayesian model averaging almost
-never puts much weight on such models, and predictive inferences
-(unlike causal inferences) are typically better with parsimonious
-specifications.\footnote{Multiple covariates uncorrelated with $X_i$
-  causes no identification problems in EI.  Ecological inference
-  models that do not incorporate information from the deterministic
-  bounds (such as in Goodman, 1953\nocite{goodman53}) are not
-  identified when including $X_i$ or variables related to $X_i$ as
-  covariates (King, 1997: 42).  Thus, to the extent that ecological
-  inference models that incorporate the bounds, such as EI, are
-  estimable when including $X_i$ or covariates that are related to
+  examined each of the tomography plots with confidence regions to
+  search for outliers or bad model fits.  In addition, we plotted
+  $E(T|X)$ or $E(T|X,Z)$ by $X$ or $Z$, and checked whether the
+  observed $T$ fell within the (say) 90\% confidence interval 90\% of
+  the time.}  Each of our models includes at most two covariates.  In
+part this is because no one including journalists and academics
+proposed a model that clearly was defined by more.  But more
+importantly, we know that better predictions can be obtained when not
+overfitting the data with many covariates.  Hoeting et al.\ (1999) and
+Madigan and Raftery (1994) and others have shown that Bayesian model
+averaging almost never puts much weight on such models, and predictive
+inferences (unlike some causal inferences) are typically better with
+parsimonious specifications.\footnote{Multiple covariates uncorrelated
+  with $X_i$ causes no identification problems in EI.  Ecological
+  inference models that do not incorporate information from the
+  deterministic bounds (such as in Goodman, 1953\nocite{goodman53})
+  are not identified when including $X_i$ or variables related to
+  $X_i$ as covariates (King, 1997: 42).  Thus, to the extent that
+  ecological inference models that incorporate the bounds, such as EI,
+  are estimable when including $X_i$ or covariates that are related to
   $X_i$, the information that makes this possible is coming from the
   bounds.  Although no covariates, or one or possibly two are often
   well identified, the point at which the specification is trying to
@@ -1196,39 +1171,30 @@ from its posterior, conditional on the model $\P(\Delta|M_k,T)$.  To
 do this, we draw simulations of $\bb$ and $\bg$ from their posterior
 and calculate simulations of $\Delta$.  Bayes theorem specifies that
 the posterior is proportional to the product of the prior times the
-likelihood:
-\begin{equation}
-  \P(\Theta|T) \propto \P(\Theta)\P(T|\Theta).\label{eq:post}
-\end{equation}
-where $\P(\Theta)$ is the prior probability distribution on some
-unknown parameter $\Theta$, and $\P(T|\Theta)$ is the likelihood.
-Everything is conditioned on $X$, $N$, and $Z$, which we observe.  We
-use the standard independent prior on each parameter of $\Theta$ as
-described in \citet{king:97}.  This prior distribution and the
-likelihood function together define King's model in a standard
-Bayesian framework.
+likelihood, $\P(\Theta|T) \propto \P(\Theta)\P(T|\Theta)$, where
+$\P(\Theta)$ is the prior probability distribution on some unknown
+parameter $\Theta$, and $\P(T|\Theta)$ is the likelihood.  Everything
+is conditioned on $X$, $N$, and $Z$, which we observe.  We use the
+standard independent prior on each parameter of $\Theta$ as described
+in \citet{king:97}.  This prior distribution and the likelihood
+function together define King's model in a standard Bayesian
+framework.
 
 Let $M_k$ denote the $k$th model specification ($k=1,\dots,31$). Then
 we make an inference about a quantity of interest $\Delta$ by
 computing its posterior distribution via Bayesian model averaging.  To
 do this, we first compute, for each model, the posterior distribution
-of $\Delta$ (computed from Equation \ref{eq:post} with $\Delta$ being
-some known function of $\Theta$): $\P(\Delta|M_k,T)$.  Then we average
-over these models by weighting by the relative posterior probability
-that each model is correct given the data, $\Pr(M_k|T)$:
-\begin{align} \label{eq:bma}
-  \Pr(\Delta|T) %&= \sum_{k=1}^{31} \P(\Delta,M_k|T)\notag\\
-                &= \sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T)
-\end{align}
-where the posterior model probability is computed as
-\begin{equation}
-  \Pr(M_k|T)=\frac{\P(T|M_k)\Pr(M_k)}
-             {\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  \label{eq:postmodel}
-\end{equation}
-This is the probability that model $k$ is correct, given the set of
-models in the analysis; it should not be confused with $R^2$-like
-measures which typically reward models that over-fit without
-distinguishing systematic from idiosyncratic features of the data.
+of $\Delta$ (computed from the posterior with $\Delta$ being some
+known function of $\Theta$): $\P(\Delta|M_k,T)$.  Then we average over
+these models by weighting by the relative posterior probability that
+each model is correct given the data, $\Pr(M_k|T)$: $\Pr(\Delta|T) =
+\sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T)$, where the posterior
+model probability is $\Pr(M_k|T)=\P(T|M_k)\Pr(M_k)/[\sum_{j=1}^{31}
+\Pr(T|M_j) \Pr(M_j)]$.  This is the probability that model $k$ is
+correct, given the set of models in the analysis; it should not be
+confused with $R^2$-like measures which typically reward models that
+over-fit without distinguishing systematic from idiosyncratic features
+of the data.
 
 To compute the posterior model probability, we need two elements.
 First is a prior probability that each model is correct, $\Pr(M_k)$,
@@ -1274,6 +1240,8 @@ say that ``even for very large samples, it [BIC] does not produce the
 correct value.''  Hence, in our application the Laplace approximation
 is more appropriate than BIC.
 
+\vspace{-0.05in}
+
 \section{The Minor Effects of Minor Candidates and Prior Densities}\label{a:sens}
 
 Here, we analyze the effects on our results of ignoring the minor
@@ -1291,7 +1259,7 @@ of our previous analysis indicating that our results do not depend on
 which model specification is used.
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=3in,height=4.5in,angle=-90]{sensitivity}
+\includegraphics[width=3in,angle=-90]{sensitivity}
 \caption{Sensitivity analysis of Bayesian model
   averaging. The histogram is the posterior distribution of Bush's new
   margin for our model, while the other lines give posterior
