@@ -613,12 +613,133 @@ into the impossible region) for some values of $Z_i$.
 \section{Adjustments in Practice: A Replication of Burden and Kimball (1998)}
 
 At least in some applications, differences among the various methods
+of second stage analysis make little difference.  We replicated Burden
+and Kimball's (1998: Table 6) study of split-ticket voting, the
+empirical study on which HS focus the most, and find that none of the
+proposed corrections affect the substantive conclusions of the
+original study.  (We summarize the results here without presenting the
+detailed numbers to save space.) The relationship Burden and Kimball
+examine is approximately linear, and few of the bounds are
+particularly wide or narrow.  Appropriately, they report both LS and
+WLS estimates, which we were able to replicate reasonably well.  We
+then applied the fully adjusted method, which gives coefficients that
+are normally bracketed by, or close to, the two other methods (which
+Burden and Kimball considered sufficiently similar to use
+interchangeably).  We also computed standard errors for the fully
+adjusted method and found that they were an average of *** times
+larger than that for LS and WLS, which is an indication of the
+inefficiency of adjusted method.  Thus, in this example, any the minor
+reduction in bias that may occur is outweighed by the substantial
+increase in variance.  A mean square error criterion, which combines
+bias and variance, would suggest not making the adjustment even in the
+presence of attenuation bias.  (We confirmed that this result was
+fairly general with Monte Carlo simulations, which we also do not
+present here.)  This is an intuitive result given that the bias
+adjustment takes the form of a ratio, and both the numerator (which is
+LS) and denominator contain estimation uncertainty.  It is also
+consistent with the experience of many others trying to create bias
+adjustments in a wide variety of models outside of the field of
+ecological inference.
+
+\section{Concluding Suggestions}
+
+As suggested in King (1997) and quoted above, ``The best first
+approach is usually to display a scatterplot of the explanatory
+variable (or variables) horizontally and (say) an estimate of
+$\beta_i^b$ or $\beta_i^w$ vertically.  In many cases, this plot will
+be sufficient evidence to complete the second stage analysis.''  This
+approach remains accurate.  Indeed \emph{show us the data} is a good
+general motto for any statistical analysis, especially those with
+complex nonlinear and bounded variables such as those resulting from
+ecological inference.  To this scatterplot, we would suggest adding
+information on the bounds.  This can be done by adding a thin vertical
+line representing the bounds on $\beta_i^b$ for each
+$(\hat\beta_i^b,Z_i)$ point plotted (e.g., King, 1997: Figure 13.2).
+From this figure, we can then see all the information in the data,
+precisely how informative the bounds are, and whether the bounds are
+of constant or variable width.
+
+For researchers who wish a simple approximation to estimating a second
+stage relationship, the information provided in this article should
+provide a guide to choosing intelligently among the unadjusted,
+adjusted, weighted, and nonlinear methods.  Researchers can easily tell
+in which of the four prototypical situations listed and illustrated in
+Section \ref{s:alt} their data fall, and they can take the action
+indicated.
+
+If a more formal statistical approach seems desirable, then a good
+method must go beyond classical linear econometric theory.  It must
+take into account (a) the nonlinear nature of the problem, (b) the
+bounded nature of the second stage dependent variable with the width
+of the bounds varying over observations, (c) the heteroskedasticity,
+and (d) the effect of any possible logical inconsistency of the first
+and second stages of the analysis (since, of course, two-step
+statistical methods need not be logically consistent to work well;
+see, e.g., Meng, 1994).  At present, the only model that has been
+proposed with all these properties is the extended EI model that
+allows covariates to be included as part of the EI estimation
+procedure (King, 1997: Ch.9).  HS are correct that this extended model
+is sometimes only weakly identified, but that is only when the bounds
+are not narrow enough and $X$ is included among the covariates or
+highly related to $Z$.  In other cases, with narrow bounds or even
+wide ones when $Z$ is unrelated to $X$, the extended model can be
+strongly identified and so can be used in many cases without problem.
+Imai and King (2002) demonstrate how to compute first differences and
+other quantities of interest from the extended EI model, and they
+report on extensions of the EI software to make this easy to apply.
+
+Econometric theory and the classical linear regression framework works
+well for what it was designed for.  However, in models with nonlinear
+relationships or sample spaces or parameter spaces that are highly and
+differentially bounded, such as in ecological inference problems,
+political methodologists need to look elsewhere or develop their own
+methods.  
+
+HS have made an important contribution by highlighting what turns out
+to be the shrinkage property of Bayesian point estimates like those
+provided by EI.  We are in their debt for pointing this out and
+stimulating the ideas and discussions offered herein.
+
+\section*{References}
+\mbox{} \baselineskip=6pt 
+\parskip=1.5\baselineskip plus 4pt minus 4pt
+\vspace{-\parskip}
+
+\bibitem Burden, Barry C., and David C. Kimball.\ 1998.  ``A New Approach to
+the Study of Ticket Splitting,'' \emph{American Political Science
+  Review} 92, 3: 533--544.
+
+\bibitem Duncan, Otis Dudley. and Beverly Davis. 1953. ``An Alternative to
+  Ecological Correlation,'' \emph{American Sociological Review}, 18:
+  665--6.
+
+\bibitem Goodman, Leo. 1959. ``Some Alternatives to Ecological
+  Correlation,'' \emph{American Journal of Sociology}, 64: 610--24.
+  
+\bibitem Imai, Kosuke and Gary King. 2002. ``Did Illegally Counted
+  Overseas Absentee Ballots Decide the 2000 U.S. Presidential
+  Election?'' \url{http://gking.harvard.edu/preprints.shtml#ballots}.
+
+\bibitem King, Gary. 1987. \emph{A Solution to the Ecological
+    Inference Problem: Reconstructing Individual Behavior from
+    Aggregate Data}, Princeton: Princeton University Press.
+
+\bibitem Meng, X.L.\ 1994. ``Multiple-imputation Inferences with Uncongenial
+Sources of Input,'' \emph{Statistical Science}, 9, 4: 538--573.
+\end{document}
+
+
+Possibly include on the web:
+
+\section{Adjustments in Practice: A Replication of Burden and Kimball (1998)}
+
+At least in some applications, differences among the various methods
 of second stage analysis make little difference.  We replicate Burden
-and Kimball's (1998) study of split-ticket voting, the empirical study
-on which HS focus the most, and find that none of the proposed
-corrections affect the substantive conclusions of the original study.
-Table \ref{t:bkrep} presents these results (assuming arguendo that
-other features of their model are correctly specified).
+and Kimball's (1998: Table 6) study of split-ticket voting, the
+empirical study on which HS focus the most, and find that none of the
+proposed corrections affect the substantive conclusions of the
+original study.  Table \ref{t:bkrep} presents these results (assuming
+arguendo that other features of their model are correctly specified).
 \begin{table}[th]
 \label{t:bkrep}
 \begin{center}
@@ -699,92 +820,3 @@ both the numerator and denominator contain estimation uncertainty.  It
 is also consistent with the experience of many others trying to create
 bias adjustments in a wide variety of models outside of the field of
 ecological inference. % (**cites?).
-
-\section{Concluding Suggestions}
-
-As suggested in King (1997) and quoted above, ``The best first
-approach is usually to display a scatterplot of the explanatory
-variable (or variables) horizontally and (say) an estimate of
-$\beta_i^b$ or $\beta_i^w$ vertically.  In many cases, this plot will
-be sufficient evidence to complete the second stage analysis.''  This
-approach remains accurate.  Indeed \emph{show us the data} is a good
-general motto for any statistical analysis, especially those with
-complex nonlinear and bounded variables such as those resulting from
-ecological inference.  To this scatterplot, we would suggest adding
-information on the bounds.  This can be done by adding a thin vertical
-line representing the bounds on $\beta_i^b$ for each
-$(\hat\beta_i^b,Z_i)$ point plotted (e.g., King, 1997: Figure 13.2).
-From this figure, we can then see all the information in the data,
-precisely how informative the bounds are, and whether the bounds are
-of constant or variable width.
-
-For researchers who wish a simple approximation to estimating a second
-stage relationship, the information provided in this article should
-provide a guide to choosing intelligently among the unadjusted,
-adjusted, weighted, and nonlinear methods.  Researchers can easily tell
-in which of the four prototypical situations listed and illustrated in
-Section \ref{s:alt} their data fall, and they can take the action
-indicated.
-
-If a more formal statistical approach seems desirable, then a good
-method must go beyond classical linear econometric theory.  It must
-take into account (a) the nonlinear nature of the problem, (b) the
-bounded nature of the second stage dependent variable with the width
-of the bounds varying over observations, (c) the heteroskedasticity,
-and (d) the effect of any possible logical inconsistency of the first
-and second stages of the analysis (since, of course, two-step
-statistical methods need not be logically consistent to work well;
-see, e.g., Meng, 1994).  At present, the only model that has been
-proposed with all these properties is the extended EI model that
-allows covariates to be included as part of the EI estimation
-procedure (King, 1997: Ch.9).  HS are correct that this extended model
-is sometimes only weakly identified, but that is only when the bounds
-are not narrow enough and $X$ is included among the covariates or
-highly related to $Z$.  In other cases, with narrow bounds or even
-wide ones when $Z$ is unrelated to $X$, the extended model can be
-strongly identified and so can be used in many cases without problem.
-Imai and King (2002) demonstrate how to compute first differences and
-other quantities of interest from the extended EI model, and they
-report on extensions of the EI software to make this easy to apply.
-
-Econometric theory and the classical linear regression framework works
-well for what it was designed for.  However, in models with nonlinear
-relationships or sample spaces or parameter spaces that are highly and
-differentially bounded, such as in ecological inference problems,
-political methodologists need to look elsewhere or develop their own
-methods.  
-
-HS have made an important contribution by highlighting what turns out
-to be the shrinkage property of Bayesian point estimates like those
-provided by EI.  We are in their debt for pointing this out and
-stimulating the ideas and discussions offered herein.
-
-\section*{References}
-\mbox{} \baselineskip=6pt 
-\parskip=1.5\baselineskip plus 4pt minus 4pt
-\vspace{-\parskip}
-
-\bibitem Alesina, Alberto and Howard Rosenthal.\ 1995.  \emph{Partisan
-  Politics, Divided Government, and the Economy.}  New York: Cambridge
-University Press.
-
-\bibitem Beck, Paul Allen.\ 1997. \emph{Party Politics in America.}, 8th. ed.
-Washington, DC: CQ Press.
-
-\bibitem Burden, Barry C., and David C. Kimball.\ 1998.  ``A New Approach to
-the Study of Ticket Splitting,'' \emph{American Political Science
-  Review} 92, 3: 533--544.
-
-\bibitem Duncan, Otis Dudley. and Beverly Davis. 1953. ``An Alternative to
-  Ecological Correlation,'' \emph{American Sociological Review}, 18:
-  665--6.
-
-\bibitem Goodman, Leo. 1959. ``Some Alternatives to Ecological
-  Correlation,'' \emph{American Journal of Sociology}, 64: 610--24.
-
-\bibitem Jacobson, Gary C.\ 1990.  \emph{The Politics of Congressional
-  Elections.} 4th ed.  New York: Longman.
-
-\bibitem Meng, X.L.\ 1994. ``Multiple-imputation Inferences with Uncongenial
-Sources of Input,'' \emph{Statistical Science}, 9, 4: 538--573.
-\end{document}
