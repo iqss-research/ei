@@ -208,11 +208,13 @@ claims.
 \begin{tabular}{lcccc}
                                & Gore      & Bush      & margin \\ \hline 
 Ballots cast/received by Nov.\ 7&2,911,417 & 2,911,215 & Gore leads by 202 \\
-Overseas absentee ballots       &      836 &     1,575 & Bush leads by 739 \\
+Overseas absentee ballots$^a$   &      836 &     1,575 & Bush leads by 739 \\
 \hline
 Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 \end{tabular} \caption{Official results of the 2000 presidential
-  election in Florida.  Source: Florida Secretary of State's office.}
+  election in Florida.  Source: Florida Secretary of State's office.
+  $^a$Ballots arriving from overseas after November 7th and before the
+  17th.}
 \label{tb:official}
 \end{center}
 \end{table} 
@@ -513,7 +515,8 @@ Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
 \hline
 \bf all counties & \bf 680 & \bf 836 & \bf 5 & \bf 527 & \bf 1575 & \bf 128 & \bf 668 \\ 
 \end{tabular} \caption{Analysis of bounds for the state  and 
-  selected counties.}\label{tb:bounds}
+  selected counties.  Votes for minor parties are included in the
+  calculation of these bounds.}\label{tb:bounds}
 \end{center}
 \end{table} 
 
@@ -798,20 +801,20 @@ computational issues in the Appendix.)\footnote{Estimates obtained via
 Absentee Ballots}
 
 Figure \ref{fg:margin} portrays the posterior distribution from our
-analysis of Bush's margin of victory if the bad ballots had not
-been counted (the histogram of 1000 draws from the posterior).  Note
-first that all area for this distribution is contained with the bounds
-we found for this quantity of $-126$ to 936.  The weight of the
-statistical evidence within these bounds clearly demonstrates that
-Bush benefited considerably by the bad ballots, and removing them thus
-takes away from his margin.  This is evident in the figure because
-almost all of the area of the histogram of posterior probability falls
-to the left of the official margin of 537.  The mean margin of victory
-for Bush without the bad ballots is only 251 votes.  The figure also
-portrays the probability that Gore actually won the election by the
-area under the curve to the left of zero.  This is only about 0.2
-percent, indicating that Gore probably would not have won, even if the
-bad ballots had been discarded.
+analysis of Bush's margin of victory if the bad ballots had not been
+counted (the histogram of 1000 draws from the posterior).  Note first
+that, as required by the procedure, all area for this distribution is
+contained with the bounds we found for this quantity of $-126$ to 936.
+The weight of the statistical evidence within these bounds clearly
+demonstrates that Bush benefited considerably by the bad ballots, and
+removing them thus takes away from his margin.  This is evident in the
+figure because almost all of the area of the histogram of posterior
+probability falls to the left of the official margin of 537.  The mean
+margin of victory for Bush without the bad ballots is only 251 votes.
+The figure also portrays the probability that Gore actually won the
+election by the area under the curve to the left of zero.  This is
+only about 0.2 percent, indicating that Gore probably would not have
+won, even if the bad ballots had been discarded.
 \begin{figure}[t]
 \begin{center}
 \includegraphics[width=3in,height=4.5in,angle=-90]{margin}
@@ -945,7 +948,7 @@ independent test.)
 & \multicolumn{1}{c}{ballots} 
 & \multicolumn{1}{c}{vote} 
 & \multicolumn{1}{c}{acceptance$^a$}
-& \multicolumn{1}{c}{counted for Bush} 
+& \multicolumn{1}{c}{counted for Bush$^b$} 
 & \multicolumn{1}{c}{all ballots}\\    \hline
     \multicolumn{4}{l}{\bf Republican pressure to count} \\
     \hspace{1em}Collier  & 46.7\% & 65.6\% & 53.7\% & 64.5\% & 60 \\    
@@ -972,7 +975,8 @@ independent test.)
     remaining counties not mentioned.  Averages are weighted by the
     number of ballots. $^a$The percent of bad ballots that arrived
     with local election officials and were included in the official
-    count.}
+    count.  $^b$This column is estimated by our Bayesian model
+    averaging ecological inference procedure.}
   \label{t:cty}
 \end{center}                                                 
 \end{table}
