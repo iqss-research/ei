@@ -205,7 +205,7 @@ endp;
 */
 proc rndisamp(&f,b,vc,dataset,sims);
   local f:proc;
-  clearg lik,norm,i,max,psis,u,tst,r,lnir,ir,k,radd,keepsi,inf,ii,x,t,bb,meanir,
+  local lik,norm,i,max,psis,u,tst,r,lnir,ir,k,radd,keepsi,inf,ii,x,t,bb,meanir,
         resamp,vc0,keeplik;
   if rows(vc)/=rows(b) or cols(vc)/=rows(b);
     "rndisamp: input error";
@@ -216,7 +216,11 @@ proc rndisamp(&f,b,vc,dataset,sims);
     _Eres=vput(_Eres,miss(1,1),"lnir");
     _Eres=vput(_Eres,miss(1,1),"meanIR");
     _Eres=vput(_Eres,miss(1,1),"resamp");
-    retp(rndmn(b,vc,sims));
+    if _ei_vc[_Ghactual,1]/=-1;
+      retp(rndmn(b,vc,sims));
+    else;
+      retp(rndtsn(b,vc,sims,_cml_bounds[1:rows(b),.],1e-3));
+    endif;
   elseif _EisFac==-2;                 @ use maximum posterior estimates @
     retp(b'.*ones(_Esims,1));
   else;
