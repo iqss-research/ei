@@ -455,14 +455,20 @@ interactively (or with a separate program) using \texttt{eiread} and
   normal prior distribution on elements of $\alpha^b$.  If you specify
   \texttt{Zb}, you should probably specify a prior, at least with mean
   zero and some variance (default=\{.\}; which indicates no prior).
-  (See Equation 9.2, page 170, to interpret $\alpha^b$).
-
+  (See Equation 9.2, page 170, to interpret $\alpha^b$). (If you are
+  using EzI, and have trouble setting something to 0, try 0.000001 or
+  some such; this gets around an error in a Gauss proc and should give
+  essentially the same answer empirically.)
+  
 \item[\_EalphaW] (cols(Zw)$\times 2$) matrix of means (in the first
   column) and standard deviations (in the second) of an independent
   normal prior distribution on elements of $\alpha^w$.  If you specify
   \texttt{Zw}, you should probably specify a prior, at least with mean
   zero and some variance (default=\{.\}; which indicates no prior).
-  (See Equation 9.2, page 170, to interpret $\alpha^w$).
+  (See Equation 9.2, page 170, to interpret $\alpha^w$).  (If you are
+  using EzI, and have trouble setting something to 0, try 0.000001 or
+  some such; this gets around an error in a Gauss proc and should give
+  essentially the same answer empirically.)
 
 \item[\_Ebeta] Standard deviation of the ``flat normal'' prior on
   $\bbetau^b$ and $\bbetau^w$.  The flat normal prior is uniform
