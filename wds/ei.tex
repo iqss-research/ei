@@ -375,16 +375,16 @@ Once all model specifications have each been defined and stored, use
 \texttt{dbufrun = eimodels\_run(dbufdef);} to run \texttt{ei} on each
 of the stored specifications and save the results in another meta data
 buffer, \texttt{dbufrun}. The results of each \texttt{ei} run can be
-read using \texttt{v = eiread(dbufrun);} and \texttt{v =
-eigraph(dbufrun);} while specifying the model number with the global
-variable, \texttt{_EIMetaR} (default of this variable is 1 which reads
-the results of \texttt{ei} run for Model 1).  
+read using \texttt{v = eiread(dbufrun);} and
+\texttt{eigraph(dbufrun);} while specifying the model number with the
+global variable, \texttt{_EIMetaR} (default of this variable is 1
+which reads the results of \texttt{ei} run for Model 1).
 
 Finally, run \texttt{dbufavg = eimodels\_avg(dbufrun);} to use
 Bayesian Model Averaging to combine the results from multiple models
 with weights (the procedure calculates) indicating how much the data
 supports each model.  The results of this model averaging can be read
-using \texttt{v = eiread(dbufavg);} and \texttt{v = eigraph(dbufavg);}
+using \texttt{v = eiread(dbufavg);} and \texttt{eigraph(dbufavg);}
 where \texttt{dbufavg} is the output data buffer. To use this method,
 the prior distribution for covariates should be specified for each
 model using the global variables, \texttt{\_EalphaB} and
@@ -1204,7 +1204,7 @@ not be changed for the most common uses.
 \markright{Reference: EIMODELS}
 
 \paragraph{\underline{Format}:} 
-\texttt{dbufdef = eimodels\_def(ndbufdef,num,t,x,n,zb,zw);}, where
+\texttt{dbufdef = eimodels\_def(dbufdef,num,t,x,n,zb,zw);}, where
 \texttt{dbufdef} is an input meta data buffer which contains all the
 model specifications previously defined as separate EI data buffers
 (or \texttt{""} for the first run), and to which the current model
@@ -1214,15 +1214,15 @@ are defined as in \texttt{ei}: \texttt{t}, \texttt{x}, and \texttt{n}
 are $p\times 1$ vectors, \texttt{zb} is a scalar 1 for no covariates
 or a $p\times k^b$ matrix of covariates, and \texttt{zw} is the scalar
 1 for no covariates or a $p\times k^w$ matrix of covariates (do not
-include a constant term).  \texttt{dbufdef} is an updated output meta
-data buffer which contains the current model definition along with the
-previously stored ones.
+include a constant term).  The output, \texttt{dbufdef}, is an updated
+meta data buffer which contains the current model definition along
+with the previously stored ones.
 
-\texttt{dbufrun = eimodels\_run(dbufdef);}, where \texttt{dbufdef} is the
-output meta data buffer from \texttt{eimodels\_def} which contains
-multiple model definitions. \texttt{dbufrun} is the output meta data
-buffer, containing one data buffer for each data buffer of definitions
-in \texttt{dbufdef}.
+\texttt{dbufrun = eimodels\_run(dbufdef);}, where an input,
+\texttt{dbufdef}, is the output meta data buffer from
+\texttt{eimodels\_def} which contains multiple model definitions. The
+output, \texttt{dbufrun}, is another meta data buffer, containing one
+data buffer for each data buffer of model specifications in \texttt{dbufdef}.
 
 \texttt{dbufavg = eimodels\_avg(dbufrun);}, where \texttt{dbufrun} is the
 output meta data buffer from \texttt{eimodels\_run} containing the
@@ -1245,7 +1245,7 @@ that meta data buffer.  The output is another meta data buffer which
 contains the results of \texttt{ei} runs for each model as a single
 component data buffer. This output data buffer should be read with
 \texttt{eiread} and \texttt{eigraph} with the model number specified
-using the global variable, \texttt{\_EImetaR} (the default for which
+using the global variable, \texttt{\_EIMetaR} (the default for which
 is 1, for the first model).
 
 \texttt{eimodels\_def} and \texttt{eimodels\_run} are useful when you
