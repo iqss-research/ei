@@ -1,0 +1,160 @@
+Dear Kosuke and Gary,
+
+Thanks for your response regarding our comments on your paper.  It 
+raised two points, one of which we agree with you on and the other of 
+which we do not.  First, we concur with your comment on mathematical 
+notation; the phrase “the ideal amount of symbolic notation is zero” is 
+an overstatement.  You are right in saying that the “ideal is the amount 
+that best clarifies the points in the paper.”  That's a useful 
+clarification, which we will use in other contexts.
+
+However, we still want to issue a note of caution or plea for restraint 
+here: What we should have said is that when a reasonable number of 
+judiciously chosen words will do the trick, then words should trump 
+equations. Conversely, when an equation really provides a clear, 
+concise, and comprehensible summary of some points, then the equation 
+should be used.  So please ask yourselves if you really need this 
+equation.  Does it carry the argument along in a way that words cannot? 
+  If not, it should be dropped; if so, then use it.
+
+Second, on Bayesian averaging, we are faced with a situation where two 
+out of two outside reviewers raised serious questions about your use of 
+the method.  Hence, we don’t think that we can, as editors, reject their 
+advice.  Furthermore, we believe that the paper is still very 
+interesting without an emphasis upon the Bayesian averaging method.
+
+Let us elaborate on why we find the reviewer’s comments compelling. 
+Although you correctly say that in the end you only care about one 
+parameter, you nevertheless need to estimate a model (or many models) 
+with multiple parameters in order to get to that one parameter. 
+Consider, for example, the situation where a researcher is looking at 
+the impact of one’s sex on wages.  In this case, the researcher only 
+cares about one parameter in a multiple regression, namely the parameter 
+for the impact of sex on wages.   Nevertheless the equation may properly 
+contain many ancillary parameters to control for the many other factors 
+that could affect wages such as race, class, education, ability, 
+training, etc.   Controlling for these factors, say there are Q of them, 
+certainly uses up degrees of freedom – in fact, it uses up Q degrees of 
+freedom.    Now, one way to “save” on degrees of freedom would be to run 
+a series of trivariate regressions each of which only includes the sex 
+variable and one other control variable.  Thus each equation would use 
+only three degrees of freedom (one for a constant, one for the sex 
+variable, and one for the control).  One could then use Bayesian 
+averaging over these trivariate models to choose the best estimate of 
+the impact of sex.   Alternatively, one could estimate a model with all 
+these Q variables in it to get a result.  Which is the better procedure?
+
+You say that “BMA is known to produce results that outperform any model 
+we might choose by traditional methods, any method of displaying 
+sensitivity to differences in models, or any list of individual models.” 
+  But this overstates what BMA can do.  It will, as you say, outperform 
+(at least within the current sample) any one of the trivariate models 
+that one might choose in the example above.  But we know of no theorems 
+that say that BMA will outperform a model outside the model space on 
+which the averaging was done.  Thus, there is no assurance that Bayesian 
+averaging over the trivariate models will outperform a model which 
+includes all the Q variables that the researcher has identified.
+
+You go on to say that “a model with all the variables included would 
+certainly not be optimal since it would produce extremely inefficient 
+estimates; its mean square error would certainly be larger than even the 
+submodels we estimated.”  There are two points here.  One is that there 
+will be inefficient estimates.  The other is that the mean square error 
+will be larger than the submodels you estimate.  Let us take the 
+statement about inefficient estimates first.  Presumably you mean that 
+the parameters would be estimated inefficiently, but that is only true 
+if some of the variables are superfluous.  Otherwise, in the example 
+cited above, a maximum likelihood estimate, for example, or a ordinary 
+least squares estimate (if the standard assumptions were met) would be 
+the most efficient (in the sense of Best Asymptotically Normal for the 
+maximum likelihood or Best Linear Unbiased Estimator for the OLS) 
+possible estimator in a specified class.  Since we have no a priori way 
+of knowing whether variables are superfluous, we must assume that the 
+model with all the variables is as good as we can get.  Alternatively 
+you may mean that the parameters will have large standard errors, 
+reflecting a high degree of multicollinearity.  But if the 
+multicollinearity is a true reflection of the world, then that is just 
+the way things are.  There is nothing inefficient about the estimates. 
+There is just a difficult and recondite world with substantial 
+multicollinearity.  Of course, it may be the case that the 
+multicollinearity is the result of having redundant measures (perhaps 
+measured with error) of the same thing – in which case you could do some 
+form of factor analysis or pre-processing to reduce the dimensionality 
+of the 27 variables.
+
+The other claim is that the mean squared error would be larger for the 
+model with all the variables than for the submodels you estimate.  It is 
+not clear that will be so if the models with more variables do a better 
+job of capturing the phenomenon.  It does seem likely that a model with 
+all Q variables would not be optimal in the class of all models that 
+include Q or fewer variables, but that does not logically imply that it 
+would not be better than any one of a class of trivariate models or not 
+better than a Bayesian average of all trivariate models.  That is, we 
+suspect that a model with more variables would very likely outperform 
+the Bayesian average of all trivariate models because it seems very 
+likely that wages are determined by more than just two independent 
+variables.
+
+Thus, we agree with the reviewer who suggests that you have provided no 
+explanation of why you can reduce your search to just those models that 
+include each variable one at a time.  We do agree that looking at a 
+variety of models is a useful thing, but we believe that some 
+explanation has to be provided about why you compare the models in the 
+way that you do.
+
+Perhaps the bottom line is this.  Any discussion of your method has to 
+be very modest in its claims given that so many possible models were 
+discarded a priori.  It may be the case that most pundits and reporters 
+each had a favorite variable explaining why voters vote as they do, but 
+just because they think in a “one-variable-at-a-time” fashion does not 
+mean that political scientists should think that way.  Indeed, there is 
+lots of literature on voting which suggests that military status, race, 
+ethnicity, sex, party registration, region, corruption, and many other 
+factors matter for the vote.  To look at them only one at a time seems 
+like a step backward in our understanding of what forms people’s voting 
+decisions.
+
+Hence, it seems best to us to downplay the Bayesian averaging and to 
+focus on the many other strengths of this paper.  We believe that the 
+paper’s discussion of bounds is very interesting and that its emphasis 
+upon the need to consider disparate specifications is very worthwhile. 
+We just do not think that looking only at models one variable at a time 
+makes much sense.  You say that “our averaging makes this analysis 
+better than any ecological inference that has come before, since no 
+previous inference in any field to our knowledge has used BMA…” 
+Perhaps this is so, but we believe that the quality of an ecological 
+inference might also depend upon the strength of the theory that is 
+brought to bear, the use of homogenous districts to make inferences, and 
+the exploration of a multidimensional model space that is large enough 
+to cover most of the factors that might affect the phenomenon under study.
+
+In short, on the substantive issues (though not the presentational one), 
+we come down in accord with our earlier letters: we hope that you will 
+revise this paper for the Perspectives symposium on the 2000 election, 
+but we are clear on what would be required for a successful revision. 
+Above all, we believe that a revision must be in accord with the advice 
+provided by our outside reviewers.
+
+THanks for your continued interest in Perspectives.
+
+best, Jennifer and Henry
+
+
+
+-- 
+Jennifer L. Hochschild
+Harvard University
+Henry LaBarre Jayne Professor of Government
+Member, Department of African and African American Studies
+Editor, Perspectives on Politics
+
+Mailing address:
+Government Department
+Littauer Center, North Yard
+Harvard University
+Cambridge MA 02138
+Phone: 617-496-0181
+Fax: 617-495-0438
+Hochschild@latte.harvard.edu
+
+
