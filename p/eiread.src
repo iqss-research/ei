@@ -135,7 +135,7 @@
 ** Eaggbias  4 x 2:(b~se)|(b~se) for regs of est'd betaB,betaW on const. & X
 ** nobs      scalar: number of observations
 ** tsims     100 x _Esims+1:rows=seqase(0,1,100), cols=X~(sorted sims of T|X)
-** tsims0     p x _Esims+1: cols=T~(sorted sims of T|X_obs,Z_obs)
+** tsims0    p x _Esims+1: cols=T~(sorted sims of T|X_obs,Z_obs)
 ** expvarci  100 x 4: X~20%CI~mean~80%CI of sims from p(T|X)
 ** expvarci0 p x 4: T~20%CI~mean~80%CI of sims from p(T|X_obs,Z_obs)
 ** expvarcis 100 x 4: X~20%CI~mean~80%CI of sims from p(T|X) LOESS Smoothed
@@ -252,12 +252,12 @@ proc eiread(dbuf,str);
       loglik logliks meanir mppsiu parnames phi phisims pphi psi psitruth
       psiu r ri retcode tsims vcphi;
       vrs=lower(vrs);
-      if in(str,vrs,0);
-         "eiread: You cannot eiread " $strtmp " from the output buffer of eimodels_avg.";
-         retp(miss(1,1));
-      elseif str$=="_esims";
+      if str$=="_esims";
          res=cols(eiread(dbuf,"betabs"));
          retp(res);
+      elseif in(str,vrs,0) and str$/="expvarci0";
+         "eiread: You cannot eiread " $strtmp " from the output buffer of eimodels_avg.";
+         retp(miss(1,1));
       endif;
     endif;
   endif;
