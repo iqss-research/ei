@@ -463,8 +463,8 @@ proc 1=eigraph(dbuf,str);
     eigraph(dbuf,"xtc");
 
   elseif str$=="xtfit";			@ x by t with Exp and 80%CI's  @
-    b=eiread(dbuf,"expvarcis");
-    if not(scalmiss(b));  @ CI's drawn only if no Z's are specified @
+    b=eiread(dbuf,"expvarcis");         @ Z's are held at their weighted mean @
+    if not(scalmiss(b));  
       graphgk;
       _plineth=0+_eigraph_thick;
       plines(b[.,1],b[.,3]);

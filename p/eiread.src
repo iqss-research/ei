@@ -1238,43 +1238,49 @@ proc eiread(dbuf,str);
       endif;
     endif;
     
-  elseif str$=="tsims";	      @ sims from p(T|X=seqas(0,1,100)) if no covariate @
-    c=eiread(dbuf,"_Eeta");   
-    if scalzero(c) and (not(scalone(eiread(dbuf,"Zb"))) 
-       or not(scalone(eiread(dbuf,"Zw"))));
-      "eiread: tsims only works without covariate.";
-      #ifdos;
-        ndpclex;
-      #endif;
-      retp(miss(1,1));
-    endif;
-    a=100;
+  elseif str$=="tsims";	 @ sims from p(T|X=seqas(0,1,100)) @
+    a=100;               @ covariates held at weighted mean if specified @
     x=seqase(0,1,a);
     b=eiread(dbuf,"phi");
-    if scalmiss(b);
-      res=miss(1,1);
-    elseif c==1 or c==4;
-      b[rows(b)-1]=b[2];
-    elseif c==2 or c==5;
-      b[rows(b)]=b[3];
-    elseif c==3 and rows(c)==1;
-      b[rows(b)-1]=b[2]; 
-      b[rows(b)]=b[4];
-    endif;
-    call eiread(dbuf,"_Ez");
+    c=eiread(dbuf,"_Eeta");   
     zb=eiread(dbuf,"zb");
     zw=eiread(dbuf,"zw");
+    if scalmiss(b);
+      res=miss(1,1);
+    elseif scalzero(c) and (not(scalone(zb)) or not(scalone(zw)));
+      n=eiread(dbuf,"n");
+    else; 
+      if c==1 or c==4;
+        b[rows(b)-1]=b[2];
+      elseif c==2 or c==5;
+	b[rows(b)]=b[3];
+      elseif c==3 and rows(c)==1;
+	b[rows(b)-1]=b[2]; 
+	b[rows(b)]=b[4];
+      endif;
+    endif;
+    call eiread(dbuf,"_Ez");
+    let bnds[2,2]=0 1 0 1;
     {bb0,bw0,sb,sw,rho}=eirepar(b,0,0,0);
     res=zeros(a,_Esims);
-    let bnds[2,2]=0 1 0 1;
-    e=meanc(vread(dbuf,"x"));
-    for i (1, a, 1);
-      bb=bb0+b[rows(b)-1]*(x[i+0]-e);
-      bw=bw0+b[rows(b)]*(x[i+0]-e);
+    if scalzero(c) and (not(scalone(zb)) or not(scalone(zw)));
+      bb=bb0+b[(rows(b)-cols(zb)-cols(zw)+1):(rows(b)-cols(zw))]'*meanwc(zb,n);
+      bw=bw0+b[(rows(b)-cols(zw)+1):rows(b)]*meanwc(zw,n); 
       bs=rndbtn(bb,bw,sb,sw,rho,bnds,_Esims);
-      t=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
-      res[i+0,.]=sortc(t,1)';
-    endfor;
+      for i (1, a, 1);
+	t=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
+	res[i+0,.]=sortc(t,1)';
+      endfor;
+    else;
+      e=meanc(vread(dbuf,"x"));
+      for i (1, a, 1);
+	bb=bb0+b[rows(b)-1]*(x[i+0]-e);
+	bw=bw0+b[rows(b)]*(x[i+0]-e);
+	bs=rndbtn(bb,bw,sb,sw,rho,bnds,_Esims);
+	t=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
+	res[i+0,.]=sortc(t,1)';
+      endfor;
+    endif;	
     res=x~res;
 
   elseif str$=="tsimsz"; @ sims from p(T|wmeanc(X,N),Z=seqas(min(Z),max(Z),100) @       
@@ -1324,14 +1330,6 @@ proc eiread(dbuf,str);
     res=z~res;          
       
   elseif str$=="expvarci";		@ x~20%CI~mean~80%ci @
-    if rows(eiread(dbuf,"_Eeta"))==4; and
-      (not(scalone(eiread(dbuf,"Zb"))) or not(scalone(eiread(dbuf,"Zw"))));
-      "eiread: expvarci only works without covariates.";
-      #ifdos;
-        ndpclex;
-      #endif;
-      retp(miss(1,1));
-    endif;
     b=eiread(dbuf,"tsims");
     if scalmiss(b);
       res={.};
