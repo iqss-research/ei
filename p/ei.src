@@ -1046,6 +1046,7 @@ proc ei2(V,dbuf,Gb,Gw);
   endif;
 
   nt=eiread(dbuf,"nt");
+  nt=recode(nt,nt.<=1,1);
   lambdaBs=t*0;
   x2k=lambdaBs;
   
