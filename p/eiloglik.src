@@ -97,7 +97,7 @@ proc eiloglik(b,dta);
   endif;
   llik=llik+(prior/rs);
 
-  retp(llik);
+  retp(missrv(llik,-999));
 endp;
 
 /*

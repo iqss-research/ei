@@ -96,7 +96,6 @@ proc 2=quadcml(x,Zb,Zw,y);
   
   /* cml globals */
   __title="EI Likelihood Maximization: "$+eiread(_Eres,"titl");
- @ __title=" ** Ecological Inference Likelihood Maximization ** ";@
   _cml_Active=ones(rows(stval)-2,1)|0|0;
   _cml_MaxIters=_Emaxiter;
   _cml_DirTol=_EdirTol;
@@ -112,7 +111,7 @@ proc 2=quadcml(x,Zb,Zw,y);
     _cml_bounds=_Ebounds|(0~.0001)|(0~.0001);
   elseif scalone(_Ebounds);     @ automatic bounds calculation @
     bnds={-10 10};
-    nbnds={-20 20};   @{ -1e256 1e256 };@
+    nbnds={-20 20};
     if _Ez[1]==1;
       _cml_Bounds=bnds;
     else;

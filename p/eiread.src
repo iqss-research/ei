@@ -486,7 +486,7 @@ proc eiread(dbuf,str);
     call eiread(dbuf,"_Ez");
     b=eiread(dbuf,"_Ebounds");
     if scalzero(b);    @ don't use bounds  @
-      res={-1e256 1e256};
+      res={-20 20};
     elseif cols(b)==2;
       res=b;
     elseif scalone(b);     @ automatic bounds calculation @
