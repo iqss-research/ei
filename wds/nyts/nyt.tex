@@ -167,20 +167,23 @@ the voting, and, as such, considerable information about the process
 is on the public record.  For example, we know how the butterfly
 ballot in Palm Beach County led to the disqualification of many votes
 that were apparently intended for Gore
-\citep{wand:schot:sekh:meba:herr:brad:01}.  By all accounts, this
-effect was inadvertent, as indicated by the failure of the Democrats
-to object to this ballot design prior to the election when they were
-permitted to do so, and it was not illegal.  We also now know a great
-deal about hanging chads, overvotes, undervotes, and various other
-failures of punch card ballot designs (Herron and Sekhon,
-2001\nocite{HerSek01}, \textbf{who else?}).  Democrats and Republicans
-worked hard at convincing the Courts and local election officials to
-count and recount the ballots the way they wanted, but ultimately the
-system produced an explicit and final decision about each of these
-elements of the overall picture.  Many decisions were tremendously
-controversial, but they were official, legal decisions made in the
-presence of full information and were eventually accepted by almost
-all concerned.
+\citep{wand:schot:sekh:meba:herr:brad:01,AdaFas00}.  By all accounts,
+this effect was inadvertent, as indicated by the failure of the
+Democrats to object to this ballot design prior to the election when
+they were permitted to do so, and it was not illegal.  We also now
+know a great deal about hanging chads, overvotes, undervotes, and
+various other failures of punch card ballot designs\footnote{See
+  Herron and Sekhon (2001).\nocite{HerSek01} The 2000 election
+  produced literally dozens of papers, many written within days of the
+  election and posted on the web.  For links to many on this growing
+  list, see \url{http://madison.hss.cmu.edu/}.}  Democrats and
+Republicans worked hard at convincing the Courts and local election
+officials to count and recount the ballots the way they wanted, but
+ultimately the system produced an explicit and final decision about
+each of these elements of the overall picture.  Many decisions were
+tremendously controversial, but they were official, legal decisions
+made in the presence of full information and were eventually accepted
+by almost all concerned.
 
 In contrast, the overseas absentee ballots were spared most of this
 attention and all litigation.  Yet, they clearly determined the
@@ -696,9 +699,10 @@ support each model receives from the data.\footnote{A list of all 29
   variable. All the covariates except indicator variables are entered
   as a ratio varying from 0 to 1. Except the first three models, the
   covariate was used to model the conditional untruncted mean of both
-  parameters, $\bb$ and $\bg$. For models (5) to (11), each group was
-  divided into invalid and valid ballots with the former group used to
-  predict $\bb$ and the latter used to predict $\bg$.}
+  parameters, $\bb$ and $\bg$.  Models (5) to (11) are based on
+  information about the absentee ballots and so different variables
+  were available regarding the invalid and valid ballots; we used the
+  former group to predict $\bb$ and the latter to predict $\bg$.}
 
 Let $M_k$ denote the $k$th model specification ($k=1,\dots,29$). Then
 we make an inference about some quantity of interest $\Delta$ by
@@ -1184,11 +1188,10 @@ where $\Theta$ is the set of all the parameters, $\sigma_i^2=\sigmau_g
 + 2(\sigmau_{bg} - 2 \sigmau_g^2) X_i + (\sigmau_b^2 + \sigmau_g^2 -
 2\sigmau_{bg}) X_i^2$ and 
 $$S(\bbetau, \Sigmau)=\int_{(\text{max}(0, T_i/X_i-(1-X_i)/X_i),
-  \text{min}(1,T_i/X_i))} \N(\bb|\bbetau^b + \omega_i
-\epsilon_i / \sigma_i, \sigmau^2_b-\omega^2/\sigma^2_i).$$
-Further
-details on the derivation of this likelihood function is provided in
-King \citeyear[Ch.\ 7]{king:97}.
+  \text{min}(1,T_i/X_i))} \N(\bb|\bbetau^b + \omega_i \epsilon_i /
+\sigma_i, \sigmau^2_b-\omega^2/\sigma^2_i)d\bb .$$
+Further details on
+this derivation are provided in King (\citeyear[Ch.\ 7]{king:97}).
 
 We control for a vector of covariates $Z_i$ via King's extended model
 \cite[Ch.\ 9]{king:97}.  This allows the mean (on the untruncated
