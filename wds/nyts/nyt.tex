@@ -1,4 +1,5 @@
 \documentclass[11pt,titlepage]{article}
+\usepackage[compact]{titlesec}  % small
 \usepackage[reqno]{amsmath}
 \usepackage{amssymb}
 \usepackage{epsf}
@@ -7,8 +8,19 @@
 % === additional commands/packages/settings ===
 \usepackage{graphicx,psfrag,natbib}
 \usepackage{setspace}
+\usepackage{times}
 \usepackage{vmargin}
 \setpapersize{USletter}
+
+% set margin to 1 inch all around                                      
+\setmarginsrb{1in}{1in}{1in}{0in}{0pt}{0mm}{0pt}{0mm}
+\paperwidth=8.5in
+\paperheight=11in
+\topmargin=1.25in
+
+% lower page number a bit
+\footskip=.5in
+
 
 %\usepackage{apsr}
 
@@ -103,7 +115,6 @@
 \newcommand{\bg}{\beta^{\text{good}}}
 
 \newcommand{\vs}{\vspace{-\baselineskip}}
-\usepackage[compact]{titlesec}  % small
 
 \title{Did Illegally Counted Overseas Absentee Ballots Decide the 2000
   U.S.\ Presidential Election?\thanks{We are deeply grateful to the
@@ -145,11 +156,11 @@ Gary King\thanks{David Florence Professor of Government, Harvard
   ballot problems, recounts that might have been allowed but were not,
   or any other hypothetical divergence between voter preferences and
   counted votes.  After the election, \emph{The New York Times}
-  conducted a six month long investigation and found that 680 of the
+  conducted a six month investigation and found that 680 of the
   overseas absentee ballots were illegally counted, and almost no one
   has publicly disagreed with their assessment.  In this paper, we
   describe the statistical procedures we developed and implemented for
-  \emph{The Times} to ascertain whether disqualifying these 680
+  the \emph{Times} to ascertain whether disqualifying these 680
   ballots would have changed the outcome of the election.  We present
   a variety of new empirical results that delineate the precise
   conditions under which Al Gore would have been elected president,
@@ -531,7 +542,7 @@ victory for Bush.  Once the ballots were removed from the envelopes,
 America forever gave up the possibility of knowing for certain who won
 the 2000 election.
 
-\subsection{Statistical Analysis with a One Model Specification} \label{s:onemodel}
+\subsection{Statistical Analysis with a Single Model Specification} \label{s:onemodel}
 
 The lack of any statistical assumptions puts the analysis in Section
 \ref{s:noassump} on extremely firm footing.  In fact, measurement
@@ -1162,84 +1173,13 @@ constraints on possible results.
 \appendix
 \section{Technical Issues in Modeling and Estimation} \label{appx:king}
 
-King's (1997) ecological inference model assumes that the joint
-distribution of $\bg$ and $\bb$ is truncated bivariate normal with
-mean $\bbetau=\{\bbetau^{\text{bad}},\bbetau^{\text{good}}\}$
-and variance matrix $\Sigmau$:
-\begin{equation}
-\P(\bb_i, \bg_i | \bbetau, \Sigmau)  = 
- \N (\bb_i, \bg_i | \bbetau, \Sigmau)
-\frac{\mathbf{1}(\bb_i, \bg_i \in [0,1])}
-{R(\bbetau, \Sigmau)},
-\end{equation}
-where $\mathbf{1}$ is the indicator function, $\N (\bb_i, \bg_i |
-\bbetau, \Sigmau) = (2 \pi)^{-1/2} |\Sigmau|^{-1/2} \text{exp} \{ -
-\frac{1}{2} (\beta_i-\bbetau)^T \Sigmau^{-1} (\beta_i - \bbetau) \}$,
-and $R (\bbetau, \Sigmau) = \int_0^1 \int_0^1 \N (\bb, \bg | \bbetau,
-\Sigmau) d\bb d\bg$.
-
-This distributional assumption together with the accounting identity
-in Equation \ref{eq:gid} determines the likelihood for the observed
-data, $T_i$, which is
-\begin{equation}
-  \P(\Theta|T) \propto \prod_{i=1}^{67} N(T_i|\mu_i, \sigma_i^2)
-  \frac{S(\bbetau, \Sigmau)}{R(\bbetau, \Sigmau)}, \label{eq:likelihood}
-\end{equation}
-where $\Theta=\{\bbetau,\Sigmau\}$ is a vector of all parameters to be
-estimated,
-\begin{equation}
-  S(\bbetau, \Sigmau)=\int_{\text{max}(0,\thinspace T_i/X_i-(1-X_i)/X_i)}
-  ^{\text{min}(1,T_i/X_i)} \N(\bb|\bbetau^b + \omega_i \epsilon_i /
-  \sigma_i,\thinspace \sigmau^2_b-\omega^2/\sigma^2_i)d\bb,
-\end{equation}
-$\Eu(T_i|X_i)\equiv\mu_i = \bbetau^{\text{bad}} X_i +
-\bbetau^{\text{good}} (1-X_i)$, and
-$\Vu(T_i|X_i)\equiv\sigma^2_i=\sigmau_g + 2(\sigmau_{bg} - 2
-\sigmau_g^2) X_i + (\sigmau_b^2 + \sigmau_g^2 - 2\sigmau_{bg}) X_i^2$.
-
-Before adding covariates, we reparameterize for estimation as
-$\phi_1=(\bbetau^b-0.5)/(\sigmau_b^2+0.25)$,
-$\phi_2=(\bbetau^g-0.5)/(\sigmau_g^2+0.25)$,
-$\phi_3=\text{ln}\sigmau_b$, $\phi_4=\text{ln}\sigmau_g$, and
-$\phi_5=0.5\text{ln}\{(1+\rho)/(1-\rho)\}$.  For all but one model we
-also control for covariates
-$Z_i=\{Z_i^{\text{bad}},Z_i^{\text{good}}\}$ via King's (1997: Ch.\ 9)
-extended model.  This allows the mean (on the untruncated scale) of
-the two unknown parameters $(\bb_i, \bg_i)$ to be a function of these
-covariates:
-\begin{eqnarray}
-\bbetau_i^b & = & [\phi_1 (\sigmau^2_b + 0.25) + 0.5] + (Z_i^{\text{bad}} -
-\bar{Z}_i^{\text{bad}}) \alpha^{\text{bad}} \\
-\bbetau_i^g & = & [\phi_1 (\sigmau^2_g + 0.25) + 0.5] + (Z_i^{\text{good}} -
-\bar{Z}_i^{\text{good}}) \alpha^{\text{good}},
-\end{eqnarray}
-where $\alpha^{\text{good}}$ and $\alpha^{\text{bad}}$ are now
-additional parameters to be estimated and $\bar{Z}_i^{\text{good}}$
-and $\bar{Z}_i^{\text{bad}}$ are means of the covariate vectors.  This
-extension of the model relaxes the assumptions of mean independence,
-no spatial autocorrelation, and truncated bivariate normality, and
-replaces them with assumptions that are now conditional on the two
-sets of covariates.  This also allows for the possibility of including
-$X_i$ as a covariate, which is not possible in prior approaches.  Our
-prior specification follows the recommendations of King (1997: Ch.\ 
-7)\nocite{king:97}.
-
 From one application of one specification of this model, we compute
 the posterior density of a quantity of interest $\Delta$ by drawing it
-from its posterior, $\P(\Delta|M_k,T)$.  To do this, we draw
-simulations of $\bb$ and $\bg$ from their posterior and calculate
-simulations of $\Delta$.  By applying this procedure to each of the 31
-models, we get the first of the two components of Equation
-\ref{eq:bma} needed for Bayesian model averaging.  The difficult part
-of computing the second piece is the computation of the marginal
-likelihood.  In particular, the integration in the equation in
-Footnote \ref{eq:marglik} is difficult, especially when the prior on
-the parameters is relatively flat. A number of estimators have been
-proposed to improve the precision of the estimation of the marginal
-likelihood (see \citet{kass:raft:95} for a comprehensive survey).
-
-Bayes theorem specifies that the posterior is proportional to the
-product of the prior times the likelihood:
+from its posterior, conditional on the model $\P(\Delta|M_k,T)$.  To
+do this, we draw simulations of $\bb$ and $\bg$ from their posterior
+and calculate simulations of $\Delta$.  Bayes theorem specifies that
+the posterior is proportional to the product of the prior times the
+likelihood:
 \begin{equation}
   \P(\Theta|T) \propto \P(\Theta)\P(T|\Theta).\label{eq:post}
 \end{equation}
@@ -1247,20 +1187,19 @@ where $\P(\Theta)$ is the prior probability distribution on some
 unknown parameter $\Theta$, and $\P(T|\Theta)$ is the likelihood
 (which in our case is given in the appendix as
 Equation~\ref{eq:likelihood}).  Everything is conditioned on $X$, $N$,
-and $Z$, which we observe. We use the standard independent prior on
-each parameter of $\Theta$ as described in Section 7.4 of
-\citet{king:97}.  This prior distribution and the likelihood function
-together define King's model in a standard Bayesian framework.
+and $Z$, which we observe.  We use the standard independent prior on
+each parameter of $\Theta$ as described in \citet{king:97}.  This
+prior distribution and the likelihood function together define King's
+model in a standard Bayesian framework.
 
 Let $M_k$ denote the $k$th model specification ($k=1,\dots,31$). Then
-we make an inference about some quantity of interest $\Delta$ by
+we make an inference about a quantity of interest $\Delta$ by
 computing its posterior distribution via Bayesian model averaging.  To
-do this, we first compute, for each of the 31 models, the posterior
-distribution of $\Delta$ (computed from Equation \ref{eq:post} with
-$\Delta$ being some known function of $\Theta$): $\P(\Delta|M_k,T)$.
-Then we average over these models by weighting by the relative
-posterior probability that each model is correct given the data,
-$\Pr(M_k|T)$:
+do this, we first compute, for each model, the posterior distribution
+of $\Delta$ (computed from Equation \ref{eq:post} with $\Delta$ being
+some known function of $\Theta$): $\P(\Delta|M_k,T)$.  Then we average
+over these models by weighting by the relative posterior probability
+that each model is correct given the data, $\Pr(M_k|T)$:
 \begin{align} \label{eq:bma}
   \Pr(\Delta|T) %&= \sum_{k=1}^{31} \P(\Delta,M_k|T)\notag\\
                 &= \sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T)
@@ -1277,48 +1216,47 @@ distinguishing systematic from idiosyncratic features of the data.
 
 To compute the posterior model probability, we need two elements.
 First is a prior probability that each model is correct, $\Pr(M_k)$,
-which we set to uniform.  The other quantity we need to compute is the
-marginal likelihood, $\P(T|M_k)$, which is obtained by averaging the
-likelihood over the prior distribution.\footnote{\label{eq:marglik}The
-  marginal likelihood is $\P(T|M_k) = \int \P(T|\Theta_k, M_k)
-  \P(\Theta_k|M_k) d\Theta_k$, where $\P(\Theta_j|M_j)$ is the prior
-  distribution for the parameter vector $\Theta$ in Model $k$.}  The
-marginal likelihood can be thought of as ``the probability of seeing
-the data that actually were observed, calculated \emph{before} any
-data became available'' \cite[p.776]{kass:raft:95}.  That is, instead
-of maximizing the likelihood with respect to the parameter given the
-data, as we would do to compute the maximum likelihood estimate, the
-marginal likelihood does not have a maximization step: it is the
-average value of the likelihood evaluated at parameter values drawn
-from their prior density.  (Although this quantity could be computed
-by simulation in this way, such a method tends to be highly
-inefficient, especially for problems with relatively flat priors or
-high dimensional parameter vectors.  We discuss these and other
-computational issues in the Appendix.)
+which we set to uniform.  The other is the marginal likelihood,
+$\P(T|M_k)$, which is obtained by averaging the likelihood over the
+prior distribution.\footnote{\label{eq:marglik}The marginal likelihood
+  is $\P(T|M_k) = \int \P(T|\Theta_k, M_k) \P(\Theta_k|M_k)
+  d\Theta_k$, where $\P(\Theta_j|M_j)$ is the prior distribution for
+  the parameter vector $\Theta$ in Model $k$.}  The marginal
+likelihood is ``the probability of seeing the data that actually were
+observed, calculated \emph{before} any data became available''
+\cite[p.776]{kass:raft:95}.  That is, instead of maximizing the
+likelihood with respect to the parameter given the data, as we would
+do to compute the maximum likelihood estimate, the marginal likelihood
+does not have a maximization step: it is the average value of the
+likelihood evaluated at parameter values drawn from their prior
+density.  (Although this quantity could be computed by simulation in
+this way, such a method tends to be highly inefficient, especially for
+problems with relatively flat priors or high dimensional parameter
+vectors.)
 
 To compute the marginal likelihood, we use the Laplace approximation,
-\begin{equation}
-  \P(T|M_k) \approx (2 \pi)^{{d_k}/2}|\widehat V(\hat\Theta_k)|^{1/2}
-  \P(T|\hat{\Theta}_k) \P(\hat{\Theta}_k),
-\end{equation}
-where, for Model $k$, $\hat{\Theta}_k$ is the posterior mode, $\hat
-V(\hat\Theta_k)$ is minus the inverse Hessian of the posterior
-evaluated at the mode, and $d_k$ is the number of parameters.  The
-Laplace approximation is known to perform well compared with other
-methods
+% \begin{equation}
+%   \P(T|M_k) \approx (2 \pi)^{{d_k}/2}|\widehat V(\hat\Theta_k)|^{1/2}
+%   \P(T|\hat{\Theta}_k) \P(\hat{\Theta}_k),
+% \end{equation}
+% where, for Model $k$, $\hat{\Theta}_k$ is the posterior mode, $\hat
+% V(\hat\Theta_k)$ is minus the inverse Hessian of the posterior
+% evaluated at the mode, and $d_k$ is the number of parameters.  The
+% Laplace approximation 
+which is known to perform well compared with other methods
 \citep{raft:96,lewi:raft:97,dici:kass:raft:wass:97}.\footnote{If a
-  model is estimated through a Markov chain Monte Carlo (MCMC)
-  simulation, one can construct an algorithm where the chain visits
-  each model stochastically so that you can compute the posterior
-  model probability as a direct output of the MCMC posterior draws.
-  For example, see \citet{chib:95}.  However, this requires
-  constructing a new MCMC algorithm for each application.}  Its rate
-of approximation is $O(n^{-1})$, which is considerably better than
-easier-to-apply methods such as Bayesian information criteria (BIC),
-which has a rate of only $O(n^{-1/2})$ \citep{kass:tier:kada:89}.  For
-example, Kass and Raftery (1995: 778) say that ``even for very large
-samples, it [BIC] does not produce the correct value.''  Hence, in our
-application the Laplace approximation is more appropriate than BIC.
+  model is estimated through a Markov chain Monte Carlo simulation,
+  one can construct an algorithm where the chain visits each model
+  stochastically and can thus compute the posterior model probability
+  as a direct output of the posterior draws \citep{chib:95}.  However,
+  this requires constructing a new MCMC algorithm for each
+  application.}  Its rate of approximation is $O(n^{-1})$, which is
+considerably better than easier-to-apply methods such as Bayesian
+information criteria (BIC), which has a rate of only $O(n^{-1/2})$
+\citep{kass:tier:kada:89}.  For example, Kass and Raftery (1995: 778)
+say that ``even for very large samples, it [BIC] does not produce the
+correct value.''  Hence, in our application the Laplace approximation
+is more appropriate than BIC.
 
 \section{The Minor Effects of Minor Candidates and Prior Densities}\label{a:sens}
 
@@ -1356,7 +1294,6 @@ particularly sensitive to the prior specification.  The median
 posterior point in particular is hardly changed across the models.
 
 \singlespacing
-\clearpage
 \bibliographystyle{/home/king/c/gkbibtex/polisci}
 %\bibliographystyle{pa}
 \bibliography{stat,polisci}
