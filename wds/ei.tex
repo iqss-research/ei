@@ -1280,7 +1280,7 @@ distributions for $\alpha^a$ and $\alpha^b$ need to be specified for
 Bayesian Model Averaging in order to ensure that the posterior
 distribution is proper. The two global variables, \texttt{\_Ealpha\_B}
 and \texttt{\_Ealpha\_W}, perform this function.  Second, \EI uses the
-Laplace-Metropolis estimator (default) or the harmonic mean estimator,
+Laplace approximation (default) or the harmonic mean estimator,
 for computing the marginal likelihoods. It is recommended that the
 number of simulations, \texttt{\_Esims}, should be set to a relatively
 large number in order to improve the precision of this estimation.  If
@@ -1356,10 +1356,11 @@ graphoff;                                @ close graphics window @
 \item[\_EImodels\_save] set to ``filename'' if you want to save the
   results at each iteration in a data buffer on the disk (default =
   ``\mbox{ }''; for no save).
-
-\item[\_EImodels\_est] scalar, if 1 the Laplace-Metropolis estimator0
-will be used to estimate the marginal likelihood (default). If 2, the
-harmonic mean estimator (an importance sampling scheme) will be used.
+  
+\item[\_EImodels\_est] scalar, if 1 the Laplace approximation will be
+  used to estimate the marginal likelihood (default). If 2, the
+  harmonic mean estimator (an importance sampling scheme) will be
+  used.
   
 \item[\_EI\_bma\_prior] (($\#$ of models)$\times 1$) The discrete
   prior probability of each model in the ascending order of the model
