@@ -9,6 +9,7 @@
 ** dbres = updated data buffer containing an additional model
 **         specification, and any previous data buffers nbuf contained; and
 **         titl="*MDB* Meta-Data Buffer from eimodels_def() *MDB*"
+**         if there is an error, it returns "".
 **   
 ** INPUTS:
 **    nduf = a data buffer to which the model specification should be added
@@ -68,7 +69,7 @@ proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
     if tst$/="";
       tst;
       "----- EIMODELS_DEF Aborted -----";
-      retp(ndbuf);
+      retp("");
     elseif _Eprt>0;
       "Inputs ok...";
     endif;
@@ -107,7 +108,7 @@ endp;
 ** 
 ** OUTPUT:
 **   dbuf = nested data buffer with the results of ei() runs of
-**          all the models.
+**          all the models. If there is an error, it returns "".
 **
 ** INPUT:
 **   ndbuf = nested data buffer from eimodels_def() which contains all
@@ -133,9 +134,9 @@ proc eimodels_run(ndbuf);
 
   @ check _EImodels_save @
   if type(_EImodels_save)/=13;
-    "ei: _EImodels_save should be a string.";
+    "eimodels: _EImodels_save should be a string.";
     "----- EIMODELS_RUN Aborted -----";
-    retp(ndbuf);
+    retp("");
   endif;
 
   @ checking the input buffer @
@@ -209,6 +210,7 @@ endp;
 **           result of Bayesian Model Averaging using the Harmonic
 **           mean estimator for the marginal likelihoods, and
 **           titl="*DB* Data Buffer from eimodels_avg() *DB*"
+**           if there is an error, it returns "".
 **     t = t used for the estimation; if models use different t's, only t 
 **         from the first model is stored and used for eiread() calculation.
 **     x = x used for the estimation; if models use different x's, only x 
@@ -239,7 +241,7 @@ endp;
     
 proc 1=eimodels_avg(ndbuf);
   local et, sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
-        aggs, betabs, betaws, mfreq, ratio, i, j, titl, t, x, n,
+        aggs, betabs, betaws, mfreq, ratio, i, j, titl, t, x, n, eselect,
         frst, prprob, _eprt_temp, tst;
 
   et=hsec;     @ timing start @
@@ -289,16 +291,17 @@ proc 1=eimodels_avg(ndbuf);
         t = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"t");
         x = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"x");         
         n = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"n");
+        eselect = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"_Eselect");
         frst = i;         
       else;
         temp = eiread(dbtemp,"nobs");
         if (temp /= nobs);
           ?;
-          "ei: This Model uses a different number of observations than Model " frst;
+          "eimodels: This Model uses a different number of observations than Model " frst;
           "You cannot average the models with different number of observations.";
-          "----- EIBMA Aborted -----";
+          "----- EIMODELS_AVG Aborted -----";
           ?;
-          retp(ndbuf);
+          retp("");
         endif;
         temp = eiread(dbtemp,"t");
         if sumc(temp ./= t)>0;
@@ -321,10 +324,20 @@ proc 1=eimodels_avg(ndbuf);
         temp = eiread(dbtemp,"n");
         if sumc(temp ./= n)>0;
           ?;
-          "WARNING: The ei input, n, of Model " i " is different from Model " frst;
+          "eimodels: The ei input, n, of Model " i " is different from Model " frst;
           "You cannot average the models using different n.";
+          "----- EIMODELS_AVG Aborted -----";
           ?;
-          retp(ndbuf);
+          retp("");
+        endif;
+        temp = eiread(dbtemp,"_Eselect");
+        if sumc(temp ./= eselect)>0;
+          ?;
+          "eimodels: The value of the global, _Eselect, of Model " i " is different from Model " frst;
+          "You cannot average the models using different values of _Eselect.";
+          "----- EIMODELS_AVG Aborted -----";
+          ?;
+          retp("");
         endif;
       endif; 
 
@@ -334,9 +347,9 @@ proc 1=eimodels_avg(ndbuf);
       margllik[j,2]=1/(sumc(1/exp(temp))/sims[j]);  @ harmonic mean estimate (unnormalized) @
       if margllik[j,2]<0;
         ?;
-        "ei: The marginal likelihood is negative.";
+        "eimodels: The marginal likelihood is negative.";
         "Check the specification and/or EI results of Model" j;
-        "----- EIBMA Aborted -----";
+        "----- EIMODELS_AVG Aborted -----";
         ?;
         retp(ndbuf);
       endif;
@@ -355,30 +368,30 @@ proc 1=eimodels_avg(ndbuf);
     ?;
     if rows(_EI_bma_prior) /= j;
       ?;
-      "ei: The dimension of the prior model probability does not match";
-      "    the number of models to be averaged. Set the global variable";
-      "    _EI_bma_prior, which is a (# of model) x 1 vector, appropriately.";
-      "----- EIBMA Aborted -----";
+      "eimodels: The dimension of the prior model probability does not match";
+      "          the number of models to be averaged. Set the global variable";
+      "          _EI_bma_prior, which is a (# of model) x 1 vector, appropriately.";
+      "----- EIMODELS_AVG Aborted -----";
       ?;
-      retp(ndbuf);
+      retp("");
     elseif sumc(_EI_bma_prior) /= 1;
       ?;
-      "ei: The prior model probability does not sum up to 1.";
-      "----- EIBMA Aborted -----";
+      "eimodels: The prior model probability does not sum up to 1.";
+      "----- EIMODELS_AVG Aborted -----";
       ?;
-      retp(ndbuf);
+      retp("");
     elseif sumc(_EI_bma_prior .< 0) > 0;
       ?;
-      "ei: Some prior model probabilities are negative.";
-      "----- EIBMA Aborted -----";
+      "eimodels: Some prior model probabilities are negative.";
+      "----- EIMODELS_AVG Aborted -----";
       ?;
-      retp(ndbuf);
+      retp("");
     elseif sumc(_EI_bma_prior .> 1) > 0;
       ?;
-      "ei: Some prior model probabilities are greater than 1.";
-      "----- EIBMA Aborted -----";
+      "eimodels: Some prior model probabilities are greater than 1.";
+      "----- EIMODELS_AVG Aborted -----";
       ?;
-      retp(ndbuf);
+      retp("");
     endif;
     prprob[.,2] = _EI_bma_prior;
   endif;
@@ -434,6 +447,7 @@ proc 1=eimodels_avg(ndbuf);
   _Eres = vput(_Eres,t,"t");
   _Eres = vput(_Eres,x,"x");
   _Eres = vput(_Eres,n,"n");
+  _Eres = vput(_Eres,_eselect,"_Eselect");
   _Eres = vput(_Eres,aggs,"aggs");
   _Eres = vput(_Eres,betabs,"betabs");
   _Eres = vput(_Eres,betaws,"betaws");
