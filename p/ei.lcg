@@ -23,6 +23,7 @@ ei.dec
     _Ebeta                           : matrix
     _EalphaB                         : matrix
     _EalphaW                         : matrix
+    _EIread_betabs                   : matrix
     _EIread_Zb                       : matrix
     _EIread_Zw                       : matrix
     _cml_version                     : matrix

@@ -152,6 +152,7 @@ declare matrix _EI_bma_prior  != 0;
 declare matrix _EI_bma_est    != 1;
 
 /* eiread */
+declare matrix _EIread_betabs !={.};
 declare matrix _EIread_Zb !={.};
 declare matrix _EIread_Zw !={.};
 
