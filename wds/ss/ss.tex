@@ -304,23 +304,25 @@ intervals, which were not available in HS's version.\footnote{To
   define our estimation algorithm, let a symbol with a tilde on it
   denote a value of that quantity randomly drawn from its posterior
   density.  To implement our procedure for a given $X$ and $T$: (1)
-  run EI on $X$ and $T$; (2) draw $\tilde\psiu$ from its posterior
-  provided by EI; (3) take $p$ draws of
-  $(\tilde\beta_i^b,\tilde\beta_i^w)$ from a truncated normal density
+  run EI on $X$ and $T$; (2) draw one value of the parameter vector
+  $\tilde\psiu$ from its posterior as provided by EI; (3) take $p$
+  draws of $(\tilde\beta_i^b,\tilde\beta_i^w)$ from a truncated normal
   with parameter vector $\tilde\psiu$, (4) compute a new $T_i$ as
   $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (5) run EI
   on $X_i$ and $\tilde T_i$ to yield estimates
   ($\hat\beta_i^b,\hat\beta_i^w$) for all $i$; (6) regress
-  ($\hat\beta_i^b-\beta_i^b$) on $\beta_i^b$ to estimate
-  $\delta_0^b$ and $\delta_1^b$; (7) regress $\hat\beta_i^b$ on $Z_i$
-  yielding the estimated intercept $\hat\alpha_U$ and slope
-  $\hat\gamma_U$; (8) compute the adjusted intercept as
-  $(\hat\alpha_U-\hat\delta_0^b)/(1+\hat\delta_1^b)$ and adjusted
-  slope as $\hat\gamma_U/(1+\hat\delta_1^b)$; (9) repeat steps (2)-(8)
-  a sufficient number of times to eliminate Monte Carlo approximation
-  error; (10) and average the simulations in (9) to get point
-  estimates, take their standard deviation for standard errors, or
-  sort them and use percentile values for confidence intervals.}
+  ($\hat\beta_i^b-\tilde\beta_i^b$) on $\tilde\beta_i^b$ to estimate
+  by least squares the intercept $\tilde\delta_0^b$ and slope
+  $\tilde\delta_1^b$; (7) regress $\hat\beta_i^b$ on $Z_i$ and draw
+  one value of the intercept $\tilde\alpha_U$ and slope
+  $\tilde\gamma_U$ from their posterior density; (8) compute the
+  adjusted intercept as
+  $(\tilde\alpha_U-\tilde\delta_0^b)/(1+\tilde\delta_1^b)$ and
+  adjusted slope as $\tilde\gamma_U/(1+\tilde\delta_1^b)$; (9) repeat
+  steps (2)-(8) a sufficient number of times to eliminate Monte Carlo
+  approximation error; (10) and average the simulations in (9) to get
+  point estimates, take their standard deviation for standard errors,
+  or sort them and use percentile values for confidence intervals.}
 
 \section{Herron and Shotts' Monte Carlo Simulations}
 
