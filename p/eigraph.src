@@ -110,7 +110,7 @@
 ** _tomogClr =  { 12, 9, 10, 11, 13, 5 } colors for each contour drawn 
 ** _tomogPct = {.5, .95}    percentage values at which to draw contours
 **           rows(_tomogClr) must be >= rows(_tomogPct)
-** _Ei2_r = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
+** _EIMetaR = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
 **          this global denotes which of the imputed data buffers stored
 **          in dbuf should be accessed when running this procedure (default=1).
 */
@@ -119,11 +119,11 @@ proc 1=eigraph(dbuf,str);
   local x,t,psiu,bvap,wvap,tvap,a,b,c,circ,i,d,e,f,tt,z,o,betab,betaw,tst,n,p,
   titl;
 
-  /* for ei2, pull out data buffer _ei2_r from meta-data buffer */
+  /* for ei2, pull out data buffer _eimetar from meta-data buffer */
   if vin(dbuf,"titl");
     titl=vread(dbuf,"titl");
     if titl$=="*MDB* Meta-Data Buffer from 2nd Stage *MDB*";
-      dbuf=vread(dbuf,"dbuf"$+ftos(_ei2_r,"*.*lf",1,0));
+      dbuf=vread(dbuf,"dbuf"$+ftos(_eimetar,"*.*lf",1,0));
     endif;
   endif;
   

@@ -19,16 +19,13 @@
 */
 
 proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
-  local dbtemp;
-   
-  dbtemp="";
-
+  
   /* data inputs */
-  dbtemp=vput(dbtemp,t,"_EI_t");
-  dbtemp=vput(dbtemp,x,"_EI_x");
-  dbtemp=vput(dbtemp,n,"_EI_n"); 
-  dbtemp=vput(dbtemp,Zb,"_EI_Zb");
-  dbtemp=vput(dbtemp,Zw,"_EI_Zw");
+  _Eres=vput(_Eres,t,"_EI_t");
+  _Eres=vput(_Eres,x,"_EI_x");
+  _Eres=vput(_Eres,n,"_EI_n"); 
+  _Eres=vput(_Eres,Zb,"_EI_Zb");
+  _Eres=vput(_Eres,Zw,"_EI_Zw");
   
   /* essential globals */
   _Eres=vput(_Eres,_EalphaB,"_EalphaB");
@@ -64,14 +61,15 @@ proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
   _Eres=vput(_Eres,_ei_vc,"_ei_vc");
 
   /** inessential globals **/
-  dbtemp=vput(dbtemp,_Eprt,"_Eprt");
-  dbtemp=vput(dbtemp,_Echeck,"_Echeck");
+  _Eres=vput(_Eres,_Eprt,"_Eprt");
+  _Eres=vput(_Eres,_Echeck,"_Echeck");
+
 
   /** name the buffer and store it in the nested buffer **/
   format/rd 3,0; 
   ?;
   "Model " num "is successfully added to the data buffer.";
-  ndbuf=vput(ndbuf,dbtemp,"mod_d"$+ftos(num,"*.*lf",1,0));  
+  ndbuf=vput(ndbuf,_Eres,"mod_d"$+ftos(num,"*.*lf",1,0));  
   ndbuf=vput(ndbuf,"*MDB* Meta-Data Buffer from eimodels_def() *MDB*","titl"); 
 
   retp(ndbuf);
@@ -103,7 +101,7 @@ endp;
 */
  
 proc eimodels_run(ndbuf);
-  local i, num, dbtemp1, dbtemp2, dta, simpars, dbres, titl;
+  local i, num, dta, simpars, dbtemp, dbres, titl;
   
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
@@ -121,16 +119,15 @@ proc eimodels_run(ndbuf);
   num = rows(vnamecv(ndbuf));
   i = 1;
   do while i <= num;
-    clear dbtemp1, dbtemp2;
     eiset;
     if vin(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
-      dbtemp1=vread(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
-      vreadall(dbtemp1);
+      _Eres=vread(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
+      vreadall(_Eres);
       ?;
       "Running EI for the Model" i " ...";
       ?;
-      dbtemp2=ei(_EI_t,_EI_x,_EI_n,_EI_Zb,_EI_Zw);
-      dbres=vput(dbres,dbtemp2,"mod_r"$+ftos(i+0,"*.*lf",1,0));
+      dbtemp=ei(_EI_t,_EI_x,_EI_n,_EI_Zb,_EI_Zw);
+      dbres=vput(dbres,dbtemp,"mod_r"$+ftos(i+0,"*.*lf",1,0));
 
       @ save the buffer @
       if _EImodels_save $/= "";

@@ -23,9 +23,9 @@
 **
 ** GLOBAL
 ** _Eprt  = 0 don't print; 1 = do print selected items.
-** _Ei2_r = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
-**         this global denotes which of the imputed data buffers stored
-**         in dbuf should be accessed when running this procedure (default=1)
+** _EIMetaR = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
+**           this global denotes which of the imputed data buffers stored
+**           in dbuf should be accessed when running this procedure (default=1)
 **
 ** STORED (can also be retrieved with vread):
 ** _EalphaB  value of this global (prior on alphaB)
@@ -169,6 +169,28 @@
 ** _x        p x 1: the original variable X from the first stage
 ** _n        p x 1: the original variable N from the first stage
 **
+** ADDITIONAL OPTIONS IF DATA BUFFER WAD CREATED BY EIMODELS_AVE
+** t = t used for the estimation; if models use different t's, only t 
+**     from the first model is stored and used for eiread() calculation.
+** x = x used for the estimation; if models use different x's, only x 
+**     from the first model is stored and used for eiread() calculation.
+** n = n used for the estimation; if models use different n's, only n 
+**     from the first model is stored and used for eiread() calculation.     
+** betabs = betab draws from its BMA posterior (p x _Esims)
+** betaws = betaw draws from its BMA posterior (p x _Esims)
+** mfreq  = first column contains the model number and the second 
+**          column contains the frequency of sampling from each 
+**          model (# of model x 2)
+** postprob = first column contains the model number and the second 
+**            column contains the posterior model probabilities 
+**            (# of model x 2)
+** prprob = first column contains the model number and the second 
+**          column contains the prior model probability used for 
+**          calculation (# of model x 2).
+** margllik = first column contains the model number and the second 
+**            column contains the marginal log-likelihood for each 
+**            model (# of model x 2)
+**
 */
 #include ei.ext;
 proc eiread(dbuf,str);
@@ -176,11 +198,17 @@ proc eiread(dbuf,str);
   tvap,n,nb,nw,c,c0,c1,bnds,bb0,bw0,invX,invT,meanX,meanT,p00,p11,p01,p10,x2,
   strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,_t,_x;
 
-  /* for ei2, pull out data buffer _ei2_r from meta-data buffer */
+  /* for ei2, pull out data buffer _eimetar from meta-data buffer */
+  /* for eimodels_def, pull out data buffer from meta-data buffer for Model _eimetar */
+  /* for eimodels_run, pull out data buffer from meta-data buffer for Model _eimetar */
   if vin(dbuf,"titl");
     titl=vread(dbuf,"titl");
     if titl$=="*MDB* Meta-Data Buffer from 2nd Stage *MDB*";
-      dbuf=vread(dbuf,"dbuf"$+ftos(_ei2_r,"*.*lf",1,0));
+      dbuf=vread(dbuf,"dbuf"$+ftos(_eimetar,"*.*lf",1,0));
+    elseif titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
+      dbuf=vread(dbuf,"mod_d"$+ftos(_eimetar,"*.*lf",1,0)); 
+    elseif titl$=="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
+      dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0)); 
     endif;
   endif;
   
@@ -461,7 +489,7 @@ proc eiread(dbuf,str);
     else;
       res=betab2w(t,x,betaBs);
     endif;
-      
+   
   elseif str$=="beta";                  @ E(betab)~E(betaw) by precinct @
     res=eiread(dbuf,"betab")~eiread(dbuf,"betaw");
     
@@ -779,7 +807,7 @@ proc eiread(dbuf,str);
     n=eiread(dbuf,"n");
     {a,res}=bounds1(t,x,n);
     if _Eprt>0;
-      let vrs="       " betaB betaW;
+      let vrs="       " betaBb etaW;
       "Aggregate bounds";
       $vrs';
       "Lower: ";;res[.,1]';

@@ -23,7 +23,7 @@ declare matrix _EnonNumInt != 11;
 declare matrix _EnonPar != 0;
 declare matrix _Ei2_m != 4;
 declare matrix _ei2_mta != 0;
-declare matrix _ei2_r != 1;
+declare matrix _eimetar != 1;
 
 /* priors */
 declare matrix _Erho != 0.5;

@@ -95,7 +95,8 @@ proc 2=quadcml(x,Zb,Zw,y);
   endif;
   
   /* cml globals */
-  __title=" ** Ecological Inference Likelihood Maximization ** ";
+  __title="EI Likelihood Maximization: "$+eiread(_Eres,"titl");
+ @ __title=" ** Ecological Inference Likelihood Maximization ** ";@
   _cml_Active=ones(rows(stval)-2,1)|0|0;
   _cml_MaxIters=_Emaxiter;
   _cml_DirTol=_EdirTol;

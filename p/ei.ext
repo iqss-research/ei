@@ -21,7 +21,7 @@ external matrix _EnonEval;
 external matrix _EnonNumInt;
 external matrix _EnonPar;
 external matrix _Ei2_m;
-external matrix _Ei2_r;
+external matrix _EIMetaR;
 external matrix _Ei2_mta;
 external matrix _EselRnd;
 external matrix _Eivc;

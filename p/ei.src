@@ -115,7 +115,7 @@
 **  _EI_bma_prior = The discrete prior probability to each model in the 
 **                  ascending order of the model number (default = 0 which 
 **                  uses the uniform prior) (# of model x 1).
-** _EI_vc = Mx2.  Each row represents globals for 1 attempt
+**  _EI_vc = Mx2.  Each row represents globals for 1 attempt
 **          to compute a positive definite variance matrix.  The 
 **          exits after the first one is found. options to include 
 **          in various rows are:
@@ -653,8 +653,8 @@ proc checkinputs;
     retp("ei: _EI2_m must be a positive integer");
   endif;
   
-  if rows(_Ei2_r)/=1 or cols(_Ei2_r)/=1;
-    retp("ei: _EI2_r must be a scalar integer");
+  if rows(_EIMetaR)/=1 or cols(_EIMetaR)/=1;
+    retp("ei: _EIMetaR must be a scalar integer");
   endif;
   
   if vin(_Eres,"truth");
@@ -734,7 +734,7 @@ proc 0=eiset;
   _EnonNumInt=11;
   _EnonPar=0;
   _Ei2_m=4;
-  _ei2_r=1;
+  _eimetar=1;
   _ei2_mta=0;
   
   /* priors */

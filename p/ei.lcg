@@ -17,7 +17,7 @@ ei.dec
     _EnonPar                         : matrix
     _Ei2_m                           : matrix
     _ei2_mta                         : matrix
-    _ei2_r                           : matrix
+    _eimetar                         : matrix
     _Erho                            : matrix
     _Esigma                          : matrix
     _Ebeta                           : matrix
