@@ -159,33 +159,35 @@ the EI extended model that allows the second stage covariates to be
 included in the EI estimation procedure.  EI software now includes a
 feature that allows for first differences to be computed if those
 covariates are included, which should make the extended model somewhat
-easier to understand and use.  Any second stage analysis, in contrast,
-is by definition a second best procedure, when judged conditional on
-the model.  In contrast, second state analyses --- if they give
-approximately correct answers --- have the advantage of being
-considerably easier to understand, use, and evaluate (since an
-estimate of the dependent variable in the second stage is observable),
-more numerically stable (hence allowing more covariates to be included
-and studied), computationally faster (allowing more analyses to be
-examined), more ameniable to diagnostics in verifying assumptions
-(since the actual estimated data points can be observed and the fit
-can be checked directly), and more robust to certain types of
-misspecification.  The question at hand is if and when such a
-procedure can be used to produce answers that are approximately
-correct.
+easier to understand and use.  (We discuss how to use the extended
+model in Section \ref{s:exten}.)
+
+Any second stage analysis, in contrast, is by definition a second best
+procedure, when judged conditional on the model.  In contrast, second
+stage analyses --- if they give approximately correct answers --- have
+the advantage of being considerably easier to understand, use, and
+evaluate (since an estimate of the dependent variable in the second
+stage is observable), more numerically stable (hence allowing more
+covariates to be included and studied), computationally faster
+(allowing more analyses to be examined), more ameniable to diagnostics
+in verifying assumptions (since the actual estimated data points can
+be observed and the fit can be checked directly), and possibly more
+robust to certain types of misspecification.  The question at hand is
+if and when such a procedure can be used to produce answers that are
+approximately correct.
 
 HS's contribution is in pointing out that precinct-level estimates
 from EI regress to the mean.  This ``shrinkage'' property is indeed a
-characteristic of EI, as it is for all other Bayesian models.
-Shrinkage results in optimal estimates, that is, with the smallest
-possible mean square error.  Thus, we agree with the implication of
-HS's article that the best possible estimate of $\beta^b_i$, under
-HS's assumptions, is that produced by EI.  But HS also make the
-interesting and correct point that using Bayesian mean posterior
-estimates with this property, like those given by EI, as dependent
-variables in least squares regression can, under some circumstances,
-produce biased estimates.  This central point of HS's paper is an
-important contribution and one on which we build here.
+characteristic of EI, and it is also a characteristic of every other
+Bayesian models.  Shrinkage results in optimal estimates, that is,
+with the smallest possible mean square error.  Thus, we agree with the
+implication of HS's article that the best possible estimate of
+$\beta^b_i$, under HS's assumptions, is that produced by EI.  But HS
+also make the interesting and correct point that using Bayesian mean
+posterior estimates with this property, like those given by EI, as
+dependent variables in least squares regression can, under some
+circumstances, produce biased estimates.  This central point of HS's
+paper is an important contribution and one on which we build here.
 
 Instead of least squares regression, HS's suggested procedure is to
 use a bias-adjusted slope for the second stage regression.  The paper
@@ -194,16 +196,18 @@ slope adjustment is based on linear approximations within the
 classical linear econometric theory framework.  The problems with HS's
 approach we discuss here are due to assuming linearity when modeling
 an inherently nonlinear and bounded relationship (i.e., their methods
-by definition misses the information in the bounds), omitting the
+by definition miss the information in the bounds), omitting the
 constant correction from the paper, and never actually computing the
 correction they propose when conducting simulations.  In addition to
 providing the first precinct-level estimates from an ecological
-inference model, a primary advance of EI was in resolving the
-longstanding debate between supporters of Goodman's (1959) unbounded
-linear regression approach and Duncan-Davis' (1953) method of bounds,
-by incorporating all information in both into the same model.  HS fall
-back to Goodman's unbounded approach and so miss the highly
-informative deterministic information in the aggregate data.
+inference model, the primary advance of EI was in resolving the
+half-century long debate between supporters of Goodman's (1959)
+unbounded linear regression approach and Duncan-Davis' (1953) method
+of bounds, by incorporating all information in both into the same
+model.  HS fall back to Goodman's unbounded approach and so miss the
+highly informative deterministic information in the aggregate data.
+The analyses we present here demonstrate the veracity of the advice
+given in the paragraphs quoted above.
 
 We replicated HS's simulations without trouble.  We then examined how
 well their adjusted regression procedure fit the observed data based
@@ -218,19 +222,21 @@ points by a wide margin.
 
 We therefore begin by extending HS's partial adjustment procedure,
 within their linear econometric framework, by developing an adjustment
-for the constant term.  We follow the procedure that we are certain
-Herron and Shots would have used (indeed after we finished a draft,
-they told us that they had this in a previous version of their paper).
-This fully adjusted second stage regression method naturally extends
-the logic in the paper dominates the slope-only procedure.  We also
+for the constant term.  We follow the procedure that we believe Herron
+and Shots would have used if they had completed their
+work.\footnote{Indeed, after we finished a draft, Herron and Shotts
+  told us that they had a constant correction in an earlier version of
+  their paper but took it out in the final version.}  This fully
+adjusted second stage regression method naturally extends the logic in
+their paper and it dominates the slope-only procedure.  We also
 compare our fully adjusted procedure to unadjusted linear regression,
 and find that the performance of each depends crucially on the bounds.
-As it turns out, the partially adjusted procedure is never called for.
-When the bounds are narrow, the fully adjusted procedure can be
-reliably computed, but the adjustment makes little difference.  When
-the bounds are wide, the true adjustment factor could make a big
-difference, but the adjustment cannot be reliably estimated and so the
-procedure cannot be applied.
+As it turns out, the partially adjusted procedure suggested in HS is
+never called for.  When the bounds are narrow, the fully adjusted
+procedure can be reliably computed, but the adjustment makes little
+difference.  When the bounds are wide, the true adjustment factor
+could make a big difference, but the adjustment cannot be reliably
+estimated and so the procedure cannot be applied.
 
 To aid users of second stage ecological regressions, we identify four
 prototypical situations likely to arise in practice.  Since each
@@ -249,7 +255,7 @@ value of the adjustment is known, which describes the Monte Carlo
 procedures HS used to evaluate their method, but of course not any
 real application.  
 
-We conclude that r esearchers with narrow enough bounds to run first
+We conclude that researchers with narrow enough bounds to run first
 stage EI should first examine the scatterplot (***such as fig 1***) to
 check for nonlinearities (which normally occur when the estimated
 points are near zero or one).  If there are no nonlinearities, then
@@ -658,12 +664,62 @@ into the impossible region) for some values of $Z_i$.
   \end{center}
 \end{figure}
 
-\section{Herron and Shotts Revised Procedures}
+\section{The Extended Model} \label{s:exten}
 
-We finished the above sections of this paper and shared them with
-Herron and Shotts.  They acknowledged, and seemed to agree with, all
-the key points we made.  During our discussions they developed a new
-analysis of the bias in 
+As the only self-consistent ``second-stage'' approach, the extended
+model should probably see more use.  We therefore pause briefly here
+to discuss one issue about how to use it.  
+
+One apparently obvious, but flawed, way to use the extended model is
+to study the effects of the explantory variables only by looking at
+the parameter estimates ($\alpha^b$ and $\alpha^w$ in King, 1997: 170)
+and their standard errors.  The problem with this approach is that it
+does not include the robustness of the bounds that comes from
+conditioning on $T$.  
+
+To explain, consider a simpler case: estimating the district-wide
+fraction of blacks who vote, $B^b$ without covariates.  Then if the
+model holds (and the number of people per precinct is constant over
+precincts), a consistent and efficient estimator of this quantity is
+as follows.  (1) Run EI to estimate the five parameters of the
+truncated bivariate normal.  Since they are on the untruncated scale,
+(2) compute from them (analytically or by simulation) the truncated
+parameters, which of course includes the mean of the precinct
+parameters and hence our estimate.
+
+Suppose, however, that the model is not exactly right.  Then we would
+also want to condition on $T$ so that the precinct-level bounding
+information can be included in this estimate.  To do this, use an
+alternative estimator: (1) Run EI to estimate the five parameters of
+the truncated bivariate normal.  Then (2) condition on $T$ and compute
+estimates of the fraction of blacks who vote in each precinct,
+$\beta_i^b$, by drawing (as in King, 1997) from the posterior density,
+$\P(\beta_i^b|T_i)$, all the mass of which falls within the known
+bounds.  Finally, (3) average the precinct estimates to produce an
+estimate of $B^b$, as desired originally.
+
+Because it includes the precinct-level bounds, the second estimator is
+clearly more robust to misspecification than the first.  And since
+dealing with misspecification is the key issue in making ecological
+inferences in real research, we see little reason to use the first
+estimator.  An equivalent problem applies in estimating and
+interpreting $\alpha^b$ and $\alpha^w$ directly: the estimates do not
+include information from the precinct-level bounds.  Although
+conditional on the model, they are consistent and efficient, they will
+not be as robust to misspecification.  Thus, we suggest the same
+robust approach to estimating effects from the extended model: (1)
+Estimate the parameters of the truncated bivariate normal and
+$\alpha^b$ and $\alpha^w$.  (2) Choose values for each of the
+covariates. (3) Compute estimates of $\beta_i^b$ and $\beta_i^w$ by
+drawing from their posterior densities, conditional on these values.
+(4) Set values of the covariates to a different value (such as by
+changing one covariate and leaving the others set constant at their
+means). (5) Compute another set of estimates of the precinct-level
+parameters.  And finally, (6) take the difference in the estimates
+from steps 3 and 5 to produce a first difference.  The first
+differences can be studied at the precinct or district level, and with
+point estimates and confidence intervals or full distributions.  The
+result will be a much more robust set of estimates.
 
 
 \section{Concluding Suggestions}
