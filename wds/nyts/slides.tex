@@ -417,14 +417,15 @@ $\textcolor{Purple}{\P(\Delta|T,M)} \propto \P(\Delta|M)\P(T|\Delta,M).$
   \item The only hard part computationally:
     \begin{equation}
       \textcolor{RoyalBlue}{\P(T|M_k)} 
-      = \int \P(T|\Theta_k, M_k) \P(\Theta_k|M_k) d\Theta_k,
+      = \int \textcolor{Red}{\P(T|\Theta_k, M_k)} 
+      \textcolor{OliveGreen}{\P(\Theta_k|M_k)} d\Theta_k,
       \label{eq:marglik}
     \end{equation} 
     
-  \item Instead of the likelihood at the maximum, it is the average
-    likelihood evaluated at $\Theta$ drawn from the prior.
+  \item The average \textcolor{Red}{likelihood value} evaluated
+    at $\Theta$ drawn from the \textcolor{OliveGreen}{prior density}.
   \item Could do by simulation, but highly inefficient.
-  \item Better approximations exist.
+  \item Better approximations exist (We use the Laplace approximation).
   \end{enumerate}
 
 \end{slide}
