@@ -794,7 +794,7 @@ results from each of the imputation runs already completed.
 \texttt{eiread} and \texttt{eigraph} understand when you give it a
 meta-data buffer as an argument; by default it uses \texttt{dbuf1}
 (this default can be changed by setting the \texttt{eiread} global
-\texttt{\_ei2\_r} to the number of the imputation data buffer you wish
+\texttt{\_EIMetaR} to the number of the imputation data buffer you wish
 to analyze.)
 
 For example, to save the meta-data buffer to a file for safe keeping,
@@ -1141,7 +1141,7 @@ not be changed for the most common uses.
   size and to (1,$\infty$] to increase circle size.  Must be greater
   than zero.
   
-\item[\_Ei2\_r] If \texttt{dbuf} is a meta-data buffer (i.e., from the
+\item[\_EIMetaR] If \texttt{dbuf} is a meta-data buffer (i.e., from the
   \texttt{\_ei2\_mta} output global of ei2), this global denotes which
   of the imputed data buffers stored in dbuf should be accessed when
   running \texttt{eigraph}.  Default=1.
@@ -1206,7 +1206,7 @@ output off;                      @ close output file @
   options whose description begins with an asterisk, below) (default);
   0 do not print.
   
-\item[\_Ei2\_r] If \texttt{dbuf} is a meta-data buffer (i.e., from the
+\item[\_EIMetaR] If \texttt{dbuf} is a meta-data buffer (i.e., from the
   \texttt{\_ei2\_mta} output global of ei2), this global denotes which
   of the imputed data buffers stored in dbuf should be accessed when
   running \texttt{eigraph}.  Default=1.
