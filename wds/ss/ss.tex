@@ -326,11 +326,11 @@ Unfortunately, the procedure itself is flawed for two other reasons.
 First, it conditions on the point estimate for the parameters of the
 truncated bivariate normal, $\breve\psi$, and thus assumes the absence
 of estimation uncertainty.  Ignoring uncertainty would bias standard
-errors and confidence intervals, of course, but HS do not calculate
-these.  However, since their estimation procedure is nonlinear (due to
-the ratios in (\ref{adj})), ignoring estimation uncertainty also
-affects their point estimates in finite samples.  And second, the
-procedure calls for drawing only a single simulation of
+errors and confidence intervals, of course, which perhaps is why HS do
+not calculate these.  However, since their estimation procedure is
+nonlinear (due to the ratios in (\ref{adj})), ignoring estimation
+uncertainty also affects their point estimates in finite samples.  And
+second, the procedure calls for drawing only a single simulation of
 $(\beta_i^b,\beta_i^w)$ for each observation.  As a result, the
 estimate includes substantial Monte Carlo approximation error.  The
 error can be eliminated by running their entire procedure many times
@@ -342,15 +342,14 @@ providing the ability to compute standard errors and confidence
 intervals, which were not available in HS's version.\footnote{To
   define our estimation algorithm, let a symbol with a tilde on it
   denote a value of that quantity randomly drawn from its posterior
-  density.  To implement our procedure for a given $X$ and $T$: (1)
-  run EI on $X$ and $T$; (2) regress $\hat\beta_i^b$ (which comes from
-  EI) on $Z_i$ yielding the estimated intercept $\hat\alpha_U$ and
-  slope $\hat\gamma_U$; (3) draw $\tilde\psiu$ from its posterior
-  provided by EI; (4) take $p$ draws of
-  $(\tilde\beta_i^b,\tilde\beta_i^w)$ from a truncated normal density
-  with parameter vector $\tilde\psiu$, (5) compute a new $T_i$ as
-  $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run EI
-  on $X_i$ and $\tilde T_i$ to yield estimates
+  density.  For a given $X$ and $T$: (1) run EI on $X$ and $T$; (2)
+  regress $\hat\beta_i^b$ (which comes from EI) on $Z_i$ yielding the
+  estimated intercept $\hat\alpha_U$ and slope $\hat\gamma_U$; (3)
+  draw $\tilde\psiu$ from its posterior provided by EI; (4) take $p$
+  draws of $(\tilde\beta_i^b,\tilde\beta_i^w)$ from a truncated normal
+  density with parameter vector $\tilde\psiu$, (5) compute a new $T_i$
+  as $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run
+  EI on $X_i$ and $\tilde T_i$ to yield estimates
   ($\hat\tilde\beta_i^b,\hat\tilde\beta_i^w$) for all $i$; (7) regress
   ($\hat\tilde\beta_i^b-\beta_i^b$) on $\beta_i^b$ to estimate
   $\delta_0^b$ and $\delta_1^b$, which we label $\hat\tilde\delta_0$
@@ -383,15 +382,14 @@ outside the field of ecological inference.
 
 \section{HS's Monte Carlo Simulation Procedure}
 
-The Monte Carlo procedure used to generate results by HS is
-inappropriate to the task of evaluating second stage regressions.  HS
-draw $\beta_i^b$ from the EI model without covariates.  Then they
-create the covariate for the second stage explanatory variable $Z_i$
-endogenously as equal to $\beta_i^b$ plus random noise.
-Unfortunately, this induces immense attenuation bias due to random
-measurement error in the explanatory variable, quite apart from any
-attenuation bias that may occur due to the Bayesian shrinkage in the
-EI estimate.
+HS's Monte Carlo is inappropriate for evaluating second stage
+regressions.  HS draw $\beta_i^b$ from the EI model without
+covariates.  Then they create the covariate for the second stage
+explanatory variable $Z_i$ endogenously as equal to $\beta_i^b$ plus
+random noise.  Unfortunately, this induces immense attenuation bias
+due to random measurement error in the explanatory variable, quite
+apart from any attenuation bias that may occur due to the Bayesian
+shrinkage in the EI estimate.
 
 This problem can be seen by studying the parameters of the model HS
 created from which to draw their Monte Carlo data.  In this model, the
@@ -420,8 +418,8 @@ EI or otherwise).\footnote{Another way to look at the true $\gamma_R$
   the LS estimate of the truth on $Z_i$.  The problem with this last
   interpretation is that the Monte Carlo procedure then merely
   compares two estimators, with possibly correlated but unknown
-  errors, rather than comparing an estimator to the truth created by
-  the procedure.}
+  errors, rather than comparing an estimator to some gold standard
+  defined by the procedure.}
 \begin{table}[tb]
 \label{t:hsrep}
 \begin{center}
@@ -457,18 +455,19 @@ their explanatory variable, $Z_i$, from the bounded $\beta_i^b$'s
 relationship between the two to be linear and to always be contained
 within the [0,1] bound on $\beta_i^b$.  Within this framework, testing
 the robustness of the HS adjustment to the sort of nonlinear
-relationships which may crop up in applied research is impossible.
+relationships which crop up sometimes in applied research is
+impossible.
 
-Finally, HS's Monte Carlo simulations do not test the actual adjustment
-procedure they propose.  All the results they present in their Section
-6 rely on the \emph{true} $\beta_i^b$'s to estimate $\delta_0^b$ and
-$\delta_1^b$, even though this is the one quantity users of
-second-stage regressions by definition lack.  Appropriately, HS
-recommend a different estimation procedure (in their Section 7.2) for
-use when $\beta_i^b$ is unknown, but leave this procedure untested.
-Hence, HS's article offers no direct evidence that adjustment would be
-less biased or more efficient than unadjusted least squares in
-practice.
+Finally, \emph{HS's Monte Carlo simulations do not test the actual
+  adjustment procedure they propose}.  All the results they present in
+their Section 6 rely on the \emph{true} $\beta_i^b$'s to estimate
+$\delta_0^b$ and $\delta_1^b$, even though this is the one quantity
+users of second-stage regressions by definition lack.  Appropriately,
+HS recommend a different estimation procedure (in their Section 7.2)
+for use when $\beta_i^b$ is unknown, but leave this procedure
+untested.  Hence, HS's article offers no direct evidence that
+adjustment would be less biased or more efficient than unadjusted
+least squares in practice.
 
 \section{An Improved Monte Carlo Simulation} \label{s:alt}
 
@@ -675,7 +674,7 @@ into the impossible region) for some values of $Z_i$.
 
 As the only self-consistent ``second-stage'' approach, the extended
 model should probably see more use.  We therefore pause briefly here
-to discuss one issue about how to use it.  
+to discuss an important issue about how to use it.  
 
 One apparently obvious, but flawed, way to use the extended model is
 to study the effects of the explantory variables only by looking at
@@ -685,8 +684,8 @@ does not include the robustness of the bounds that comes from
 conditioning on $T$.  
 
 To explain, consider a simpler case: estimating the district-wide
-fraction of blacks who vote, $B^b$ without covariates.  Then if the
-model holds (and the number of people per precinct is constant over
+fraction of blacks who vote, $B^b$ without covariates.  If the model
+holds (and the number of people per precinct is constant over
 precincts), a consistent and efficient estimator of this quantity is
 as follows.  (1) Run EI to estimate the five parameters of the
 truncated bivariate normal.  Since they are on the untruncated scale,
@@ -728,7 +727,6 @@ differences can be studied at the precinct or district level, and with
 point estimates and confidence intervals or full distributions.  The
 result will be a much more robust set of estimates.
 
-
 \section{Concluding Suggestions}
 
 As suggested in King (1997) and quoted above, ``The best first
@@ -748,33 +746,34 @@ precisely how informative the bounds are, and whether the bounds are
 of constant or variable width.
 
 For researchers who wish a simple approximation to estimating a second
-stage relationship, the information provided in this article should
-provide a guide to choosing intelligently among the unadjusted,
-adjusted, weighted, and nonlinear methods.  Researchers can easily tell
-in which of the four prototypical situations listed and illustrated in
-Section \ref{s:alt} their data fall, and they can take the action
-indicated.
+stage relationship instead of the extended model, the information
+provided in this article provides a guide.  If enough information to
+run first stage EI model exists, and a scatterplot doesn't indicate
+nonlinearity, then weighted least squares is the best approach.
+Researchers can easily tell which is appropriate by examining the
+situations discussed in in Section \ref{s:alt}.
 
 If a more formal statistical approach seems desirable, then a good
 method must go beyond classical linear econometric theory.  It must
 take into account (a) the nonlinear nature of the problem, (b) the
 bounded nature of the second stage dependent variable with the width
-of the bounds varying over observations, (c) the heteroskedasticity,
-and (d) the effect of any possible logical inconsistency of the first
-and second stages of the analysis (since, of course, two-step
-statistical methods need not be logically consistent to work well;
-see, e.g., Meng, 1994).  At present, the only model that has been
-proposed with all these properties is the extended EI model that
-allows covariates to be included as part of the EI estimation
-procedure (King, 1997: Ch.9).  HS are correct that this extended model
-is sometimes only weakly identified, but that is only when the bounds
-are not narrow enough and $X$ is included among the covariates or
-highly related to $Z$.  In other cases, with narrow bounds or even
-wide ones when $Z$ is unrelated to $X$, the extended model can be
-strongly identified and so can be used in many cases without problem.
-Imai and King (2002) demonstrate how to compute first differences and
-other quantities of interest from the extended EI model, and they
-report on extensions of the EI software to make this possible.
+of the bounds varying over observations, (c) the heteroskedasticity
+and the correlation between bounds and the shrinkage, and (d) the
+effect of any possible logical inconsistency of the first and second
+stages of the analysis (since, of course, two-step statistical methods
+need not be logically consistent to work well; see, e.g., Meng, 1994).
+At present, the only model that has been proposed with all these
+properties is the extended EI model that allows covariates to be
+included as part of the EI estimation procedure (King, 1997: Ch.9).
+HS are correct that this extended model is sometimes only weakly
+identified, but that is only when the bounds are not narrow enough and
+$X$ is included among the covariates or highly related to $Z$.  In
+other cases, with narrow bounds or even wide ones when $Z$ is
+unrelated to $X$, the extended model can be strongly identified and so
+can be used in many cases without problem.  Imai and King (2002)
+demonstrate how to compute first differences and other quantities of
+interest from the extended EI model, and they report on extensions of
+the EI software to make this possible.
 
 Econometric theory and the classical linear regression framework works
 well for what it was designed for.  However, in models with nonlinear
