@@ -41,7 +41,7 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
    endif;
 
    {u,s,v}=svd1(invvc);
-/* OLD: Kosuke, pls check my changes and delete the old version if they're ok.
+/* OLD: KOSUKE, PLS CHECK MY CHANGES AND DELETE THE OLD VERSION IF THEY'RE OK.
    v=s+(diag(s) .< tol).*eye(rows(s));
    res=u'*(rndmn(u*mean,invpd(v),sims))';
    res=res-(diag(s) .< tol).*res;       
