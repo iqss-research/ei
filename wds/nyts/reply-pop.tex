@@ -17,8 +17,8 @@ We begin by thanking Referee~1 for his/her careful reading of our
 manuscript and many helpful comments. We believe we have addressed all
 of these comments in our revised manuscript and that in so doing we
 have improved our presentation significantly.  In what follows, the
-original comments appear in italic type; our replies and comments are
-in roman type.
+original comments appear in \emph{italic type}; our replies and
+comments are in roman type.
 
 \bigskip
 \noindent {\bf Major Comments of and reply to Referee~1}
@@ -35,25 +35,24 @@ in roman type.
     wants to estimate.  This is not the fault of the authors.  The bad
     votes problem is just one that is practically data-less.}
   
-  The referee seems to misunderstand the primary goal of our paper.
   The purpose of our method is NOT to ``estimate the impact of 27
   covariates and $X_i$ on bad vote rates for Bush and Gore.'' Rather,
   our goal is to predict the number of bad votes that was cast for
-  Bush. These two are fundamentally different: the first is the
-  problem of causal inference, while the second is the problem of the
-  predictive inference. The fundamental theoretical property of
-  Bayesian model averaging is concerned about the predictive inference
-  and not about the causal inference. 
+  Bush. These two are fundamentally different: the first is a problem
+  of causal inference, while the second is a problem of the predictive
+  inference. The fundamental theoretical property of Bayesian model
+  averaging concerns predictive inference and not causal inference.
+  We have tried to make this much clearer in the current version.
   
-  In predictive problems (but not causal problems) where we do not
-  know the true model, estimating a model with ``all'' variables one
-  can think of will almost surely generate bias and inefficiency
-  relative to some subset.  In particular, including irrelevant
-  variables may not bias causal inferences but they will bias
-  predictive inferences and so should be avoided.  This is the
-  conclusion of the large literature on model (or variable) selection
-  (e.g., stepwise methods, Cp criterion, etc.), most of which don't
-  make much sense in making causal inferences. 
+  To be more specific, in predictive problems (but not causal
+  problems) where we do not know the true model, estimating a model
+  with ``all'' variables one can think of will almost surely generate
+  bias and inefficiency relative to some subset.  In particular,
+  including irrelevant variables may not bias causal inferences but
+  they will bias predictive inferences and so should be avoided.  This
+  is the conclusion of the large literature on model (or variable)
+  selection (e.g., stepwise methods, Cp criterion, etc.), most of
+  which don't make much sense in making causal inferences.
   
   A key result in this literature is that BMA is known to perform
   better than all these standard variable selection procedures because
@@ -95,55 +94,55 @@ in roman type.
   As the referee correctly points out, we have not explored the entire
   model space. Indeed, in most applications, the entire model space is
   infinite. In our application, therefore, neither 31 nor 228 models
-  do not represent the entire model space. One can collect more
-  covariates and include them in the model, add more interactions and
-  higher order polynomial terms, use different ecological inference
-  models, and so on.  This implies, however, one can never explore the
-  entire model space.  Bayesian model averaging (BMA), therefore, must
-  condition on a finite subset of the entire model space. In the
-  revised manuscript, we emphasized this limitation. See page ??
+  represent the entire model space.  One can collect more covariates
+  and include them in the model, add more interactions and higher
+  order polynomial terms, use different ecological inference models,
+  and so on.  This implies, however, one can never explore the entire
+  model space.  Bayesian model averaging (BMA), therefore, must
+  condition on a finite subset of the entire model space.  This is a
+  limitation of course and the revised manuscript now highlights it.
   
   However, we disagree with the referee's point that this invalidates
-  our BMA analysis. If the referee's criticism is correct, any
+  our BMA analysis. If the referee's criticism is correct, every
   standard statistical analysis is invalid since it conditions on one
-  model.  For example, the standard ecological inference analysis
-  would use the model with no covariate. Such an approach is invalid
-  since it does not explore the entire model space.  The referee's
-  suggestion to ``consider EI models that include $X_i$ only'' is also
-  invalid since it conditions on a single model. 
+  model.  For example, almost alla applications of ecological
+  inference analysis use only one model without any covariates. Such
+  an approach is invalid since it does not explore the entire model
+  space.  The referee's suggestion to ``consider EI models that
+  include $X_i$ only'' would be subject to the same criticism since it
+  conditions on a single model.
   
   Although our BMA analysis does not explore the entire model space,
-  it is superior to any of these standard approaches. This is based on
-  the general theoretical property of BMA. The BMA analysis is better
-  at estimating a predictive quantity than any submodel being averaged
-  over, even if the true model is {\it outside} the set of submodels
-  being averaged over (e.g., Madigan and Raftery, 1994 JASA).  Note
-  that almost the same result exists in the literature on committee
-  methods (e.g., Bishop, 1995). That is, our BMA approach is better
-  than any submodel that is averaged over in our analysis including
-  the one suggested by the referee.  Appendix B.2. empirically
-  illustrates this point.
+  since that is impossible, it is superior to any of these standard
+  approaches.  This conclusion is based on the general theoretical
+  properties of BMA. The BMA analysis is better at estimating a
+  predictive quantity than any submodel being averaged over, even if
+  the true model is {\it outside} the set of submodels being averaged
+  over (e.g., Madigan and Raftery, 1994 JASA).  Note that almost the
+  same result exists in the literature on committee methods (e.g.,
+  Bishop, 1995).  That is, our BMA approach is better than any
+  submodel that is averaged over in our analysis including the one
+  suggested by the referee.
   
   Since the entire model space is infinite, it is always possible that
-  someone finds a better submodel to include in a BMA.  No one has
-  suggested a plausible story, and accompanying model, but we are
-  certainly open to be proved wrong if someone finds such a model.
-  However, this fact does not distinguish our analysis from any other
-  statistical analysis in any field.  Every empirical analysis is
+  someone finds a new submodel to include in a BMA.  No one has
+  suggested a plausible story, and accompanying model, that we have
+  excluded but we are certainly open to be proved wrong if someone
+  finds such a model.  Of course, every empirical analysis is
   vulnerable to this criticism that there might be a better model that
   is not considered in the original analysis.
   
-\item {\it Notwithstanding the data-less aspect of the overseas
-    problem, much more should be said about the EI method being used.
-    King's EI technique has been the subject of at least four
-    controversies: the Tam article in PA, the JASA exchange, the
-    American Statistician exchange, and the PA exchange.  I think the
-    most relevant of these are the first two.  Any application of
-    King's EI method needs to note these exchanges, as they talk about
-    the importance of assumptions and limitations of the method.  It
-    is fine for the paper to depend on King's EI method since it must
-    depend on something.  But it needs to be honest with known model
-    shortcomings.}
+% \item {\it Notwithstanding the data-less aspect of the overseas
+%     problem, much more should be said about the EI method being used.
+%     King's EI technique has been the subject of at least four
+%     controversies: the Tam article in PA, the JASA exchange, the
+%     American Statistician exchange, and the PA exchange.  I think the
+%     most relevant of these are the first two.  Any application of
+%     King's EI method needs to note these exchanges, as they talk about
+%     the importance of assumptions and limitations of the method.  It
+%     is fine for the paper to depend on King's EI method since it must
+%     depend on something.  But it needs to be honest with known model
+%     shortcomings.}
   
 \item {\it It also needs to be honest about priors.  When a Bayesian
     statistical method has 67 observations, priors are going to matter
@@ -157,37 +156,42 @@ in roman type.
   
   There are two kinds of prior that we specify in our BMA analysis.
   One on the model probability and the other on the distribution of
-  parameters. We use the noninformative prior for the model
-  probability by not favoring any particular model a priori. This is a
-  standard approach in BMA since the whole purpose of BMA is to let
-  the data tell you which model should be preferred. We do not think
-  that this choice is controversial. For the model parameters, we use
-  the standard prior presented and examined in King (1997). This
-  choice can be more controversial. Following the standard Bayesian
-  analysis, therefore, we conduct the sensitivity analysis (see
-  Appendix B.2) and find that prior specification had little influence
-  on the outcome.
+  parameters. We use noninformative priors for the model probability
+  by not favoring any particular model a priori. This is a standard
+  approach in BMA since the whole purpose of BMA is to let the data
+  tell you which model should be preferred.  This choice is not
+  normally seen as controversial. For the model parameters, we use the
+  standard prior presented and examined in King (1997). This choice
+  might have more of an effect.  Thus, following standard Bayesian
+  practice, we conduct sensitivity analyses (see Appendix B.2) and
+  find that in fact the prior specification has little influence on
+  our conclusions.  We have clarified this in the Appendix.
   
 \item {\it For a revision of this paper, I would recommend sticking
     with the bounds analysis which is excellent and nicely written.}
   
   The bounds analysis is appealing since it does not impose any
   statistical assumptions.  However, the public is apparently
-  uninterested in the limited information it provides, and so the
-  bounds alone do not answer the question posed (this is of course why
+  uninterested in the limited information it provides.  All it says is
+  that it is possible that Gore could have won.  The bounds alone do
+  not answer the question posed by the Times.  This is of course why
   the field of ecological inference did not end in 1953 with Duncan
   and Davis' discovery of the bounds, and why the bounds alone are
   used in very few studies studies that apply ecological inference
-  even in academia).  
+  even in academia, but the contribution of the bounds to our quantity
+  of interest here is even smaller since the quantity of interest is
+  not the fractions but rather the probability that Gore really won.
+  Unfortunately, the bounds only tell us that that probability is not
+  0.  It says nothing else.
   
-  Indeed, the Times reporters constantly told us that they needed a
-  point estimate, and that they could deal with confidence intervals
-  (or margins of error) but not the bounds.  BMA provides a point
+  The Times reporters repeatedly told us that they needed a point
+  estimate, and that they could deal with confidence intervals (or
+  margins of error) but not the bounds.  Our approach provides a point
   estimate that takes into account all reasonable models that were
   suggested to us at that time.  It has limitations, but it is better
   than any feasible alternative suggested at the time or since in
   providing what the public and newspaper needed (a point estimate and
-  uncertainty estimate). 
+  uncertainty estimate).
  
 \item {\it I would also keep the material on Republican pressure,
     although the conclusions the author draws from this are overstated
@@ -196,50 +200,53 @@ in roman type.
     justify.}
   
   In the revised manuscript, we have acknowledged this possible
-  selection bias and added a qualification. See page ??.
-
-
+  selection bias and added a qualification.  However, for there to
+  have been selection bias, the Republicans would have had to choose
+  counties to pressure based on their success over and above what
+  could be predicted based on Republican strength and the other
+  variables we measured.  Since prior evidence on where pressure
+  would be successful did not exist, selection bias is unlikely.
 \end{enumerate}
 
 \bigskip
 \noindent {\bf Minor Comments of and reply to Referee~1}
 
-\begin{enumerate}
-\item {\it The first sentence of the paper is awkward.  ``Yet, they
-    clearly determined the outcome of the election.'' This can be said
-    of every anomaly from Florida given the tight margin.}
-  
-\item {\it ``Our results give ...'' on page 3.  Replace ``give'' with
-    ``estimate.'' Statistical results can do not better than this.}
-  
-\item {\it ``seen as remarkable ...'' is not remarkable.  The
-    probability that all voters in Florida like Gore more than Bush
-    has positive probability, the probability that Katherine Harris
-    decided the election has positive probability, and so on.}
-  
-\item {\it ``In counties more favorable to Democrats ...'' examples
-    would be nice.}
-  
-\item {\it Table 2 has 3 columns and Table 3 has 2 columns.  The
-    transition is awkward.}
-  
-\item {\it Page 7 should cite Duncan and Davis.}
-  
-\item {\it The Baker County example on page 8 is striking and could be
-    played up more.}
-  
-\item {\it ``... knowing for certain who won the 2000 election'' We
-    all know that Bush won since winning is a legal matter.  What the
-    author means is knowing if more voters were cast for Bush than
-    Gore in Florida.}
-  
-\item {\it Section 4.3 has too many comments that look causal.  See my
-    comments above.  ``if all American laws had been followed'' is not
-    the point here.  Voting laws are almost entirely local, so the
-    issue for Florida votes is Florida laws.}
+We implemented almost all of these suggestions.
 
-
-\end{enumerate}
+% \begin{enumerate}
+% \item {\it The first sentence of the paper is awkward.  ``Yet, they
+%     clearly determined the outcome of the election.'' This can be said
+%     of every anomaly from Florida given the tight margin.}
+  
+% \item {\it ``Our results give ...'' on page 3.  Replace ``give'' with
+%     ``estimate.'' Statistical results can do not better than this.}
+  
+% \item {\it ``seen as remarkable ...'' is not remarkable.  The
+%     probability that all voters in Florida like Gore more than Bush
+%     has positive probability, the probability that Katherine Harris
+%     decided the election has positive probability, and so on.}
+  
+% \item {\it ``In counties more favorable to Democrats ...'' examples
+%     would be nice.}
+  
+% \item {\it Table 2 has 3 columns and Table 3 has 2 columns.  The
+%     transition is awkward.}
+  
+% \item {\it Page 7 should cite Duncan and Davis.}
+  
+% \item {\it The Baker County example on page 8 is striking and could be
+%     played up more.}
+  
+% \item {\it ``... knowing for certain who won the 2000 election'' We
+%     all know that Bush won since winning is a legal matter.  What the
+%     author means is knowing if more voters were cast for Bush than
+%     Gore in Florida.}
+  
+% \item {\it Section 4.3 has too many comments that look causal.  See my
+%     comments above.  ``if all American laws had been followed'' is not
+%     the point here.  Voting laws are almost entirely local, so the
+%     issue for Florida votes is Florida laws.}
+% \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -276,18 +283,24 @@ in roman type.
   We are hesitant to discuss whether the question posed by the NYT is
   interesting since it is purely a matter of subjective judgment.
   Rather, our goal was to give a scientific answer to the question
-  posed. Here, we merely explain why the NYT thought this question is
-  important and interesting and wrote the full four page article - the
-  longest since the Watergate. The important thing to note here is
-  that we are looking at the Bush's vote share among ``bad'' overseas
-  ballots rather than ``all'' overseas ballots.  More than 25 NYT
-  journalists spent six months and gathered massive qualitative
-  evidence that the Bush campaign put significant amount of pressure
-  on local electoral officials to count those ballots that were likely
-  to be cast for Bush (e.g., military votes).  Based on this evidence,
-  they concluded that it may be possible that most of illegally
-  counted overseas ballots might have been cast for Bush, and asked us
-  to investigate such possibility.
+  posed. Here, we merely explain why the NYTs and their readers
+  thought this question important and interesting and wrote the full
+  four page article --- the longest since the Watergate. The important
+  thing to note here is that we are looking at the Bush's vote share
+  among ``bad'' overseas ballots rather than ``all'' overseas ballots.
+  More than 25 NYT journalists spent six months and gathered massive
+  qualitative evidence that the Bush campaign put significant amount
+  of pressure on local electoral officials to count those ballots that
+  were likely to be cast for Bush (e.g., military votes).  Based on
+  this evidence, they concluded that it may be possible that most of
+  illegally counted overseas ballots might have been cast for Bush,
+  and asked us to investigate such possibility.  Our results contrast
+  sharply with the grounds on which the Supreme Court case that
+  ultimately decided the election was justified --- treating voters
+  equally under the law.  The count in Florida was stopped by the
+  Court supposedly to keep treatment equal in all counties, but yet
+  the absentee voters in different counties were clearly not treated
+  equally.
   
 \item {\it The authors evade this problem partly through misdirection
     and partly through purple prose.  For example, on page 3, the
@@ -317,7 +330,8 @@ in roman type.
   bounds can eliminate the possibility of Gore's victory: the width of
   bounds depends on the data. Since this analysis does not impose any
   statistical assumption, we believe that it is important to stress
-  its conclusion.
+  its conclusion.  We toned down our claims and tried to put them in
+  the context of these good points made by the referee.
   
 \item {\it When I first saw the paper I was naturally intrigued by the
     claim that "Formal Bayesian model averaging has not been used in
@@ -334,13 +348,12 @@ in roman type.
     So the primary methodological selling point of the paper seems to
     me to reduce, essentially, to tendentious self-promotion.}
   
-  What we intended to say was that the Laplace approximation provides
-  a better way to approximate the marginal likelihood. This is the
-  conclusion of the recent statistical literature (see e.g., DiCiccio
-  et al., 1997 JASA).  Note that since the marginal likelihood cannot
-  be solved analytically, any estimation method has to rely on the
-  approximation.  To avoid the misunderstanding, we changed this
-  sentence to ?? (see page ??).
+  The Laplace approximation provides a better way to approximate the
+  marginal likelihood, which is analytically intractable (DiCiccio et
+  al., 1997 JASA).  Even though BIC is a much inferior one
+  approximation to BMA, we agree with the referee's point that it is
+  nonetheless still an approximation to BMA.  We have removed our
+  claim and changed the paper accordingly.
   
 \item {\it What seems most striking about the statistical analysis (pages
   9-14) is the high ratio of wind-up to substance.  The authors
@@ -352,6 +365,12 @@ in roman type.
   a methodological standard that Gary King has admirably set forth in
   his work: make it clear what the data are and how you got from the
   data to the conclusions.}
+
+To keep the paper as short as the editors want, we were unable to put
+much description of this in the text.  However, we have added enough
+detail so that anyone with access to the data would be able to
+replicate our results.  We will also provide a replication dataset
+upon publication.
 
 \item {\it The model space requires much more in the way of
     substantive justification than it gets here.  I see no need to
@@ -366,11 +385,12 @@ in roman type.
     but that sort of work would, in my view, be necessary for the
     statistical analysis to fly.}
  
-
-
- 
-
-
+  We hesitate to speculate about causal inferences from these data and
+  would not interpret the coefficients on our covariates as
+  approximation any kind of causal inference.  Our goal is prediction,
+  and we are willing to include in the set of models we average over
+  any variable or model that anyone might suggest could plausibly
+  change our results.  Thus far, we have included all such models.
 \end{enumerate}
 
 \end{document}
