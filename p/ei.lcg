@@ -384,7 +384,8 @@ eitnorm.src
     rndtni                           : proc
     rndbtn                           : proc
     rndbtni                          : proc
-
+    rndtsn                           : proc
+    
 eiutil.src
     fisherzi                         : proc
     fisherz                          : proc
