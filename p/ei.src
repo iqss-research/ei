@@ -935,7 +935,7 @@ proc eirepl(dbufin);
   #else;
     for i (1, r, 1);
   #endif;
-
+    
     tst=vin(dbufin,nms[i]);
     if tst==1;
       d = eiread(dbufin,nms[i]);
@@ -948,7 +948,7 @@ proc eirepl(dbufin);
 	retp(miss(1,1));
       endif;
     else;
-      format/rd 7,10;
+      format/rd 10,10;
       "eirepl warning: Essential global not in input data buffer: ";;$nms1[i];
       "   Results may not replicate exactly unless you get the version";
       "   of EI used to create the data buffer. Using current default.";
