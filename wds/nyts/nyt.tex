@@ -768,12 +768,16 @@ vector $\Theta$ in Model $k$. That is, the marginal likelihood is
 obtained by averaging the likelihood over the prior distribution.  The
 marginal likelihood can be thought of as ``the probability of seeing
 the data that actually were observed, calculated \emph{before} any
-data became available'' \cite[p.776]{kass:raft:95}.  That is, the
-marginal likelihood would be exactly the likelihood for the model
-(rather than a parameter of the model) if the data turn out to look
-exactly like your prior.  Hence, the marginal likelihood tells us how
-well each model would be supported by the prior.  We discuss
-computational issues in the Appendix.
+data became available'' \cite[p.776]{kass:raft:95}.  That is, instead
+of maximizing the likelihood with respect to the parameter given the
+data, as we would do to compute the maximum likelihood estimate, the
+marginal likelihood does not have a maximization step: it is the
+average value of the likelihood evaluated at parameter values drawn
+from their prior density.  (Although this quantity could be computed
+by simulation in this way, such a method tends to be highly
+inefficient especially for problems with relatively flat priors or
+high dimensional parameter vectors.  We discuss these and other
+computational issues in the Appendix.)
 
 \section{Empirical Results}
 \label{s:outcome}
