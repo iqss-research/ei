@@ -206,8 +206,8 @@ endp;
 **     betabs   =  betab draws from its posterior (p x _Esims)
 **     betaws   =  betaw draws from its posterior (p x _Esims)
 **     mfreq    =  first column contains the model number and the second 
-**                 column contains the frequency of sampling from each 
-**                 model (# of model x 2)
+**                 column contains the frequency of posterior sampling 
+**                 from each model (# of model x 2)
 **     postprob =  first column contains the model number and the second 
 **                 column contains the posterior model probabilities 
 **                 (# of model x 2)
