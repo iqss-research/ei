@@ -109,9 +109,10 @@
   Presidential Election?}
 
 \author{Kosuke Imai\thanks{Ph.D. candidate, Department of Government,
-    Harvard University. E-mail: \texttt{KImai@Fas.Harvard.Edu}
-    Address: Center for Basic Research in the Social Sciences, 34
-    Kirkland, Cambridge MA 02138.}  
+    Harvard University. (Center for Basic Research in the Social
+    Sciences, 34 Kirkland, Cambridge MA 02138;
+    \texttt{http://www.people.fas.harvard.edu/\~kimai},
+    \texttt{KImai@Fas.Harvard.Edu}}
 \and %
 Gary King\thanks{Professor of Government, Harvard University and
   Senior Science Advisor, Evidence and Information for Policy Cluster,
@@ -128,7 +129,7 @@ Gary King\thanks{Professor of Government, Harvard University and
   202 more votes than George W.\ Bush on election day in Florida.
   George W.\ Bush was elected president because he overcame the
   election day margin among the overseas absentee ballots that arrived
-  and were counted after election day.  In the final offical tally,
+  and were counted after election day.  In the final official tally,
   Bush received 537 more votes than Gore.  These numbers are taken
   from the official results released by the Florida Secretary of
   State's office (see Table \ref{tb:official}) and so do not reflect
@@ -137,15 +138,15 @@ Gary King\thanks{Professor of Government, Harvard University and
   hypothetical divergence between voter preferences and counted votes.
   After the election, the \emph{New York Times} conducted a six month
   long investigation and found that 680 of the overseas absentee
-  ballots were illegally counted, and partisan, pundit, or academic
+  ballots were illegally counted, and no partisan, pundit, or academic
   has publicly disagreed with their assessment.  In this paper, we
   describe the statistical procedures we developed and implemented for
-  the \emph{Times} to ascertain whether not counting these 680 ballots
-  would have changed the outcome of the election.  The methods involve
-  adding formal Bayesian model averaging procedures to King's (1997)
-  ecological inference model.  Formal Bayesian model averaging has not
-  been used in political science but is especially appropriate when
-  substantive conclusions depend heavily on apparently minor but
+  the \emph{Times} to ascertain whether or not counting these 680
+  ballots would have changed the outcome of the election.  The methods
+  involve adding formal Bayesian model averaging procedures to King's
+  (1997) ecological inference model.  Formal Bayesian model averaging
+  has not been used in political science but is especially appropriate
+  when substantive conclusions depend heavily on apparently minor but
   indefensible model choices, when model generalization is not
   feasible, and when potential critics are more partisan than
   academic.  We show how we derived the results for the \emph{Times}
@@ -191,7 +192,7 @@ outdistance Gore, which he did in the end by 537 votes (see Table
 \ref{tb:official}).  The extent to which the law was followed in this
 small but consequential part of the story escaped scrutiny for some
 time. After the election was decided, however, the \emph{New York
-  Times} conducted a six month long investigation, retreived the
+  Times} conducted a six month long investigation, retrieved the
 envelopes in which the ballots were mailed, and searched for
 violations of the law (Barstow and Van Natta, Jr., 2001).  In one of
 the longest set of articles ever published by the \emph{Times}, they
@@ -223,7 +224,7 @@ inattention of local election officials or political party
 representatives.  It is also not a theoretical problem, in the sense
 that it does not rely on comparing the intent of the voters with
 official vote.  Rather, according to the \emph{Times}, the overseas
-ballot problem was due to blatently illegal actions on the part of
+ballot problem was due to blatantly illegal actions on the part of
 local election officials that had not been noticed previously.  The
 \emph{Times} argued that the local officials were influenced by the
 deliberate political strategies employed by the Bush campaign, and
@@ -246,14 +247,14 @@ and a variety of others, along with a description of our methods.  The
 problem is a straightforward ecological inference: we observe the
 number of bad ballots in each of Florida's counties and the number of
 ballots cast and counted for each of the candidates.  From these
-variables, and a variety of other auxilary information, we try to
+variables, and a variety of other auxiliary information, we try to
 infer the total number of bad ballots that had been cast for each
 candidate and see whether this is enough to make up for Bush's 537
 official vote margin.
 
 Since the partisan atmosphere surrounding public discourse on this
 issue was so highly charged, we knew that our work would be subject to
-more than the usual academic scruitny, and so we sought a method that
+more than the usual academic scrutiny, and so we sought a method that
 was less vulnerable to criticism, even from a scholarly perspective
 somewhat unreasonable criticism.  No such statistical method exists of
 course, especially for an area as uncertain as ecological inference,
@@ -279,9 +280,9 @@ been counted.  This supports the argument made by \textit{The New York
   Times} that the flawed ballots favored Bush much more than other
 candidates.  We also present here a variety of results that did not
 appear in the \emph{Times} article, including the probability that
-Gore would have won under various hypothetical scenerios, such as if
+Gore would have won under various hypothetical scenarios, such as if
 Katherine Harris had accepted Palm Beach County's recount, which was
-submitted two hours late.  In some plausible scenerios, the
+submitted two hours late.  In some plausible scenarios, the
 probability that Gore would have won is nearly 100\%.  Finally, we
 present evidence that the propensity of local election officials to
 violate the law and accept bad ballots was substantially greater in
@@ -306,12 +307,12 @@ On July 15, 2001, \textit{The New York Times} published an article,
 result of its six-month investigation on the 2000 US election. In this
 article, which at four and a half pages was their longest since the
 coverage of Watergate scandal, The \emph{Times} reporters describe the
-details of the of the Bush campaign effort to secure victory by
-pressuring selected local election officials to count invalid overseas
-absentee ballots in Florida.  In particular, Republicans focused on
-military ballots and the counties where Bush had his strongest voting
-base.  For example, in counties such as Escambia, Okaloosa, and Santa
-Rosa, Bush lawyers argued that every vote cast by Americans in uniform
+details of the Bush campaign effort to secure victory by pressuring
+selected local election officials to count invalid overseas absentee
+ballots in Florida.  In particular, Republicans focused on military
+ballots and the counties where Bush had his strongest voting base.
+For example, in counties such as Escambia, Okaloosa, and Santa Rosa,
+Bush lawyers argued that every vote cast by Americans in uniform
 should be counted, regardless of the letter of the law.  In counties
 more favorable to Democrats, Bush's lawyers argued exactly the
 opposite --- that local election officials must follow the letter of
@@ -400,8 +401,8 @@ time, the results can be sensitive to model specification.  This
 combination of problems thus suggests that this will be an especially
 appropriate use of Bayesian model averaging, which allows results to
 be based on multiple models and on information in a large set of
-covariates, even if a more theoretically satistifying generalized
-model is infeasible.
+covariates, even if a more theoretically satisfying generalized model
+is infeasible.
 
 Table~\ref{tb:ei} presents our formal notation.  For each county $i$
 ($i=1,\dots,67$), we denote the proportion of invalid ballots among
@@ -542,7 +543,7 @@ the 2000 election.
 In order to learn more about who actually won the election --- the
 margins of victory within the bounds that are most likely --- we must
 add some statistical assumptions.  With these assumptions, we can make
-precise probabilitistic statements about our quantities of interest.
+precise probabilistic statements about our quantities of interest.
 Readers may agree with us that the assumptions we chose are plausible,
 or even the best possible, but the price of the more precise
 conclusions that follow is the additional uncertainty owing to the
@@ -552,7 +553,7 @@ try to avoid some of these problems by using Bayesian model averaging.
 
 While confidence intervals and standard errors in most statistical
 models includes estimation uncertainty, they do not usually include
-uncertianty due to model choice.  This is especially problematic since
+uncertainty due to model choice.  This is especially problematic since
 analysts rarely have a strong theory to justify their model choice.
 Bayesian model averaging is a formal statistical methodology that
 incorporates model uncertainty into the estimation.\footnote{See
@@ -616,7 +617,7 @@ In a sense, then, Figure \ref{fg:tomog} presents the data in the form
 closest the answers we seek.
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=5in,height=6in,angle=-90]{tomog}
+\includegraphics[width=4.5in,height=6in,angle=-90]{tomog}
 \caption{\label{fg:tomog}
   Tomography plot for invalid overseas absentee ballots.  $\bb$ and
   $\bg$ are the proportion of Gore's invalid and valid ballots,
@@ -676,15 +677,15 @@ as explained above. The idea of Bayesian model averaging is to produce
 one set of results combining these 29 models according to how much
 support each model receives from the data.\footnote{A list of all 29
   models follows: (1) no covariate, (2) $X_i$ for $\bb$, (3) $X_i$ for
-  $\bg$, (4) $X_i$ for both $\bg$ and $\bb$, (5) military absentee
+  $\bg$, (4) $X_i$ for both $\bb$ and $\bg$, (5) military absentee
   voters, (6) registered Republican absentee voters, (7) registered
   Democratic absentee voters, (8) female absentee voters, (9) White
   absentee voters, (10) Black absentee voters, (11) Hispanic absentee
-  voters, (12) invalid military absentee voters, (13) invalid
-  registered Republican absentee voters, (14) invalid registered
-  Democratic absentee voters, (15) invalid female absentee voters,
-  (16) invalid White absentee voters, (17) invalid Black absentee
-  voters, (18) invalid Hispanic absentee voters, (19) Democratic vote
+  voters, (12) rejected military absentee voters, (13) rejected
+  registered Republican absentee voters, (14) rejected registered
+  Democratic absentee voters, (15) rejected female absentee voters,
+  (16) rejected White absentee voters, (17) rejected Black absentee
+  voters, (18) rejected Hispanic absentee voters, (19) Democratic vote
   share among residents, (20) vote share of other candidates, (21)
   registered Republican residents, (22) registered Democratic
   residents, (23) registered Black Democratic residents, (24)
@@ -693,9 +694,11 @@ support each model receives from the data.\footnote{A list of all 29
   (27) Panhandl Florida regional indicator variable, (28) Southern
   Florida regional indicator variable, and (29) corruption indicator
   variable. All the covariates except indicator variables are entered
-  as a ratio varying from 0 to 1.  Except the first three models, the
+  as a ratio varying from 0 to 1. Except the first three models, the
   covariate was used to model the conditional untruncted mean of both
-  parameters, $\bb$ and $\bg$.}
+  parameters, $\bb$ and $\bg$. For models (5) to (11), each group was
+  divided into invalid and valid ballots with the former group used to
+  predict $\bb$ and the latter used to predict $\bg$.}
 
 Let $M_k$ denote the $k$th model specification ($k=1,\dots,29$). Then
 we make an inference about some quantity of interest $\Delta$ by
@@ -766,13 +769,14 @@ perform relatively well compared with other methods in many situations
   application which is not trivial in most situations.  The
   Laplace-Metropolis estimator which we use approximates the marginal
   likelihood without requiring such an effort.  The rate of
-  approximation is $O(1/n)$, which is considerably better than
+  approximation is $O(n^{-1})$, which is considerably better than
   easier-to-apply methods such as BIC, which has a rate of only
-  $O(1/\sqrt{n})$: For example, Kass and Raftery (1995,p.778) say that
-  ``even for very large samples, it [BIC] does not produce the correct
-  value.''  In our small-$n$ application, the Laplace approximation
-  along with exact finite sample posterior simulation is more
-  appropriate.}
+  $O(n^{-1/2})$ (see e.g. \citet{kass:tier:kada:89}). For example,
+  Kass and Raftery (1995,p.778) say that ``even for very large
+  samples, it [BIC] does not produce the correct value.''  In our
+  small-$n$ application, the Laplace approximation along with exact
+  finite sample posterior simulation is more appropriate.}
+
 % The Laplace-Metropolis estimator of the
 % marginal likelihood is based on the following Laplace asymptotic
 % approximation.
@@ -878,7 +882,7 @@ this number coming only from our analysis of the bad overseas absentee
 ballots.  If only the Palm Beach votes had been counted, Gore would
 have won with 0.29 probability.  To put it another way, the massive
 differences in the probabilities from 0.002 to 0.82 for a Gore victory
-were all due to the decisions of Katerine Harris.
+were all due to the decisions of Katherine Harris.
 
 In the last panel of Table \ref{tb:senario}, we consider
 counterfactuals where the invalid overseas absentee ballots had not
@@ -944,21 +948,21 @@ independent test.)
 & \multicolumn{1}{c}{counted for Bush} 
 & \multicolumn{1}{c}{all ballots}\\    \hline
     \multicolumn{5}{l}{\bf Republican pressure to count} \\
-    \hspace{1em}Collier & 45.0\% & 35.3\% & 53.7\% & 64.5\% & 60 \\    
-\hspace{1em}Duval & 83.6 & 57.5 & 62.3 & 67.8 & 637 \\
-\hspace{1em}Escambia & 88.8 & 62.6 & 64.2 & 80.3 & 272 \\                
-\hspace{1em}Okaloosa & 91.2 & 73.7 & 42.0 & 69.4 & 189 \\                
-\hspace{1em}Pasco & 63.2 & 48.0 & 60.5 & 76.4 & 53 \\                    
-\hspace{1em}Santa Rosa & 94.0 & 72.1 & 84.6 & 84.4 & 93 \\
-\hspace{1em}\emph{Average} & \emph{79}.\emph{6} & \emph{58}.\emph{0} & \emph{61}.\emph{5} & \emph{74}.\emph{3} & 1304 \\
+    \hspace{1em}Collier  & 46.7\% & 65.6\% & 53.7\% & 64.5\% & 60 \\    
+    \hspace{1em}Duval    & 83.8 & 57.5 & 62.3 & 67.8 & 637 \\
+    \hspace{1em}Escambia & 88.6 & 62.6 & 64.2 & 80.3 & 272 \\         
+    \hspace{1em}Okaloosa & 88.9 & 73.7 & 42.0 & 69.4 & 189 \\          
+    \hspace{1em}Pasco    & 62.3 & 48.0 & 60.5 & 76.4 & 53 \\                
+    \hspace{1em}Santa Rosa & 90.3 & 72.1 & 84.6 & 84.4 & 93 \\
+    \hspace{1em}\emph{Average} & \emph{83}.\emph{4} & \emph{60}.\emph{0} & \emph{61}.\emph{5} & \emph{74}.\emph{3} & 1304 \\
 \multicolumn{5}{l}{\bf Counties not mentioned by the \emph{Times}$^b$} \\ 
-\hspace{1em}\emph{Average} & \emph{73}.\emph{5} & \emph{49}.\emph{9} & \emph{30}.\emph{0} & \emph{71}.\emph{5} & 1751\\
+\hspace{1em}\emph{Average} & \emph{67}.\emph{6} & \emph{51}.\emph{8} & \emph{30}.\emph{0} & \emph{71}.\emph{5} & 1751\\
 \multicolumn{5}{l}{\bf Republican pressure not to count}\\ 
-\hspace{1em}Alachua & 50.0 & 39.8 & 12.5 & 54.5 & 77 \\ 
-\hspace{1em}Broward & 40.6 & 30.9 & 21.8 & 54.3 & 213 \\  
-\hspace{1em}Miami Dade & 41.0 & 46.3 & 11.7 & 57.1 & 306 \\
-\hspace{1em}Palm Beach & 55.6 & 35.3 & 40.7 & 56.2 & 53 \\ 
-\hspace{1em}\emph{Average} & \emph{45}.\emph{0} & \emph{38}.\emph{5} & \emph{17}.\emph{2} & \emph{55}.\emph{4} &  649 \\
+    \hspace{1em}Alachua    & 46.8 & 39.8 & 12.5 & 54.5 & 77 \\ 
+    \hspace{1em}Broward    & 46.9 & 30.9 & 21.8 & 54.3 & 213 \\  
+    \hspace{1em}Miami Dade & 44.4 & 46.3 & 11.7 & 57.1 & 306 \\
+    \hspace{1em}Palm Beach & 45.3 & 35.3 & 40.7 & 56.2 & 53 \\ 
+    \hspace{1em}\emph{Average} & \emph{45}.\emph{6} & \emph{38}.\emph{1} & \emph{17}.\emph{2} & \emph{55}.\emph{4} &  649 \\
     \hline                                                       
   \end{tabular}                                                
   \caption{Counties classified by whether the \emph{New York Times} 
@@ -1113,13 +1117,13 @@ an especially good chance of making valid inferences (King and Zeng,
 the case of Florida are especially clear and easily could have
 happened.  If the problem of the overseas absentee ballots had been
 litigated and the law applied equally in every county (as \emph{Bush
-v.\ Gore} seemed to require for votes cast on election day), the bad
+  v.\ Gore} seemed to require for votes cast on election day), the bad
 ballots might very well have been disqualified.  In this situation,
 although Gore probably would have lost, we conclude that no one will
 ever be able to say with certainty who would have won the American
 presidential election if all American laws had been followed.  If
 alsoi the Florida Secretary of State had somewhat different views on
-issues that were at least somewhat open to discression, the outcome of
+issues that were at least somewhat open to discretion, the outcome of
 the election might very well have changed.  Of course, a few different
 decisions by the candidates on visits to Florida, campaign spending,
 Elian Gonzolas, or any of a variety of other issues might also have
