@@ -163,7 +163,7 @@ proc 2=quadcml(x,Zb,Zw,y);
   endif;
 
   if gridl==0;         /* run CML */
-    {b,mlogl,grds,vc,ret}=cml(dataset,0,&eiloglik,stval);
+    {b,mlogl,grds,vc,ret}=fastcml(dataset,0,&eiloglik,stval);
     if in(ret,3|4|6|7|10|99,1);
       ?;
       "*********************************************";
@@ -171,7 +171,7 @@ proc 2=quadcml(x,Zb,Zw,y);
       "Restarting iterations with trust algorithm on";
       "*********************************************";
       _cml_options={ trust };
-      {b,mlogl,grds,vc,ret}=cml(dataset,0,&eiloglik,stval);
+      {b,mlogl,grds,vc,ret}=fastcml(dataset,0,&eiloglik,stval);
       _cml_options=0;
     endif;
     _Eres=vput(_Eres,ret,"retcode");

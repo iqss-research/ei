@@ -429,9 +429,11 @@ eiutil.src
     vreadall                         : proc
     _vreadallvrs                     : matrix
     strstrip                         : proc
+
     
+@ ---------------------- CML --------------------- @    
 cml.dec
-    _cml_version                     : matrix
+    _cml_ver                         : matrix
     _cml_Algorithm                   : matrix
     _cml_CovPar                      : matrix
     _cml_ParNames                    : matrix
@@ -476,11 +478,18 @@ cml.dec
     _cml_NumPoints                   : matrix
     _cml_Truncate                    : matrix
     _cml_Alpha                       : matrix
-    _cml_HessPD                      : matrix
     _cml_Switch                      : matrix
     _cml_DFTol                       : matrix
     _cml_FeasibleTest                : matrix
     _cml_InfCorr                     : matrix
+    _cml_GridSearch                  : matrix
+    _cml_GridSearchRadius            : matrix
+    _cml_Trust                       : matrix
+    _cml_TrustRadius                 : matrix
+    _cml_State                       : matrix
+    _cml_RandType                    : matrix
+    _cml_GradCoefs                   : matrix
+    _cml_GradOrder                   : matrix
     _cml_A                           : matrix
     _cml_B                           : matrix
     _cml_C                           : matrix
@@ -494,12 +503,6 @@ cml.dec
     _cml_eps2                        : matrix
     _cml_eps3                        : matrix
     _cml_dsn                         : string
-    _cml_TrustRadius                 : matrix
-    _cml_Trust                       : matrix
-
-cmlcheck.src
-    _cml_check                       : proc
-    _eps                             : proc
 
 cml.src
     cml                              : proc
@@ -508,41 +511,17 @@ cml.src
     CMLCLprt                         : proc
     cmltlimits                       : proc
 
-cmlutil.src
-    _cml                             : proc
-    _cml_sctu                        : proc
-    _cml_stepl                       : proc
-    _cml_bhhhstp                     : proc
-    _cml_stepbt                      : proc
-    _cml_usrsch1                     : proc
-    _cml_bracket                     : proc
-    _cml_feasible                    : proc
-    _cml_brent                       : proc
-    _cml_half                        : proc
-    _cml_rdd                         : proc
-    _cml_deriv                       : proc
-    _cml_grdfd                       : proc
-    _cml_grdcd                       : proc
-    _cml_grdf1                       : proc
-    _cml_grdc1                       : proc
-    _cml_hssp                        : proc
-    _cml_meritFunct                  : proc
-    _cml_fix0                        : proc
-    _cml_HPD                         : proc
-    _cml_gradp_hpd                   : proc
-
-cmlhist.src
-    CMLhist                          : proc
-
-cmldens.src
-    CMLdensity                       : proc
-
-cmlboot.src
-    CMLboot                          : proc
-    _rnd3                            : proc
+cmlbayes.src
+    CMLBayes                         : proc
 
 cmlblim.src
     CMLBlimits                       : proc
+
+cmlboot.src
+    CMLboot                          : proc
+
+cmlcheck.src
+    _cml_check                       : proc
 
 cmlclim.src
     cmlclimits                       : proc
@@ -556,13 +535,11 @@ cmlclim.src
     _cl_grad                         : proc
     _cl_hess                         : proc
 
-cmlprof.src
-    CMLProfile                       : proc
-    _pf_feasible                     : proc
+cmldens.src
+    CMLdensity                       : proc
 
-cmlbayes.src
-    CMLBayes                         : proc
-    _cml_rndp                        : proc
+cmlhist.src
+    CMLhist                          : proc
 
 cmlpflcl.src
     CMLPflCLimits                    : proc
@@ -571,12 +548,107 @@ cmlpflcl.src
     _pfcl_set                        : proc
     _pfcl_quad                       : proc
 
-cmlmlim.src
-    cmlmlimits                       : proc
-    _lmcl_set                        : proc
-    _lmcl_magnitude                  : proc
-    _lmcl_quad                       : proc
-    _lmcl_test                       : proc
+cmlprof.src
+    CMLProfile                       : proc
+    _pf_feasible                     : proc
+
+cmlutil.src
+    _cml                             : proc
+    _cml_sctu                        : proc
+    _cml_stepl                       : proc
+    _cml_bhhhstp                     : proc
+    _cml_stepbt                      : proc
+    _cml_usrsch1                     : proc
+    _cml_bracket                     : proc
+    _cml_feasible                    : proc
+    _cml_isFeasible                  : proc
+    _cml_brent                       : proc
+    _cml_half                        : proc
+    test_rdd                         : proc
+    _cml_rdd                         : proc
+    _cml_deriv                       : proc
+    _cml_mpgrdfd                     : proc
+    _cml_mpgrdbd                     : proc
+    _cml_mpgrdcd                     : proc
+    _cml_mpgrdf1                     : proc
+    _cml_mpgrdb1                     : proc
+    _cml_mpgrdc1                     : proc
+    _cml_grdfd                       : proc
+    _cml_grdbd                       : proc
+    _cml_grdcd                       : proc
+    _cml_grdf1                       : proc
+    _cml_grdc1                       : proc
+    _cml_grdf1                       : proc
+    _cml_grdb1                       : proc
+    _cml_mphssp                      : proc
+    _cml_hssp                        : proc
+    _cml_meritFunct                  : proc
+    _cml_fix0                        : proc
+    _cml_GSearch                     : proc
+    _cml_GetGradCoefs                : proc
+
+fastcml.src
+    fastcml                          : proc
+
+fastcutil.src
+    _fastcml                         : proc
+    _fastcml_sctu                    : proc
+    _fastcml_stepl                   : proc
+    _fastcml_bhhhstp                 : proc
+    _fastcml_stepbt                  : proc
+    _fastcml_bracket                 : proc
+    _fastcml_brent                   : proc
+    _fastcml_half                    : proc
+    _fastcml_grdusr                  : proc
+    _fastcml_grdfd                   : proc
+    _fastcml_grdbd                   : proc
+    _fastcml_grdcd                   : proc
+    _fastcml_hsgdfd                  : proc
+    _fastcml_hsgdbd                  : proc
+    _fastcml_hsgdcd                  : proc
+    _fastcml_mpgrdfd                 : proc
+    _fastcml_mpgrdbd                 : proc
+    _fastcml_mpgrdcd                 : proc
+    _fastcml_mphsgdfd                : proc
+    _fastcml_mphsgdbd                : proc
+    _fastcml_mphsgdcd                : proc
+    _fastcml_hsusr                   : proc
+    _fastcml_hssp                    : proc
+    _fastcml_mphssp                  : proc
+    _fastcml_meritFunct              : proc
+    _fastcml_gridSearch              : proc
+
+fastcbayes.src
+    fastCMLBayes                     : proc
+
+fastcboot.src
+    FastCMLboot                      : proc
+
+fastcpflcl.src
+    fastCMLPflCLimits                : proc
+    _pf_test                         : proc
+    _pf_magnitude                    : proc
+    _pfcl_set                        : proc
+    _fastpfcl_quad                   : proc
+
+fastcprof.src
+    fastCMLProfile                   : proc
+
+
+@ ----------------------- PGRAPH ------------------------ @    
+peps.dec
+    _pqg_eps_BoundingBox             : matrix
+    _pqg_eps_Scale                   : matrix
+    _pqg_eps_Translate               : matrix
+    _pqg_eps_Rotate                  : matrix
+    _pqg_ps_Scale                    : matrix
+    _pqg_ps_Translate                : matrix
+    _pqg_ps_Rotate                   : matrix
+    _pqg_ps_Monochrome               : matrix
+    _pqg_ps_MinLineWidth             : matrix
+    _pqg_ps_WhiteBecomes             : matrix
+    _pqg_ps_Orientation              : string
+    _pqg_ps_RGBColors                : matrix
 
 pgraph.dec
     _pqg_ver                         : matrix
@@ -620,6 +692,7 @@ pgraph.dec
     _pqgplay                         : matrix
     _pqgtype                         : matrix
     _pscreen                         : matrix
+    _pinbegwind                      : matrix
     _psilent                         : matrix
     _pssel                           : matrix
     _pstype                          : matrix
@@ -640,6 +713,9 @@ pgraph.dec
     _pzsci                           : matrix
     _pzclr                           : matrix
     _pzoom                           : matrix
+    _pvwr                            : string
+    _pvwrflags                       : string
+    _pvwrmode                        : string
     _pcmdlin                         : string
     _pcvfile                         : string
     _pdate                           : string
@@ -690,7 +766,6 @@ pbox.src
     _pcntclc                         : proc
 
 pcart.src
-    _endgrph                         : proc
     _pcartx                          : proc
     _pcarty                          : proc
     _pcartz                          : proc
@@ -715,10 +790,15 @@ pcontour.src
 pdraw.src
     draw                             : proc
 
+peps.src
+    tkf2eps                          : proc
+    tkf2ps                           : proc
+
 pgraph.src
     asclabel                         : proc
     fonts                            : proc
     graphset                         : proc
+    graphinit                        : proc
     title                            : proc
     view                             : proc
     viewxyz                          : proc
@@ -730,6 +810,8 @@ pgraph.src
     axmargin                         : proc
     graphprt                         : proc
     rerun                            : proc
+    setvwrmode                       : proc
+    pqgwin                           : keyword
 
 phist.src
     hist                             : proc

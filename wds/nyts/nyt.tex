@@ -123,6 +123,7 @@ Gary King\thanks{Professor of Government, Harvard University and
 
 \begin{document}
 \maketitle
+\baselineskip=1.54\baselineskip
 
 \begin{abstract}
   Although not widely known until much later, Al Gore received 202
@@ -137,26 +138,25 @@ Gary King\thanks{Professor of Government, Harvard University and
   or any other hypothetical divergence between voter preferences and
   counted votes.  After the election, the \emph{New York Times}
   conducted a six month long investigation and found that 680 of the
-  overseas absentee ballots were illegally counted, and no partisan,
-  pundit, or academic has publicly disagreed with their assessment.
-  In this paper, we describe the statistical procedures we developed
-  and implemented for the \emph{Times} to ascertain whether
-  disqualifying these 680 ballots would have changed the outcome of
-  the election.  The methods involve adding formal Bayesian model
-  averaging procedures to King's (1997) ecological inference model.
-  Formal Bayesian model averaging has not been used in political
-  science but is especially useful when substantive conclusions depend
-  heavily on apparently minor but indefensible model choices, when
-  model generalization is not feasible, and when potential critics are
-  more partisan than academic.  We show how we derived the results for
-  the \emph{Times} so that other scholars can use these methods to
-  make ecological inferences for other purposes.  We also present a
-  variety of new empirical results that delineate the precise
-  conditions under which Al Gore would have been elected president,
-  and offer new evidence of the striking effectiveness of the
-  Republican effort to convince local election officials to count
-  invalid ballots in Bush counties and not count them in Gore
-  counties.
+  overseas absentee ballots were illegally counted, and almost no one
+  has publicly disagreed with their assessment.  In this paper, we
+  describe the statistical procedures we developed and implemented for
+  the \emph{Times} to ascertain whether disqualifying these 680
+  ballots would have changed the outcome of the election.  The methods
+  involve adding formal Bayesian model averaging procedures to King's
+  (1997) ecological inference model.  Formal Bayesian model averaging
+  has not been used in political science but is especially useful when
+  substantive conclusions depend heavily on apparently minor but
+  indefensible model choices, when model generalization is not
+  feasible, and when potential critics are more partisan than
+  academic.  We show how we derived the results for the \emph{Times}
+  so that other scholars can use these methods to make ecological
+  inferences for other purposes.  We also present a variety of new
+  empirical results that delineate the precise conditions under which
+  Al Gore would have been elected president, and offer new evidence of
+  the striking effectiveness of the Republican effort to convince
+  local election officials to count invalid ballots in Bush counties
+  and not count them in Gore counties.
 \end{abstract}
 
 %\noindent \textbf{Keywords}: Ecological Inference, Bayesian Model
@@ -206,8 +206,9 @@ they concluded that 680 of the overseas absentee ballots that had been
 counted by Florida counties unambiguously violated one or more aspects
 of Florida election law and, by any reasonable interpretation of the
 law, should have been discarded.  Indeed, after the \emph{Times} story
-appeared, commentators and partisans did not contradict these factual
-claims.
+appeared, commentators and partisans from both sides did not
+contradict these factual claims.\footnote{The only exception seems to
+  have been Zelnick (2001)\nocite{Zelnick01}.}
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{lcccc}
@@ -275,7 +276,7 @@ considered.  The procedure then computes a combined estimate from
 these models based on their relative probability of being correct, as
 indicated by the data.  So that others can use the methods we
 introduce here to analyze other problems, we have included all methods
-introduced here in the popular program \emph{EI: A Program for
+introduced here in the program \emph{EI: A Program for
   Ecological Inference} (available at \url{http://GKing.Harvard.edu}).
 
 Our results give the exact probability that Gore would have won the
