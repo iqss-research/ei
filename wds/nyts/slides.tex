@@ -4,7 +4,6 @@
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{amsmath}
 \usepackage{enumerate}
-\newcommand{\newc}{\newcommand}
 
 \newcommand{\bb}{\beta^{\text{bad}}}
 \newcommand{\bg}{\beta^{\text{good}}}
@@ -21,12 +20,13 @@
 %\pagestyle{empty}
 %\def\square{\vrule height  1.4ex width 1.3ex depth -0.1ex }
 
-\def\dofig#1#2{\centerline{\epsfxsize=#1 \epsfbox{#2}}}
-\def\dotwofig#1#2#3{\centerline{\epsfxsize=#1 \epsfbox{#2} \epsfxsize=#1
-\epsfbox{#3} }}
-\def\ref{\par\noindent\hangindent 10pt}
+%\def\dofig#1#2{\centerline{\epsfxsize=#1 \epsfbox{#2}}}
+%\def\dotwofig#1#2#3{\centerline{\epsfxsize=#1 \epsfbox{#2} \epsfxsize=#1
+%\epsfbox{#3} }}
+%\def\ref{\par\noindent\hangindent 10pt}
 
-%\renewcommand{\printlandscape}{\special{landscape}}
+\renewcommand{\printlandscape}{\special{landscape}}
+\printlandscape
 %\slidesmag{2}
 \slidesmag{3}
 %\twoup
@@ -273,7 +273,8 @@ Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
 \bigskip
 {\bf Difficulties of Ecological Inference}
 \begin{itemize}
-\item Sensitivity: Estimation results tend to be sensitive to model specification.
+\item Sensitivity: Estimation results can be sensitive to model
+  specification when bounds are wide.
 \item Weak identifiability: We cannot include many covariates in one model.
 \end{itemize}
 
@@ -305,7 +306,7 @@ election results, and demographic variables.
 {\bf Posterior Model Probability:}
 \begin{itemize} 
 \item The probability of the model, $k$, being true given the data.
-\item It is different from an idiosyncratic measure of fit such as $R^2$.
+\item Different from measures of fit like $R^2$.
 \item Computed via the Bayes Theorem\begin{equation*}
 \Pr(M_k|T) =  \frac{\P(T|M_k)\Pr(M_k)}{\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  
 \end{equation*}
@@ -523,15 +524,12 @@ had been stamped on ballot envelopes.''
   
   Our counterfactual questions are very close to the data.
   
-\item {\bf Methodological contributions:} 
-  \begin{itemize}
-  \item First political science application of formal Bayesian model averaging.
-  \item First use of Bayesian model averaging in the growing Ecological
-    Inference literature.
-  \item A solution to the uncertainty of model choice.
-  \item Model averaging cannot substitute for the investigator's
-    judgment.
-  \end{itemize}
+\item First political science application of formal Bayesian model averaging.
+\item First use of Bayesian model averaging in the growing Ecological
+  Inference literature.
+\item An approach towards the uncertainty of model choice.
+\item Model averaging cannot substitute for the investigator's
+  judgment.
 \end{itemize}
 
 \end{slide}
