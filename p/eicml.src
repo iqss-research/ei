@@ -109,7 +109,7 @@ proc 2=quadcml(x,Zb,Zw,y);
   if scalzero(_Ebounds);    @ don't use bounds  @
     _cml_bounds={-1e256 1e256};
   elseif cols(_Ebounds)==2;
-    _cml_bounds=_Ebounds;
+    _cml_bounds=_Ebounds|(0~.0001)|(0~.0001);
   elseif scalone(_Ebounds);     @ automatic bounds calculation @
     bnds={-10 10};
     nbnds={-20 20};   @{ -1e256 1e256 };@
