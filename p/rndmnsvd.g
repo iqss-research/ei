@@ -19,7 +19,7 @@
 */
 
 proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
-   local u,s,v,res,k,indx,dist,temp,bnds,limsim;
+   local u,s,v,res,k,indx,dist,temp,bnds,limsim,tmpmean,tmps,snum;
  
    k=rows(mean);
    /* some input checks */
@@ -40,42 +40,44 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
      retp(res);
    endif;
 
-   {s,u}=eighv(invvc); @ eigen value decomposition @
+   {s,u}=eighv(invvc);     @ eigen value decomposition @
    s=recode(s, s.<tol, tol);
    indx=makefac(k,2);
    dist=zeros(2^k,1);
    for i(1,rows(indx),1);
-     temp=-mean;
+     temp=zeros(k,1);
      for j(1,k,1);
-       temp[j]=temp[j]+bounds[j,indx[i,j]];
+       temp[j]=bounds[j,indx[i,j]];
      endfor;
-     dist[i]=temp'*temp;
+     dist[i]=sqrt(temp'*temp);
    endfor;
    dist=maxc(dist);
-   bnds=dist~(-dist);      @ transformed bounds @
-   mean=u'*mean;           @ transformed mean @
-   res=zeros(k,sims);
-   for i(1,sims,1);
-     limsim=1;
-     do while (sumc((bounds[.,1] .< res[.,i])+(bounds[.,2] .> res[.,i]))>0)
-              or limsim==1;
-       res[.,i]=rndtni(mean,1/s,(bnds[2]~bnds[1]).*ones(k,2));
-       res[.,i]=u*res[.,i];
-       limsim=limsim+1;
-       if limsim==100000;
-         "error(rndmnsvd): the sampling method failed. adjust the bounds.";
-         res={.};
-         retp(res);
-       endif;
-     endo;
-   endfor;
+   mean=u*mean;            @ transformed mean @
+   bnds=(-dist)~dist;      @ transformed bounds @
+   snum=sims*100;          @ # of draws at a time @
+   tmpmean=vec(mean.*ones(k,snum));
+   tmps=vec(s.*ones(k,snum));
+
+   limsim=1;              
+   res=zeros(1,k); 
+   do while rows(res)<=sims;
+     temp=rndtni(tmpmean,1/tmps,bnds.*ones(rows(tmps),2));
+     temp=reshape(temp,k,rows(temp)/k);
+     temp=u'*temp;
+     temp=selif(temp',sumc((bounds[.,1].<temp)+(bounds[.,2].>temp)).==0);
+     if scalmiss(temp)/=1;
+       res=res|temp;
+     endif;
+     "(rndmnsvd): trying" limsim "th time...";
+     limsim=limsim+1;
+     if limsim==50;
+       "error(rndmnsvd): the sampling method failed. adjust the bounds.";
+       res={.};
+       retp(res);
+     endif;
+   endo;
        
-   retp(res');
+   retp(res[2:sims+1,.]);
 endp;
-
-
-
-
-
 
 
