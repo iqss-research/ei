@@ -398,7 +398,7 @@ within the [0,1] bound on $\beta_i^b$.  Within this framework, testing
 the robustness of the HS adjustment to the sort of nonlinear
 relationships which may crop up in applied research is impossible.
 
-Finally, HS' Monte Carlo simulations do not test the actual adjustment
+Finally, HS's Monte Carlo simulations do not test the actual adjustment
 procedure they propose.  All the results they present in their Section
 6 rely on the \emph{true} $\beta_i^b$'s to estimate $\delta_0^b$ and
 $\delta_1^b$, even though this is the one quantity users of
@@ -424,10 +424,10 @@ assumption that $X_i$ and $Z_i$ are uncorrelated enables us to run a
 inducing aggregation bias.  (The assumption is of course less
 important when the bounds are more informative, but we retain it for
 simplicity in the simulations below.)  With this setup, unless the
-relationship is clearly nonlinear because the bounds are very
-influential, a regression of the true $\beta_i^b$ on $Z_i$ recovers
-the intercept and slope coefficients accurately, effectively
-correcting the problem with the HS's procedure.
+relationship is clearly nonlinear, a regression of the true
+$\beta_i^b$ on $Z_i$ recovers the intercept and slope coefficients
+accurately, effectively correcting the problem with the HS's
+procedure.
 
 We use this Monte Carlo setup to illustrate four prototypical
 situations that in our experience map out the space of applications in
@@ -486,14 +486,13 @@ dramatically worse, we do not consider it further.
       Herron and Shotts' partially adjusted procedure (HS), least
       squares (LS) and weighted least squares (WLS) almost on top of
       one another, our fully adjusted method (FA), and the full
-      adjustment based on the true values of $\delta_0^b$ and $\delta_1^b$
-      (TA).  Clearly TA fits the true points best, but is
+      adjustment based on the true values of $\delta_0^b$ and
+      $\delta_1^b$ (TA).  Clearly TA fits the true points best, but is
       unfortunately badly estimated by FA.  Data were generated from
       the extended EI model with $X \sim \textrm{Uniform}(0,0.2)$, $Z
-      \sim \textrm{Normal}(0.5,0.1)$, $\breve\bbeta_i^b = [-2 \times
-      (\sigmau_b^2 + 0.25) + 0.5] + Z_i$, $\breve\bbeta_i^w = [-2
-      \times (\sigmau_w^2 + 0.25) + 0.5] + Z_i$, $\sigmau_b = 0.05$,
-      $\sigmau_w = 0.05$, and $\rhou = 0$.}
+      \sim \textrm{Normal}(0.5,0.1)$, $\breve\bbeta_i^b = Z_i - 0.1$,
+      $\breve\bbeta_i^w = Z_i - 0.1$, $\sigmau_b = 0.05$, $\sigmau_w =
+      0.05$, and $\rhou = 0$.}
     \label{f:wide}
   \end{center}
 \end{figure}
@@ -519,10 +518,8 @@ all give approximately the same estimates.
       how all three methods give almost the same answer. Data were
       generated from the extended EI model, with $X \sim
       \textrm{Uniform}(0.2,1)$, $Z \sim \textrm{Normal}(0,0.1)$,
-      $\breve\bbeta_i^b = [-0.2 \times (\sigmau_b^2 + 0.25) + 0.5] +
-      Z_i$, $\breve\bbeta_i^w = [0.6 \times (\sigmau_w^2 + 0.25) +
-      0.5] + Z_i$, $\sigmau_b = 0.05$, $\sigmau_w = 0.05$, and
-      $\rhou = 0$.}
+      $\breve\bbeta_i^b = Z_i + 0.44$, $\breve\bbeta_i^w = Z_i +
+      0.68$, $\sigmau_b = 0.05$, $\sigmau_w = 0.05$, and $\rhou = 0$.}
     \label{f:narrow}
   \end{center}
 \end{figure}
@@ -563,11 +560,11 @@ adjusted (FA) line, in contrast, over-corrects for attenuation.
       our fully adjusted method (FA).  Note how (unadjusted) WLS
       corrects for most of the attenuation bias.  Data were generated
       from the extended EI model, with $X \sim
-      \textrm{Uniform}(0.2,1)$ and $(0.8,1)$, $Z \sim
-      \textrm{Normal}(0,0.1)$, $\breve\bbeta_i^b = [-0.2 \times
-      (\sigmau_b^2 + 0.25) + 0.5] + Z_i$, $\breve\bbeta_i^w = [0.6
-      \times (\sigmau_w^2 + 0.25) + 0.5] + Z_i$, $\sigmau_b = 0.05$,
-      $\sigmau_w = 0.05$, and $\rhou = 0$.}
+      \frac{1}{2}\textrm{Uniform}(0,0.2) +
+      \frac{1}{2}\textrm{Uniform}(0.8,1)$, $Z \sim
+      \textrm{Normal}(0,0.1)$, $\breve\bbeta_i^b = Z_i + 0.44$,
+      $\breve\bbeta_i^w = Z_i + 0.68$, $\sigmau_b = 0.05$, $\sigmau_w
+      = 0.05$, and $\rhou = 0$.}
     \label{f:mixed}
   \end{center}
 \end{figure}
@@ -602,10 +599,8 @@ into the impossible region) for some values of $Z_i$.
       the linear methods give out of bounds predictions.  Data were
       generated from the extended EI model, with $X \sim
       \textrm{Uniform}(0,1)$, $Z \sim \textrm{Normal}(0,2)$,
-      $\breve\bbeta_i^b = [1.2 \times (\sigmau_b^2 + 0.25) + 0.5] +
-      Z_i$, $\breve\bbeta_i^w = [1.2 \times (\sigmau_w^2 + 0.25) +
-      0.5] + Z_i$, $\sigmau_b = 0.3$, $\sigmau_w = 0.3$, and
-      $\rhou = 0$.}
+      $\breve\bbeta_i^b = Z_i + 1.16$, $\breve\bbeta_i^w = Z_i +
+      1.16$, $\sigmau_b = 0.3$, $\sigmau_w = 0.3$, and $\rhou = 0$.}
     \label{f:nonlinear}
   \end{center}
 \end{figure}
@@ -625,21 +620,25 @@ WLS estimates, which we were able to replicate reasonably well.  We
 then applied the fully adjusted method, which gives coefficients that
 are normally bracketed by, or close to, the two other methods (which
 Burden and Kimball considered sufficiently similar to use
-interchangeably).  We also computed standard errors for the fully
-adjusted method and found that they were an average of *** times
-larger than that for LS and WLS, which is an indication of the
-inefficiency of adjusted method.  Thus, in this example, any the minor
-reduction in bias that may occur is outweighed by the substantial
-increase in variance.  A mean square error criterion, which combines
-bias and variance, would suggest not making the adjustment even in the
-presence of attenuation bias.  (We confirmed that this result was
-fairly general with Monte Carlo simulations, which we also do not
-present here.)  This is an intuitive result given that the bias
-adjustment takes the form of a ratio, and both the numerator (which is
-LS) and denominator contain estimation uncertainty.  It is also
-consistent with the experience of many others trying to create bias
-adjustments in a wide variety of models outside of the field of
-ecological inference.
+interchangeably).  
+
+We also computed standard errors for the fully adjusted method, which
+turned out uniformly larger than those obtained from LS and WLS.  For
+the slopes in Burden and Kimball's models, the standard errors under
+full adjustment are on average 70 percent larger than under LS, and 30
+percent larger than WLS.  For the intercepts, which under full
+adjustment combine the uncertainty of three parameters, the
+inefficiency of FA is even greater: FA standard errors are on average
+34 times larger than LS, and 25 times larger than WLS.  Thus, in this
+example, any minor reduction in bias that may occur is outweighed by
+the substantial increase in variance.  A mean square error criterion,
+which combines bias and variance, would suggest not making the
+adjustment even in the presence of attenuation bias.  This is an
+intuitive result given that the bias adjustment takes the form of a
+ratio, and both the numerator (which is LS) and denominator contain
+estimation uncertainty.  It is also consistent with the experience of
+many others trying to create bias adjustments in a wide variety of
+models outside of the field of ecological inference.
 
 \section{Concluding Suggestions}
 
