@@ -1281,8 +1281,9 @@ proc eiread(dbuf,str);
     x=eiread(dbuf,"x");   
     zb=eiread(dbuf,"zb");
     zw=eiread(dbuf,"zw");
-    if (scalone(zb) and scalone(zw)) or x==zb or x==zw or cols(zb)>1 or cols(zw)>1 
-       or (cols(zb)==1 and cols(zw)==1 and zb/=zw);
+    if (scalone(zb) and scalone(zw)) or sumc(x.==zb)==rows(x) or
+       sumc(x.==zb)==rows(x) or cols(zb)>1 or cols(zw)>1 or 
+       (cols(zb)==1 and cols(zw)==1 and sumc(zb.==zw)/=rows(zb));
       "eiread: tsimsz only works with one covariate other than x.";
       #ifdos;
         ndpclex;
@@ -1344,8 +1345,9 @@ proc eiread(dbuf,str);
     x=eiread(dbuf,"x");
     zb=eiread(dbuf,"Zb");
     zw=eiread(dbuf,"Zw");
-    if (scalone(zb) and scalone(zw)) or sumc(x./=zb)==0 or x==zb or x==zw 
-       or cols(zb)>1 or cols(zw)>1 or (cols(zb)==1 and cols(zw)==1 and zb/=zw);
+    if (scalone(zb) and scalone(zw)) or sumc(x.==zb)==rows(x) or
+       sumc(x.==zb)==rows(x) or cols(zb)>1 or cols(zw)>1 or 
+       (cols(zb)==1 and cols(zw)==1 and sumc(zb.==zw)/=rows(zb));
       "eiread: expvarciz only works with one covariate other than x.";
       #ifdos;
         ndpclex;
