@@ -439,7 +439,7 @@ proc (1)=rndtsn(mean,invvc,sims,bounds,tol);
      endif;
      limsim=limsim+1;
      if limsim==100;
-       "error(rndmnsvd): the sampling method failed. adjust the bounds.";
+       "error(rndtsn): the sampling method failed. adjust the bounds.";
        retp(miss(1,1));
      endif;
    endo;
