@@ -18,15 +18,11 @@ ei.dec
     _Ei2_m                           : matrix
     _ei2_mta                         : matrix
     _eimetar                         : matrix
-    _ei_cov                          : matrix
     _Erho                            : matrix
     _Esigma                          : matrix
     _Ebeta                           : matrix
     _EalphaB                         : matrix
     _EalphaW                         : matrix
-    _EIread_betabs                   : matrix
-    _EIread_Zb                       : matrix
-    _EIread_Zw                       : matrix
     _cml_version                     : matrix
     _cml_Algorithm                   : matrix
     _cml_CovPar                      : matrix
@@ -225,8 +221,6 @@ ei.dec
     _eigraph_thick                   : matrix
     _eigraph_xlo                     : matrix
     _eigraph_xhi                     : matrix
-    _eigraph_zlo                     : matrix
-    _eigraph_zhi                     : matrix
     _eigraph_tlo                     : matrix
     _eigraph_thi                     : matrix
     _eigraph_bblo                    : matrix
@@ -234,7 +228,6 @@ ei.dec
     _eigraph_bwlo                    : matrix
     _eigraph_bwhi                    : matrix
     _eigraph_x                       : string
-    _eigraph_z                       : string
     _eigraph_t                       : string
     _eigraph_bb                      : string
     _eigraph_bw                      : string
@@ -283,7 +276,6 @@ ei.src
     eiset                            : proc
     eirepl                           : proc
     ei2                              : proc
-    setglobals                       : proc
 
 eibounds.src
     bounds1                          : proc
