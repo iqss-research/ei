@@ -129,37 +129,38 @@ proc 1=eigraph(dbuf,str);
       dbuf=vread(dbuf,"dbuf"$+ftos(_eimetar,"*.*lf",1,0));
     elseif titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
       ?;
-      "ei: the output data buffer from eimodels_def cannot be used as";
-      "    an input of eigraph.";
+      "eigraph: the output data buffer from eimodels_def cannot be";
+      "         used as an input of eigraph.";
       "----- EIGRAPH Aborted -----";
       ?;
-      retp(dbuf);
+      retp(-2);
     elseif titl$=="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
       dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
       ?; 
       "eigraph for Model" _eimetar;
       ?;
-    elseif titl$=="*DB* Data Buffer from eimodels_ave() *DB*";
-      ?;
-      "ei: the output data buffer from eimodels_ave cannot be used as";
-      "    an input of eigraph.";
-      "----- EIGRAPH Aborted -----";
-      ?;
-      retp(dbuf);
     endif;
   endif;
 
-  /* for ei2, pull out data buffer _eimetar from meta-data buffer */
-  if vin(dbuf,"titl");
-    titl=vread(dbuf,"titl");
-    if titl$=="*MDB* Meta-Data Buffer from 2nd Stage *MDB*";
-      dbuf=vread(dbuf,"dbuf"$+ftos(_eimetar,"*.*lf",1,0));
-    endif;
-  endif;
-  
   str=lower(str);
   clear psiu,circ;
-  
+
+  if vin(dbuf,"titl");
+    titl=vread(dbuf,"titl");
+    if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
+      if str$=="fit" or str$=="fitt" or str$=="profile" or str$=="profiler" or
+         str$=="tomog" or str$=="tomogci" or str$=="tomogci95" or str$=="tomogs" or
+         str$=="xtfit" or str$=="xtfitg";
+         "eigraph: this option cannot be used for the output data buffer"; 
+         "         from eimodels_avg";
+         "----- EIGRAPH Aborted -----";
+         ?;
+         retp(-2);
+      endif;
+    endif;
+  endif;
+
+   
   f=checkginputs(dbuf);
   if f$/="";
     #ifunix;
