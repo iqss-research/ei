@@ -101,7 +101,9 @@
 \newcommand{\bg}{\beta^{\text{good}}}
 \renewcommand{\bibitem}{\vskip 2pt\par\hangindent\parindent\hskip-\parindent}
 
-\title{Analyzing Second-Stage Ecological Regressions}
+\title{Analyzing Second-Stage Ecological Regressions\thanks{Our thanks
+    to Mike Herron and Ken Shotts for helpful comments on an earlier
+    draft.}}
 
 \author{Christopher Adolph\thanks{Department of Government, Harvard
     University. (Littauer Center, North Yard, Harvard University,
@@ -201,9 +203,9 @@ inherently nonlinear and bounded relationship (i.e., their algebra by
 definition miss the information in the bounds), omitting the constant
 correction from the paper, never computing the correction they propose
 when conducting simulations, and missing the fact that weighted least
-squares corrects most of the problems they raise.  We show how filling
-in this missing information leads back to the suggestions from the
-paragraphs quoted above.
+squares corrects problems they raise.  We show how filling in this
+missing information leads back to the suggestions from the paragraphs
+quoted above.
 
 In addition to making second-stage analyses possible by providing the
 first precinct-level estimates from an ecological inference model, the
@@ -231,9 +233,10 @@ for the constant term.  We follow the procedure that we believe Herron
 and Shots would have used if they had done so.\footnote{Indeed, after
   we finished a draft, Herron and Shotts told us that they had the
   same constant correction in an earlier version of their paper but
-  took it out in the final version.}  This fully adjusted second stage
-regression method dominates the slope-only procedure and indeed the
-partially adjusted procedure in HS is never called for.
+  took it out in the final version.}  As it turns out, this fully
+adjusted second stage regression method dominates the slope-only
+procedure and indeed the partially adjusted procedure in HS is never
+called for.
 
 Since the only estimators HS offer for their partial adjustment
 procedure either assume knowledge of the truth being estimated or
@@ -255,8 +258,8 @@ adjustment is known, which describes the Monte Carlo procedures HS
 used to evaluate their method, but of course not any real application.
 (Even in this unrealistic situation, the full correction takes an hour
 to run, compared to a few seconds for weighted least squares.)  Since
-a researcher can easily detect which situation she is in from the
-available aggregate data, she can always take appropriate action.
+researchers can easily detect which situation applies from the
+available aggregate data, they can always take appropriate action.
 
 We conclude that researchers with narrow enough bounds to run first
 stage EI should first examine a scatterplot of the covariate
@@ -272,7 +275,7 @@ regressions.
 \section{A Fully Adjusted Second Stage Regression Model}
 \label{s:fulladj}
 
-We try to stick to HS's notation where possible and present our fully
+We try to stick to HS's notation where possible and present the fully
 adjusted method with their adjustment as a special case.\footnote{Our
   notation deviates from HS only to ensure logical consistency.  For
   example, their Equations (7) and (8) have different dependent
@@ -437,7 +440,7 @@ $\breve\psi$  & $\gamma_R$ & $\hat\gamma_R$ \\\hline
 \hline
 \end{tabular}
 \end{center}
-\caption{\em Comparing the true slope on $Z$ in a 
+\caption{Comparing the true slope on $Z$ in a 
 second-stage regression in Herron and Shott's Monte Carlo 
 procedure with the estimate based on $\beta_i^b$ 
 (rather than $\hat\beta_i^b$) as the dependent variable.
@@ -544,7 +547,7 @@ full adjustment, and often dramatically worse, we do not consider it
 further.
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=wide.eps}
+    \epsfig{file=wide.eps, width=5in}
     \caption{Data with Wide Bounds. Plot of $Z_i$ horizontally by
       the estimated $\hat\beta_i^b$ vertically (in the right graph)
       and the true $\beta_i^b$ (in the left graph), with fits for the
@@ -575,7 +578,7 @@ where least squares, weighted least squares, and the fully adjusted
 method all give approximately the same estimates.
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=narrow.eps}
+    \epsfig{file=narrow.eps, width=5in}
     \caption{Data with Informative Bounds. Plot of the $Z_i$ horizontally by
       the estimated $\hat\beta_i^b$ vertically (in the right graph)
       and the true $\beta_i^b$ (in the left graph) with fits for least
@@ -619,12 +622,12 @@ squares (WLS) line corrects for most of the attenuation.  The fully
 adjusted (FA) line, in contrast, over-corrects for attenuation.
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=mixed.eps}
+    \epsfig{file=mixed.eps, width=5in}
     \caption{Data with Narrow and Wide Bounds. Plot of the $Z_i$ 
       horizontally by the estimated $\hat\beta_i^b$ vertically (in the
       right graph) and the true $\beta_i^b$ (in the left graph) with
       fits for least squares (LS), weighted least squares (WLS), and
-      our fully adjusted method (FA).  Note how (unadjusted) WLS
+      the fully adjusted method (FA).  Note how (unadjusted) WLS
       corrects for most of the attenuation bias.  Data were generated
       from the extended EI model, with $X \sim
       \frac{1}{2}\textrm{Uniform}(0,0.2) +
@@ -656,11 +659,11 @@ method that does not extend above 1 or below 0 for $\beta_i^b$ (i.e.,
 into the impossible region) for some values of $Z_i$.
 \begin{figure}[t]
   \begin{center}
-    \epsfig{file=nonlinear.eps}
+    \epsfig{file=nonlinear.eps, width=5in}
     \caption{Data with a Nonlinear Relationship.  Plot of $Z_i$ 
       horizontally by the estimated $\hat\beta_i^b$ vertically (in the
       right graph) and the true $\beta_i^b$ (in the left graph) with
-      fits for least squares (LS) and our fully adjusted method (FA)
+      fits for least squares (LS) and the fully adjusted method (FA)
       almost on top of one another, weighted least squares (WLS), and
       the better fitting logistic transformation (LT).  Note how all
       the linear methods give out of bounds predictions.  Data were
