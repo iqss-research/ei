@@ -344,12 +344,32 @@ $\textcolor{Purple}{\P(\Delta|T,M)} \propto \P(\Delta|M)\P(T|\Delta,M).$
 \item Different from measures of fit like $R^2$.
 \item Computed via the Bayes Theorem
   \begin{equation*}
-    \textcolor{Red}{\Pr(M_k|T)} =  \frac{\P(T|M_k)\Pr(M_k)}{\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  
+    \textcolor{Red}{\Pr(M_k|T)} 
+    =  \frac{\textcolor{RoyalBlue}{\P(T|M_k)}\Pr(M_k)}{\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  
   \end{equation*}
 \end{itemize}
+\end{slide}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{slide}
+  \centering{\textbf{\small \color{RoyalBlue}The Marginal Likelihood}}
+
+  \begin{enumerate}
+  \item The only hard part computationally:
+    \begin{equation}
+      \textcolor{RoyalBlue}{\P(T|M_k)} 
+      = \int \P(T|\Theta_k, M_k) \P(\Theta_k|M_k) d\Theta_k,
+      \label{eq:marglik}
+    \end{equation} 
+    
+  \item Instead of the likelihood at the maximum, it is the average
+    likelihood evaluated at $\Theta$ drawn from the prior.
+  \item Could do by simulation, but highly inefficient.
+  \item Better approximations exist.
+  \end{enumerate}
 
 \end{slide}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -442,9 +462,9 @@ had been stamped on ballot envelopes.''
 & \multicolumn{1}{c}{all ballots}\\    \hline
     \multicolumn{4}{l}{\bf Republican pressure to count} \\
     \hspace{1em}Collier  & 46.7\% & 65.6\% & \textcolor{Purple}{53}.\textcolor{Purple}{7\%} & \textcolor{Purple}{64}.\textcolor{Purple}{5\%} & 60 \\    
-    \hspace{1em}Duval    & 83.8 & 57.5 & \textcolor{Purple}{62}.\textcolor{Purple}{3} & \textcolor{Purple}{67}.\textcolor{Purple}{8} & 637 \\
+    \hspace{1em}Duval    & 83.8 & 57.5 & \textcolor{Purple}{62}.\textcolor{Purple}{3} & \textcolor{Purple}{67}.\textcolor{Purple}{8}\textcolor{Red}{*} & 637 \\
     \hspace{1em}Escambia & 88.6 & 62.6 & \textcolor{Purple}{64}.\textcolor{Purple}{2} & \textcolor{Purple}{80}.\textcolor{Purple}{3} & 272 \\         
-    \hspace{1em}Okaloosa & 88.9 & 73.7 & \textcolor{Purple}{42}.\textcolor{Purple}{0} & \textcolor{Purple}{69}.\textcolor{Purple}{4} & 189 \\          
+    \hspace{1em}Okaloosa & 88.9 & 73.7 & \textcolor{Purple}{42}.\textcolor{Purple}{0}\textcolor{Red}{*} & \textcolor{Purple}{69}.\textcolor{Purple}{4} & 189 \\          
     \hspace{1em}Pasco    & 62.3 & 48.0 & \textcolor{Purple}{60}.\textcolor{Purple}{5} & \textcolor{Purple}{76}.\textcolor{Purple}{4} & 53 \\                
     \hspace{1em}Santa Rosa & 90.3 & 72.1 & \textcolor{Purple}{84}.\textcolor{Purple}{6} & \textcolor{Purple}{84}.\textcolor{Purple}{4} & 93 \\
     \hspace{1em}\emph{Average} & \emph{83}.\emph{4} & \emph{60}.\emph{0} & \textcolor{Purple}{\emph{61}}.\textcolor{Purple}{\emph{5}} & \textcolor{Purple}{\emph{74}}.\textcolor{Purple}{\emph{3}} & 1304 \\
@@ -455,7 +475,7 @@ had been stamped on ballot envelopes.''
     \hspace{1em}Alachua    & 46.8 & 39.8 & \textcolor{Purple}{12}.\textcolor{Purple}{5} & \textcolor{Purple}{54}.\textcolor{Purple}{5} & 77 \\ 
     \hspace{1em}Broward    & 46.9 & 30.9 & \textcolor{Purple}{21}.\textcolor{Purple}{8} & \textcolor{Purple}{54}.\textcolor{Purple}{3} & 213 \\  
     \hspace{1em}Miami Dade & 44.4 & 46.3 & \textcolor{Purple}{11}.\textcolor{Purple}{7} & \textcolor{Purple}{57}.\textcolor{Purple}{1} & 306 \\
-    \hspace{1em}Palm Beach & 45.3 & 35.3 & \textcolor{Purple}{40}.\textcolor{Purple}{7} & \textcolor{Purple}{56}.\textcolor{Purple}{2} & 53 \\ 
+    \hspace{1em}Palm Beach & 45.3 & 35.3 & \textcolor{Purple}{40}.\textcolor{Purple}{7}\textcolor{Red}{*} & \textcolor{Purple}{56}.\textcolor{Purple}{2} & 53 \\ 
     \hspace{1em}\emph{Average} & \emph{45}.\emph{6} & \emph{38}.\emph{1} & \textcolor{Purple}{\emph{17}}.\textcolor{Purple}{\emph{2}} & \textcolor{Purple}{\emph{55}}.\textcolor{Purple}{\emph{4}} &  649 \\
     \hline                                                       
   \end{tabular}                                                
@@ -467,19 +487,25 @@ had been stamped on ballot envelopes.''
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{slide}
-\heading{Qualitative Evidence Backs Up Statistical Analysis}
+\centerline{\textbf{\small{Qualitative Evidence Explains Outliers}}}
 \bigskip
 
 \begin{itemize}
-\item An election official on the Duval County canvassing board ``held
+\item[\textcolor{Red}{*}] An election official on the Duval County canvassing board ``held
   the line on counting ballots with missing postmarks.''
 
-\bigskip
-  
-\item ```It looks to me like we've got a lot of pressure here,' Judge
+\item[\textcolor{Red}{*}] ``\thinspace `It looks to me like we've got a lot of pressure here,' Judge
   Robert P.  Cole, chairman of the Pasco board, said as he faced a
   throng of cheering Republicans and more than a dozen Bush
   representatives [and no officials from the Gore campaign].''
+  
+\item[\textcolor{Red}{*}] ``I cannot believe that our service boys, fighting hard
+  overseas, that their ballots would be disqualified,'' Mr. McCown,
+  the Bush lawyer, told the Palm Beach County canvassing board.
+                                                                                
+  ``\thinspace `All right,' Judge Charles E. Burton, the board
+  chairman, replied dryly [resisting Republican pressure], `We will
+  file a protest and arrange for a violin.'\thinspace ''
 \end{itemize}
 
 \end{slide}
