@@ -951,9 +951,9 @@ while writing the book.)
   mean posterior contours, except for those sampled from outlier
   tomography lines. Homogeneous precincts are excluded.
 
-\item[fit] Combination of xtfit and tomogP (and ztfit if applicable).
+\item[fit] Combination of xtfit and tomogP
 
-\item[fitT] Combination of xtfit and tomogT (and ztfit if applicable).
+\item[fitT] Combination of xtfit and tomogT
 
 \item[goodman] $X_i$ by $T_i$ plot with Goodman's regression line
   plotted. See Figure 4.1, page 60.
@@ -1126,29 +1126,14 @@ while writing the book.)
 \item[XgraphC] a scattercross with data plotted, with size
   proportional to $N_i$.
 
-\item[xt] basic $X_i$ by $T_i$ scatterplot.
-
-\item[zt] basic $Z_i$ by $T_i$ scatterplot. The same restriction as
-\texttt{zt} applies. Available if $Z$ is the only covariate common for
-\texttt{zb} and \texttt{zw}, or if $Z$ is the only covariate for
-either \texttt{zb} or \texttt{zw} and no covariate for the other.
+\item[xt] basic $X_i$ by $T_i$ scatterplot
 
 \item[xtC] basic $X_i$ by $T_i$ scatterplot with circles sized
   proportional to $\Npp$ or some other variable defined by the global
   \texttt{\_eigraph\_circ}.
 
-\item[ztC] basic $Z_i$ by $T_i$ scatterplot with circles sized
-proportional to $\Npp$ or some other variable defined by the global
-\texttt{\_eigraph\_circ}. The same restriction as \texttt{zt} applies.
-
-
 \item[xtfit] $X_i$ by $T_i$ plot with estimated $\rE(T_i|X_i)$ and
   conditional 80\% confidence intervals.  See Figure 10.3, page 206.
-
-\item[ztfit] $Z_i$ by $T_i$ plot with estimated $\rE(T_i|Z_i,
-\rE(X|n))$ where $\rE(X|n)$ is the weighted average of $X$ and
-conditional 80\% confidence intervals. The same restriction as
-\texttt{zt} applies.
 
 \item[xtfitg] xtfit with Goodman's regression line superimposed
 \end{description}
@@ -1206,15 +1191,10 @@ not be changed for the most common uses.
 
 \item[\_eigraph\_X] string: xlabel for xt plots. Default=\texttt{"X"}
 
-\item[\_eigraph\_Z] string: xlabel for zt plots. Default=\texttt{"Z"}
 
 \item[\_eigraph\_Xhi] High end of X graphs. Default=1.
 
 \item[\_eigraph\_Xlo] How end of X graphs. Default=0.
-
-\item[\_eigraph\_Zhi] High end of Z graphs. Default=max(Z).
-
-\item[\_eigraph\_Zlo] How end of X graphs. Default=min(Z).
 
 \item[\_eigraphC] scalar: Multiply by circle size to change sizes.
   Default=1, which means do not change.  set to (0,1) to reduce circle
@@ -1443,25 +1423,7 @@ output off;                      @ close output file @
   denotes which of the imputed data buffers (in case of
   \texttt{\_ei2\_mta}) or which of the stored model (in case of
   \texttt{eimodels\_def} and \texttt{eimodels\_run}) in dbuf should be
-  accessed when running \texttt{eiread} and \texttt{eigraph}.
-  Default=1.
-  
-\item[\_eiread_Zb] (rows(Zb) $\times$ cols(Zb)) matrix of new
-  covariates for the calculation of first differences (default=\{.\};
-  which indicates the use of the original covariate, \texttt{Zb}).
-  
-\item[\_eiread_Zw] (rows(Zw) $\times$ cols(Zw)) matrix of new
-  covariates for the calculation of first differences (default=\{.\};
-  which indicates the use of the original covariate, \texttt{Zw}).
-  
-\item[\_eiread_betabs] (p $\times$ \texttt{\_Esims}) new simulated
-  draws of $\beta^b$ stored when the new covariates are specified
-  using the globals, \texttt{\_eiread_Zb} and \texttt{\_eiread_Zw}
-  (default=\{.\}; which indicates the use of the original simulated
-  values of $\beta^b$). You need to clear this global variable by
-  setting \texttt{\_eiread_betabs=\{.\}} or using \texttt{eiset;} when
-  you use \texttt{eiread} with the new or original covariates.
-
+  accessed when running \texttt{eiread} and \texttt{eigraph}.  Default=1.
 \end{description}
 
 \paragraph{\underline{Options}:}
@@ -1701,69 +1663,6 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[double] $2\times 1$ coefficients from a double regression.
   Requires an EI2 data buffer as input.  See Section 4.3.
 
-\item[EaggBias] $4\times 2$: regressions of estimated $\beta_i^b$ and
-  $\beta_i^w$ on a constant term and $X_i$.  First row: coefficients,
-  second row: standard errors.  See Section 9.2.4.
-
-\item[etaC] $2\times 1$ coefficients implied by global \_Eeta
-
-\item[etaS] $2\times 1$ standard errors implied by global \_Eeta
-  
-\item[ExpVarCI] $100\times 4$: 80\% confidence intervals for $T_i$
-  given $X_i$.  X$\sim$20\%CI$\sim$mean$\sim$80\%CI of sims from
-  $P(T_i|X)$, where $X$ in this context is 100 numbers equally spaced
-  between 0 and 1.  See Section 8.5.  (Uses \texttt{x2} simulations
-  when used with \texttt{ei2}).
-
-\item[ExpVarCIZ] $100\times 4$: 80\% confidence intervals for $T_i$
-given $Z_i$ and the weighted average of $X_i$.
-Z$\sim$20\%CI$\sim$mean$\sim$80\%CI of sims from $P(T_i|Z)$, where $Z$
-in this context is 100 numbers equally spaced between min(Z) and
-max(Z). Available if $Z$ is the only covariate common for \texttt{zb}
-and \texttt{zw}, or if $Z$ is the only covariate for either
-\texttt{zb} or \texttt{zw} and no covariate for the other.  (Uses
-\texttt{x2} simulations when used with \texttt{ei2}).
-  
-\item[ExpVarCIs] $100\times 4$: same as expvarci, but smoothed with
-  LOESS.  Used for eigraph's xtfit.  See Section 8.5.  (Uses
-  \texttt{x2} simulations when used with \texttt{ei2}).
-
-\item[ExpVarCIsZ] $100\times 4$: same as expvarciz, but smoothed with
-LOESS.  Used for eigraph's ztfit. \texttt{x2} simulations when used
-with \texttt{ei2}).
-  
-\item[GEbw] $p\times 3$: $\beta_i^b\sim\beta_i^w\sim$Nsims.  Point
-  estimates of $\beta_i^b$ and $\beta_i^w$, based on the mean
-  posterior under the prior that $\beta_i^b\geq\beta_i^w$.  Use this
-  option (instead of \texttt{beta}) if you are reasonably certain that
-  $\beta_i^b\geq\beta_i^w$.  This procedure is based on simulations for
-  which the inequality holds, and thus also reports \texttt{Nsims},
-  the number of simulations on which each estimate is based (If
-  \texttt{Nsims} is not close to \texttt{\_Esims}, you may wish to
-  question your assumption or increase \texttt{\_Esims}).
-  
-\item[GEbwa] $p\times 2$: $B^b\sim B^w$.  Aggregate level mean
-  posterior estimates, based on simulations where
-  $\beta_i^b\geq\beta_i^w$.  See \texttt{GEbw} for more information.
-
-\item[GEwb] $p\times 3$: $\beta_i^b\sim\beta_i^w\sim$Nsims.  Point
-  estimates of $\beta_i^b$ and $\beta_i^w$, based on the mean
-  posterior under the prior that $\beta_i^b\leq\beta_i^w$.  Use this
-  option (instead of \texttt{beta}) if you are reasonably certain that
-  $\beta_i^b\leq\beta_i^w$.  This procedure is based on simulations for
-  which the inequality holds, and thus also reports \texttt{Nsims},
-  the number of simulations on which each estimate is based (If
-  \texttt{Nsims} is not close to \texttt{\_Esims}, you may wish to
-  question your assumption or increase \texttt{\_Esims}).
-  
-\item[GEwba] $p\times 2$: $B^b\sim B^w$.  Aggregate level mean
-  posterior estimates, based on simulations where
-  $\beta_i^b\leq\beta_i^w$.  See \texttt{GEwb} for more information.
-  
-\item[GhActual] value of the output global \texttt{\_GhActual}, the
-  row of \texttt{\_ei\_vc} for which a positive definite variance
-  matrix was found.
-
 \item[Goodman] $2\times 2$: row 1: Goodman's Regression coefficients,
   row 2: standard errors.  See Section 3.1.
 
@@ -1953,11 +1852,6 @@ with \texttt{ei2}).
   between zero and one, columns are $X_i$ and sorted simulations of
   $T_i|X_i$.  See Section 8.5.  (Uses \texttt{x2} simulations when
   used with \texttt{ei2}).
-
-\item[tsimsz] $100\times$\texttt{\_Esims}$+1$: simulations of $T_i$
-given $Z_i$.  rows correspond to 100 values of $Z_i$ equally spaced
-between min(Z) and max(Z), columns are $Z_i$ and sorted simulations of
-$T_i|Z_i$. (Uses \texttt{x2} simulations when used with \texttt{ei2}).
 
 \item[VCaggs] $2\times 2$: variance matrix of 2 district-level
   parameters, $\hat{B}^b$ and $\hat{B}^w$.  See Section 8.3.  (Uses
