@@ -28,6 +28,8 @@ Please email King@Harvard.Edu (for EI) or KBenoit@Harvard.Edu (for EzI)
 * What's new in this version of EI? *
 *************************************
 
+5/5/2002 Improved generalized cholesky procedure
+
 8/5/31 Added Bayesian model averaging (see EIMODELS), and an option
 to EI2 that eliminates most cases of it bombing out (set _EI2_m=-1).
 
