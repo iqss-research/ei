@@ -8,7 +8,169 @@
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+  {\bf \Large Point-By-Point Reply to Asociate Editor}
+\end{center}
 
+We begin by thanking Associate Editor for his careful reading of our
+manuscript and many helpful comments. We believe we have addressed all
+of these comments in our revised manuscript and that in so doing we
+have improved our presentation significantly.  In what follows, the
+original comments appear in \emph{italic type}; our replies and
+comments are in roman type.
+
+\bigskip
+\noindent {\bf Major Comments of and reply to Referee~1}
+
+\begin{enumerate}
+  
+\item {\it Given this strong concern about the use of Bayesian
+    averaging and given our own predilection for a shorter and
+    somewhat simpler paper, we believe that it would be much better to
+    structure the paper as suggested by reviewer number 1:
+    
+    ``For a revision of this paper, I would recommend sticking with
+    the bounds analysis which is excellent and nicely written.  I
+    would also keep the material on Republican pressure \ldots.
+    Furthermore, I would consider EI models that include Xi only along
+    with varying priors or no priors at all.''
+    
+    We believe that the paper could be considerably shortened and
+    tightened by completely cutting pages 12-15 on Bayesian model
+    averaging.  Instead, we would suggest an approach that would face
+    straightforwardly the problem of too little data for the number of
+    parameters that should be estimated in a full model and that would
+    make the following points.}
+  
+  We addressed this concern in our reply to Referee~1 as well as in
+  the revised manuscript.  In particular, we have shortened the
+  section on Bayesian model averaging considerably. The revised
+  manuscript is now 18 pages long (including the appendix and
+  references) instead of the original length of 28 pages. We did not
+  entirely eliminate our Bayesian model averaging anlaysis because it
+  is the core of the analysis we did for the {\it New York Times} and
+  the main methodological contribution of the paper (Please refer to
+  our point-by-point reply to Referee~1 about the details of our
+  argument as well as the changes that we made in order to address
+  his/her concern).
+  
+\item {\it First, a very simple back of the envelop calculation
+    suggests that if 680 of the 2411 late overseas ballots were ruled
+    illegal, and if they had the same proportion of Bush voters as all
+    other late overseas ballots (65.3\%), then Bush would lose 444
+    votes and Gore would lose 236 votes for a net loss to Bush of 208
+    votes which would have given Bush a margin of (537-208 = 229).
+    (This figure, by the way, is very close to the 251 in table 5
+    which comes from the Bayesian averaging method.)  This point could
+    be made when Table 1 is discussed. 
+    
+    This point leads us to ask if we can figure out anything about the
+    likelihood that Gore might have won.  After all, the preceding is
+    just a point estimate which might vary depending upon the other
+    factors which affected these 680 ballots.  One way Gore could have
+    won is that even if the illegal ballots are a true random sample
+    of the total late overseas ballots, the illegal ballots could be
+    larger or smaller because of sample variability.  It is a little
+    tricky calculating sampling error in this case (because it is
+    sampling from a decidedly finite population), but we might presume
+    that the sampling error is something like what we would have for a
+    poll of 680 people which would be roughly plus or minus 4\% which
+    would lead to 95\% confidence bounds of roughly 412 and 476 for
+    Bush's loss of votes.  This would translate into roughly a net
+    loss for Bush of about 176 to 240.  Still not enough to make Gore
+    the winner --- although it does get us closer. 
+    
+    Thus, this calculation leads us to assume that there is only a
+    very small chance that Gore might have won.  However, this
+    approach neglects the fact that we know more about the illegal
+    overseas absentee ballots.  We also know the county they came
+    from, and we even know the characteristics of the voters who cast
+    them.  Thus, (1) variation could occur because the illegal late
+    overseas ballots came disproportionately from counties that were
+    highly pro-Bush or (2) variation could occur because the
+    characteristics of the late overseas voters were such that they
+    might have been disproportionately pro-Bush.  Hence, it is at
+    least possible that these ballots made the difference.}
+  
+  We are hesitant to include this suggestion because such a
+  calculation does not rest on any formal statistical theory. This
+  contradicts the goal of our analysis, which was to provide a
+  scientific answer to the New York Times. In fact, one can do better
+  than this easily by employing Goodman's regression, which at least
+  leads to statistical inference. Goodman's regression makes a weaker
+  assumption that the proportion of Bush's votes among bad ballots is
+  the same for every county rather than the assumption of the
+  suggested calculation that the proportion of Bush's votes among bad
+  ballots in every county is exactly the same as that among all late
+  overseas ballots. Of course, Goodman's regression still ignores the
+  bounds for each county. In contrast, our analysis incorporates that
+  deterministic information.
+  
+\item {\it At this point, it might be worth noting that what would be
+    required for a tie would be for disqualification of the 680
+    illegal late absentee votes to lead to a 537 vote swing --- that
+    would require that the difference in Bush and Gore voting
+    percentages would have to be (537/680 = 79\%).  The only way this
+    could happen would be for Bush to get about 90\% of the votes and
+    Gore to get about 10\% (for a difference of about 80\% as
+    required).  (This point is made by Reviewer number Three.)  This
+    seems very unlikely, but it is worth looking to see if it is
+    possible. }
+  
+  {\bf It seems that we could just say this in a footnote?}
+  
+\item {\it Then the paper could talk about statistical modeling, but
+    instead of talking about Bayesian model averaging, it could simply
+    note that there are many ways to model things and that one way to
+    get a fix on what is going on is to estimate a number of different
+    simple models to see how much the simple figures would vary if
+    different covariates were used.  This could be presented as
+    sensitivity testing instead of as a way to get ``precise''
+    probabilities.  Section 3.2 could do this but with the Bayesian
+    model averaging deleted.  (Note that Table 7 does something like
+    this.  Indeed, Table 7 suggests why Bayesian model averaging is
+    probably not as good an idea as simply showing how different
+    models lead to different results.) 
+    
+    The empirical results could then be presented but with
+    representative models described with different point predictions.
+    It could be noted that as it turns out, it seems VERY unlikely
+    that the 680 votes had anything like a 90\% Bush and 10\% Gore
+    break.
+  
+    Finally, Table 5 could be presented to show that in conjunction
+    with other things, the absentee votes might have made a
+    difference.  The entry in the table for the impact of the illegal
+    overseas ballots could be described as roughly some range from the
+    preceding work or it could simply take use the
+    back-of-the-envelope calculation described above.  Or it could
+    take the results from the ecological inference without covariates.
+    Or it could take values for different models as in Table 7.}
+  
+  We are hesitant to take this suggestions for the following two
+  reasons. First and most important, the New York Times asked us to
+  provide a single inference, i.e., a point estimate and confidence
+  interval. Presenting a set of many different results from a variety
+  of models was simply not an option to us. Second, we argue that the
+  Bayesian model averaging is the best way to provide a single
+  inference in the presence of model uncertainty. The statistical
+  literature supports this claim by showing that the Bayesian model
+  averaging produces the inference better than the inference resulting
+  from any of the single models that are averaged over. We tried to
+  make this point clear in the revised manuscript. Please also see our
+  point-by-point reply to referees.
+
+\end{enumerate}
+
+\bigskip
+\noindent {\bf Specific Comments}
+
+We implemented almost all of these suggestions.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
 \begin{center}
   {\bf \Large Point-By-Point Reply to Referee~1}
 \end{center}
@@ -209,7 +371,7 @@ comments are in roman type.
 \end{enumerate}
 
 \bigskip
-\noindent {\bf Minor Comments of and reply to Referee~1}
+\noindent {\bf Minor Comments}
 
 We implemented almost all of these suggestions.
 
