@@ -448,12 +448,14 @@ proc gvc(&f,b,dataset);
       
     endif;
     
-    trap 1;
+    local oldt;
+    oldt = trapchk(1);
+    trap 1,1;
     if _ei_vc[i+0,1] ne 4;           @ did not use generalized approach @
       vc=invpd(-hessian);
     endif;
     if not(scalmiss(vc));
-      trap 0;
+    trap oldt,1;
       clearg _gvc_dataset;  @ to save space  @
       _GhActual = i+0;
       if _Eprt>=2;
@@ -622,13 +624,15 @@ proc ghessp(&f,x0,wf,grad);
       #endif;
 
       /* compute quad regression */
-      trap 1;
+      local oldt;
+      oldt = trapchk(1);
+      trap 1,1;
       ixx=invpd(moment(x,0));
       if scalerr(ixx);
 	errorlog "X'X matrix not invertable, returning missing values";
 	retp(x);
       endif; 
-      trap 0;
+      trap oldt,1;
       b=ixx*x'll;
 
       /* form hessian */

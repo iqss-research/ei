@@ -172,10 +172,9 @@
 */
 #include ei.ext;
 proc eiread(dbuf,str);
-  local vrs,a,res,tt,x,t,omx,b,bb,bw,sb,sw,rho,sbw,cv,Zb,Zw,titl,bs,p,d,
+  local vrs,a,res,tt,x,t,v,omx,b,bb,bw,sb,sw,rho,sbw,cv,Zb,Zw,titl,bs,p,d,
   tvap,n,nb,nw,c,c0,c1,bnds,bb0,bw0,invX,invT,meanX,meanT,p00,p11,p01,p10,x2,
-  strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,
-  _t,_x,v;
+  strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,_t,_x;
 
   /* for ei2, pull out data buffer _ei2_r from meta-data buffer */
   if vin(dbuf,"titl");
@@ -1342,7 +1341,9 @@ proc 6=reg(x,y);
 
     xx=x;       yy=y;     @ y & x unweighted @
     x=x./wt;    y=y./wt;  @   and weighted @
-    trap 1;
+    local oldt;
+    oldt = trapchk(1);
+    trap 1,1;
         ixx=invpd(moment(x,0));
         if scalerr(ixx);
             errorlog "X'X matrix not invertable, returning missing values";
@@ -1350,7 +1351,8 @@ proc 6=reg(x,y);
 	    #ifdos;
   	      ndpclex;
 	    #endif;
-        endif; trap 0;
+        endif; 
+    trap oldt,1;
     b=ixx*x'y;
     yhat=x*b;
     e=y-yhat;
