@@ -165,15 +165,15 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 % \bigskip
 % \small
 \begin{center}
-\begin{tabular}{llcccrl}
-                && Gore  && Bush &&         \\
-\cline{2-6}
-invalid ballots &\vline& $\textcolor{Red}{\bb_i}$ &\vline & $1-\bb_i$ &\vline& $X_i$
-\\
-\cline{2-6}
-valid ballots   &\vline& $\bg_i$ &\vline & $1-\bg_i$ &\vline& $1-X_i$ \\
-\cline{2-6}
-                && $T_i$ && $1-T_i$ &&         \\
+\begin{tabular}{ll|c|c|l}
+                & \multicolumn{2}{r}{Gore}  & \multicolumn{1}{c}{Bush}         \\
+ \cline{3-4}
+invalid ballots & \vspace{-1pt} & \hspace{-0.1in} $\textcolor{Red}{\bb_i}$ &
+ \hspace{-0.1in} $1-\bb_i$ & $X_i$ \\
+\cline{3-4}
+valid ballots   & &  $\bg_i$ & $1-\bg_i$  & $1-X_i$ \\
+\cline{3-4}
+                & \multicolumn{2}{c}{$T_i$} & \multicolumn{1}{l}{$1-T_i$}         \\
 \end{tabular} 
 \end{center}
 %\end{minipage}
