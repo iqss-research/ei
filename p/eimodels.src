@@ -18,11 +18,11 @@
 proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
 
   /* data inputs */
-  _Eres=vput(_Eres,t,"_EI_t");
-  _Eres=vput(_Eres,x,"_EI_x");
-  _Eres=vput(_Eres,n,"_EI_n"); 
-  _Eres=vput(_Eres,Zb,"_EI_Zb");
-  _Eres=vput(_Eres,Zw,"_EI_Zw");
+  _Eres=vput(_Eres,t,"t");
+  _Eres=vput(_Eres,x,"x");
+  _Eres=vput(_Eres,n,"n"); 
+  _Eres=vput(_Eres,Zb,"Zb");
+  _Eres=vput(_Eres,Zw,"Zw");
   
   /* essential globals */
   _Eres=vput(_Eres,_EalphaB,"_EalphaB");
@@ -98,7 +98,7 @@ endp;
 */
  
 proc eimodels_run(ndbuf);
-  local i, num, dta, simpars, dbtemp, dbres, titl;
+  local i, num, dta, simpars, dbtemp, dbres, titl, t, x, n, zb, zw;
 
   if _Eprt/=0;
   ?;
@@ -128,12 +128,14 @@ proc eimodels_run(ndbuf);
   do while i <= num;
     eiset;
     if vin(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
-      _Eres=vread(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
-      vreadall(_Eres);
+      dbtemp=vread(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
+      t=vread(dbtemp,"t"); x=vread(dbtemp,"x"); n=vread(dbtemp,"n"); 
+      zb=vread(dbtemp,"zb"); zw=vread(dbtemp,"zw");
+      vreadall(dbtemp);
       ?;
       "Running EI for the Model" i " ...";
       ?;
-      dbtemp=ei(_EI_t,_EI_x,_EI_n,_EI_Zb,_EI_Zw);
+      dbtemp=ei(t,x,n,zb,zw);
       dbres=vput(dbres,dbtemp,"mod_r"$+ftos(i+0,"*.*lf",1,0));
 
       @ save the buffer @
