@@ -16,6 +16,7 @@
 **    t,x,n,Zb,Zw = usual inputs for ei().
 */
 proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
+  local tst, temp;
 
   /* data inputs */
   _Eres=vput(_Eres,t,"t");
@@ -61,14 +62,36 @@ proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
   _Eres=vput(_Eres,_Eprt,"_Eprt");
   _Eres=vput(_Eres,_Echeck,"_Echeck");
 
+  /** check inputs **/
+  if _Echeck;
+    tst = checkinputs;
+    if tst$/="";
+      tst;
+      "----- EIMODELS_DEF Aborted -----";
+      retp(ndbuf);
+    elseif _Eprt>0;
+      "Inputs ok...";
+    endif;
+  endif;
 
   /** name the buffer and store it in the nested buffer **/
+  if ndbuf$=="";
+    temp=0;
+  else;
+    temp=vin(ndbuf,"mod_d"$+ftos(num,"*.*lf",1,0));
+  endif;
+  if _Eprt/=0;
+    if temp==1;
+      "Model " num " exists in the input data buffer.";
+      "Overwriting the existing specification...";
+      ?;
+    else;
+      "Model " num "is successfully added to the output data buffer.";
+      ?;
+  endif; 
+
   ndbuf=vput(ndbuf,_Eres,"mod_d"$+ftos(num,"*.*lf",1,0));  
   ndbuf=vput(ndbuf,"*MDB* Meta-Data Buffer from eimodels_def() *MDB*","titl"); 
-  if _Eprt/=0;
-    ?;
-    "Model " num "is successfully added to the data buffer.";
-  endif;
   retp(ndbuf);
 endp;
 
