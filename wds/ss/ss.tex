@@ -188,12 +188,13 @@ themselves within this framework.
 
 We replicated HS's simulations without trouble.  We then examined how
 well their adjusted regression procedure fit the observed data based
-on $\hat\beta_i^b$ and the true (normally unobserved) $\beta_i^b$.  We
-find that correcting the slope but not the constant, as HS suggest, is
-considerably worse than an unadjusted regression of $\hat\beta_i^b$ on
-$Z$ and every other procedure discussed in HS's paper and the
-literature we have examined.  The regression line from HS's method
-usually misses the cloud of true $\beta_i^b$ points by a wide margin.
+on the estimated $\hat\beta_i^b$ and the true (normally unobserved)
+$\beta_i^b$.  We find that correcting the slope but not the constant,
+as HS suggest, is considerably worse than an unadjusted regression of
+$\hat\beta_i^b$ on $Z$ and every other procedure discussed in HS's
+paper and the literature we have examined.  The regression line from
+HS's method usually misses the cloud of true $\beta_i^b$ points by a
+wide margin.
 
 We therefore begin by extending HS's partial adjustment procedure,
 within their linear regression framework, by developing an adjustment
@@ -223,8 +224,7 @@ notation,\footnote{For example, their Equations (7) and (8) have
   $\gamma$ to differ between the two (calling the first $\gamma_R$ and
   the second $\gamma_U$), but do not fix the constant term (or error
   terms).} simplify where possible, and present our fully adjusted
-method with their's as a special case.  We thus eliminate the
-inconsistencies and also simplify where possible.
+method with their adjustment as a special case.  
 
 First, let the expectation of $\beta_i^b$ conditional on $Z_i$ be
 approximated by
@@ -237,7 +237,7 @@ of the analysis.  Also let the expectation of $\hat\beta_i^b$
 conditional on $Z_i$ be
 \begin{equation}
   \label{est}
-  E(\hat\beta_i^b)=\alpha_R+\gamma_R Z_i,
+  E(\hat\beta_i^b)=\alpha_U+\gamma_U Z_i,
 \end{equation}
 which is of course well estimated by least squares.  HS then assume
 that the error in estimating $\hat\beta_i^b$ by EI is a linear
@@ -245,20 +245,20 @@ function of $\beta_i^b$:
 \begin{equation}
   \label{hserr}
   E(\hat\beta_i^b - \beta_i^b)
-  = \delta_0^b + \delta_1^b\beta_i^b + \zeta_i.
+  = \delta_0^b + \delta_1^b\beta_i^b.
 \end{equation}
 Then solving (\ref{hserr}) for $E(\hat\beta_i^b)$ and substituting the
 result into (\ref{est}) gives a more informative version of (\ref{true}):
 \begin{equation}
   \label{adj}
-  E(\beta_i^b) = \left(\frac{\alpha_U-\delta_0^b}{1+\delta_i^b}\right)
-  + \left(\frac{\gamma_U}{1+\gamma_1^b}\right)Z_i.
+  E(\beta_i^b) = \left(\frac{\alpha_U-\delta_0^b}{1+\delta_1^b}\right)
+  + \left(\frac{\gamma_U}{1+\delta_1^b}\right)Z_i.
 \end{equation}
 Thus, we know that the quantities of interest, $\alpha_R$ and
 $\gamma_R$, can be expressed as the intercept and slope of
 (\ref{adj}).  If we can estimate the components of each, we can derive
-a consistent estimator, assuming of course HS's various linearity and
-unboundedness assumptions are not too far off.
+a consistent estimator, assuming HS's linearity and unboundedness
+assumptions are not too far off.
 
 \section{Correcting and Extending Herron and Shotts' Estimation
   Procedure}
@@ -270,7 +270,7 @@ Unfortunately, the procedure itself is flawed for two reasons.  First,
 it conditions on the point estimate for $\breve\psi$, and thus assumes
 the absence of estimation uncertainty.  Ignoring uncertainty would
 bias standard errors and confidence intervals, of course, but HS did
-not calculated them.  However, since their estimation procedure is
+not calculate them.  However, since their estimation procedure is
 nonlinear, ignoring estimation uncertainty also affects their point
 estimates in finite samples.  And second, the procedure calls for
 drawing only a single simulation of $(\beta_i^b,\beta_i^w)$ for each
@@ -278,25 +278,25 @@ observation.  As a result, the estimate includes Monte Carlo
 approximation error.  The error can be eliminated by running their
 entire procedure many times and averaging.  We fix each of these
 problems in our application of this algorithm.\footnote{To define the
-  full algorithm, let a symbol with a tilde on it denote a value of
-  that quantity randomly drawn from its posterior density.  To
-  implement this procedure for a given set of data $X_i$ and $T_i$
+  full algorithm we propose, let a symbol with a tilde on it denote a
+  value of that quantity randomly drawn from its posterior density.
+  To implement our procedure for a given set of data $X_i$ and $T_i$
   ($i=1,\dots,p$): (1) run EI on $X$ and $T$; (2) draw $\tilde\psiu$
   from its posterior density as given by EI; (3) take one draw of
   $(\tilde\beta_i^b,\tilde\beta_i^w)$ for each $i=1,\dots,p$ from a
   truncated normal density with parameter vector $\tilde\psiu$, (4)
   compute a new $T_i$ as $\tilde
-  T_i=\tilde\beta_i^bX_i+\beta_i^w(1-X_i)$; (5) run EI on $X_i$ and
+  T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (5) run EI on $X_i$ and
   $\tilde T_i$ to yield estimates ($\hat\beta_i^b,\hat\beta_i^w$) for
   all $i$; (6) regress ($\hat\beta_i^b-\hat\beta_i^b$) on $\beta_i^b$
-  to estimate $\delta_0^b$ and $\delta_1^b$; (7) repeat steps (2)-(7)
+  to estimate $\delta_0^b$ and $\delta_1^b$; (7) repeat steps (2)-(6)
   a sufficient number of times to eliminate Monte Carlo approximation
   error, and average the estimates in (6) to yield $\hat\delta_0^b$
   and $\hat\delta_1^b$; (8) regress $\hat\beta_i^b$ on $Z_i$ yielding
   the estimated intercept $\hat\alpha_U$ and slope $\hat\gamma_U$; (9)
   compute the adjusted intercept as
   $(\hat\alpha_U-\hat\delta_0^b)/(1+\hat\delta_1^b)$ and adjusted
-  slope as $\hat\gamma_U/(1+\hat\delta_i^b)$.}
+  slope as $\hat\gamma_U/(1+\hat\delta_1^b)$.}
 
 \section{Herron and Shotts' Monte Carlo Simulations}
 
@@ -499,7 +499,7 @@ of the attenuation.
       corrects for most of the attenuation bias.  Data were generated
       from the extended EI model, with
       $\breve\psi=(-0.2,1,0.6,1,0.05,0.05,0)$, $X \sim
-      \textrm{Uniform}(0,0.2) and \textrm{Uniform}(0.8,1)$, and $Z
+      \textrm{Uniform}(0,0.2) \textrm{and} \textrm{Uniform}(0.8,1)$, and $Z
       \sim \textrm{Normal}(0,0.1)$.}
     \label{f:mixed}
   \end{center}
@@ -518,11 +518,11 @@ weight to these observations tends to bias the estimate of the slope
 downwards.)  Figure \ref{f:nonlinear} illustrates these issues.  In
 this example, we also include a nonlinear model by regressing a logit
 transformation of $\hat\beta_i^b$,
-$\ln(\hat\beta_i^b/(1-\hat\beta_i^b))$, on $Z_i$.  The fit of this
-line (marked LT) clearly gives a far better fit than any of the other
-methods.  It is also the only method that does not extend above 1 or
-below 0 for $\beta_i^b$ (i.e., into the impossible region) for some
-values of $Z_i$.
+$\ln(\hat\beta_i^b/(1-\hat\beta_i^b))$, on $Z_i$.  This line (marked
+LT) clearly gives a far better fit than any of the other methods.  It
+is also the only method that does not extend above 1 or below 0 for
+$\beta_i^b$ (i.e., into the impossible region) for some values of
+$Z_i$.
 \begin{figure}[t]
   \begin{center}
     \epsfig{file=nonlinear.eps}
