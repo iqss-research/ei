@@ -2282,14 +2282,14 @@ importance sampling successful?  Check to make sure that eiread's
 it is larger, but its worth checking).
 
 \paragraph{What statistical issues should I check?}
-It is \emph{essential} to verify that the model fits the data.  First,
-look at eigraph's \texttt{fit}: for the X by T graph on the left,
-verify that the $E(T_i|X_i)$ line passes through the middle of the
-points, and the 80\% confidence intervals capture around 80\% of the
-points, vertically for each value of $X$ on the horizontal axis.  For
-the tomography plot of the right of the \texttt{fit} graph, verify
-that the contours capture the place from where the ``emissions'' come
-from (roughly speaking, where the lines are crossing).  Then check
+It is essential to verify that the model fits the data.  First, look
+at eigraph's \texttt{fit}: for the X by T graph on the left, verify
+that the $E(T_i|X_i)$ line passes through the middle of the points,
+and the 80\% confidence intervals capture around 80\% of the points,
+vertically for each value of $X$ on the horizontal axis.  For the
+tomography plot of the right of the \texttt{fit} graph, verify that
+the contours capture the place from where the ``emissions'' come from
+(roughly speaking, where the lines are crossing).  Then check
 eigraph's \texttt{tomogS} and verify that the maximum likelihood
 contours (on the top left, the same as the tomography plot in the
 \texttt{fit} graph) and mean posterior contours (on the top right)
@@ -2307,6 +2307,18 @@ substantive problem (see eigraph's \texttt{boundX}).  Is there survey,
 qualitative, or other external information you could have used but
 didn't?  Chapter 16 provides a complete checklist that should be used
 for every serious application.
+
+\paragraph{What global values should I set?  Which EI model should I run?}
+EI will enable you to run any of a large set of related models.  No
+one model from this set or any other will work all the time.  The
+program defaults are chosen for speed and simplicity, not for what
+will be most reasonable empirically.  For the latter, I would read
+Section 9.2.3 (especially Figure 9.6) and consider globals like these:
+\begin{verbatim}
+  _Eeta=3;
+  _EalphaB=0~0.25;
+  _EalphaW=0~0.25;
+\end{verbatim}
 
 \paragraph{What do I do if my model doesn't fit the data?}  There are
 several approaches, depending on the problem.  Don't miss the first
@@ -2373,13 +2385,14 @@ item.
   especially if \texttt{tomog} fits but \texttt{tomogP} does not) or
   \texttt{\_Eisn} (always upwards) (e.g., you might try
   \texttt{\_EisFac=1} or \texttt{\_EisFac=$-1$}).
-
+  
 \item If eigraph's \texttt{estsims} does not look approximately like
   \texttt{tomogp}, or if the graphs in \texttt{post} are bimodal, you
   need to do something.  You may try a different method of computing
   the variance matrix.  You could also narrow the variance of the
   priors on $\sigma_b$, $\sigma_w$, and $\rho$ by setting
-  \texttt{\_Esigma} and \texttt{\_Erho}.
+  \texttt{\_Esigma} and \texttt{\_Erho}.  Or more simply, you could
+  use the maximum likelhood solution and set \texttt{\_EisFac=-2;}.
 
 \item If the relationship between $X_i$ and $\beta_i^b$ or $\beta_i^w$
   does not correspond to your substantive knowledge of the problem,
@@ -2442,6 +2455,11 @@ program.  In the order in which we suggest you try them, these are,
   being that estimates will still be available for all observations.
   If a large $n$ is the issue, then this is the best way to speed
   estimation without much cost.
+  
+\item You can use the asymptotic normal approximation, and eliminate
+  the importance sampling refinement, by setting
+  \texttt{\_EisFac}$=-1$ or to go even faster use
+  \texttt{\_EisFac}$=-2$ to exclude estimation uncertainty.
 
 \item Choose good starting values (by setting \texttt{\_Estval}).  For
   example, if you have many similar analyses to run, do a typical
@@ -2458,13 +2476,6 @@ program.  In the order in which we suggest you try them, these are,
 \item If you are willing to live with lower precision, you can draw
   fewer simulations by setting \texttt{\_Esims} to a number smaller
   than the default (100).
-  
-\item You can use the asymptotic normal approximation, and eliminate
-  the importance sampling refinement, by setting
-  \texttt{\_EisFac}$=-1$ or to go even faster use
-  \texttt{\_EisFac}$=-2$ to exclude estimation uncertainty.  (In the
-  first case, the posterior density is only asymptotically valid; in
-  the second, confidence intervals will probably be too small.)
 
 \item You can set \texttt{\_EdirTol} to a larger number.  The default
   is 0.0001; you can try 0.001 or larger.  You could also reduce the
@@ -2542,7 +2553,7 @@ procedures.  (We're working on an easier approach for $R\times C$
 tables.)
 
 \paragraph{What do I do if I have computational problems with EI2?}
-Try \texttt{\_EisFac=-2}.  This may make the standard errors slightly
+Try \texttt{\_Ei2\_m=-1}.  This may make the standard errors slightly
 too small, but it will make the procedure numerically more reliable
 and about four times faster.  This is the procedure described at the
 start of Section 8.4.1 (pp 151--2).
@@ -2618,7 +2629,7 @@ with the current version of the program (available at
 problem still exists, copy down \emph{exactly} what you see on the
 screen when the program bombs, and email it along with any changes in
 globals to
-\hlink{\texttt{KBenoit@Harvard.Edu}}{mailto:kbenoit@harvard.edu} if
+\hlink{\texttt{kbenoit@tcd.ie}}{mailto:kbenoit@tcd.ie} if
 you think the error was in the \EzI\ front end or
 \hlink{\texttt{King@Harvard.Edu}}{mailto:king@harvard.edu} if the
 error appears to be in \EI.  Comments and suggestions for changes are
