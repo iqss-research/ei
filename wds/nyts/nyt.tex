@@ -112,7 +112,7 @@
     Harvard University. (Center for Basic Research in the Social
     Sciences, 34 Kirkland, Cambridge MA 02138;
     \texttt{http://www.people.fas.harvard.edu/\~\,kimai},
-    \texttt{KImai@Fas.Harvard.Edu}}
+    \texttt{KImai@Fas.Harvard.Edu})}
 \and %
 Gary King\thanks{Professor of Government, Harvard University and
   Senior Science Advisor, Evidence and Information for Policy Cluster,
@@ -653,6 +653,10 @@ were cast disproportionately for Bush in Bush counties, then we should
 find a strong relationship between $\bb_i$ and variables that measure
 Bush support.
 
+Each of these three assumptions can be modified to any degree by the
+inclusion of covariates.  We rely on this point to produce a diverse
+array of models to which we then apply Bayesian model averaging.
+
 \subsubsection{Bayesian Model Averaging}
 
 In Bayesian inference, we are interested in the posterior distribution
@@ -749,53 +753,7 @@ parameter of the model.  Hence, the marginal likelihood tells us how
 well each model is supported by the data, just as the likelihood tells
 us how well each parameter is supported by a likelihood in traditional
 likelihood models.  It is used to calculate the posterior model
-probabilities.
-
-\subsection{Estimation and Computational Issues}
-
-The difficulty involved in implementing Bayesian model averaging is
-the computation of the marginal likelihood. The integration in
-equation~\ref{eq:marglik} is difficult, especially when the prior
-distribution on parameters is relatively flat. A number of estimators
-have been proposed to improve the precision of the estimation of the
-marginal likelihood (see \citet{kass:raft:95} for a comprehensive
-survey).
-
-To compute the marginal likelihood, we use the Laplace-Metropolis
-estimator, which is based on the idea of combining the asymptotic
-approximation and the posterior simulation. This estimator is known to
-perform relatively well compared with other methods in many situations
-\citep{raft:96,lewi:raft:97,dici:kass:raft:wass:97}.\footnote{If a
-  model is estimated through a Markov chain Monte Carlo (MCMC)
-  simulation, one can construct an algorithm where the chain visits
-  each model stochastically so that you can compute the posterior
-  model probability as a direct output of the MCMC posterior draws.
-  For example, see \citet{carl:chib:95} and \citet{geor:mccu:93}.
-  However, this requires constructing a new MCMC algorithm for each
-  application which is not trivial in most situations.  The
-  Laplace-Metropolis estimator which we use approximates the marginal
-  likelihood without requiring such an effort.  The rate of
-  approximation is $O(n^{-1})$, which is considerably better than
-  easier-to-apply methods such as BIC, which has a rate of only
-  $O(n^{-1/2})$ (see e.g. \citet{kass:tier:kada:89}). For example,
-  Kass and Raftery (1995,p.778) say that ``even for very large
-  samples, it [BIC] does not produce the correct value.''  In our
-  small-$n$ application, the Laplace approximation along with exact
-  finite sample posterior simulation is more appropriate.}
-
-% The Laplace-Metropolis estimator of the
-% marginal likelihood is based on the following Laplace asymptotic
-% approximation.
-% \begin{equation}
-% \P(T|M_k) \approx (2 \pi)^{d/2}|\widetilde{\Psi}_k|^{1/2}
-% \P(T|\widetilde{\Theta}_k) \P(\widetilde{\Theta}_k).
-% \end{equation}
-% where $\widetilde{\Theta}_k$ is the posterior mode of the objective
-% function $f(\Theta_k)=\text{log}(p(T|\Theta_k)p(\Theta))$ and
-% $\widetilde{\Psi}_k$ is minus the inverse Hessian of $f(\Theta_k)$
-% evaluated at $\Theta_k=\widetilde{\Theta}_k$ for Model $k$. We
-% estimate $\widetilde{\Theta}_k$ by taking the values of $\Theta_k$ as
-% posterior draws which maximize the objective function.
+probabilities.  We discuss computational issues in the Appendix.
 
 \section{Empirical Results}
 \label{s:outcome}
@@ -1067,8 +1025,8 @@ Bayesian Model Averaging  & 251 & (69 & 468) & \\
   component models with the highest posterior model probabilities
   among the 31 models estimated. Each model is identified in the table
   by listing the covariate we used.  The first differences represent
-  the increase or decrease in the estimated Bush's margin when the
-  value of the covariate is increased by 10 percentage points.}
+  the increase or decrease in Bush's estimated margin when the value
+  of the covariate increases by 10 percentage points.}
 \label{tb:bma}
 \end{center}
 \end{table}
@@ -1169,11 +1127,11 @@ the present case, where 100\% confidence intervals are available, we
 also have maximum constraints on possible results.
 
 \appendix
-\section{A Formal Presentation of the King's Model} \label{appx:king}
+\section{Technical Issues} \label{appx:king}
 
-The joint distribution of $\bg$ and $\bb$ are assumed to be a
-truncated bivariate normal with mean, $\bbetau$, and a variance
-$\Sigmau$:
+King's (1997) ecological inference model begins by assuming that the
+joint distribution of $\bg$ and $\bb$ are truncated bivariate normal
+with mean, $\bbetau$, and a variance $\Sigmau$:
 \begin{eqnarray}
 \P(\bb_i, \bg_i | \bbetau, \Sigmau) & = & 
 \TN (\bb_i,\bg_i | \bbetau, \Sigmau) \\
@@ -1238,6 +1196,55 @@ $\Theta=(\alpha^b, \alpha^g, \phi_1, \phi_2,
 \phi_3=\text{ln}\sigmau_b, \phi_4=\text{ln}\sigmau_g, \phi_5)$.  Our
 prior specification follows the recommendation of King
 \citeyear[chapter7]{king:97}.
+
+From one application of one specification of this model, we compute
+the posterior density of a quantity of interest $\Delta$ by drawing it
+from its posterior, $\P(\Delta|M_k,T)$.  To do this, we draw
+simulations of $\bb$ and $\bg$ from their posterior above and
+calculate simulations of $\Delta$.  By applying this procedure to each
+of the 31 models, we get the first of the two components of Equation
+\ref{eq:bma} needed for Bayesian model averaging.  The difficult part
+of computing the second piece is the computation of the marginal
+likelihood.  In particular, the integration in Equation
+\ref{eq:marglik} is difficult, especially when the prior on the
+parameters is relatively flat. A number of estimators have been
+proposed to improve the precision of the estimation of the marginal
+likelihood (see \citet{kass:raft:95} for a comprehensive survey).
+
+To compute the marginal likelihood, we use the Laplace-Metropolis
+estimator, which is based on the idea of combining the asymptotic
+approximation with posterior simulation. This estimator is known to
+perform relatively well compared with other methods in many
+situations.  The rate of approximation of the Laplace approximation is
+$O(n^{-1})$, which is considerably better than easier-to-apply methods
+such as BIC, which has a rate of only $O(n^{-1/2})$ (see e.g.
+\citet{kass:tier:kada:89}).  For example, Kass and Raftery
+(1995,p.778) say that ``even for very large samples, it [BIC] does not
+produce the correct value.''  In our small-$n$ application, the
+Laplace approximation that we use in combination with exact finite
+sample posterior simulation is more
+appropriate.\citep{raft:96,lewi:raft:97,dici:kass:raft:wass:97}.\footnote{If
+  a model is estimated through a Markov chain Monte Carlo (MCMC)
+  simulation, one can construct an algorithm where the chain visits
+  each model stochastically so that you can compute the posterior
+  model probability as a direct output of the MCMC posterior draws.
+  For example, see \citet{carl:chib:95} and \citet{geor:mccu:93}.
+  However, this requires constructing a new MCMC algorithm for each
+  application.}
+
+% The Laplace-Metropolis estimator of the marginal likelihood is based
+% on the following Laplace asymptotic approximation.
+% \begin{equation}
+% \P(T|M_k) \approx (2 \pi)^{d/2}|\widetilde{\Psi}_k|^{1/2}
+% \P(T|\widetilde{\Theta}_k) \P(\widetilde{\Theta}_k).
+% \end{equation}
+% where $\widetilde{\Theta}_k$ is the posterior mode of the objective
+% function $f(\Theta_k)=\text{log}(p(T|\Theta_k)p(\Theta))$ and
+% $\widetilde{\Psi}_k$ is minus the inverse Hessian of $f(\Theta_k)$
+% evaluated at $\Theta_k=\widetilde{\Theta}_k$ for Model $k$. We
+% estimate $\widetilde{\Theta}_k$ by taking the values of $\Theta_k$ as
+% posterior draws which maximize the objective function.
+
 
 \singlespacing
 \bibliographystyle{/home/willow/king/texinputs/pa}

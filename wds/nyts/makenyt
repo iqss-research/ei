@@ -5,5 +5,5 @@ latex nyt
 latex nyt
 latex nyt
 dvipdfm -y 0.25in nyt.dvi
-mv nyt.pdf ~/www/files/.
-chmod go+r ~/www/files/nyt.pdf
+mv nyt.pdf ~/www/files/ballots.pdf
+chmod go+r ~/www/files/ballots.pdf
