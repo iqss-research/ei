@@ -120,6 +120,36 @@ proc 1=eigraph(dbuf,str);
   titl;
 
   /* for ei2, pull out data buffer _eimetar from meta-data buffer */
+  /* for eimodels_def, print an error message and return the input buffer */
+  /* for eimodels_run, pull out data buffer from meta-data buffer for Model _eimetar */
+  /* for eimodels_ave, print an error message and return the input buffer */
+  if vin(dbuf,"titl");
+    titl=vread(dbuf,"titl");
+    if titl$=="*MDB* Meta-Data Buffer from 2nd Stage *MDB*";
+      dbuf=vread(dbuf,"dbuf"$+ftos(_eimetar,"*.*lf",1,0));
+    elseif titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
+      ?;
+      "ei: the output data buffer from eimodels_def cannot be used as";
+      "    an input of eigraph.";
+      "----- EIGRAPH Aborted -----";
+      ?;
+      retp(dbuf);
+    elseif titl$=="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
+      dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
+      ?; 
+      "eigraph for Model" _eimetar;
+      ?;
+    elseif titl$=="*DB* Data Buffer from eimodels_ave() *DB*";
+      ?;
+      "ei: the output data buffer from eimodels_ave cannot be used as";
+      "    an input of eigraph.";
+      "----- EIGRAPH Aborted -----";
+      ?;
+      retp(dbuf);
+    endif;
+  endif;
+
+  /* for ei2, pull out data buffer _eimetar from meta-data buffer */
   if vin(dbuf,"titl");
     titl=vread(dbuf,"titl");
     if titl$=="*MDB* Meta-Data Buffer from 2nd Stage *MDB*";
