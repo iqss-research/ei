@@ -5,7 +5,7 @@
 \usepackage{epsf}
 \usepackage{url}
 \usepackage{html}
-%\pagestyle{myheadings} 
+                                %\pagestyle{myheadings}
 \htmladdtonavigation{
   \htmladdnormallink{%
     \htmladdimg{http://gking.harvard.edu/pics/home.gif}}
@@ -15,7 +15,7 @@
 \setcounter{tocdepth}{3}
 \renewcommand{\bibitem}{\vskip 2pt\par\hangindent\parindent\hskip-\parindent}
 
-% dcolumn
+                                % dcolumn
 \usepackage{dcolumn}
 \newcolumntype{.}{D{.}{.}{-1}}
 \newcolumntype{d}[1]{D{.}{.}{#1}}
@@ -35,7 +35,7 @@
       Aggregate Data} (Princeton University Press, 1997).  ${\mathfrak
       EI}$ was written in the Gauss Programming Language, \copyright
     Copyright Aptech Systems, Inc., 1984-1998, and uses Gauss'
-    Constrained Maximum Likelihood Module written by Ronald J.\ 
+    Constrained Maximum Likelihood Module written by Ronald J.\
     Schoenberg.  For making available public domain Gauss code, I am
     grateful to David Baird (for an inverse cumulative normal
     procedure), Martin van der Ende (for an accurate cumulative
@@ -132,7 +132,7 @@
 \tableofcontents
 
 \section{Introduction}
-                                   
+
 This program provides a method of inferring individual behavior from
 aggregate data that works in practice.  It implements the statistical
 procedures, diagnostics, and graphics from the book \hlink{\emph{A
@@ -204,7 +204,7 @@ remaining files (\texttt{*.src}, \texttt{ei.dec}, \texttt{ei.ext}, and
 \texttt{sample.asc}) to somewhere on the GAUSSPATH or src\_path, such
 as the default $\backslash$\texttt{GAUSS}$\backslash$\texttt{SRC}.
 
-\paragraph{On a UNIX-based system:}   
+\paragraph{On a UNIX-based system:}
 If you have supervisor privleges, follow analogous steps as for DOS
 systems.  If you do not have supervisor privileges, or do not wish the
 program to be installed for all users, unzip ei.zip into a directory
@@ -252,28 +252,28 @@ example uses the fraction of the voting age population who are black
 voting age people ($\Npp$) in each precinct ($i=1,\ldots,p$) to infer
 the fraction of blacks who vote ($\beta_i^b$) and the fraction of
 whites who vote ($\beta_i^w$), also in each precinct.
-\begin{table}[t] 
-\begin{center}
-\leavevmode
-\setlength{\extrarowheight}{4pt}
-\begin{tabular}{r<{  }@{}r@{}c@{}l@{}c@{}c@{}>{  }l} 
-\textbf{Race of}&&\multicolumn{3}{c}{\textbf{Voting Decision}}\\
-\textbf{Voting Age} && &                   &&\\
-\textbf{Person} && \multicolumn{1}{c}{\underline{V}ote} && \underline{N}o vote &  \\\cline{2-5}
-\underline{b}lack &\vline& $\beta^b_i$ &\vline& $1-\beta_i^b$ &\vline& $X_i$ \\
-   \cline{2-5}
-\underline{w}hite &\vline& $\beta^w_i$ &\vline& $1-\beta_i^w$ &\vline&$1-X_i$\\ \cline{2-5}
-                        && $T_i$       &&       $1-T_i$  && \\
-\end{tabular}
-\caption[Simplified Notation for Precinct $i$]{\em  Notation
-  for Precinct $i$.  The goal is to infer the quantities of interest,
-  $\beta_i^b$ (the fraction of blacks who vote) and $\beta_i^w$ (the
-  fraction of whites who vote), from the aggregate variables $X_i$
-  (the fraction of voting age people who are black) and $T_i$ (the
-  fraction of people who vote), along with $\Npp$ (the number of
-  voting age people).  This is Table 2.3 (page 31) in the book.}
-\label{t:snotEI}
-\end{center}
+\begin{table}[t]
+  \begin{center}
+    \leavevmode
+    \setlength{\extrarowheight}{4pt}
+    \begin{tabular}{r<{  }@{}r@{}c@{}l@{}c@{}c@{}>{  }l}
+      \textbf{Race of}&&\multicolumn{3}{c}{\textbf{Voting Decision}}\\
+      \textbf{Voting Age} && &                   &&\\
+      \textbf{Person} && \multicolumn{1}{c}{\underline{V}ote} && \underline{N}o vote &  \\\cline{2-5}
+      \underline{b}lack &\vline& $\beta^b_i$ &\vline& $1-\beta_i^b$ &\vline& $X_i$ \\
+      \cline{2-5}
+      \underline{w}hite &\vline& $\beta^w_i$ &\vline& $1-\beta_i^w$ &\vline&$1-X_i$\\ \cline{2-5}
+      && $T_i$       &&       $1-T_i$  && \\
+    \end{tabular}
+    \caption[Simplified Notation for Precinct $i$]{\em  Notation
+      for Precinct $i$.  The goal is to infer the quantities of interest,
+      $\beta_i^b$ (the fraction of blacks who vote) and $\beta_i^w$ (the
+      fraction of whites who vote), from the aggregate variables $X_i$
+      (the fraction of voting age people who are black) and $T_i$ (the
+      fraction of people who vote), along with $\Npp$ (the number of
+      voting age people).  This is Table 2.3 (page 31) in the book.}
+    \label{t:snotEI}
+  \end{center}
 \end{table}
 
 Of course, this is only an example; \EI\ can be used for any analogous
@@ -353,6 +353,33 @@ as the variables are scaled to the [0,1] interval (see Section 14.3).
     intervals for $\beta_i^w$, or \texttt{sum} to print a summary of
     district-level estimates and information.
   \end{enumerate}
+
+\item It is also possible to define, run, and average multiple \EI
+  models.  The procedure, \texttt{ndbuf2 =
+    eimodels\_def(ndbuf1,"num",t,x,n,zb,zw);}, assigns a model number,
+  \texttt{"num"}, to each model, and stores it in the output meta data
+  buffer, \texttt{ndbuf2}. This meta data buffer contains all the
+  other model definitions previously stored in the input meta data
+  buffer, \texttt{ndbuf1}.  \texttt{t,x,n,zb,zw} are the usual inputs
+  to \texttt{ei()}.  \texttt{ndbuf1} is the input meta data buffer
+  where other models have been stored. The procedure, \texttt{ndbuf2 =
+    eimodels\_run(ndbuf);}, runs \texttt{ei())} on all the models
+  defined and stored in the meta data buffer, \texttt{ndbuf1}, which
+  is the output of the previous procedure, \texttt{eimodels\_def()}.
+  The resulting meta data buffer, \texttt{ndbuf2}, contains
+  \texttt{ei()} results for all the models.  Finally, the procedure,
+  \texttt{dbuf = eimodels\_ave(ndbuf);}, implements the method called,
+  \textit{Bayesian Model Averaging}, to combine the results from
+  multiple models with weights indicating how well the data supports
+  each model.  The input meta data buffer, \texttt{ndbuf}, is the
+  output from the procedure, \texttt{eimodels\_run();}, and the
+  results of this model averaging can be read using \texttt{v =
+    eiread(dbuf);} where \texttt{dbuf} is the output data buffer. To
+  use this method, the prior distribution for covariates have to be
+  specified for each model using the global variables,
+  \texttt{\_EalphaB} and \texttt{\_EalphaB}, so that the resulting
+  posterior distribution is proper.
+
 \end{enumerate}
 
 % ------------------------------------------------------------------
@@ -377,7 +404,7 @@ buffer that should be read with \texttt{eiread} or graphed with
 \texttt{eigraph}.  See the model in Chapter 6, and extensions in
 Chapter 9.
 
-\paragraph{\underline{Example}:}  
+\paragraph{\underline{Example}:}
 The following example uses the sample file \texttt{sample.asc} that
 comes with \EI.  This file includes hypothetical data from 75
 precincts in rows and three variables, \texttt{t}, \texttt{x}, and
@@ -401,7 +428,7 @@ easiest to write one program such as this, and to examine the results
 interactively (or with a separate program) using \texttt{eiread} and
 \texttt{eigraph}.
 
-\paragraph{\underline{Globals}:} 
+\paragraph{\underline{Globals}:}
 \begin{description}
 \item[\_EalphaB] (cols(Zb)$\times 2$) matrix of means (in the first
   column) and standard deviations (in the second) of an independent
@@ -416,7 +443,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   \texttt{Zw}, you should probably specify a prior, at least with mean
   zero and some variance (default=\{.\}; which indicates no prior).
   (See Equation 9.2, page 170, to interpret $\alpha^w$).
-  
+
 \item[\_Ebeta] Standard deviation of the ``flat normal'' prior on
   $\bbetau^b$ and $\bbetau^w$.  The flat normal prior is uniform
   within the unit square and dropping outside the square according to
@@ -424,14 +451,14 @@ interactively (or with a separate program) using \texttt{eiread} and
   Setting to positive values probabilistically keeps the estimated
   mode within the unit square.  0.25 is a reasonable value to
   experiment with at first.
-  
+
 \item[\_Ebounds] 1 if set CML bounds on parameters automatically
   unless z's are included; 0 if don't use bounds; $k\times 2$ (where
   $k$ is the number of starting values) or $1\times 2$ matrix to
   indicate upper$\sim$lower bounds. (Do not confuse the bounds
   referred to here with the bounds on the quantities of interest.)
   Default=1.
-  
+
 \item[\_Ecdfbvn] Determines which procedure to use for computing the
   area of the bivariate normal distribution above the unit square: 1
   based on the Gauss function \texttt{CDFBVN}; 2 Martin van der Ende's
@@ -446,7 +473,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   G.O.\ Wesolowsky, 1989.\ ``On the computation of the bivariate
   normal integral,'' \emph{Journal of Statist. Comput. Simul.} 35:
   101--107).  See Appendix F.
-  
+
   Option 5 (the default) appears to be the best tradeoff between speed
   and accuracy currently available (and so this global should not be
   changed to anything other than 6, which is more accurate but much
@@ -456,7 +483,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   innacurate and jump discontinuously and for very small values.
   Because of this, small values are truncated at the global
   \texttt{\_EcdfTol}, which you may wish to adjust.
-  
+
 \item[\_EcdfTol] Tolerance for the lncdfbvn function (when
   \texttt{\_Ecdfbvn=5}, its default), with smaller calculated values
   truncated at the value of this global (DEFAULT=2.220446e-11).  This
@@ -470,20 +497,20 @@ interactively (or with a separate program) using \texttt{eiread} and
   time.  There is little reason to choose 0 unless you are running a
   large number of estimations and you are certain all the inputs are
   correctly specified.  (Inessential global: not stored in dbuf.)
-  
+
 \item[\_EdirTol] direction tolerance for CML convergence.
   Default=0.0001.  Set to smaller values if most of your values of
   $T_i$ or $X_i$ are very small.
-  
+
 \item[\_EdoML] 1 do maximum likelihood (default); 0 don't do maximum
   likelihood, using instead the values of $\phi$ stored in
   \texttt{\_EdoML\_phi} and vcphi in \texttt{\_EdoML\_vcphi}.
-  
+
 \item[\_EdoML\_phi] if \texttt{\_EdoML}=1, this should include a
   vector of values of $\phi$ and will be used instead of the output of
   the likelihood maximization.  (This global is ignored unless
-  \texttt{\_EdoML=1}.) 
-  
+  \texttt{\_EdoML=1}.)
+
 \item[\_EdoML\_vcphi] if \texttt{\_EdoML}=1, this should include a
   matrix of values of estimated variance matrix $V(\phi)$ and will be
   used instead of the output of the likelihood maximization procedure.
@@ -492,7 +519,7 @@ interactively (or with a separate program) using \texttt{eiread} and
 \item[\_EdoSim] 1 do simulations (default); 0 don't do simulations;
   $-1$ don't do simulations or compute the maxlik variance (use this
   option for computing conditional log-likelihood of eta's).
-  
+
 \item[\_Eeta] Automatically includes $X_i$ in the inputs \texttt{Zb}
   and/or \texttt{Zw}.  The actual inputs \texttt{Zb} and \texttt{Zw}
   must be set to 1 if the default is changed.  Using this global is
@@ -522,7 +549,7 @@ interactively (or with a separate program) using \texttt{eiread} and
     \texttt{zw}=\texttt{x}, to estimate $\alpha^w$, and fix
     $\alpha^b=$a and its standard error to b.
   \end{itemize}
-  
+
 \item[\_EI\_vc] $M\times 2$ matrix ($M\geq 1$), each row of which
   represents instructions for one attempt to compute an estimated
   positive definite variance matrix of $\phi$.  The procedure exits
@@ -540,7 +567,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   if necessary search for better ones).  DEFAULT=\texttt{\{1 0, 4 0, 2
     0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2\}}.  The variance computation
   only very rarely gets beyond the second try.
-  
+
   When the likelihood surface is normal (i.e., quadratic), which is
   true asymptotically, all options produce identical results.  In
   practice, this procedure is useful for ensuring that a positive
@@ -556,12 +583,12 @@ interactively (or with a separate program) using \texttt{eiread} and
   verify that the simulations are being appropriately drawn from the
   estimated contours (see compare the right two figures in eigraph's
   \texttt{tomogS}).
-  
+
 \item[\_EIgraph\_bvsmth] smoothing parameter for nonparametric
   estimation; used only if \texttt{\_Enonpar}=1. Default=0.08.  (The
   same parameter controls the nonparametric bivariate density
   estimation for diagnostic purposes in \texttt{eigraph}.)
-  
+
 \item[\_EisChk] 0 to do nothing (default); 1 change \texttt{lnir} from
   the scalar mean importance ratio to a
   (\texttt{\_Esims}*\texttt{\_Eisn})$\times$(rows($\phi$)+1) matrix
@@ -570,12 +597,12 @@ interactively (or with a separate program) using \texttt{eiread} and
   changes \texttt{PhiSims} from the mean and standard deviation of the
   posterior phi's to a \texttt{\_Esims}$\times$rows($\phi$) matrix of
   normal simulations of phi.
-  
+
 \item[\_EiLlikS] 1 if save (\_Esims$\times 1$) the log-likelihoods
-  evaluated for each simulation; 0 saves only the means of these 
-  likelihoods (default).  These can be used for computing the marginal 
+  evaluated for each simulation; 0 saves only the means of these
+  likelihoods (default).  These can be used for computing the marginal
   likelihood.
-  
+
 \item[\_EisFac] factor to multiply by estimated variance matrix in the
   normal approximation for use in importance sampling, or set to $-1$
   to use normal approximation only.  Adjust this, \texttt{\_Eisn}, or
@@ -584,13 +611,13 @@ interactively (or with a separate program) using \texttt{eiread} and
   sufficient and your confidence intervals may be too narrow; it must
   be greater than zero and should probably be at least one.  See
   Section 7.5. (Default=4).
-  
+
 \item[\_Eisn] factor to multiply by \texttt{\_Esims} to compute the
   number of normals to draw before resampling.  This is used to to try
   to get \texttt{\_Esims} samples from exact posterior.  Increase this
   or change \texttt{\_EisFac} or \texttt{\_EisT} if \texttt{resamp} is
   larger than 15 or 20.  Default=10.  See Section 7.5.
-  
+
 \item[\_EisT] 0 (default) to use multivariate normal density to draw
   random numbers for initial approximation for importance sampling; or
   if greater than 2, use the multivariate Student $t$ density, with
@@ -599,30 +626,30 @@ interactively (or with a separate program) using \texttt{eiread} and
   Section 7.5.
 
 \item[\_EmaxIter] Maximum number of iterations for CML.  Default=500.
-  
+
 \item[\_EnonEval] Number of nonparametric density evaluations for each
   tomography line (default=11).  Only used if \texttt{\_EnonPar}=1.
-  
+
 \item[\_EnonNumInt] Number of points to evaluate for numerical
   integration in computing the denominator for the bivariate kernel
   density (default=50).  Only used if \texttt{\_EnonPar}=1.
-  
+
 \item[\_EnonPar] 0 do not run nonparametric model (default); 1 run
   nonparametric model.  (When choosing nonparametric estimation, only
   relevant options will be available under eigraph and eiread.)  See
   Section 9.3.2.
-  
+
 \item[\_EnumTol] Numerical tolerance.  A homogeneous precinct is one
   for which $X_i<$\texttt{\_EnumTol} or $X_i>$(1-\texttt{\_EnumTol}).
   Default is 0.0001.  Set to smaller values if most of your values of
   $T_i$ or $X_i$ are very small.
-  
+
 \item[\_Eprt] 0 print nothing; 1 print only final output from each
   stage; 2 also prints friendly iteration numbers etc (default); 3
   also prints all sorts of checks along the way.  Use eiread and
   eigraph instead of this global to see output.  (Inessential global:
   not stored in dbuf.)
-  
+
 \item[\_Eres] If items are \texttt{vput} into \texttt{\_Eres} before
   running \texttt{ei}, they are passed through into dbuf.  For
   example, identifiers for each aggregate unit would be useful in
@@ -632,14 +659,14 @@ interactively (or with a separate program) using \texttt{eiread} and
   printed in convenient places.  See \texttt{eiread} for further
   information.  Do not use the name of any globals to this procedure
   or options listed under eiread(), or your variable will be lost.
-  
+
 \item[\_Erho[1]] Standard deviation of normal prior on $\phi_5$ for
   the correlation; set to 0 to fix $\phi_5$ to a second element,
   \texttt{\_Erho[2]}; set to $-1$ to estimate without a prior.
   Default=0.5.  \texttt{\_Erho} should be a scalar unless the first
   element is 0, in which case it should be a $2\times 1$ vector.  See
   Section 7.4.
-  
+
 \item[\_Eselect] Controls which observations are included in the
   estimation stage, including both likelihood maximization and
   importance sampling. All observations are included in the simulation
@@ -647,8 +674,8 @@ interactively (or with a separate program) using \texttt{eiread} and
   This allows users to base the truncated bivariate normal contours on
   a subset of observations that might be more representative (such as
   those for which $T_i$ is not 0 or 1).  Set to $p\times 1$ vector to
-  of 1's to include and 0's to exclude individual observations.  
-  
+  of 1's to include and 0's to exclude individual observations.
+
 \item[\_EselRnd] Set to scalar 1 to include all observations not
   already deleted by \texttt{\_Eselect} (default), or a scalar greater
   than 0 and less than 1 to randomly select this fraction of
@@ -668,7 +695,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   Default = 0.5.  See Section 7.4.
 
 \item[\_Esims] Number of simulations. Default is 100.
-  
+
 \item[\_Estval] \emph{For gradient methods:} Scalar 1, use best guess
   starting values (default); or set to $k\times 1$ vector of starting
   values.  If \texttt{\_Eeta[1]}=0 (its default), $k=5$ with elements
@@ -681,7 +708,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   $k=7$; and if covariates are used and rows(\texttt{\_Eeta})=4, then
   $k$ is 5 plus the number of covariates included, with Zb coming
   before Zw.
-  
+
   \emph{For a grid search:} Set \texttt{\_Estval} to scalar 0 (with 5
   divisions per zoom), or to a scalar integer greater than or equal to
   3 for a grid search with this number of divisions per zoom.  (That
@@ -691,12 +718,12 @@ interactively (or with a separate program) using \texttt{eiread} and
   likelihood, zooms in and repeats the procedure on the narrower
   parameter region.  This continues until differences in the
   parameters differ by the global \texttt{\_Edirtol}.
-  
+
 \item[\_EvTol] Numerical tolerance for the conditional variance
   calculation.  Must be greater than 0; Default is $1e-322$.
 \end{description}
 
-\paragraph{\underline{Output Global}:} 
+\paragraph{\underline{Output Global}:}
 \texttt{\_Eres}, a data buffer containing the time of completion, if
 procedure finishes.  If the procedure is aborted, \texttt{\_Eres} is a
 data buffer containing the data and all items computed up to that
@@ -705,7 +732,7 @@ point.
 \subsection{EI2}
 \markright{Reference: EI2}
 
-\paragraph{\underline{Format}:} \texttt{dbuf2 = ei2(V,dbuf,zb,zw);}, 
+\paragraph{\underline{Format}:} \texttt{dbuf2 = ei2(V,dbuf,zb,zw);},
 where \texttt{v} is a $p\times 1$ vector, \texttt{dbuf} is a data
 buffer output from \texttt{ei()} or an earlier run of this procedure,
 \texttt{zb} is a scalar 1 for no covariates or a $p\times k^b$ matrix
@@ -751,7 +778,7 @@ of $x_i$ (see eiread and eigraph for further information).  Diagnostic
 outputs in this data buffer, such as \texttt{resamp}, are those from
 the final imputed data set.
 
-\paragraph{\underline{Example}:}  
+\paragraph{\underline{Example}:}
 The following example references a file \texttt{sample2.asc}, included
 with \EI, that includes data from 100 precincts in rows along with
 four variables, \texttt{v}, \texttt{t}, \texttt{x}, and \texttt{n}, in
@@ -777,7 +804,7 @@ Democratic, among those who vote; and \texttt{eiread(dbuf2,"betaw")}
 are point estimates of $\lambda_i^w$, the fraction of whites who vote
 Democratic, among those who vote.
 
-\paragraph{\underline{Globals}:} 
+\paragraph{\underline{Globals}:}
 \begin{description}
 \item[\texttt{ei} globals] All the globals from \texttt{ei} apply here
   too.
@@ -785,7 +812,7 @@ Democratic, among those who vote.
   than or equal to \texttt{\_Esims}), default=4.
 \end{description}
 
-\paragraph{\underline{Output Global}:} 
+\paragraph{\underline{Output Global}:}
 \texttt{\_ei2\_mta}, a ``meta-data buffer'' having as elements
 separate data buffers named dbuf1, dbuf2, dbuf3,\ldots, one for each
 of \texttt{\_ei2\_m} imputations.  Each is the output from a separate
@@ -856,22 +883,22 @@ available.  The options are included here only because I needed them
 while writing the book.)
 \begin{description}
 \item[beta] betaB and betaW
-  
+
 \item[betaB] density estimate (i.e., a smooth version of a histogram)
   of point estimates of $\beta^b_i$'s, with whiskers.
-  
+
 \item[betaW] density estimate (i.e., a smooth version of a histogram)
   of point estimates of $\beta^w_i$'s, with whiskers.
-  
+
 \item[betabw] lines,Tlines,bivar,Tbivar.  See Figure 10.8, page 214.
-  
+
 \item[bias] combination of biasB, biasW, TbiasB, TbiasW. See the
   points in Figure 13.2, page 238.
 
 \item[biasB] $X_i$ by \emph{estimated} $\beta_i^b$.
 
 \item[biasW] $X_i$ by \emph{estimated} $\beta_i^w$.
-  
+
 \item[bivar] \emph{estimated} $\beta_i^b$ by $\beta_i^w$.  See the
   right graph in Figure 13.6, page 243.
 
@@ -900,7 +927,7 @@ while writing the book.)
 
 \item[lines] $X_i$ by $T_i$ plot with one \emph{estimated} line per
   precinct.  Homogenous precincts do not appear.  See Figure 10.8, page 214.
-  
+
 \item[movie] For \emph{each} observation ($i=1,\ldots,p$), one page of
   graphics appears with the posterior distribution of $\beta_i^b$ and
   $\beta_i^w$ (with whiskers drawn at each simulated value), a plot of
@@ -910,18 +937,18 @@ while writing the book.)
   view the next observation (hit return), jump to a specific
   observation number (type in the number and hit return), or stop (hit
   ``s'' and return).  See Figure 8.1, page 148.
-  
+
 \item[movieD] For \emph{each} observation ($i=1,\ldots,p$), one
   tomography plot appears (like tomogD) with the line for observation
   $i$ darkened.  After the graph for each observation appears, the
   user can choose to view the next observation (hit return), jump to a
   specific observation number (type in the number and hit return), or
   stop (hit ``s'' and return).  See Figure 5.1, page 81.
-  
+
 \item[nonpar] combination of tomogD and a nonparametric density
   estimation with contour plot and surface plot representations.  See
   Figure 9.9, page 195.
-  
+
 \item[post] combination of postB and postW.  See Figure
   10.4, page 208.
 
@@ -938,7 +965,7 @@ while writing the book.)
 
 \item[prectW] plot of estimated $\beta^w_i$ by true $\beta^w_i$.  See
   Figure 10.5, page 210
-  
+
 \item[profile] Profile plots --- that is plots of the posterior of
   each element of $\phi$, holding constant all other values at their
   maxima.  The maximum posterior point, as found by CML is displayed
@@ -949,7 +976,7 @@ while writing the book.)
   imprecision in the cdfbvn function necessitating truncation by
   \texttt{\_EcdfTol}.)  This option is very useful for verifying
   whether the maximization procedure did indeed find the maximum.
-  
+
 \item[profileR] Profile plots of the cdfbvn function, (Equation 6.15,
   page 104).  These are plots of R by each element of $\phi$, holding
   constant all other values at their maxima.  The maximum posterior
@@ -966,12 +993,12 @@ while writing the book.)
 
 \item[ptileB] true percentile at which $\beta_i^b$ falls by estimated
   $\beta_i^b$.  See Figure 10.7, page 213.
-  
+
 \item[ptileW] true percentile at which $\beta_i^w$ falls by estimated
   $\beta_i^w$.  See Figure 10.7, page 213.
 
 \item[results] combination of postB, postW, betaB, betaW.
-  
+
 \item[sims] combination of simsB and simsW.  See Figure 10.6, page
   212.
 
@@ -986,14 +1013,14 @@ while writing the book.)
 
 \item[TbiasW] $X_i$ by \emph{true} $\beta_i^w$.  See the lines in the right
   graph in Figure  13.2, page 238.
-  
+
 \item[Tbivar] \emph{true} $\beta_i^b$ by $\beta_i^w$.  See Figure
   13.2, page 238.
-  
+
 \item[Tlines] $X_i$ by $T_i$ plot with one \emph{true} line per
   precinct.  Homogenous precincts do not appear.  See Figure 3.1, page
   41.
-  
+
 \item[tomog] tomography plot with ML contours. See Figure 10.2, page
   204.  Dashed lines are added for observations \texttt{\_Eselect}'d
   out of the estimation stage, and a note appears at the bottom left
@@ -1001,21 +1028,21 @@ while writing the book.)
   $T_i=0$ or $T_i=1$ (since as tomography lines they are represented
   as barely visible points).  The global \texttt{\_EselRnd} is
   ignored.
-  
+
 \item[tomogCI] tomography plot with 80\% confidence intervals.
   Confidence intervals appear on the screen in red with the remainder
   of the tomography line in yellow.  On printed output, which is often
   easier to see than the screen display, the confidence interval
   portion is printed thicker than the rest of the line.  See Figure
   9.5, page 179.
-  
+
 \item[tomogCI95] tomography plot with 95\% confidence intervals.
   Confidence intervals appear on the screen in red with the remainder
   of the tomography line in yellow.  On printed output, which is often
   easier to see than the screen display, the confidence interval
   portion is printed thicker than the rest of the line.  See Figure
   9.5, page 179.
-  
+
 \item[tomogD] tomography plot with data only.  See Figure 5.1, page
   81.  Dashed lines are added for observations \texttt{\_Eselect}'d
   out of the estimation stage, and a note appears at the bottom left
@@ -1023,7 +1050,7 @@ while writing the book.)
   $T_i=0$ or $T_i=1$ (since as tomography lines they are represented
   as barely visible points).  The global \texttt{\_EselRnd} is
   ignored.
-  
+
 \item[tomogE] tomography plot with estimated mean posterior
   $\beta_i^b$ and $\beta_i^w$ points.  Dashed lines are added for
   observations \texttt{\_Eselect}'d out of the estimation stage, and a
@@ -1031,14 +1058,14 @@ while writing the book.)
   observations are included for which $T_i=0$ or $T_i=1$ (since as
   tomography lines they are represented as barely visible points).
   The global \texttt{\_EselRnd} is ignored.
-  
+
 \item[tomogP] tomography plot with mean posterior contours.  Dashed
   lines are added for observations \texttt{\_Eselect}'d out of the
   estimation stage, and a note appears at the bottom left and top
   right corners if any observations are included for which $T_i=0$ or
   $T_i=1$ (since as tomography lines they are represented as barely
   visible points).  The global \texttt{\_EselRnd} is ignored.
-  
+
 \item[tomogS] combination of tomog, tomogp, tomogCI, and Tbivar (or
   estsims if truth isn't available).  See Figures 10.2 (page 204), 9.5
   (page 179), 7.1 (page 126).  Dashed lines are added for observations
@@ -1047,7 +1074,7 @@ while writing the book.)
   included for which $T_i=0$ or $T_i=1$ (since as tomography lines
   they are represented as barely visible points).  The global
   \texttt{\_EselRnd} is ignored.
-  
+
 \item[tomogT] tomography plot with true $\beta_i^b$ and $\beta_i^w$
   points.  See Figure 7.1 (page 126). Dashed lines are added for
   observations \texttt{\_Eselect}'d out of the estimation stage, and a
@@ -1055,11 +1082,11 @@ while writing the book.)
   observations are included for which $T_i=0$ or $T_i=1$ (since as
   tomography lines they are represented as barely visible points).
   The global \texttt{\_EselRnd} is ignored.
-  
+
 \item[truth] combination of post, precB, precW (compare truth to
   estimates at district and precinct-level).  See Figures 10.4 (page
   208) and 10.5 (page 210).
-  
+
 \item[xgraph] a scattercross with data plotted.  See Figure 12.1, page
   227.
 
@@ -1071,7 +1098,7 @@ while writing the book.)
 \item[xtC] basic $X_i$ by $T_i$ scatterplot with circles sized
   proportional to $\Npp$ or some other variable defined by the global
   \texttt{\_eigraph\_circ}.
-  
+
 \item[xtfit] $X_i$ by $T_i$ plot with estimated $\rE(T_i|X_i)$ and
   conditional 80\% confidence intervals.  See Figure 10.3, page 206.
 
@@ -1087,7 +1114,7 @@ not be changed for the most common uses.
 \item[\_eigraph\_bbhi] high end for betaB plots. Default=1.
 
 \item[\_eigraph\_bblo] low end for betaB plots. Default=0.
-  
+
 \item[\_eigraph\_bvsmth] smoothing parameter for nonparametric density
   estimation; used only for option \texttt{nonpar}.  Default=0.08.
   (The same parameter is used in \texttt{ei} for nonparametric
@@ -1099,7 +1126,7 @@ not be changed for the most common uses.
 \item[\_eigraph\_bwhi] high end for betaW plots. Default=1.
 
 \item[\_eigraph\_bwlo] low end for betaW plots. Default=0.
-  
+
 \item[\_eigraph\_dbuf] if 1, create data buffer called
   \texttt{\_eigraph\_dbuf} with px, py, pz inputs to the contour plot
   when option \texttt{nonpar} is chosen.
@@ -1109,12 +1136,12 @@ not be changed for the most common uses.
 
 \item[\_eigraph\_loess] 1 if show simulated and fitted loess for
   xtfit; 0 if show fit only (default)
-  
+
 \item[\_eigraph\_pro] rows($\phi$)$\times 2$.  The first column is the
   lower limit and the second is the upper limit of the range in which
   eigraph's \texttt{profile} command uses for plotting.  The default,
   when set to missing, is to use eiread's \texttt{ebounds} option.
-  
+
 \item[\_eigraph\_smpl] Set this in the range (0,1] to randomly select
   this fraction of observations to use in tomography plots.  This is
   useful if $p$ is so large that it is difficult to see patterns
@@ -1130,7 +1157,7 @@ not be changed for the most common uses.
   (default=1)
 
 \item[\_eigraph\_X] string: xlabel for xt plots. Default=\texttt{"X"}
-  
+
 
 \item[\_eigraph\_Xhi] High end of X graphs. Default=1.
 
@@ -1140,15 +1167,15 @@ not be changed for the most common uses.
   Default=1, which means do not change.  set to (0,1) to reduce circle
   size and to (1,$\infty$] to increase circle size.  Must be greater
   than zero.
-  
+
 \item[\_EIMetaR] If \texttt{dbuf} is a meta-data buffer (i.e., from the
   \texttt{\_ei2\_mta} output global of ei2), this global denotes which
   of the imputed data buffers stored in dbuf should be accessed when
   running \texttt{eigraph}.  Default=1.
-  
+
 \item[\_tomogClr] Colors for each contour drawn on tomography plots,
   default=\{ 12, 9, 10, 11, 13, 5 \}.
-  
+
 \item[\_tomogPct] Vector of percentage values at which to draw
   contours.  One contour is drawn for each element with this fraction
   of this distribution's volume falling within the drawn ellipse.
@@ -1156,6 +1183,144 @@ not be changed for the most common uses.
   rows(\_tomogPct).
 \end{description}
 
+
+\subsection{EIMODELS} \label{eimodels}
+\markright{Reference: EIMODELS}
+
+\paragraph{\underline{Format}:} 
+\texttt{ndbuf2 = eimodels\_def(ndbuf1,"num",t,x,n,zb,zw);}, where
+\texttt{ndbuf1} is an input meta data buffer which contains all the model
+specifications previously defined and to which the current model
+definition will be added, \texttt{"num"} is the model number to be
+assigned to the current model definition, \texttt{t}, \texttt{x}, and
+\texttt{n} are $p\times 1$ vectors, \texttt{zb} is a scalar 1 for no
+covariates or a $p\times k^b$ matrix of covariates, and \texttt{zw} is
+the scalar 1 for no covariates or a $p\times k^w$ matrix of covariates
+(do not include a constant term).  \texttt{ndbuf2} is an output meta data
+buffer which contains the current model definition along with the
+previously stored ones.
+
+\texttt{ndbres = eimodels\_run(ndbuf2);}, where \texttt{ndbuf2} is the
+output meta data buffer from \texttt{eimodels\_def} which contains
+multiple model definitions. \texttt{ndbres} is the output meta data buffer.
+
+\texttt{dbres = eimodels\_ave(ndbres);}, where \texttt{ndbres} is the
+output meta data buffer from \texttt{eimodels\_run} which contains the
+results of \texttt{ei} run for multiple models. \texttt{dbres} is the
+output data buffer.
+
+\paragraph{\underline{Purpose}:}
+\texttt{eimodels\_def} stores multiple model definitions in a meta
+data buffer by adding one model at a time. Each model can use
+different covariates and/or different values of various global
+variables used for \texttt{ei} estimation. Results are stored in
+\texttt{ndbuf2}, a meta data buffer which should be read with
+\texttt{eiread} with the model number specified as the value of the
+global variable, \texttt{\_EIMetaR}.
+
+\texttt{eimodels\_run} takes the output meta data buffer from
+\texttt{eimodels\_def} as an input and runs all the models stored in
+that data buffer. The output is another meta data buffer which
+contains the results of \texttt{ei} runs for each model as a single
+data buffer. This output data buffer should be read with
+\texttt{eiread} and \texttt{eigraph} with the model number specified
+using the global variable, \texttt{\_EImetaR}.
+
+\texttt{eimodels\_def} and \texttt{eimodels\_run} are useful when you
+have different number of \EI models to run but want to store the
+results in one meta data buffer rather than saving them as a separate
+data buffer. The two procedures can also be used for the method called
+\textit{Bayesian Model Averaging} as explained below.
+
+\texttt{eimodels\_ave} takes the output meta data buffer from
+\texttt{eimodels\_run} as an input and implements the Bayesian Model
+Averaging over all the models stored in that data buffer. For the use
+of this procedure, three global variables are required. First,
+\texttt{\_EiLikS} should be set to 1 for each model so that the output
+data buffer from \texttt{eimodels\_run} stores the values of the
+log-likelihood at each simulation. These values are necessary to
+compute the marginal likelihood, which is used for the computation of
+the posterior model probabilities. Second, when a model includes
+covariates, the prior distributions for $\alpha^a$ and $\alpha^b$ need
+to be specified for the Bayesian Model Averaging in order to ensure
+that the posterior distribution is proper. The two global variables,
+\texttt{\_Ealpha\_B} and \texttt{\_Ealpha\_W}, perform this function.
+Finally, \EI uses the harmonic mean estimator, a variety of importance
+sampling estimation, for computing the marginal likelihoods. It is
+recommended that the number of simulations, \texttt{\_Esims}, should
+be set to 500 or more in order to improve the precision of this
+estimation.  Finally, the output data buffer should be read with
+\texttt{eiread}.
+
+\paragraph{\underline{Example}:}
+The following example uses the sample file \texttt{sample.asc} that comes
+with \EI.  This file is used in the example of \texttt{ei}. Consult
+section \ref{ei} for the description of data and explanation of the
+commands to load data set. The code first stores the three different
+model definitions in a meta data buffer using \texttt{eimodels\_def},
+and then it runs \texttt{ei} for all three models. Finally, it
+implements the Bayesian Model Averaging to combine the results from the
+three models using \texttt{eimodels\_ave}. 
+\begin{verbatim}
+new;                        @ clear workspace @
+library ei;                 @ initialize libraries @
+clear t,x,n;                @ clear all variables in dataset @
+loadvars sample.asc t x n;  @ load variables from disk file @
+ndbuf="";                   @ initialize a data buffer @
+
+eiset;                                   @ clear for Model 1 @
+_Eres = vput(_Eres, "Model 1", "titl");  @ print out model number @
+_Eeta = 1;                               @ zb=x, zw=1 @
+_Ealpha_B = {0 2};                       @ prior for betaB @
+_Esims = 1000;                           @ number of simulation @
+_EiLlikS = 1;           @ store log-likelihood at each simulation @
+ndbuf = eimodels_def(ndbuf,1,t,x,n,1,1); @ save Model 1 @
+
+eiset;                                   @ clear for Model 2 @
+_Eres = vput(_Eres, "Model 2", "titl");
+_Eeta = 2;                               @ zb=1, zw=x @
+_Ealpha_W = {0 2};                       @ prior for betaW @
+_Esims = 1000;
+_EiLlikS = 1;
+ndbuf = eimodels_def(ndbuf,2,t,x,n,1,1); @ save Model 2 @
+
+eiset;                                   @ clear for Model 3 @
+_Eres = vput(_Eres, "Model 2", "titl");
+_Eeta = 3;                               @ zb=x, zw=x @
+_Ealpha_B = {0 2};                       @ prior for betaB @
+_Ealpha_W = {0 2};                       @ prior for betaW @
+_Esims = 1000;
+_EiLlikS = 1;
+ndbuf = eimodels_def(ndbuf,3,t,x,n,1,1); @ save Model 3 @
+
+save rvdef = ndbuf;       @ save ndbuf in file rvdef.fmt @
+
+ndbres = eimodels_run(ndbuf);  @ run ei on all the models @
+save rvres = ndbres;           @ save ndbres in file rvres.fmt @
+
+_EIMetaR = 1;
+call eiread(ndbres, "sum");    @ summary info for Model 1 @
+
+_EIMetaR = 3;
+graphon;
+call eigraph(ndbres, "tomog"); @ tomography plot for Model 3 @
+
+_EI_bma_prior = {0.2,0.4,0.4}; @ prior model probabilities @
+dbres = eimodels_ave(ndbres);  @ Bayesian Model Averaging @
+save rvbma = dbres;            @ save dbres in file rvbma.fmt @
+\end{verbatim}
+
+\paragraph{\underline{Globals}:}
+\begin{description}
+\item[\_EImodels\_save] "file name" if you want to save the results at
+  each iteration in a data buffer (assuming extension ".fmt") on the
+  disk (default = no save).
+  
+\item[\_EI\_bma\_prior] ($\#$ of model $\times 1$) The discrete prior
+  probability to each model in the ascending order of the model number
+  (default = 0 which assigns the uniform prior). The elements of this
+  vector have to sum up to unity.
+\end{description}
 
 \subsection{EIREAD} \label{eiread}
 \markright{Reference: EIREAD}
@@ -1166,7 +1331,7 @@ not be changed for the most common uses.
 computed from \texttt{dbuf} (see the list below), and \texttt{v} is
 the output vector, matrix, or string.
 
-\paragraph{\underline{Purpose}:} 
+\paragraph{\underline{Purpose}:}
 To extract or calculate numerical information from the output data
 buffer of \texttt{ei} (for $2\times 2$ tables) or \texttt{ei2} (for
 $2\times C$ tables), from the ecological inference model.
@@ -1206,13 +1371,16 @@ output off;                      @ close output file @
   options whose description begins with an asterisk, below) (default);
   0 do not print.
   
-\item[\_EIMetaR] If \texttt{dbuf} is a meta-data buffer (i.e., from the
-  \texttt{\_ei2\_mta} output global of ei2), this global denotes which
-  of the imputed data buffers stored in dbuf should be accessed when
-  running \texttt{eigraph}.  Default=1.
+\item[\_EIMetaR] If \texttt{dbuf} is a meta-data buffer (i.e., from
+  the \texttt{\_ei2\_mta} output global of ei2; the output buffer from
+  \texttt{eimodels\_def} and \texttt{eimodels\_run}), this global
+  denotes which of the imputed data buffers (in case of
+  \texttt{\_ei2\_mta}) or which of the stored model (in case of
+  \texttt{eimodels\_def} and \texttt{eimodels\_run}) in dbuf should be
+  accessed when running \texttt{eiread} and \texttt{eigraph}.  Default=1.
 \end{description}
 
-\paragraph{\underline{Options}:} 
+\paragraph{\underline{Options}:}
 Choose from the following items for \texttt{name}.  The possibilities
 include items stored as is in \texttt{dbuf} (and so could also be
 retrieved with the Gauss command \texttt{vread}), calculated from
@@ -1232,7 +1400,7 @@ while writing the book.)
 When used with an EI2 output data buffer (i.e., for $2\times C$
 tables), \texttt{eiread} uses use the mean posterior estimate for
 $X_i$ for some items; the correct multiply imputed values of $x_i$
-(\texttt{x2}) are used only where specifically noted. 
+(\texttt{x2}) are used only where specifically noted.
 
 \begin{description}
 \item[\_EalphaB] value of this global (priors on $\alpha^b$)
@@ -1243,30 +1411,30 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 
 \item[\_Ebounds] value of this global (bounds for CML, not quantities
   of interest).
-  
+
 \item[\_Ecdfbvn] value of this global (method of calculating CDF of
   the bivariate normal)
 
 \item[\_EdirTol] value of this global (CML convergence tolerance)
-  
+
 \item[\_EdoML] value of this global (do maxlik)
-  
+
 \item[\_EdoML\_phi] value of this global (input $\phi$'s).  Only
   relevant if \texttt{\_EdoML}=0.
- 
+
 \item[\_EdoML\_vcphi] value of this global (input variance-covariance
   of $\phi$'s).  Only relevant if \texttt{\_EdoML}=0.
-  
+
 \item[\_Eeta] value of this global (expanded model specifications; see
   Chapter 9).
-  
+
 \item[\_EI\_vc] value of this global (variance matrix computation)
 
 \item[\_EIgraph\_bvsmth] value of this global (smoothing parameter for
   nonparametric density estimation)
 
 \item[\_EisChk] value of this global (check importance sampling)
-  
+
 \item[\_EisFac] value of this global (number to multiply by variance
   matrix by in importance sampling or $-1$ for normal approximation)
 
@@ -1275,35 +1443,35 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 
 \item[\_EisT] value of this global (multivariate $t$ or normal for
   importance sampling)
-  
+
 \item[\_EmaxIter] value of this global (maximum iterations for CML)
-  
+
 \item[\_EnonEval] value of this global (number of nonparametric
   density evaluations for each tomography line).  Only relevant if
   \texttt{\_Enonpar}=1.
-  
+
 \item[\_EnonNumInt] value of this global (number of points to evaluate
   for numerical integration in computing the denominator for the
   bivariate kernel density).  Only relevant if \texttt{\_Enonpar}=1.
-  
+
 \item[\_EnonPar] value of this global (0, parametric or 1,
   nonparametric, estimation).
-  
+
 \item[\_EnumTol] value of this global (numerical tolerance for
   homogeneous and unanimous precincts)
-  
+
 \item[\_Erho] value of this global (prior on $\rho$).  See Section
   7.4.
-  
+
 \item[\_Eselect] value of this global (vector of 0/1 to delete/select
   observations during likelihood stage, or 1 to select all).
- 
+
 \item[\_EselRnd] value of this global (fraction of observations to
   select randomly).
-  
+
 \item[\_Esigma] value of this global (priors on $\sigmau_b$ and
   $\sigmau_w$).  See Section 7.4.
-  
+
 \item[\_Esims] value of this global (number of simulations).  See
   Appendix F.
 
@@ -1325,10 +1493,10 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[\_Ez] $2\times 1$: number of covariates (see Chapter 9),
   including implied constant term for Zb$\vert$Zw; also clears and
   sets this in global memory.
-  
+
 \item[ABounds] $2\times 2$: aggregate bounds rows:lower,upper;
   columns:betab,betaw.  See Chapter 5.
-  
+
 \item[ABounds2] $2\times 2$: aggregate bounds for the $\lambda$'s from
   EI2, rows:lower,upper; columns:lambdaB,lambdaW.  See Chapter 5.
 
@@ -1336,7 +1504,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   $\beta_i^w$ on a constant and $X_i$.  Requires \texttt{truth} to
   have been vput into \texttt{\_Eres} prior to running \texttt{ei}.
   See Table 11.1, page 219.
-  
+
 \item[aggs] \texttt{\_Esims}$\times 2$: simulations of district-level
   quantities of interest, $\hat{B}^b\sim\hat{B}^w$.  See Section 8.3.
   (Uses \texttt{x2} simulations when used with \texttt{ei2}).
@@ -1344,24 +1512,24 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[AggTruth] $2\times 1$: true district-level $B^b$ and $B^w$.
   Requires \texttt{truth} to have been vput into \texttt{\_Eres} prior
   to running \texttt{ei}.  See Chapter 2.
-  
+
 \item[beta] $p\times 2$ point estimates of $\beta_i^b$ (in the first
   column) and $\beta_i^w$ (in the second) based on their mean
   posterior.  See Section 8.2.  (Uses \texttt{x2} simulations when
   used with \texttt{ei2}.)
-  
+
 \item[betaB] $p\times 1$ point estimates of $\beta_i^b$ based on its
   mean posterior.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}.)
-  
+
 \item[betaBs] $p\times$\texttt{\_Esims}: simulations of $\beta_i^b$.
   See Chapter 8.  (Uses \texttt{x2} simulations when used
   with \texttt{ei2}).
-  
+
 \item[betaW] $p\times 1$ point estimate of $\beta_i^w$ based on its
   mean posterior.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[betaWs] $p\times$\_Esims: simulations of $\beta_i^w$.  See
   Section 8.2.  (Uses \texttt{x2} simulations when used
   with \texttt{ei2}).
@@ -1369,11 +1537,11 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[bounds] $p\times 4$: bounds on $\beta_i^b$ and $\beta_i^w$,
   lowerB$\sim$upperB$\sim$lowerW$\sim$upperW.  See Chapter
   5.
-  
+
 \item[bounds2] $p\times 4$: bounds on $\lambda_i^b$ and $\lambda_i^w$,
   lowerB$\sim$upperB$\sim$lowerW$\sim$upperW.  See Chapter
   5, eqns 5.4.
-  
+
 \item[checkR] rows($\phi$)$\times 2$ matrix with rows corresponding to
   $\phi$, columns corresponding to slightly less$\sim$more (by amount
   \texttt{\_EdirTol}) than the MLEs, and each element indicating that
@@ -1385,57 +1553,57 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[CI50b] $p\times 2$: lower$\sim$upper 50\% confidence intervals
   for $\beta_i^b$.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[CI50w] $p\times 2$: lower$\sim$upper 50\% confidence intervals
   for $\beta_i^w$.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[CI80b] $p\times 2$: lower$\sim$upper 80\% confidence intervals
   for $\beta_i^b$.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[CI80bw] $p\times 4$: lowerB$\sim$upperB$\sim$lowerW$\sim$upperW
   80\% confidence intervals for $\beta_i^b$ and $\beta_i^w$.  See
   Section 8.2.  (Uses \texttt{x2} simulations when used
   with \texttt{ei2}).
-  
+
 \item[CI80w] $p\times 2$: lower$\sim$upper 80\% confidence intervals
   for $\beta_i^w$.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[CI95b] $p\times 2$: lower$\sim$upper 95\% confidence intervals
   for $\beta_i^b$.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[CI95bw] $p\times 4$: lowerB$\sim$upperB$\sim$lowerW$\sim$upperW
   95\% confidence intervals for $\beta_i^b$ and $\beta_i^w$.  See
   Section 8.2.  (Uses \texttt{x2} simulations when used
   with \texttt{ei2}).
-  
+
 \item[CI95w] $p\times 2$: lower$\sim$upper 95\% confidence intervals
   for $\beta_i^w$.  See Section 8.2.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[coverage] $2\times 4$: confidence interval coverage; percent of
   true values within the 50\% and 80\% confidence intervals:
   50b$\sim$80b$\sim$50w$\sim$80w (1st row = means, 2nd = weighted
   means).  Requires \texttt{truth} to have been vput into
   \texttt{\_Eres} prior to running \texttt{ei}.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
-  
+
 \item[CsbetaB] $p\times 1$ confidence interval-based standard error of
   $\beta_i^b$.  (Uses \texttt{x2} simulations when used with
   \texttt{ei2}).
-  
+
 \item[CsbetaW] $p\times 1$ confidence interval-based standard error of
   $\beta_i^w$.  (Uses \texttt{x2} simulations when used with
   \texttt{ei2}).
-  
+
 \item[DataSet] Zb$\sim$Zw$\sim$x$\sim$t, used for input to
   \texttt{eiloglik}.  If \texttt{\_Eselect} is a scalar less than 1
   (for random selection of cases).  The global \texttt{\_EselRnd} is
   ignored.
-  
+
 \item[date] a string containing the date and time at which execution
   completed, as well as the version number and date of the program
   \EI\ that created the input data buffer.
@@ -1447,17 +1615,17 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[etaC] $2\times 1$ coefficients implied by global \_Eeta
 
 \item[etaS] $2\times 1$ standard errors implied by global \_Eeta
-  
+
 \item[ExpVarCI] $100\times 4$: 80\% confidence intervals for $T_i$
   given $X_i$.  X$\sim$20\%CI$\sim$mean$\sim$80\%CI of sims from
   $P(T_i|X)$, where $X$ in this context is 100 numbers equally spaced
   between 0 and 1.  See Section 8.5.  (Uses \texttt{x2} simulations
   when used with \texttt{ei2}).
-  
+
 \item[ExpVarCIs] $100\times 4$: same as expvarci, but smoothed with
   LOESS.  Used for eigraph's xtfit.  See Section 8.5.  (Uses
   \texttt{x2} simulations when used with \texttt{ei2}).
-  
+
 \item[GEbw] $p\times 3$: $\beta_i^b\sim\beta_i^w\sim$Nsims.  Point
   estimates of $\beta_i^b$ and $\beta_i^w$, based on the mean
   posterior under the prior that $\beta_i^b\geq\beta_i^w$.  Use this
@@ -1467,7 +1635,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   the number of simulations on which each estimate is based (If
   \texttt{Nsims} is not close to \texttt{\_Esims}, you may wish to
   question your assumption or increase \texttt{\_Esims}).
-  
+
 \item[GEbwa] $p\times 2$: $B^b\sim B^w$.  Aggregate level mean
   posterior estimates, based on simulations where
   $\beta_i^b\geq\beta_i^w$.  See \texttt{GEbw} for more information.
@@ -1481,18 +1649,18 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   the number of simulations on which each estimate is based (If
   \texttt{Nsims} is not close to \texttt{\_Esims}, you may wish to
   question your assumption or increase \texttt{\_Esims}).
-  
+
 \item[GEwba] $p\times 2$: $B^b\sim B^w$.  Aggregate level mean
   posterior estimates, based on simulations where
   $\beta_i^b\leq\beta_i^w$.  See \texttt{GEwb} for more information.
-  
+
 \item[GhActual] value of the output global \texttt{\_GhActual}, the
   row of \texttt{\_ei\_vc} for which a positive definite variance
   matrix was found.
 
 \item[Goodman] $2\times 2$: row 1: Goodman's Regression coefficients,
   row 2: standard errors.  See Section 3.1.
-  
+
 \item[lnIR] If \texttt{\_EisChk}=1, this is a
   \texttt{\_Esims}*\texttt{\_Eisn}$\times$rows($\phi$)+1 matrix ,
   containing the log of the importance ratio as the first column and
@@ -1504,9 +1672,9 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 
 \item[LogLikS] value of log-likelihood at the maximum (unnormalized)
   for each observation $i$.
-  
-\item[LLikSims] If \texttt{\_EiLlikS}=1, this is \texttt{\_Esims}$\times 
-  1$ vector of log-likelihood values for each simulation; otherwise it 
+
+\item[LLikSims] If \texttt{\_EiLlikS}=1, this is \texttt{\_Esims}$\times
+  1$ vector of log-likelihood values for each simulation; otherwise it
   is a scalar mean of these.
 
 \item[Maggs] $2\times 1$: point estimate of 2 district-level
@@ -1514,7 +1682,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   8.3.  (Uses \texttt{x2} simulations when used with \texttt{ei2}).
 
 \item[MeanIR] scalar log of the mean importance ratio
-  
+
 \item[mpPsiu] Mean Posterior of $\psiu$ (rather than MLEs).
 
 \item[N] $p\times 1$: number of individual elements in precinct $i$,
@@ -1523,12 +1691,12 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[Nb] $p\times 1$: denominator of \texttt{x} and \texttt{t},
   equal to \texttt{x.*n}, $\Nbp$ (e.g., number of blacks in the
   voting age population).
-  
+
 \item[Nb2] for \texttt{ei2} data buffers only,
   $p\times$\texttt{\_Esims}: denominator of \texttt{x2} and
   \texttt{V}, equal to \texttt{x2.*n}, $\Nbp$ (e.g., number of blacks
   in the voting age population).
-  
+
 \item[Nt] $p\times 1$: numerator of \texttt{t}, equal to
   \texttt{t.*n}, $N^t_i$ (e.g., number of people who turnout).
 
@@ -1539,7 +1707,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[NbT] $p\times1$: $\NbV$ (e.g., number of blacks who vote).
   Requires \texttt{truth} to have been vput into \texttt{\_Eres} prior
   to running \texttt{ei}. See Chapter 2.
-  
+
 \item[Neighbor] Freedman et al.'s neighborhood model point estimates
   (i.e., assuming $\beta_i^b=\beta_i^w$, with implied standard errors
   of zero).
@@ -1548,7 +1716,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 
 \item[Nw] $p\times 1$: equal to \texttt{(1-x).*n}, $\Nwp$ (e.g.,
   number of whites in the voting age population)
-  
+
 \item[Nw2] for \texttt{ei2} data buffers only,
   $p\times$\texttt{\_Esims}: equal to \texttt{(1-x2).*n}, $\Nwp$
   (e.g., number of whites in the voting age population)
@@ -1560,19 +1728,19 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[NwT] $p\times1$: $\NwV$ (e.g., number of whites who Turnout).
   Requires \texttt{truth} to have been vput into \texttt{\_Eres} prior
   to running \texttt{ei}. See Chapter 2.
-  
+
 \item[Paggs] $2\times 2$: row 1: $\hat{B}^b$ and $\hat{B}^w$; row 2:
   standard errors.  See Section 8.3.  (Uses \texttt{x2}
   simulations when used with \texttt{ei2}).
 
 \item[Palmquist] scalar: Palmquist's Inflation Factor.  See Equation
   3.14, page 52.
-  
+
 \item[ParNames] character vector of names for $\phi$
   (\texttt{\_cml\_parnames}).
 
 \item[phi] maximum posterior estimates from CML.
-  
+
 \item[PhiSims] If \texttt{\_EisChk}==1, \texttt{PhiSims} is a
   \texttt{\_Esims}$\times$rows($\phi$) matrix of random simulations of
   $\phi$; otherwise, it is a rows($\phi$)$\times 2$ matrix of the
@@ -1586,7 +1754,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 
 \item[psi] reparameterized $\phi$ into ultimate truncated scale.  See
   Section 6.2.2.
-  
+
 \item[PsiTruth] $5\times 1$: true values of $\psi$ (i.e., on truncated
   scale).  Requires \texttt{truth} to have been vput into
   \texttt{\_Eres} prior to running \texttt{ei}. See Table 10.3, page
@@ -1594,57 +1762,57 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 
 \item[psiu] $\psiu$, which was reparameterized from $\phi$ into
   untruncated scale.  See Equation 7.4, page 136.
-  
+
 \item[R] The sum of the log of the volume above the unit square under
   the bivariate normal, $R(\bbetau,\Sigmau)$.  This is the last piece
   of the likelihood function.  See checkR.
-  
+
 \item[Ri] The log of the volume above the unit square under the
   bivariate normal, $R(\bbetau,\Sigmau)$ for each $i$.  This is the
   last piece of the likelihood function, and will differ over $i$ only
   if covariates are included.  See checkR.
-  
+
 \item[resamp] number of resampling tries.  This number will range
   between 1 and \texttt{\_Esims} and is better if small.  If it is
   greater than 15--20, you can try adjusting \texttt{\_Eisn} or
   \texttt{\_EisFac} and rerunning \texttt{ei}.
 
 \item[RetCode] CML return code.  zero means everything is ok.
-  
+
 \item[RNbetaBs] $p\times$\texttt{\_Esims}: randomly horizontally
   permuted simulations of $\beta_i^b$.  This is essentially equivalent
   to \texttt{betaBs} except that it randomly permutes estimation
   variation also.  (Uses \texttt{x2} simulations when used with
   \texttt{ei2}).
-  
+
 \item[RNbetaWs] $p\times$\texttt{\_Esims}: randomly horizontally
   permuted simulations of $\beta_i^w$.  This is essentially equivalent
   to \texttt{betaWs} except that it randomly permutes estimation
   variation also.  (Uses \texttt{x2} simulations when used with
   \texttt{ei2}).
-  
+
 \item[sbetaB] $p\times 1$ standard error for the estimate of
   $\beta_i^b$, based on the standard deviation of its posterior.  See
   Section 8.2.  (Uses \texttt{x2} simulations when used
   with \texttt{ei2}).
-  
+
 \item[sbetaW] $p\times 1$ standard error for the estimate of
   $\beta_i^w$, based on the standard deviation of its posterior.  See
   Section 8.2.  (Uses \texttt{x2} simulations when used
   with \texttt{ei2}).
-  
+
 \item[STbetaBs] $p\times$\_Esims: SORTED simulations of $\beta_i^b$
   (e.g., the 80\% confidence interval lower bound is
   \texttt{STbetaBs[int(0.1*\_Esims)]}).  See Section 8.2.
   (Uses \texttt{x2} simulations when used with \texttt{ei2}).
-  
+
 \item[STbetaWs] $p\times$\_Esims: SORTED simulations of $\beta_i^w$
   (e.g., the 80\% confidence interval upper bound is
   \texttt{STbetaWs[int(0.9*\_Esims)]}).  See Section 8.2.
   (Uses \texttt{x2} simulations when used with \texttt{ei2}).
 
 \item[sum] prints a summary of district-level information
-  
+
 \item[t] $p\times 1$: outcome variable proportion, $T_i$ (e.g.,
   turnout); input to \texttt{ei}.  If dbuf is the output from ei2,
   then this option gives $V_i$ (e.g., Democratic fraction of the major
@@ -1652,10 +1820,10 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 
 \item[Thomsen] $2\times 1$: Estimates of $B^b|B^w$ from Thomsen's
   Ecological Logit Model.
-  
+
 \item[titl] string: a title with descriptive information. Must have
   been vput into \texttt{\_Eres} prior to running \texttt{ei}.
-  
+
 \item[truPtile] p x 2: percentile of sorted simulates at which the
   true value falls for $\beta_i^b$ and $\beta_i^w$.  Requires
   \texttt{truth} to have been vput into \texttt{\_Eres} prior to
@@ -1665,42 +1833,42 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[truth] $p\times 2$: true values of the precinct-level quantities
   of interest $\beta_i^b\sim\beta_i^w$.  Must have been vput into
   \texttt{\_Eres} prior to running \texttt{ei}.
-  
+
 \item[truthB] \texttt{truth[.,1]}, the true $\beta_i^b$.  Requires
   \texttt{truth} to have been vput into \texttt{\_Eres} prior to
   running \texttt{ei}.
-  
+
 \item[truthW] \texttt{truth[.,2]}, the true $\beta_i^w$.  Requires
   \texttt{truth} to have been vput into \texttt{\_Eres} prior to
   running \texttt{ei}.
-  
+
 \item[tsims] $100\times$\texttt{\_Esims}$+1$: simulations of $T_i$
   given $X_i$.  rows correspond to 100 values of $X_i$ equally spaced
   between zero and one, columns are $X_i$ and sorted simulations of
   $T_i|X_i$.  See Section 8.5.  (Uses \texttt{x2} simulations when
   used with \texttt{ei2}).
-  
+
 \item[VCaggs] $2\times 2$: variance matrix of 2 district-level
   parameters, $\hat{B}^b$ and $\hat{B}^w$.  See Section 8.3.  (Uses
   \texttt{x2} simulations when used with \texttt{ei2}).
 
 \item[VCphi] global variance matrix of coefficients phi from gvc()
-  
+
 \item[x] $p\times 1$: explanatory variable proportion, $X_i$ (e.g.,
   black voting age population); input to \texttt{ei}.  (for
   \texttt{ei2}, this is the mean posterior estimate of $x_i$, as,
   e.g., the black fraction of those voting).
-  
+
 \item[x2] for \texttt{ei2} data buffers only,
   $p\times\texttt{\_Esims}$: simulations of the explanatory variable
   proportion, $x_i$ (e.g., black fraction of voters).
-  
+
 \item[x2rn] for \texttt{ei2} data buffers only,
   $p\times\texttt{\_Esims}$: horizontally randomly permuted
   simulations of the explanatory variable proportion, $x_i$ (e.g.,
   black fraction of voters).  (This is useful because \texttt{x2} has
   only \texttt{\_EI2\_m} unique columns.)
-  
+
 \item[Zb] matrix of covariates for $\beta_i^b$ or 1 for none; as
   affected by \_Eeta; input to \texttt{ei}.  See Section 9.2.1.
 
@@ -1712,7 +1880,7 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \subsection{EIREPL}
 \markright{Reference: EIREPL}
 
-\paragraph{\underline{Format}:} \texttt{dbuf=eirepl(dbufIN);} 
+\paragraph{\underline{Format}:} \texttt{dbuf=eirepl(dbufIN);}
 where \texttt{dbufIN} is a Gauss data buffer output from
 \texttt{ei()}, containing t, x, n, Zb, Zw, and all globals in standard
 \texttt{ei} format, and where \texttt{dbuf} is an output data buffer.
@@ -1752,7 +1920,7 @@ To reset all \EI\ globals to their defaults.
 GRAPHOFF}
 \markright{Reference: GRAPH} \label{graph}
 
-\paragraph{\underline{Format}:} 
+\paragraph{\underline{Format}:}
 \texttt{graphon;} to open a graphics window, \texttt{graphons;} to
 open a small graphics window, \texttt{graphclr;} to clear a graphics
 window already opened, \texttt{graphno;} to leave the graphics window
@@ -1762,7 +1930,7 @@ pressed in the text window and then to close the graphics window.
 (Use \texttt{wincloseall;} to close the graphics window without a
 pause.)
 
-\paragraph{\underline{Purpose}:} Use these commands for easy 
+\paragraph{\underline{Purpose}:} Use these commands for easy
 interactive (or batch) window handling for windowing systems only
 (such as X-windows under Unix or win95).  \texttt{graphclr;} should be
 used between graphs on a dos system so that one graph is not overlaid
@@ -1794,7 +1962,7 @@ wincloseall;                     @ close graphics window @
 followed by a list of valid Gauss variable names, one for each column
 of \texttt{file}.
 
-\paragraph{\underline{Purpose}:} 
+\paragraph{\underline{Purpose}:}
 An ASCII data file is loaded from disk into the variable names listed.
 The data file must be delimited by spaces, tabs, or commas.  It is
 often convenient to have one row per observation and one variable per
@@ -1804,7 +1972,7 @@ prior to this procedure.  This procedure is included for the
 convenience of users; if you are already familiar with other ways of
 loading data into Gauss, they can also be used.
 
-\paragraph{\underline{Example}:}  
+\paragraph{\underline{Example}:}
 After including these lines at the top of your program, the variables
 will be in memory and available for further use.  \texttt{sample.asc}
 is a sample data file that comes with \EI.
@@ -1822,14 +1990,14 @@ loadvars sample.asc t x n;  @ load in vars into memory @
 and \texttt{vrs} is a character vector of variable names to read in or
 zero to read them all in.
 
-\paragraph{\underline{Purpose}:} 
+\paragraph{\underline{Purpose}:}
 Reads in a Gauss data set into variable names in memory by the same
 name.  If used in a batch program, be sure to \texttt{clear} all
 variable names prior to issuing this command.  This procedure is
 included for the convenience of users; if you are already familiar
 with other ways of loading data into Gauss, they can also be used.
 
-\paragraph{\underline{Example}:}  
+\paragraph{\underline{Example}:}
 After including these lines at the top of your program, the variables
 will be in memory and available for further use.
 \begin{verbatim}
@@ -1864,7 +2032,7 @@ one of which is a problem for EI:
 \item Under EI, if the assumptions are correct, you get the right
   answer.  For an example, see Chapter 10 or the Monte Carlos in
   Chapter 9.
-  
+
 \item If the assumptions are wrong, EI still does ``well'' (in the
   sense of small MSE or squared bias) when the bounds (and other
   information in the tomography lines) are sufficiently informative.
@@ -1872,7 +2040,7 @@ one of which is a problem for EI:
   informative can easily be assessed from the aggregate data, and so
   the risks of making ecological inferences are largely known.  As one
   example, see Chapter 11.
-  
+
 \item If the assumptions are wrong and the bounds are not sufficiently
   informative, but the diagnostics are sufficiently informative, then
   the assumptions can easily be changed, and EI will do well.  The
@@ -1881,7 +2049,7 @@ one of which is a problem for EI:
   (Pp.\ 187, 195) for distributional violations are examples.  The
   third assumption, no spatial autocorrelation, seems to have minor
   effects.
-  
+
 \item If the assumptions are wrong and the bounds and the diagnostics
   are not sufficiently informative, but the researcher has additional
   qualitative knowledge of the problem, then appropriate assumptions
@@ -1899,7 +2067,7 @@ one of which is a problem for EI:
   Keohane, and Sidney Verba.  1994.  \emph{Designing Social Inquiry:
     Scientific Inference in Qualitative Data}. Princeton University
   Press).
-  
+
 \item If the assumptions are wrong and the bounds and the diagnostics
   are not sufficiently informative, and the researcher has no time or
   resources to collect additional qualitative information, then EI
@@ -1947,7 +2115,7 @@ to the neighborhood model, but it will give more reasonable (nonzero)
 standard errors and confidence intervals for the precinct-level
 quantities.
 
-\paragraph{Can EI give the misleading answers?}  
+\paragraph{Can EI give the misleading answers?}
 Yes.  Nothing in \EI, this manual, or \emph{A Solution to the
   Ecological Inference Problem} promises to give you the correct
 answer every time without thought.  ``The method'' proposed in the
@@ -1974,7 +2142,7 @@ formal statistical tests, but stopping at quantitative data,
 especially for this problem, is insufficient.
 
 Considerable thought, analysis, and qualitative information may be
-necessary to settle on the right version of the model to run.  \EI\ 
+necessary to settle on the right version of the model to run.  \EI\
 includes dozens of global variables that govern the main parts of the
 model; combinations of these globals can produce estimates from
 millions of possible specifications, even given identical input
@@ -2021,19 +2189,19 @@ regression (LS) coefficients:
   gets larger.  In \EI, the variances of the precinct-level parameters
   ($V(\beta^b_i)$ and $V(\beta^w_i)$) do not go to zero as $n$ gets
   larger.
-  
+
 \item In LS, $V(\hat y)$, i.e.\ the ``sample'' variance of $\hat y_i$
   over $i$, does not go to zero as $n$ gets larger.  In \EI,
   $V(\beta^b)$ and $V(\beta^w)$, i.e. the ``sample'' variance of
   $\beta^b_i$ and $\beta^w_i$ over $i$, does not go to zero as $n$
   gets larger.
-  
+
 \item In LS, $V(b)$ goes to zero as $n$ gets larger (where $b$ is
   essentially any scalar function of $\hat y_i$, for all $i$, such as
   a LS coefficient).  In \EI, $V(B)$ goes to zero as $n$ gets
   larger (where B is the weighted average of the $\beta_i$'s over all
   precincts).
-  
+
 \item In LS, the number of explanatory variables we include tends in
   common practice to be an increasing function of the number of
   observations we have, and so we don't see very small standard errors
@@ -2041,7 +2209,7 @@ regression (LS) coefficients:
   used to correct for some types of aggregation bias and the number
   included is, in practice, independent of the number of observations
   and the number of quantities that may be of interest.
-  
+
 \item In LS, the variance of a prediction is a function of estimation
   uncertainty (sampling error, $V(b)$, where $b$ is the regression
   coefficient) and fundamental uncertainty ($V(\epsilon_i)$).  In \EI,
@@ -2049,7 +2217,7 @@ regression (LS) coefficients:
   uncertainty ($V(\psi)$, where psi are the 5 parameters of the
   truncated bivariate normal), and fundamental uncertainty ($\Sigma$,
   which is composed of three elements of $\psi$).
-  
+
 \item In LS, it is standard practice is to include in the formal
   computation of the standard error only estimation and fundamental
   variability and to exclude uncertainty due to the possibility of
@@ -2074,7 +2242,7 @@ Gauss help facility.  As long as the library command (\texttt{library
 EI commands.  For example, in DOS, you can type Alt-H,H,eiread to get
 all of eiread's options.
 
-\paragraph{What computational details should I check?}  
+\paragraph{What computational details should I check?}
 Make sure that the maximization procedure worked properly.  For
 example, make sure that eiread's \texttt{retcode} is zero.  Is the
 variance matrix from the normal approximation reasonable?  Most
@@ -2146,7 +2314,7 @@ item.
   helpful here (set \texttt{\_Estval} to 0 or $>5$).  If it is an
   especially difficult problem, you may need to change the tolerance
   of the lncdfbvn function, with \texttt{\_EcdfTol}.
-  
+
 \item If you have very small values of $T$, see the FAQ question
   below.
 
@@ -2163,14 +2331,14 @@ item.
   \end{center}
   or perhaps an even narrower range would be wise.  You could also
   delete them from the data set to skip both stages.
-  
+
 \item Do you suspect extensive aggregation bias?  Perhaps you should
   try the globals \texttt{\_Eeta=3;} \texttt{\_EalphaB=0$\sim$0.1;}
   and \texttt{\_EalphaW=0$\sim$0.1;} to start (see Chapter 9).
-  
+
 \item Does eigraph's \texttt{tomog} suggest multiple modes?  Consider
   specifying \texttt{Zb} or \texttt{Zw} coded to pick up the modes.
-  
+
 \item Is eiread's \texttt{resamp} much larger than 20?  If so, you
   might try using a $t$ distribution as the first approxiation for
   importance sampling by setting \texttt{\_EisT} to 3 or higher, or
@@ -2178,19 +2346,19 @@ item.
   especially if \texttt{tomog} fits but \texttt{tomogP} does not) or
   \texttt{\_Eisn} (always upwards) (e.g., you might try
   \texttt{\_EisFac=1} or \texttt{\_EisFac=$-1$}).
-  
+
 \item If eigraph's \texttt{estsims} does not look approximately like
   \texttt{tomogp}, or if the graphs in \texttt{post} are bimodal, you
   need to do something.  You may try a different method of computing
   the variance matrix.  You could also narrow the variance of the
   priors on $\sigma_b$, $\sigma_w$, and $\rho$ by setting
   \texttt{\_Esigma} and \texttt{\_Erho}.
-  
+
 \item If the relationship between $X_i$ and $\beta_i^b$ or $\beta_i^w$
   does not correspond to your substantive knowledge of the problem,
   consider setting \texttt{\_Eeta=3} and adding a prior on $\alpha^b$
   and $\alpha^w$ (with \texttt{\_EalphaB} and \texttt{\_EalphaW}).
-  
+
 \item If you have additional information in the form of survey or
   qualitative evidence, you could change the priors, add covariates in
   \texttt{Zb} or \texttt{Zw}, or divide the data set.
@@ -2255,7 +2423,7 @@ program.  In the order in which we suggest you try them, these are,
   scale, you can use the following command (documented only in
   \texttt{eirepar.src}) to set the starting values: e.g.,
   \texttt{\_Estval=eireparinv(0|0|-1|.4|.1)}.
-  
+
 \item Buying enough RAM so you do not need to take advantage of the
   virtual memory feature of Gauss is helpful.  Or, just buy a really
   fast computer!
@@ -2271,7 +2439,7 @@ program.  In the order in which we suggest you try them, these are,
 \item You can set \texttt{\_EdirTol} to a larger number.  The default
   is 0.0001; you can try 0.001 or larger.  You could also reduce the
   maximum number of iterations with \texttt{\_EmaxIter}.
-  
+
 \item If you are running many analyses, run one analysis to make sure
   that the globals are properly defined and then set
   \texttt{\_Echeck=0} to turn off global checking.  This will only
@@ -2280,13 +2448,13 @@ program.  In the order in which we suggest you try them, these are,
   incorrectly, \EI\ will not give a pretty error message.)
 \end{enumerate}
 
-\paragraph{Why is the program slower when using covariates?}  
+\paragraph{Why is the program slower when using covariates?}
 \EI\ needs to evaluate the cumulative bivariate normal distribution,
 which is computationally intensive.  If no covariates are used, only
 one set of computations need to be done for the entire data set.  If
 any covariates are used, a new computation must be computed for every
 observation.
-  
+
 \paragraph{What are the parameter names printed during maximization?}
 Without covariates, \texttt{Zb0} and \texttt{Zw0} are estimates of
 $\phi_1$ and $\phi_2$ respectively.  With covariates, \texttt{Zb1},
@@ -2297,7 +2465,7 @@ elements of $\alpha^w$.  The symbols \texttt{sigB}, \texttt{sigW}, and
 Finally, the global \texttt{\_Eeta} allows $\alpha^b$ and $\alpha^w$
 to be set to fixed values, which are \texttt{etaB} and \texttt{etaW}
 (the default for is zero for each).
-  
+
 \paragraph{What should I look for during the iterations?} The iterations
 will converge when direction vector (which, roughly speaking, is the
 number of digits of precision in locating the maximum) gets close to
@@ -2331,7 +2499,7 @@ distinguish between very small differences in the quantities of
 interest, you will probably also wish to increase the number of
 simulations substantially (\texttt{\_Esims}).
 
-\paragraph{How do I make inferences in larger tables?} 
+\paragraph{How do I make inferences in larger tables?}
 For $2\times C$ tables, see the \texttt{ei2} in the reference section
 of this manual (see Section 8.4).  For general $R\times C$ tables, you
 can partition the data into a series of $2\times 2$ (or $2\times C$)
@@ -2399,11 +2567,11 @@ answers with more precision.  Of course, if you can selectively add
 observations that are especially informative, then there may be great
 power to be had from collecting just a bit more data.
 
-\paragraph{Has this method been used in Court?} 
+\paragraph{Has this method been used in Court?}
 A federal district court judge declared that \emph{A Solution to the
   Ecological Inference Problem} ``is the best method currently
 available to measure racial bloc voting'' [i.e., whether blacks and
-whites vote differently] 
+whites vote differently]
 % and ``Dr. King the world's foremost
 % expert in the statistical analysis of racial bloc voting.''
 (\emph{Mallory, et al., v.\ State of Ohio, et al.}, USDC Southern
@@ -2431,4 +2599,3 @@ you think the error was in the \EzI\ front end or
 error appears to be in \EI.  Comments and suggestions for changes are
 welcome.
 \end{document}
-
