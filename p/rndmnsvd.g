@@ -19,7 +19,7 @@
 */
 
 proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
-   clearg u,s,v,res,k,indx,dist,temp,bnds,limsim,tmpmean,tmps,snum,midbounds,
+   clearg u,s,v,res,k,indx,dist,temp,bnds,limsim,tmpmean,snum,midbounds,t,
    bnds1;
  
    k=rows(mean);
@@ -45,25 +45,25 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
    s=recode(s, s.<tol, tol);
    snum=sims*10;           @ # of draws at a time @
  
-   /* shift to the middle of the bounds */
+   /* shift to the middle of the bounds, create (k x snum) matrices */
    midbounds=sumc(bounds')/2;
-   tmpmean=u'*(mean-midbounds); @ transformed mean @
+   tmpmean=u'*(mean-midbounds);        @ transformed mean @
    tmpmean=vec(tmpmean.*ones(k,snum));
-   tmps=vec(s.*ones(k,snum));
+   v=vec((1./s).*ones(k,snum));        @ transformed variance @
    temp=bounds-midbounds;
    temp=maxc(abs(temp)');
    dist=sqrt(temp'*temp);
-   bnds=(-dist)~dist;      @ transformed bounds @
+   bnds=(-dist)~dist;                  @ transformed bounds @
 
    limsim=1;              
    res=zeros(1,k); 
-   v=1./tmps;
-   bnds1=bnds.*ones(rows(tmps),2);
+   bnds1=bnds.*ones(rows(v),2);
    do while rows(res)<=sims;
      temp=rndtni(tmpmean,v,bnds1);
      temp=reshape(temp,rows(temp)/k,k)';
      temp=u*temp+midbounds;
-     temp=selif(temp',sumc((bounds[.,1].<temp)+(bounds[.,2].>temp)).==0);
+     t=sumc(((bounds[.,1]'.>temp').or(bounds[.,2]'.<temp'))');
+     temp=selif(temp',t.==0);
      if scalmiss(temp)/=1;
        res=res|temp;
      endif;
