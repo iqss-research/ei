@@ -1,0 +1,319 @@
+\documentclass[11pt,titlepage]{article}
+\usepackage[reqno]{amsmath}
+\usepackage{amssymb}
+\usepackage{epsf}
+\usepackage{url}
+
+% === additional commands/packages/settings ===
+\usepackage{graphicx,psfrag,natbib}
+\usepackage{setspace}
+\usepackage{vmargin}
+\setpapersize{USletter}
+
+% === dcolumn package ===
+\usepackage{dcolumn}
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+
+% === newcommands from sei.tex ===
+\newcommand{\EI}{\ensuremath{{\mathfrak EI}}}
+\newcommand{\Tiny}{\tiny}
+\newcommand{\sump}{\sum_{i=1}^p}
+\newcommand{\mean}{\frac{1}{p}\sump}
+\newcommand{\ub}{\Dot{\beta}}
+\newcommand{\ut}{\Dot{\theta}}
+\newcommand{\bbeta}{{\mathfrak B}}
+\newcommand{\btheta}{{\mathfrak T}}
+\newcommand{\blambda}{{\mathfrak L}}
+\newcommand{\bbetau}{\breve{\mathfrak B}}
+\newcommand{\bV}{{\cal V}}
+\newcommand{\sigmau}{\breve{\sigma}}
+\newcommand{\Sigmau}{\breve{\Sigma}}
+\newcommand{\rhou}{\breve{\rho}}
+\newcommand{\psiu}{\breve{\psi}}
+\newcommand{\Eu}{\breve{\text{E}}}
+\newcommand{\Vu}{\breve{\text{V}}}
+\newcommand{\Bb}{B^b}
+\newcommand{\Bw}{B^w}
+\newcommand{\NbD}{{N_i^{bD}}}
+\newcommand{\NwD}{{N_i^{wD}}}
+\newcommand{\NbR}{{N_i^{bR}}}
+\newcommand{\NwR}{{N_i^{wR}}}
+\newcommand{\NbN}{{N_i^{bN}}}
+\newcommand{\NwN}{{N_i^{wN}}}
+\newcommand{\tp}{{\mbox{\Tiny{+}}}}
+\newcommand{\NpD}{{N_i^D}}
+\newcommand{\NpR}{{N_i^{R}}}
+\newcommand{\NpN}{{N_i^{N}}}
+\newcommand{\Nbp}{{N_i^{b}}}
+\newcommand{\Nwp}{{N_i^{w}}}
+\newcommand{\Npp}{{N_i}}
+\newcommand{\Nppp}{{N}}
+\newcommand{\Nbpp}{{N^{b}}}
+\newcommand{\Nwpp}{{N^{w}}}
+\newcommand{\sumpN}{\sump\Npp}
+\newcommand{\NsumpN}{\frac{1}{\Nppp}\sumpN}
+\newcommand{\nbp}{{N_i^{bT}}}
+\newcommand{\nwp}{{N_i^{wT}}}
+\newcommand{\npp}{{N_i^{T}}}
+\newcommand{\NbV}{{N_i^{bT}}}
+\newcommand{\NwV}{{N_i^{wT}}}
+\newcommand{\NpV}{{N_i^{T}}}
+\newcommand{\xb}{\bar{X}}
+\newcommand{\wb}{\bar{W}}
+\newcommand{\tb}{\bar{T}}
+\newcommand{\cx}{{\mathbb X}}
+\newcommand{\cw}{{\mathbb W}}
+\newcommand{\ct}{{\mathbb T}}
+\newcommand{\cpij}{{\mathbb P}^*_{ij}}
+\newcommand{\cpi}{{\mathbb P}^*_i}
+\newcommand{\cwd}{{\dot{\mathbb W}}}
+\newcommand{\ctd}{{\dot{\mathbb T}}}
+\newcommand{\cxd}{{\dot{\mathbb X}}}
+\newcommand{\cxb}{\bar{\mathbb X}}
+\newcommand{\cz}{{\mathbb G}}
+\newcommand{\ch}{{\mathbb H}}
+\newcommand{\cm}{{\mathbb M}}
+\newcommand{\E}{{\textbf{E}}}
+\newcommand{\V}{{\textbf{V}}}
+\newcommand{\C}{{\textbf{C}}}
+\newcommand{\rE}{{\text{E}}}
+\newcommand{\rV}{{\text{V}}}
+\newcommand{\rC}{{\text{C}}}
+\newcommand{\TN}{\text{TN}}
+\newcommand{\BN}{\text{BN}}
+\newcommand{\N}{\text{N}}
+\renewcommand{\P}{\text{P}}
+\newcommand{\D}{\textbf{D}}
+\newcommand{\R}{\ensuremath{\textbf{R}}}
+\newcommand{\Rr}{\ensuremath{\{\textbf{R}\diagdown r}\}}
+\newcommand{\bC}{\ensuremath{\textbf{C}}}
+\newcommand{\Cc}{\ensuremath{\{\textbf{C}\diagdown c}\}}
+\newcommand{\one}{{\mathbf{1}}}
+\newcommand{\Q}{\ensuremath{\overset{\vspace{3em}}{\text{\Huge ?}}}}
+\newlength{\padsp}
+\settowidth{\padsp}{$(\beta^w_i=\nwp/\Nwp)$}
+\newcommand{\padbw}{\hspace*\padsp}
+\newcommand{\bkappa}{\boldsymbol{\kappa}}
+
+\newcommand{\bb}{\beta^{\text{bad}}}
+\newcommand{\bg}{\beta^{\text{good}}}
+
+\title{How to Analyze Second-Stage Ecological Regressions: Extensions
+  to Herron and Shotts}
+
+\author{Christopher Adolph\thanks{Ph.D. candidate, Department of
+    Government, Harvard University. (Center for Basic Research in the
+    Social Sciences, 34 Kirkland, Cambridge MA 02138;
+    \texttt{chris.adolph.name}, \texttt{cadolph@Fas.Harvard.Edu}).}
+\and %
+Gary King\thanks{Professor of Government, Harvard University and
+  Senior Science Advisor, World Health Organization (Center for Basic
+  Research in the Social Sciences, 34 Kirkland Street, Harvard
+  University, Cambridge MA 02138; \texttt{http://GKing.Harvard.Edu},
+  \texttt{King@Harvard.Edu}, (617) 495-2027).}  }
+
+\begin{document}
+\maketitle
+\begin{abstract}
+  
+\end{abstract}
+We have taken the opportunity afforded us to comment on Herron and
+Schotts' (hereinafter HS) article because of its potential to affect
+the way a considerable body of practical research is conducted, and
+because of HS's interesting, creative, and productive ideas.  HS's
+paper is based on the suggestions in three paragraphs in King (1997:
+289--90), along with the growing number of empirical papers that have
+adopted some of the suggestions herein.  We thought it might be useful
+to start with these paragraphs:
+\begin{quotation}
+  If a second stage analysis is conducted, least squares regression
+  should probably not be used in most cases, even though it may not be
+  particularly misleading.  The best first approach is usually to
+  display a scatterplot of the explanatory variable (or variables)
+  horizontally and (say) an estimate of $\beta_i^b$ or $\beta_i^w$
+  vertically.  In many cases, this plot will be sufficient evidence to
+  complete the second stage analysis.
+  
+  If it proves useful to have more of a formal statistical approach,
+  and many of the actual values of $\beta_i^b$ fall near zero or one,
+  then some method should be used that takes this into account.  The
+  data could be transformed, via a logit or probit transformation, or
+  a model like the one in Section 9.2.2 could be applied by replacing
+  $X_i$ with the explanatory variables.  Whatever method is chosen,
+  the researcher should be careful to include the fact that some
+  estimates of $\beta_i^b$ are more uncertain than others.
+    
+  In practice, a weighted least squares linear regression may be
+  sufficient in many applications, with weights based on the standard
+  error of $\beta_i^b$ (or other quantity of interest).  Researchers
+  should be careful in applying this simplified method here, and
+  should verify its assumptions with scatterplots.  The problem is
+  that, according to the model, the variance of $\beta_i^b$ over $i$
+  is the sum of two quantities: its estimation variance, which varies
+  over the observations (and is an output of the basic ecological
+  inference model described in this book), and its fundamental
+  variability not explained by the aggregate explanatory variables.
+  That is, even if $\beta_i^b$ were known with certainty in every
+  precinct, we would not expect the variability in it from precinct to
+  precinct to be perfectly explained by any set of measured
+  explanatory variables.  A reasonable approach can be kludged by
+  first running a (homoskedastic) least squares regression and
+  computing the variance of the residuals, which is a rough measure of
+  the total variability of $\beta_i^b$ over precincts.  Then, for each
+  observation, compute the variance, from which the weight will be
+  determined, by subtracting the estimation variance from the total
+  variance.  Finally, run a weighted least squares regression.  This
+  is not as theoretically elegant a procedure as the more formal set
+  up in Section 9.2.2, but it is simple, relatively robust, and
+  probably complete enough to be of use in many applications.
+\end{quotation}  
+
+HS add to these paragraphs by pointing out that Bayesian estimates,
+such as those from EI, regress to the mean.  This ``shrinkage''
+property produces optimal estimates, in terms of mean square error.
+Thus, we agree with HS that the best possible estimate of $\beta^b_i$,
+under HS's assumptions, is that produced by EI.  But HS also make the
+interesting and correct point that using Bayesian estimates with this
+property as dependent variables in least squares regression can, under
+some circumstances, produce biased coefficient estimates.  This
+central point of HS's paper is important contribution and one that we
+attempt to build on in this paper.  (HS's paper is model of good
+science; we were able to replicate all of their simulations easily
+from the information in their paper.)
+
+
+
+3.  HS's suggested procedure is to provide a bias correction for the
+slope of the second stage regression but to leave the constant term
+unchanged.  The correction is based on linear approximations that draw
+on classical linear regression theory.  The problems we describe below
+with applying this procedure in the ecological inference situation are
+due to the failure of the linearity assumption in modeling an
+inherently nonlinear and bounded relationship, and the lack of a
+correction in the constant term.
+
+4. We find that correcting the slope but not the constant is
+considerably worse than an unadjusted regression of $\hat\beta_i^b$ on
+$Z$ and every other procedure discussed in HS's paper and the
+literature we have examined.  The regression line from HS's partially
+adjusted method often misses the point cloud of true $\beta_i^b$
+points in most simulations by a wide margin.  It even misses the
+observed points, $\hat\beta_i^b$.
+
+5.  We extend HS's partial adjustment procedure, within their linear
+regression framework, by developing an adjustment for the constant
+term also.  Our fully adjusted (FA) second stage regression method
+naturally extends HS's framework.  It also dominates HS's procedure,
+and so we do not further consider HS's original procedure.
+
+6.  We also compared our fully corrected procedure to unadjusted
+linear regression and found the following four modal situations likely
+to arise in practice. Since these situations are easily detectable
+from the aggregate data, users will know which situation they are in
+and can take the appropriate action.
+
+(a) When ecological data have very wide bounds, EI (and any method of
+ecological inference) will be highly model dependent and sensitive to
+assumptions.  In many applications in this situation, no ecological
+inference should be conducted unless one has good reason to believe
+the model assumptions.  If one goes ahead anyway, then it is in this
+almost exactly the same as the linear regression situation and the
+correction works: it is in this situation (only) in which the full
+adjustment corrects appropriately for attenuation bias and dominates
+the unadjusted procedure.
+
+(b) When the bounds are at least somewhat informative, we are in the
+situation when we would be more likely to trust ecological inferences
+using EI (or another method that takes into account the information in
+the precinct-level bounds).  In this situation, we find that the
+unadjusted procedure usually does as well or better than the fully
+corrected procedure.
+
+(c) When some observations have wide bounds and others have narrow
+bounds, and $hat\beta_i^b$ is approximately a linear function of
+$Z_i$, an unadjusted weighted least squares (WLS) regression will
+often substantially improve estimates as compared to the unadjusted
+regression or the fully corrected version of the HS procedure.  This
+is contrary to HS's claims that WLS would not make a difference; what
+they missed by applying a linear regression framework to problem with
+bounds and nonlinearity is that the degree of attenuation is directly
+related to the width of the bounds, and so the weights are correlated
+with the attenuation bias and can be effective in adjusting for it.
+
+(d) When the relationship is nonlinear, as is sometimes observably the
+case because of the bounds, then any linear second stage procedure can
+produce impossible results.  In this situation, a scatterplot or an
+appropriate nonlinear procedure would be better.  The fully adjusted
+procedure in this situation often produces more out of bounds
+predictions than the unadjusted procedure.  (In this case, WLS is also
+inappropriate, both because the LS assumption of linearity does not
+hold, and because $\hat\beta_i^b$'s at the extremes have standard
+errors of zero or nearly so.  Giving extra weight to these
+observations tends to bias the estimate of the slope downwards.)
+
+7.  At least in some applications, the HS and other corrections
+discussed here may make little difference.  We replicate Burden and
+Kimball's study of split-ticket voting, and find that none of the
+proposed corrections affected the substantive conclusions of the
+original study.
+
+8.  The Monte Carlo procedure used to generate results by HS
+artificially induces immense attenuation bias due to random
+measurement error in $Z$, quite apart from any attenuation due to
+Bayesian shrinkage error in the EI estimate.  This can be seen because
+the setup of the model from which they draw their simulations implies
+that $\gamma=1$ and yet the estimates from their simulations of the
+true $\beta_i^b$ (i.e., without any attenuation bias in the dependent
+variable at all) on $Z$ indicates that the estimate is drastically
+biased. They do not present the estimates, but in our replication we
+found that $\hat\gamma\approx 0.05$.  In contrast, our simulation
+procedure tends to recover $\hat\gamma\approx\gamma$ to the extent
+that the relationship between $\beta_i^b$ and $Z_i$ is linear.
+
+Proof that their simulation method assumes that alpha=0 and gamma_R=1:
+
+E(betab)=E(alpha+gamma_R*Z+nu)
+        =alpha+gamma_R*E(Z)
+        =alpha+gamma_R*E(betab+tau)
+        =alpha+gamma_R*betab,
+
+and so therefore it must be the case that alpha=0 and gamma=1 when we
+regress the true betab on Z.
+
+9.  As indicated in King (1997) and quoted above ``The best first
+approach is usually to display a scatterplot of the explanatory
+variable (or variables) horizontally and (say) an estimate of
+$\beta_i^b$ or $\beta_i^w$ vertically.  In many cases, this plot will
+be sufficient evidence to complete the second stage analysis.''
+Indeed \textbf{show is the data!} is a good general motto of any
+statistical analysis, especially those with complex nonlinear and
+bounded variables such as those resulting from making ecological
+inferences.  In fact, the various adjusted and unadjusted linear
+regressions might be best thought of as descriptive devices that are
+essentially convenient summaries of this kind of scatterplot.
+
+If a more formal statistical approach seems desirable, then a good
+method must go beyond classical linear regression theory.  It must
+take into account (a) the nonlinear nature of the problem, (b) the
+bounded nature of the second stage dependent variable with the width
+of the bounds varying over observations, (c) the heteroskedasticity,
+and (d) the effect of any possible logical inconsistency of the first
+and second stages of the analysis (technically known as
+``uncongeniality''; Meng, 1994).  At present, the only model that has
+been proposed with all these properties is the extended EI model that
+allows covariates to be included as part of the EI estimation
+procedure.  HS are correct that this extended model sometimes makes
+estimation only weakly identified, but that is only when $X$ is
+included among the covariates.  In other cases, especially when $Z$ is
+unrelated to $X$, the model will often be strongly identified and so
+can be used if desired.  Furthermore, Imai and King (2002) demonstrate
+how to compute first differences and other quantities from the
+extended EI model, and they report on software extensions to make this
+possible.
+
+\end{document}
+
+Meng, X.L.\ 1994a. ``Multiple-imputation Inferences with Uncongenial
+Sources of Input,'' \emph{Statistical Science}, 9, 4: 538--573.
+
