@@ -102,8 +102,8 @@
 \renewcommand{\bibitem}{\vskip 2pt\par\hangindent\parindent\hskip-\parindent}
 
 \title{Analyzing Second-Stage Ecological Regressions\thanks{Our thanks
-    to Mike Herron and Ken Shotts for helpful comments on an earlier
-    draft.}}
+    to Michael Herron and Kenneth Shotts for helpful comments on an
+    earlier draft.}}
 
 \author{Christopher Adolph\thanks{Department of Government, Harvard
     University. (Littauer Center, North Yard, Harvard University,
@@ -121,8 +121,8 @@ Gary King\thanks{Department of Government, Harvard University and
 
 \section{Introduction}
 
-We take this opportunity to comment on Herron and Shotts' article
-(hereinafter HS) because of its interesting and productive ideas and
+We take this opportunity to comment on Herron and Shotts (2002;
+hereinafter HS) because of its interesting and productive ideas and
 because of the potential to affect the way a considerable body of
 practical research is conducted.  Their article, and the literature
 they comment on, is based on the suggestions in three paragraphs in
@@ -232,11 +232,17 @@ within their linear econometric framework, by developing an adjustment
 for the constant term.  We follow the procedure that we believe Herron
 and Shots would have used if they had done so.\footnote{Indeed, after
   we finished a draft, Herron and Shotts told us that they had the
-  same constant correction in an earlier version of their paper but
-  took it out in the final version.}  As it turns out, this fully
-adjusted second stage regression method dominates the slope-only
-procedure and indeed the partially adjusted procedure in HS is never
-called for.
+  same constant correction in a draft version of their paper but took
+  it out in the final version to save space.  Since HS suggest
+  correcting the slope, and do not mention constant term corrections,
+  when we refer to the ``HS partially adjusted procedure,'' we are
+  referring to what readers would conclude that Herron and Shotts
+  advocate, even though we now know (from our subsequent
+  correspondence with them) that they also believe the corrections
+  discussed in their paper are incomplete in real applications.}  As
+it turns out, this fully adjusted second stage regression method
+dominates the slope-only procedure and indeed the partially adjusted
+procedure in HS is never called for.
 
 Since the only estimators HS offer for their partial adjustment
 procedure either assume knowledge of the truth being estimated or
@@ -327,45 +333,46 @@ their Section 7.2.  This procedure is intuitive and we can easily
 generalize it to provide a correction for the intercept as well.
 Unfortunately, the procedure itself is flawed for two other reasons.
 First, it conditions on the point estimate for the parameters of the
-truncated bivariate normal, $\breve\psi$, and thus assumes the absence
-of estimation uncertainty.  Ignoring uncertainty would bias standard
-errors and confidence intervals, of course, which perhaps is why HS do
-not calculate these.  However, since their estimation procedure is
-nonlinear (due to the ratios in (\ref{adj})), ignoring estimation
-uncertainty also affects their point estimates in finite samples.  And
-second, the procedure calls for drawing only a single simulation of
-$(\beta_i^b,\beta_i^w)$ for each observation.  As a result, the
-estimate includes substantial Monte Carlo approximation error.  The
-error can be eliminated by running their entire procedure many times
-and averaging.  Although fixing these problems would not have
-substantially changed the estimates presented in their paper, they
-will matter in some applications.  We therefore develop and use a new
-estimation algorithm that corrects these problems, as well as
+truncated bivariate normal, $\breve\psi$, and of $\delta$, and thus
+assumes the absence of estimation uncertainty.  Ignoring uncertainty
+would bias standard errors and confidence intervals, of course, which
+perhaps is why HS do not calculate these.  However, since their
+estimation procedure is nonlinear (due to the ratios in (\ref{adj})),
+ignoring estimation uncertainty also affects their point estimates in
+finite samples.  And second, the procedure calls for drawing only a
+single simulation of $(\beta_i^b,\beta_i^w)$ for each observation.  As
+a result, the estimate includes substantial Monte Carlo approximation
+error.  The error can be eliminated by running their entire procedure
+many times and averaging.  Although fixing these problems would not
+have substantially changed the estimates presented in their paper,
+they will matter in some applications.  We therefore develop and use a
+new estimation algorithm that corrects these problems, as well as
 providing the ability to compute standard errors and confidence
 intervals, which were not available in HS's version.\footnote{To
-  define our estimation algorithm, let a symbol with a tilde on it
-  denote a value of that quantity randomly drawn from its posterior
-  density.  For a given $X$ and $T$: (1) run EI on $X$ and $T$; (2)
-  regress $\hat\beta_i^b$ (which comes from EI) on $Z_i$ yielding the
-  estimated intercept $\hat\alpha_U$ and slope $\hat\gamma_U$; (3)
-  draw $\tilde\psiu$ from its posterior provided by EI; (4) take $p$
-  draws of $(\tilde\beta_i^b,\tilde\beta_i^w)$ from a truncated normal
-  density with parameter vector $\tilde\psiu$, (5) compute a new $T_i$
-  as $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run
-  EI on $X_i$ and $\tilde T_i$ to yield estimates
-  ($\hat{\tilde\beta}_i^b,\hat{\tilde\beta}_i^w$) for all $i$; (7) regress
-  ($\hat{\tilde\beta}_i^b-\beta_i^b$) on $\beta_i^b$ to estimate
-  $\delta_0^b$ and $\delta_1^b$, which we label $\hat{\tilde\delta}_0$
-  and $\hat{\tilde\delta}_1$; (8) draw $\tilde\alpha_U$ and
-  $\tilde\gamma_U$ from the posterior provided by LS; (9) compute the
-  adjusted intercept as
-  $(\tilde\alpha_U-\hat{\tilde\delta}_0^b)/(1+\hat{\tilde\delta}_1^b)$ and
-  adjusted slope as $\tilde\gamma_U/(1+\hat{\tilde\delta}_1^b)$; (10)
-  repeat steps (3)-(9) a sufficient number of times to eliminate Monte
-  Carlo approximation error; (11) and average the simulations in (10)
-  to get point estimates, take their standard deviation for standard
-  errors, or sort them and use percentile values for confidence
-  intervals.}
+  define our revised estimation algorithm, let a symbol with a tilde
+  on it denote a value of that quantity randomly drawn from its
+  posterior density.  For a given $X$ and $T$: (1) run EI on $X$ and
+  $T$; (2) regress $\hat\beta_i^b$ (which comes from EI) on $Z_i$
+  yielding the estimated intercept $\hat\alpha_U$ and slope
+  $\hat\gamma_U$; (3) draw $\tilde\psiu$ from its posterior provided
+  by EI; (4) take $p$ draws of $(\tilde\beta_i^b,\tilde\beta_i^w)$
+  from a truncated normal density with parameter vector $\tilde\psiu$,
+  (5) compute a new $T_i$ as $\tilde
+  T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run EI on $X_i$
+  and $\tilde T_i$ to yield estimates
+  ($\hat{\tilde\beta}_i^b,\hat{\tilde\beta}_i^w$) for all $i$; (7)
+  regress ($\hat{\tilde\beta}_i^b-\beta_i^b$) on $\beta_i^b$ to
+  estimate $\delta_0^b$ and $\delta_1^b$, which we label
+  $\hat{\tilde\delta}_0$ and $\hat{\tilde\delta}_1$; (8) draw
+  $\tilde\alpha_U$ and $\tilde\gamma_U$ from the posterior provided by
+  LS; (9) compute the adjusted intercept as
+  $(\tilde\alpha_U-\hat{\tilde\delta}_0^b)/(1+\hat{\tilde\delta}_1^b)$
+  and adjusted slope as $\tilde\gamma_U/(1+\hat{\tilde\delta}_1^b)$;
+  (10) repeat steps (3)-(9) a sufficient number of times to eliminate
+  Monte Carlo approximation error; (11) and average the simulations in
+  (10) to get point estimates, take their standard deviation for
+  standard errors, or sort them and use percentile values for
+  confidence intervals.}
 
 The accurate procedure which fully represents the uncertainty of HS's
 corrections is computationally slow (taking about an hour to do one
@@ -385,44 +392,43 @@ outside the field of ecological inference.
 
 \section{HS's Monte Carlo Simulation Procedure}
 
-HS's Monte Carlo procedure is inappropriate for evaluating second stage
-regressions.  HS draw $\beta_i^b$ from the EI model without
-covariates.  Then they create the covariate for the second stage
-explanatory variable $Z_i$ endogenously as equal to $\beta_i^b$ plus
-random noise.  Unfortunately, this induces immense attenuation bias
-due to random measurement error in the explanatory variable, quite
-apart from any attenuation bias that may occur due to the Bayesian
-shrinkage in the EI estimate.
+We explain in this section that HS's Monte Carlo procedure is
+inappropriate for evaluating second stage regressions.  The procedure
+is to draw $\beta_i^b$ from the EI model without covariates.  Then
+they create the covariate for the second stage explanatory variable
+$Z_i$ endogenously as equal to $\beta_i^b$ plus random noise.  This
+procedure has three serious flaws.
 
-This problem can be seen by studying the parameters of the model HS
-created from which to draw their Monte Carlo data.  In this model, the
-slope of the coefficient on the covariate in the second stage
-regression is 1 (in their notation, $\gamma_R=1$).\footnote{Under the
-  HS Monte Carlo setup, $E(\beta_i^b)=\alpha_R+\gamma_R Z_i$, where
-  $Z_i=\beta_i^b+\tau_i$ and $E(\tau_i)=0$.  Hence
-  $E(\beta_i^b)=\alpha_R+\gamma_RE(\beta_i^b+\tau_i)=\alpha_R+\gamma_R\beta_i^b$.
-  which implies that $\alpha_R=0$ and $\gamma_R=1$.}  However, the
-estimates of this slope from their simulations of the \emph{true}
-$\beta_i^b$ (i.e., without any attenuation bias in the dependent
-variable at all) regressed on $Z$ gives a drastically biased estimate.
-This slope estimate does not appear in their article, but we were able
-to to replicate their Table 2 exactly, and in our Table \ref{t:hsrep}
-present these numbers.  As can be seen, whereas the theoretical value
-of $\gamma_R$ is 1 in each case, their estimates indicate that
-$\hat\gamma_R\approx 0.07$.  Thus, since the unadjusted method is
-unable to recover the coefficients without shrinkage when using the
-true value of the dependent variable, this Monte Carlo setup is
-inappropriate for assessing a dependent variable that is estimated (by
-EI or otherwise).\footnote{Another way to look at the true $\gamma_R$
-  is as a causal effect known to be zero (since the relationship was
-  created endogenously), in which case the estimates in Table
-  \ref{t:hsrep} are overestimates.  A final way to interpret the true
-  value in HS's simulations is that it is unknown but approximated by
-  the LS estimate of the truth on $Z_i$.  The problem with this last
-  interpretation is that the Monte Carlo procedure then merely
-  compares two estimators, with possibly correlated but unknown
-  errors, rather than comparing an estimator to some gold standard
-  defined by the procedure.}
+The first flaw is that the Monte Carlo procedure can be interpreted in
+three logically consistent ways, and in addition none are appropriate.
+Since HS do not discuss which interpretation they intended, we
+consider all three.  The first, and in our view most plausible,
+interpretation is that by creating $Z_i$ with random error, they are
+inducing immense errors-in-variables attenuation bias, quite apart
+from any attenuation bias that may occur due to the Bayesian shrinkage
+in the EI estimate.
+
+This problem can be seen clearly by studying the parameters of the
+model HS created from which to draw their Monte Carlo data.  In this
+model, the slope of the coefficient on the covariate in the second
+stage regression is 1 (in their notation,
+$\gamma_R=1$).\footnote{Under the HS Monte Carlo setup,
+  $E(\beta_i^b)=\alpha_R+\gamma_R Z_i$, where $Z_i=\beta_i^b+\tau_i$
+  and $E(\tau_i)=0$ and so $E(Z_i|\beta_i^b)=\beta_i^b$.  Hence
+  $E(\beta_i^b)=\alpha_R+\gamma_RE(\beta_i^b+\tau_i) =
+  \alpha_R+\gamma_R\beta_i^b$.  which implies that $\alpha_R=0$ and
+  $\gamma_R=1$.}  However, the estimates of this slope from their
+simulations of the \emph{true} $\beta_i^b$ (i.e., without any
+attenuation bias in the dependent variable at all) regressed on $Z$
+gives a drastically biased estimate.  This slope estimate does not
+appear in their article, but we were able to to replicate their Table
+2 exactly, and in our Table \ref{t:hsrep} present these numbers.  As
+can be seen, whereas the theoretical value of $\gamma_R$ is 1 in each
+case, their estimates indicate that $\hat\gamma_R\approx 0.07$.  Thus,
+since the unadjusted method is unable to recover the coefficients
+without shrinkage when using the true value of the dependent variable,
+this Monte Carlo setup is inappropriate for assessing a dependent
+variable that is estimated (by EI or otherwise).
 \begin{table}[tb]
 \label{t:hsrep}
 \begin{center}
@@ -450,16 +456,59 @@ The difference and ratios presented in HS Table 2 were
 successfully replicated, and are not shown here.}
 \end{table}
 
-A second problem with the Monte Carlo procedure employed by HS is that
-it artificially rules out the possibility of nonlinear relationships
-between $\beta_i^b$ and $Z_i$ created by the bounds.  By constructing
-their explanatory variable, $Z_i$, from the bounded $\beta_i^b$'s
-(plus a normal disturbance), they artificially restrict the
-relationship between the two to be linear and to always be contained
-within the [0,1] bound on $\beta_i^b$.  Within this framework, testing
-the robustness of the HS adjustment to the sort of nonlinear
-relationships which crop up sometimes in applied research is
-impossible.
+A second interpretation of the HS Monte Carlo procedure is that
+$\gamma_R$ is the causal effect of $Z_i$ on $\beta_i^b$.  In fact,
+since many second stage regressions are intended to be causal, this is
+the most appropriate intepretation in some situations.  Since $Z_i$
+was created endogenously, no matter how one exogenously changes $Z_i$,
+$\beta_i^b$ will not budge, and hence, by this interpretation, the
+Monte Carlo procedure is setting the causal effect to zero:
+$\gamma_R=0$.  Thus, because the rightmost column of Table
+\ref{t:hsrep} is uniformly greater than zero, we know that regressing
+the true $\beta_i^b$ on $Z_i$ overestimates $\gamma_R$.  Thus, since
+the unadjusted method is unable to recover the true coefficients when
+using the true value of the dependent variable (i.e., even though no
+shrinkage occurs or estimation error in the dependent variable
+exists), the Monte Carlo setup under this second interpretation also
+is inappropriate for assessing a dependent variable that is estimated
+(by EI or otherwise).
+
+A third way to interpret the true value in HS's simulations is
+conditional on \emph{each} randomly generated set of $\eta_i$'s
+($i=1,\dots,n$), and hence conditional on each randomly generated
+$Z_i$: $E(\beta_i^b|Z_i)=\alpha_R+\gamma_R Z_i$.  By this
+interpretation, each random draw of a set of $n$ observations from the
+Monte Carlo data generating process produces a \emph{different} true
+value of $\gamma_R$, the value of which is neither set nor observed by
+the researcher.  This parameter vector can be estimated by a LS
+regression of the the true $\beta_i^b$ on $Z_i$, and it can also be
+estimated by EI-R.  Even if we assume that the LS estimator is better
+(because it uses the true $\beta_i^b$), comparing the two estimators
+does not reveal which is closer to the unknown $\gamma_R$.  Since they
+are probably correlated, the Monte Carlo procedure can only reveal how
+close the estimators are to each other, not to the truth, since it is
+unknown.  By this interpretation, the procedure misses the whole point
+of running Monte Carlo experiments in the first place --- creating a
+world where we know the true quantity being estimated and then seeing
+how good an estimator is at recovering its known value.  (Although by
+this interpretation we cannot know the true $\gamma_R$ in each
+iteration, we can compute the expected value by averaging over the
+variability in $\eta_i$ over Monte Carlo iterations, but this then
+implies that the average $\gamma_R=1$, and leads exactly to the first
+interpretation.\footote{That is,
+  $E_\eta[E(\beta_i^b|Z_i)]=\alpha_R+\gamma_R \beta_i$ which implies
+  that $\alpha_R=0$ and $\gamma_R=1$.}
+
+Whichever interpretation one has of the HS Monte Carlo prcedure, it
+also suffers from two other serious problems.  First, it artificially
+rules out the possibility of nonlinear relationships between
+$\beta_i^b$ and $Z_i$ created by the bounds.  That is, by constructing
+the explanatory variable, $Z_i$, from the bounded $\beta_i^b$'s (plus
+a normal disturbance), the procedure artificially restricts the
+relationship between the two to be linear and to never be affected by
+the [0,1] bounds on $\beta_i^b$.  Within this framework, testing the
+robustness of the HS adjustment to the sort of nonlinear relationships
+which crop up sometimes in applied research is impossible.
 
 Finally, \emph{HS's Monte Carlo simulations do not test the actual
   adjustment procedure they propose}.  All the results they present in
@@ -471,6 +520,7 @@ for use when $\beta_i^b$ is unknown, but leave this procedure
 untested.  Hence, HS's article offers no direct evidence that
 adjustment would be less biased or more efficient than unadjusted
 least squares in practice.
+
 
 \section{An Improved Monte Carlo Simulation} \label{s:alt}
 
@@ -537,7 +587,7 @@ attenuation.  The actual fully adjusted method (marked FA) as
 estimated from the data also appears, but due to the wide bounds it is
 not a good estimate and indeed is worse than LS and WLS.  Figure
 \ref{f:wide} also plots the partially adjusted method that a
-researcher might implement based on HS's article (marked HS), which is
+researcher might implement based on HS's article (marked PA), which is
 more biased than any of the alternatives, a problem which grows in
 severity as the mean of $Z$ departs from zero (The HS and FA lines are
 not exactly parallel because HS is calculated by assuming the estimate
@@ -551,7 +601,7 @@ further.
     \caption{Data with Wide Bounds. Plot of $Z_i$ horizontally by
       the estimated $\hat\beta_i^b$ vertically (in the right graph)
       and the true $\beta_i^b$ (in the left graph), with fits for the
-      partially adjusted procedure (HS), least squares (LS) and
+      partially adjusted procedure (PA) in HS, least squares (LS) and
       weighted least squares (WLS) almost on top of one another, the
       fully adjusted method (FA), and the full adjustment based on the
       true values of $\delta_0^b$ and $\delta_1^b$ (TA).  Clearly TA
