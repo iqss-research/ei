@@ -132,9 +132,9 @@ Gary King\thanks{Professor of Government, Harvard University and
   and were counted after election day.  In the final official tally,
   Bush received 537 more votes than Gore.  These numbers are taken
   from the official results released by the Florida Secretary of
-  State's office (see Table \ref{tb:official}) and so do not reflect
-  overvotes, undervotes, unsuccessful litigation, butterfly ballot
-  problems, recounts that might have been allowed but were not, or any
+  State's office and so do not reflect overvotes, undervotes,
+  unsuccessful litigation, possible butterfly ballot problems,
+  recounts that might have been allowed but were not, or any other
   hypothetical divergence between voter preferences and counted votes.
   After the election, the \emph{New York Times} conducted a six month
   long investigation and found that 680 of the overseas absentee
@@ -682,8 +682,8 @@ covariate.  We also include a model with no covariates and 3 models
 with $X_i$ as the covariate for the mean of $\bb$, $\bg$, and for
 both.  For each model, we use the same independent prior distribution
 as explained above. The idea of Bayesian model averaging is to produce
-one set of results combining these 29 models according to how much
-support each model receives from the data.\footnote{A list of all 29
+one set of results combining these 31 models according to how much
+support each model receives from the data.\footnote{A list of all 31
   models follows: (1) no covariate, (2) $X_i$ for $\bb$, (3) $X_i$ for
   $\bg$, (4) $X_i$ for both $\bb$ and $\bg$, (5) military absentee
   voters, (6) registered Republican absentee voters, (7) registered
@@ -700,36 +700,38 @@ support each model receives from the data.\footnote{A list of all 29
   registered Black Republican residents, (25) acceptance ratio of
   overall absentee ballots, (26) ratio of invalid absentee ballots,
   (27) Panhandl Florida regional indicator variable, (28) Southern
-  Florida regional indicator variable, and (29) corruption indicator
-  variable. All the covariates except indicator variables are entered
-  as a ratio varying from 0 to 1. Except the first three models, the
-  covariate was used to model the conditional untruncted mean of both
-  parameters, $\bb$ and $\bg$.  Models (5) to (11) are based on
-  information about the absentee ballots and so different variables
-  were available regarding the invalid and valid ballots; we used the
-  former group to predict $\bb$ and the latter to predict $\bg$.}
+  Florida regional indicator variable, (29) corruption indicator, (30)
+  proportion of absentee voters not registered, (31) proportion of
+  voting age population not registered.  All the covariates except
+  indicator variables are entered as a ratio varying from 0 to 1.
+  Except the first three models, the covariate was used to model the
+  conditional untruncted mean of both parameters, $\bb$ and $\bg$.
+  Models (5) to (11) are based on information about the absentee
+  ballots and so different variables were available regarding the
+  invalid and valid ballots; we used the former group to predict $\bb$
+  and the latter to predict $\bg$.}
 
-Let $M_k$ denote the $k$th model specification ($k=1,\dots,29$). Then
+Let $M_k$ denote the $k$th model specification ($k=1,\dots,31$). Then
 we make an inference about some quantity of interest $\Delta$ by
 computing its posterior distribution via Bayesian model averaging.  To
-do this, we first compute, for each of the 29 models, the posterior
+do this, we first compute, for each of the 31 models, the posterior
 distribution of $\Delta$ (computed from Equation \ref{eq:post} with
 $\Delta$ being some known function of $\Theta$): $\P(\Delta|M_k,T)$.
 Then we average over these models by weighting by the relative
 posterior probability that each model is correct, $\Pr(M_k|T)$:
 \begin{align} \label{eq:bma}
-  \Pr(\Delta|T) &= \sum_{k=1}^{29} \P(\Delta,M_k|T)\notag\\
-                &= \sum_{k=1}^{29} \P(\Delta|M_k,T) \Pr(M_k|T)
+  \Pr(\Delta|T) &= \sum_{k=1}^{31} \P(\Delta,M_k|T)\notag\\
+                &= \sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T)
 \end{align}
 where the posterior model probability is computed as
 \begin{equation}
   \Pr(M_k|T)=\frac{\P(T|M_k)\Pr(M_k)}
-             {\sum_{j=1}^{29} \Pr(T|M_j) \Pr(M_j)}.  \label{eq:postmodel}
+             {\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  \label{eq:postmodel}
 \end{equation}
 
 To compute the posterior model probability, we need two elements.
 First is a prior probability that each model is correct, $\Pr(M_k)$.
-For simplicity, we assign an equal prior probability, $1/29$, to each
+For simplicity, we assign an equal prior probability, $1/31$, to each
 model.  This at least does not given any a priori advantage to one
 model over another.  We conducted sensitivity analyses (reported
 below) that did not reveal much change in our overall estimates by
@@ -1068,7 +1070,7 @@ Bayesian Model Averaging  & 251 & (69 & 468) & \\
 \caption{Estimates of Bush's margin of victory after dropping the
   invalid overseas absentee ballots --- overall and for the six
   component models with the highest posterior model probabilities
-  among the 29 models estimated. Each model is identified in the table
+  among the 31 models estimated. Each model is identified in the table
   by listing the covariate we used.  The first differences represent
   the increase or decrease in the estimated Bush's margin when the
   value of the covariate is increased by 10 percentage points.}
@@ -1101,10 +1103,11 @@ absentee ballots for different model specifications against our
 posterior distribution.  The solid line in this figure is an
 alternative specification of the ecological inference model where we
 combine the votes for the minor candidates together with those for
-Gore rather than with the votes for Bush. The posterior distribution
-for this model is very similar to the results of our previous analysis
-indicating that our results do not depend on which model specification
-is used.
+Gore rather than with the votes for Bush, resulting in 31 new
+individual models corresponding to the 31 models already one.  The
+posterior distribution for this model is very similar to the results
+of our previous analysis indicating that our results do not depend on
+which model specification is used.
 \begin{figure}[t]
 \begin{center}
 \includegraphics[width=3in,height=4.5in,angle=-90]{sensitivity}
