@@ -812,8 +812,14 @@ Democratic, among those who vote.
 \begin{description}
 \item[\texttt{ei} globals] All the globals from \texttt{ei} apply here
   too.
+
 \item[\_EI2\_m] Number of data sets to multiply impute (must be less
-  than or equal to \texttt{\_Esims}), default=4.
+than or equal to \texttt{\_Esims}). If it is set to -1, \texttt{ei2}
+will use the posterior mean of $\beta^b$ to impute one data set. This
+option should be used only when \texttt{ei2} has the computational
+difficulty since the standard error is likely to be
+underestimated. The point estimate will not be biased.) , default=4.
+
 \end{description}
 
 \paragraph{\underline{Output Global}:}
