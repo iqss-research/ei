@@ -779,6 +779,25 @@ inefficient especially for problems with relatively flat priors or
 high dimensional parameter vectors.  We discuss these and other
 computational issues in the Appendix.)
 
+Bayesian model averaging estimate obtained in this fashion is known to
+provides better in sample prediction, as mesured by a logarithmic
+scoring rule, than using any single model \citep{madi:raft:94}. In our
+application, this property of Bayesian model averaging is important
+because our purpose is to predict the distribution of invalid ballots
+in our data. On the other hand, if one is concerned with out of sample
+prediction, similar methods such as Committee methods of neural
+networks models are available \citep{bish:95}. Although the two
+literatures rarely refer to each other, Bayesian model averaging and
+Committee methods are closely related. Both are based on an idea of
+obtaining one set of estimates from multiple models by averaging them
+with weights. The only difference is the way weights are calculated.
+For Committee methods, optimal weights minimize error correlation of
+individual models such that out of sample prediction can be improved.
+In contrast, Bayesian model averaging gives more weights to models
+that are supported by data.\footnote{Another similar model is mixture
+  models where weights are modeled parametrically (see e.g.
+  \citet{rose:jian:tann:00,robe:96a}).}
+
 \section{Empirical Results}
 \label{s:outcome}
 
