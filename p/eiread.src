@@ -135,7 +135,9 @@
 ** Eaggbias  4 x 2:(b~se)|(b~se) for regs of est'd betaB,betaW on const. & X
 ** nobs      scalar: number of observations
 ** tsims     100 x _Esims+1:rows=seqase(0,1,100), cols=X~(sorted sims of T|X)
+** tsims0     p x _Esims+1: cols=T~(sorted sims of T|X_obs,Z_obs)
 ** expvarci  100 x 4: X~20%CI~mean~80%CI of sims from p(T|X)
+** expvarci0 p x 4: T~20%CI~mean~80%CI of sims from p(T|X_obs,Z_obs)
 ** expvarcis 100 x 4: X~20%CI~mean~80%CI of sims from p(T|X) LOESS Smoothed
 ** etaC      2x1 etaB|etaW to fix eta's at (derived from _Eeta)
 ** etaS      2x1 se(etaB|etaW) fixed se's for eta (derived from _Eeta)
@@ -1187,7 +1189,7 @@ proc eiread(dbuf,str);
 	res';
       endif;
     endif;
-    
+
   elseif str$=="tsims";			@ sims from p(T|X=seqas(0,1,100))  @
     c=eiread(dbuf,"_Eeta");
     if scalzero(c) and
@@ -1228,7 +1230,30 @@ proc eiread(dbuf,str);
       endfor;
       res=x~res;
     endif;
-      
+
+  elseif str$=="tsims0";          @ sims from p(T|X_obs,Z_obs) @
+    b=eiread(dbuf,"phi");
+    if scalmiss(b);
+      res=miss(1,1);
+    endif;
+    call eiread(dbuf,"_Ez");
+    t=eiread(dbuf,"t");
+    x=eiread(dbuf,"x");
+    zb=eiread(dbuf,"zb");
+    zw=eiread(dbuf,"zw");
+    a=rows(x);
+    {bb,bw,sb,sw,rho}=eirepar(b,zb,zw,x);
+    c=eiread(dbuf,"_Esims");
+    res=zeros(a,c);
+    let bnds[2,2]=0 1 0 1;
+    for i (1, a, 1);
+      bs=rndbtn(bb[i],bw[i],sb,sw,rho,bnds,c);
+      p=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
+      res[i+0,.]=sortc(p,1)';
+    endfor;
+    res=t~res;
+        
+    
   elseif str$=="expvarci";		@ x~20%CI~mean~80%ci @
     if rows(eiread(dbuf,"_Eeta"))==4 and
       (not(scalone(eiread(dbuf,"Zb"))) or not(scalone(eiread(dbuf,"Zw"))));
@@ -1246,7 +1271,18 @@ proc eiread(dbuf,str);
       b=b[.,2:_Esims+1];
       res=x~b[.,int(0.2*_Esims)]~meanc(b')~b[.,int(0.8*_Esims)];
     endif;
-  
+
+  elseif str$=="expvarci0";		@ t~20%CI~mean~80%ci @
+    b=eiread(dbuf,"tsims0");
+    c=eiread(dbuf,"_Esims");
+    if scalmiss(b);
+      res={.};
+    else;
+      t=b[.,1];
+      b=b[.,2:c+1];
+      res=t~b[.,int(0.2*c)]~meanc(b')~b[.,int(0.8*c)];
+    endif;
+    
   elseif str$=="expvarcis";		@ x~20%CI~mean~80%ci LOESS smoothed @
     b=eiread(dbuf,"expvarci");
     if scalmiss(b);

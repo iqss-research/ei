@@ -250,7 +250,7 @@ endp;
 proc 1=eimodels_avg(ndbuf);
   local et, sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
         aggs, betabs, betaws, mfreq, ratio, j, titl, t, x, n, eselect,
-        frst, prprob, _eprt_temp, tst, vc;
+        frst, prprob, _eprt_temp, tst, vc, tsims0;
 
   et=hsec;     @ timing start @
   @ checking the input buffer @
@@ -457,6 +457,7 @@ proc 1=eimodels_avg(ndbuf);
   aggs = zeros(sims,2);
   betabs = zeros(nobs,sims);
   betaws = zeros(nobs,sims);
+  tsims0 = zeros(nobs,sims);
   mfreq = margllik[.,1] ~ zeros(j,1);
 
   @ resampling parameter values with posterior model probabilities @
@@ -480,6 +481,8 @@ proc 1=eimodels_avg(ndbuf);
     betabs[.,k] = temp[.,k];
     temp = eiread(dbtemp,"betaws");
     betaws[.,k] = temp[.,k];
+    temp = eiread(dbtemp,"tsims0");
+    tsims0[.,k] = temp[.,k+1];
   endfor;
 
   if _Eprt/=0;
@@ -502,6 +505,7 @@ proc 1=eimodels_avg(ndbuf);
   _Eres = vput(_Eres,aggs,"aggs");
   _Eres = vput(_Eres,betabs,"betabs");
   _Eres = vput(_Eres,betaws,"betaws");
+  _Eres = vput(_Eres,tsims0,"tsims0");
   _Eres = vput(_Eres,mfreq,"mfreq");
   _Eres = vput(_Eres,postprob,"postprob");
   _Eres = vput(_Eres,prprob,"prprob");

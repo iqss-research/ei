@@ -325,7 +325,7 @@ eiloglik.src
 eimodels.src
     eimodels_def                     : proc
     eimodels_run                     : proc
-    eimodels_ave                     : proc
+    eimodels_avg                     : proc
 
 einonpar.src
     arcsin                           : proc
