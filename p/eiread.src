@@ -218,7 +218,7 @@ proc eiread(dbuf,str);
         retp(res);
       endif;
     elseif titl$=="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
-      if vin(dbuf,"mod_d"$+ftos(_eimetar,"*.*lf",1,0));
+      if vin(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
         dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
         if _Eprt == 3;
           "Reading " $str " from Model " _eimetar "...";
