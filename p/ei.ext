@@ -1,6 +1,6 @@
 /* 
 **  EXTERNAL global declaration file for EI
-**  (C) Copyright 1995-2001 Gary King
+**  (C) Copyright 1995-2003 Gary King
 **  All Rights Reserved.
 */
 
@@ -68,6 +68,7 @@ external matrix _EisChk ;
 external matrix _EiLlikS ;
 
 /* graphics */
+#include peps.ext;
 #include pgraph.ext;
 external matrix _plinet ;
 external matrix _plineth ;

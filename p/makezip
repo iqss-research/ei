@@ -15,4 +15,4 @@ mv ei.zip ~/www/files/.
 cp whatsnew ~/www/ei/.
 
 chmod go+r ~/www/files/ei.zip ~/www/files/ei.pdf ~/www/ei/*
-
+echo "A new version of EI has been posted"|mail -s "automated EI message" kbenoit@tcd.ie

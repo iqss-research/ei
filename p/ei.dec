@@ -1,11 +1,11 @@
 /* 
 **  global declaration file for EI
-**  (C) Copyright 1995-2001 Gary King
+**  (C) Copyright 1995-2003 Gary King
 **  All Rights Reserved.
 */
 
 /* general */
-declare string _Eversion != "EI Version: 1.5, 5/5/2002";
+declare string _Eversion != "EI Version: 1.9, 2/8/2003";
 declare matrix _Echeck != 1;
 declare matrix _Eres != 0;
 declare matrix _Esims != 100;
@@ -21,7 +21,7 @@ declare matrix _EnumTol != 0.0001;
 declare matrix _EnonEval != 11;
 declare matrix _EnonNumInt != 11;
 declare matrix _EnonPar != 0;
-declare matrix _Ei2_m != 4;
+declare matrix _Ei2_m != -1;
 declare matrix _ei2_mta != 0;
 declare matrix _eimetar != 1;
 
@@ -71,6 +71,7 @@ declare matrix _Eivc != {.};
 
 /* graphics */
 #include pgraph.dec;
+#include peps.dec;
 declare matrix _plinet != 6;
 declare matrix _plineth != 0;
 declare matrix _plinec != 14;

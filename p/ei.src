@@ -1,6 +1,6 @@
 /*
 **  This archive is part of the program EI
-**  (C) Copyright 1995-2001 Gary King
+**  (C) Copyright 1995-2003 Gary King
 **  All Rights Reserved.
 */
 /*
@@ -706,7 +706,7 @@ endp;
 proc 0=eiset;
   
   /* general */
-  _Eversion="EI Version: 1.8, 5/5/2002";
+  _Eversion="EI Version: 1.9, 2/8/2003";
   _Eres=vput("","Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+_Eversion,
               "date");
   _Echeck=1;
@@ -723,7 +723,7 @@ proc 0=eiset;
   _EnonEval=11;
   _EnonNumInt=11;
   _EnonPar=0;
-  _Ei2_m=4;
+  _Ei2_m=-1;
   _eimetar=1;
   _ei2_mta=0;
   
@@ -979,11 +979,9 @@ endp;
 **       see additional documentation under eiread and eigraph
 **        
 ** GLOBALS:  all the globals from EI() work here too.  In addition,
-** _EI2_m   = 4; number of data sets to multiply impute (must be <=_Esims) 
-**           if it is set to - 1, ei2 will use the posterior mean of betabs to 
-**           impute one data set. This option should be used only when ei2 has 
-**           the computational difficulty since the standard error is likely to 
-**           be underestimated. The point estimate should not be biased.)
+** _EI2_m   = -1, use the posterior mean of betabs to impute one data set.  
+**       or set to number of data sets to multiply impute (must be <=_Esims) 
+**       4 or so should be plenty
 **
 ** OUTPUT GLOBAL:
 ** _ei2_mta = a "meta-data buffer" with elements data buffers named dbuf#, 

@@ -749,9 +749,9 @@ step2:
 **
 **  REFERENCES:
 **
-**  Jeff Gill and Gary King. 1998. "What to do When Your Hessian is Not 
-**  Invertible: Alternatives to Model Respecification in Nonlinear Estimation"
-**  manuscript in progress.
+**  Jeff Gill and Gary King. 2002. "What to do When Your Hessian is Not
+**  Invertible: Alternatives to Model Respecification in Nonlinear
+**  Estimation," http://gking.harvard.edu.
 **
 **  Robert B. Schnabel and Elizabeth Eskow. 1990. "A New Modified Cholesky
 **  Factorization," SIAM Journal of Scientific Statistical Computating,
@@ -783,8 +783,8 @@ proc sechol(A);
    if n > 2; 
       for k (1,(n-2),1);
          trap 1,1; 
-         if minc((diag(A[(k+1):n,(k+1):n])' - A[k,(k+1):n]^2/A[k,k])') < tau*gamm
-		and minc(eig(A[(k+1):n,(k+1):n])) < 0;
+         if (minc((diag(A[(k+1):n,(k+1):n])' - A[k,(k+1):n]^2/A[k,k])') < tau*gamm
+		and minc(eig(A[(k+1):n,(k+1):n])) < 0) or (A[1,1] < 0); 
             dmax = maxindc(diag(A[k:n,k:n]));
             if (A[(k+dmax-1),(k+dmax-1)] > A[k,k]);
 	       /* print("pivot using dmax:"); print(dmax); */
@@ -828,6 +828,7 @@ proc sechol(A);
          L[k,k] = A[k,k]; 
          for i ((k+1), (n), 1); 
             if L[k,k] > __macheps; A[i,k] = A[i,k]/L[k,k]; endif;
+   	    if isinf(A[i,k]); A[i,k] = 0; endif;
 	    L[i,k] = A[i,k];
             A[i,(k+1):i] = A[i,(k+1):i] - L[i,k]*L[(k+1):i,k]';
             if A[i,i] < 0; A[i,i] = 0; endif;
@@ -853,8 +854,17 @@ proc sechol(A);
    A[(n-1),(n-1)] = sqrt(A[(n-1),(n-1)]);
    L[(n-1),(n-1)] = A[(n-1),(n-1)];
    A[n,(n-1)] = A[n,(n-1)]/L[(n-1),(n-1)];
+   if isinf(A[n,(n-1)]); A[n,(n-1)] = 0; endif;
    L[n,(n-1)] = A[n,(n-1)];
    A[n,n] = sqrt(A[n,n] - L[n,(n-1)]^2);
    L[n,n] = A[n,n];
    retp(Pprod'*L'*Pprod');
+endp;
+
+/* infinity checking function from Gauss manual, page 72. */
+proc isinf(x);
+    local plus, minus;
+    plus = 0v7ff0000000000000;
+    minus = 0vfff0000000000000;
+    retp(not x /= plus or not x /= minus);
 endp;

@@ -431,7 +431,238 @@ eiutil.src
     strstrip                         : proc
 
     
+
+@ ----------------------- PGRAPH ------------------------ @    
+
+peps.dec
+    _pqg_eps_BoundingBox             : matrix
+    _pqg_eps_Scale                   : matrix
+    _pqg_eps_Translate               : matrix
+    _pqg_eps_Rotate                  : matrix
+    _pqg_ps_Scale                    : matrix
+    _pqg_ps_Translate                : matrix
+    _pqg_ps_Rotate                   : matrix
+    _pqg_ps_Monochrome               : matrix
+    _pqg_ps_MinLineWidth             : matrix
+    _pqg_ps_WhiteBecomes             : matrix
+    _pqg_ps_Orientation              : string
+    _pqg_ps_RGBColors                : matrix
+
+pgraph.dec
+    _pqg_ver                         : matrix
+    _pagedim                         : matrix
+    _pappend                         : matrix
+    _parrow                          : matrix
+    _parrow3                         : matrix
+    _pascx                           : matrix
+    _pascy                           : matrix
+    _paxes                           : matrix
+    _paxht                           : matrix
+    _paxmarx                         : matrix
+    _pbox                            : matrix
+    _pcrop                           : matrix
+    _pcolor                          : matrix
+    _pcross                          : matrix
+    _pcwin                           : matrix
+    _pncwin                          : matrix
+    _pcsel                           : matrix
+    _perrbar                         : matrix
+    _pfonts                          : matrix
+    _pframe                          : matrix
+    _pgrid                           : matrix
+    _plctrl                          : matrix
+    _pline                           : matrix
+    _plotsiz                         : matrix
+    _plotshf                         : matrix
+    _pageshf                         : matrix
+    _pagesiz                         : matrix
+    _plegctl                         : matrix
+    _plsel                           : matrix
+    _pltype                          : matrix
+    _plwidth                         : matrix
+    _pmargin                         : matrix
+    _pmcolor                         : matrix
+    _pmsgctl                         : matrix
+    _pnotify                         : matrix
+    _pnum                            : matrix
+    _pnumht                          : matrix
+    _protate                         : matrix
+    _pqgplay                         : matrix
+    _pqgtype                         : matrix
+    _pscreen                         : matrix
+    _pinbegwind                      : matrix
+    _psilent                         : matrix
+    _pssel                           : matrix
+    _pstype                          : matrix
+    _psym                            : matrix
+    _psymsiz                         : matrix
+    _ptitlht                         : matrix
+    _pworld                          : matrix
+    _pxpmax                          : matrix
+    _pxscale                         : matrix
+    _pypmax                          : matrix
+    _pyscale                         : matrix
+    _pwindmx                         : matrix
+    _pwindno                         : matrix
+    _pfirstw                         : matrix
+    _pxmem                           : matrix
+    _pxsci                           : matrix
+    _pysci                           : matrix
+    _pzsci                           : matrix
+    _pzclr                           : matrix
+    _pzoom                           : matrix
+    _pvwr                            : string
+    _pvwrflags                       : string
+    _pvwrmode                        : string
+    _pcmdlin                         : string
+    _pcvfile                         : string
+    _pdate                           : string
+    _phard                           : string
+    _plegstr                         : string
+    _pmsgstr                         : string
+    _prtfile                         : string
+    _ptek                            : string
+    _ptitle                          : string
+    _pxfmt                           : string
+    _pxlabel                         : string
+    _pyfmt                           : string
+    _pylabel                         : string
+    _pqgedit                         : matrix
+    _pmnr                            : matrix
+    _pmjr                            : matrix
+    _poptic                          : matrix
+    _pmtic                           : matrix
+    _pbarwid                         : matrix
+    _pbartyp                         : matrix
+    _pboxctl                         : matrix
+    _pboxlim                         : matrix
+    _pbox3d                          : matrix
+    _psym3d                          : matrix
+    _pline3d                         : matrix
+    _psurf                           : matrix
+    _pview                           : matrix
+    _pvolume                         : matrix
+    _pticout                         : matrix
+    _pzlabel                         : string
+    _pzpmax                          : matrix
+    _pzscale                         : matrix
+    _pzfmt                           : string
+    _plev                            : matrix
+
+paxnum.src
+    _paxnum                          : proc
+    _popt                            : proc
+    _pfeq                            : proc
+
+pbar.src
+    bar                              : proc
+
+pbox.src
+    box                              : proc
+    calcbox                          : proc
+    _pcntclc                         : proc
+
+pcart.src
+    _pcartx                          : proc
+    _pcarty                          : proc
+    _pcartz                          : proc
+    _fontsiz                         : proc
+    _pwrscal                         : proc
+    _linfilt                         : proc
+    _txtfilt                         : proc
+    _cmnfilt                         : proc
+    _prngerr                         : proc
+    _setpage                         : proc
+    _decreas                         : proc
+    _range                           : proc
+
+pcart3d.src
+    _3dfilt                          : proc
+    _pwrsc3d                         : proc
+    _volum3d                         : proc
+
+pcontour.src
+    contour                          : proc
+
+pdraw.src
+    draw                             : proc
+
+peps.src
+    tkf2eps                          : proc
+    tkf2ps_margin                    : proc
+    tkf2ps                           : proc
+
+pgraph.src
+    asclabel                         : proc
+    fonts                            : proc
+    graphset                         : proc
+    graphinit                        : proc
+    title                            : proc
+    view                             : proc
+    viewxyz                          : proc
+    volume                           : proc
+    xlabel                           : proc
+    ylabel                           : proc
+    zlabel                           : proc
+    margin                           : proc
+    axmargin                         : proc
+    graphprt                         : proc
+    rerun                            : proc
+    setvwrmode                       : proc
+    pqgwin                           : keyword
+
+phist.src
+    hist                             : proc
+    histp                            : proc
+    histf                            : proc
+
+play.src
+    hardcopy                         : proc
+    setcnvrt                         : proc
+    replay                           : proc
+
+ploglog.src
+    loglog                           : proc
+
+plogx.src
+    logx                             : proc
+
+plogy.src
+    logy                             : proc
+
+polar.src
+    polar                            : proc
+
+pscale.src
+    scale                            : proc
+    scale3d                          : proc
+    xtics                            : proc
+    ytics                            : proc
+    ztics                            : proc
+
+psurface.src
+    surface                          : proc
+
+pwindow.src
+    begwind                          : proc
+    endwind                          : proc
+    window                           : proc
+    makewind                         : proc
+    setwind                          : proc
+    nextwind                         : proc
+    getwind                          : proc
+    savewind                         : proc
+    loadwind                         : proc
+
+pxy.src
+    xy                               : proc
+
+pxyz.src
+    xyz                              : proc
+    
+    
 @ ---------------------- CML --------------------- @    
+
 cml.dec
     _cml_ver                         : matrix
     _cml_Algorithm                   : matrix
@@ -633,232 +864,4 @@ fastcpflcl.src
 
 fastcprof.src
     fastCMLProfile                   : proc
-
-
-@ ----------------------- PGRAPH ------------------------ @    
-peps.dec
-    _pqg_eps_BoundingBox             : matrix
-    _pqg_eps_Scale                   : matrix
-    _pqg_eps_Translate               : matrix
-    _pqg_eps_Rotate                  : matrix
-    _pqg_ps_Scale                    : matrix
-    _pqg_ps_Translate                : matrix
-    _pqg_ps_Rotate                   : matrix
-    _pqg_ps_Monochrome               : matrix
-    _pqg_ps_MinLineWidth             : matrix
-    _pqg_ps_WhiteBecomes             : matrix
-    _pqg_ps_Orientation              : string
-    _pqg_ps_RGBColors                : matrix
-
-pgraph.dec
-    _pqg_ver                         : matrix
-    _pagedim                         : matrix
-    _pappend                         : matrix
-    _parrow                          : matrix
-    _parrow3                         : matrix
-    _pascx                           : matrix
-    _pascy                           : matrix
-    _paxes                           : matrix
-    _paxht                           : matrix
-    _paxmarx                         : matrix
-    _pbox                            : matrix
-    _pcrop                           : matrix
-    _pcolor                          : matrix
-    _pcross                          : matrix
-    _pcwin                           : matrix
-    _pncwin                          : matrix
-    _pcsel                           : matrix
-    _perrbar                         : matrix
-    _pfonts                          : matrix
-    _pframe                          : matrix
-    _pgrid                           : matrix
-    _plctrl                          : matrix
-    _pline                           : matrix
-    _plotsiz                         : matrix
-    _plotshf                         : matrix
-    _pageshf                         : matrix
-    _pagesiz                         : matrix
-    _plegctl                         : matrix
-    _plsel                           : matrix
-    _pltype                          : matrix
-    _plwidth                         : matrix
-    _pmargin                         : matrix
-    _pmcolor                         : matrix
-    _pmsgctl                         : matrix
-    _pnotify                         : matrix
-    _pnum                            : matrix
-    _pnumht                          : matrix
-    _protate                         : matrix
-    _pqgplay                         : matrix
-    _pqgtype                         : matrix
-    _pscreen                         : matrix
-    _pinbegwind                      : matrix
-    _psilent                         : matrix
-    _pssel                           : matrix
-    _pstype                          : matrix
-    _psym                            : matrix
-    _psymsiz                         : matrix
-    _ptitlht                         : matrix
-    _pworld                          : matrix
-    _pxpmax                          : matrix
-    _pxscale                         : matrix
-    _pypmax                          : matrix
-    _pyscale                         : matrix
-    _pwindmx                         : matrix
-    _pwindno                         : matrix
-    _pfirstw                         : matrix
-    _pxmem                           : matrix
-    _pxsci                           : matrix
-    _pysci                           : matrix
-    _pzsci                           : matrix
-    _pzclr                           : matrix
-    _pzoom                           : matrix
-    _pvwr                            : string
-    _pvwrflags                       : string
-    _pvwrmode                        : string
-    _pcmdlin                         : string
-    _pcvfile                         : string
-    _pdate                           : string
-    _phard                           : string
-    _plegstr                         : string
-    _pmsgstr                         : string
-    _prtfile                         : string
-    _ptek                            : string
-    _ptitle                          : string
-    _pversno                         : string
-    _pxfmt                           : string
-    _pxlabel                         : string
-    _pyfmt                           : string
-    _pylabel                         : string
-    _pqgedit                         : matrix
-    _pmnr                            : matrix
-    _pmjr                            : matrix
-    _poptic                          : matrix
-    _pmtic                           : matrix
-    _pbarwid                         : matrix
-    _pbartyp                         : matrix
-    _pboxctl                         : matrix
-    _pboxlim                         : matrix
-    _pbox3d                          : matrix
-    _psym3d                          : matrix
-    _pline3d                         : matrix
-    _psurf                           : matrix
-    _pview                           : matrix
-    _pvolume                         : matrix
-    _pticout                         : matrix
-    _pzlabel                         : string
-    _pzpmax                          : matrix
-    _pzscale                         : matrix
-    _pzfmt                           : string
-    _plev                            : matrix
-
-paxnum.src
-    _paxnum                          : proc
-    _popt                            : proc
-    _pfeq                            : proc
-
-pbar.src
-    bar                              : proc
-
-pbox.src
-    box                              : proc
-    calcbox                          : proc
-    _pcntclc                         : proc
-
-pcart.src
-    _pcartx                          : proc
-    _pcarty                          : proc
-    _pcartz                          : proc
-    _fontsiz                         : proc
-    _pwrscal                         : proc
-    _linfilt                         : proc
-    _txtfilt                         : proc
-    _cmnfilt                         : proc
-    _prngerr                         : proc
-    _setpage                         : proc
-    _decreas                         : proc
-    _range                           : proc
-
-pcart3d.src
-    _3dfilt                          : proc
-    _pwrsc3d                         : proc
-    _volum3d                         : proc
-
-pcontour.src
-    contour                          : proc
-
-pdraw.src
-    draw                             : proc
-
-peps.src
-    tkf2eps                          : proc
-    tkf2ps                           : proc
-
-pgraph.src
-    asclabel                         : proc
-    fonts                            : proc
-    graphset                         : proc
-    graphinit                        : proc
-    title                            : proc
-    view                             : proc
-    viewxyz                          : proc
-    volume                           : proc
-    xlabel                           : proc
-    ylabel                           : proc
-    zlabel                           : proc
-    margin                           : proc
-    axmargin                         : proc
-    graphprt                         : proc
-    rerun                            : proc
-    setvwrmode                       : proc
-    pqgwin                           : keyword
-
-phist.src
-    hist                             : proc
-    histp                            : proc
-    histf                            : proc
-
-play.src
-    hardcopy                         : proc
-    setcnvrt                         : proc
-    replay                           : proc
-
-ploglog.src
-    loglog                           : proc
-
-plogx.src
-    logx                             : proc
-
-plogy.src
-    logy                             : proc
-
-polar.src
-    polar                            : proc
-
-pscale.src
-    scale                            : proc
-    scale3d                          : proc
-    xtics                            : proc
-    ytics                            : proc
-    ztics                            : proc
-
-psurface.src
-    surface                          : proc
-
-pwindow.src
-    begwind                          : proc
-    endwind                          : proc
-    window                           : proc
-    makewind                         : proc
-    setwind                          : proc
-    nextwind                         : proc
-    getwind                          : proc
-    savewind                         : proc
-    loadwind                         : proc
-
-pxy.src
-    xy                               : proc
-
-pxyz.src
-    xyz                              : proc
 

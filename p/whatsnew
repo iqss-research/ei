@@ -4,7 +4,7 @@
 			   King@Harvard.Edu
                        http://GKing.Harvard.Edu
 
-	    (c) Copyright 1995-2001, All rights Reserved.
+	    (c) Copyright 1995-2002, All rights Reserved.
             
 What's new?  What's planned?  How do I make suggestions?  See below.
 For automatic notification via email of all program updates, see
@@ -27,6 +27,11 @@ Please email King@Harvard.Edu (for EI) or KBenoit@Harvard.Edu (for EzI)
 *************************************
 * What's new in this version of EI? *
 *************************************
+
+2/8/2003 Changed EI to work with Gauss version 5.0.18 and after.
+changed _EI2_m default to -1.
+
+11/12/2002 Improved generalized cholesky procedure further
 
 5/5/2002 Improved generalized cholesky procedure
 
