@@ -689,18 +689,18 @@ support each model receives from the data.\footnote{A list of all 31
   Democratic absentee voters, (15) rejected female absentee voters,
   (16) rejected White absentee voters, (17) rejected Black absentee
   voters, (18) rejected Hispanic absentee voters, (19) Democratic vote
-  share among residents, (20) vote share of other candidates, (21)
-  registered Republican residents, (22) registered Democratic
-  residents, (23) registered Black Democratic residents, (24)
-  registered Black Republican residents, (25) acceptance ratio of
-  overall absentee ballots, (26) ratio of invalid absentee ballots,
-  (27) Panhandl Florida regional indicator variable, (28) Southern
-  Florida regional indicator variable, (29) corruption indicator, (30)
-  proportion of absentee voters not registered, (31) proportion of
-  voting age population not registered.  All the covariates except
-  indicator variables are entered as a ratio varying from 0 to 1.
-  Except the first three models, the covariate was used to model the
-  conditional untruncted mean of both parameters, $\bb$ and $\bg$.
+  share among residents, (20) vote share of Republican candidates,
+  (21) vote share of other candidates, (22) registered Democratic
+  residents, (23) registered Republican residents, registered Black
+  Democratic residents, (24) proportion of voting age population not
+  registered, (25) Black registered Democrats, (26) Black registered
+  Republican residents, (27) acceptance ratio of overall absentee
+  ballots, (28) ratio of invalid absentee ballots, (29) Panhandl
+  Florida regional indicator variable, (30) Southern Florida regional
+  indicator variable, (31) corruption indicator. All the covariates
+  except indicator variables are entered as a ratio varying from 0 to
+  1.  Except the first three models, the covariate was used to model
+  the conditional untruncted mean of both parameters, $\bb$ and $\bg$.
   Models (5) to (11) are based on information about the absentee
   ballots and so different variables were available regarding the
   invalid and valid ballots; we used the former group to predict $\bb$
@@ -1000,25 +1000,25 @@ reduced when these ballots are not counted).  The other covariates
 have comparatively small effects.
 \begin{table}[t]
 \begin{center}
-\begin{tabular}{l c r@{, }l d{3} d{-3}}
-  & \multicolumn{3}{c}{Bush's margin}& \multicolumn{1}{c}{first} 
+\begin{tabular}{r l c r@{, }l d{3} d{-3}}
+  & & \multicolumn{3}{c}{Bush's margin}& \multicolumn{1}{c}{first} 
   & \multicolumn{1}{c}{Posterior model} \\
-  & \multicolumn{3}{c}{(95 \% C.I.)} & \multicolumn{1}{c}{difference} 
+  & & \multicolumn{3}{c}{(95 \% C.I.)} & \multicolumn{1}{c}{difference} 
   & \multicolumn{1}{c}{probability} \\
 \hline
-Bayesian Model Averaging  & 251 & (69 & 468) & \\
-\emph{Individual models}  \\ 
-\hspace{1em} Registered Republican absentee voters
+\multicolumn{2}{l}{Bayesian Model Averaging} & 251 & (69 & 468) & \\
+\multicolumn{2}{l}{\emph{Individual models}}  \\ 
+\hspace{1em} 6. & Registered Republican absentee voters
  & 269 & (97 & 475) & $-52$ &  0.565 \\
-\hspace{1em} Democratic vote share among residents
+\hspace{1em} 19. & Democratic vote share among residents
  & 232 & (69 & 448) & 3 &  0.239 \\
-\hspace{1em} Black absentee voters                
+\hspace{1em} 10. & Black absentee voters                
  & 231 & (69 & 440) & $-2$ &  0.102 \\
-\hspace{1em} White absentee voters              
+\hspace{1em} 9. & White absentee voters              
  & 123 & ($-$18& 315) & $-23$ &  0.033 \\
-\hspace{1em} Black registered Republican residents
+\hspace{1em} 25. & Black registered Republican residents
  & 229 & (62 & 441) & $-6$ &  0.021 \\
-\hspace{1em} Accepted absentee ballots            
+\hspace{1em} 27. & Accepted absentee ballots            
  & 218 & (62 & 409) & 4 &  0.004 \\
 \end{tabular}
 \caption{Estimates of Bush's margin of victory after dropping the
@@ -1050,6 +1050,20 @@ Instead of results jumping dramatically from one specification to the
 next, results in Bayesian model averaging do not change as much when
 new models are added to the specification, unless they have especially
 large probabilities of being true.
+
+\begin{figure}[t!]
+\begin{center}
+\includegraphics[width=4.5in,height=6in]{fit}
+\caption{Evaluation of model fit in terms of predicted distribution of
+  Gore's share of absentee ballots in each county, $T_i$. 80$\%$
+  confidence intervals of the predictive distribution of $T_i$ given
+  the observed values of $X_i$ and covariates for each county are
+  shown as bars. Dots represent the true values of $T_i$ and ``+''
+  indicates that the model predicts exactly without uncertainty.}
+\label{fg:fit}
+\end{center} 
+\end{figure}
+
 
 \subsection{The Minor Effects of Minor Candidates and Prior Densities} 
 \label{s:sens}
@@ -1237,12 +1251,12 @@ considerably better than easier-to-apply methods such as Bayesian
 information criteria (BIC), which has a rate of only $O(n^{-1/2})$
 \citep{kass:tier:kada:89}.  For example, Kass and Raftery (1995: 778)
 say that ``even for very large samples, it [BIC] does not produce the
-correct value.''  Hence, in our application, the Laplace approximation
+correct value.''  Hence, in our application the Laplace approximation
 is more appropriate than BIC.
 
 \singlespacing
 \bibliographystyle{/home/willow/king/texinputs/pa}
-% \bibliography{/home/who/kimai/localtexmf/BibTeX/stat,/home/who/kimai/localtexmf/BibTeX/polisci}
+%\bibliography{/home/who/kimai/localtexmf/BibTeX/stat,/home/who/kimai/localtexmf/BibTeX/polisci}
 \bibliography{stat,polisci}
 
 \end{document}
