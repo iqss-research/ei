@@ -1842,7 +1842,9 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   parameters, $\hat{B}^b$ and $\hat{B}^w$.  See Section 8.3.  (Uses
   \texttt{x2} simulations when used with \texttt{ei2}).
 
-\item[VCphi] global variance matrix of coefficients phi from gvc()
+\item[VCphi] global variance matrix of coefficients phi from gvc(). If
+  $\texttt{\_EI\_vc}$ is set to \{-1 0 \}, then it returns the inverse of
+  the variance matrix. 
 
 \item[x] $p\times 1$: explanatory variable proportion, $X_i$ (e.g.,
   black voting age population); input to \texttt{ei}.  (for

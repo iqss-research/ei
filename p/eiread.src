@@ -65,7 +65,8 @@
 ** retcode   CML return code or 3333 for grid search
 ** parnames  character vector of names for phi (=_cml_parnames)
 ** phi       MLE's from CML
-** vcphi     global vc matrix of coeff's phi from gvc()
+** vcphi     global vc matrix of coeff's phi from gvc(). If _EI_vc={-1 0},
+**           it returns the inverse of vc matrix. 
 ** loglik    value of log-likelihood at the maximum (unnormalized)
 ** PhiSims   if _EisChk==1:  _Esims x rows(phi): sims of phi; 
 **           else            meanc(phi)~stdc(phi)
@@ -929,7 +930,11 @@ proc eiread(dbuf,str);
       res={.};
     else;
       e=eiread(dbuf,"etas");
-      a=sqrt(diag(vread(dbuf,"vcphi")))|e;
+      if if _ei_vc[_Ghactual,1]/=-1;
+        a=sqrt(diag(vread(dbuf,"vcphi")))|e;
+      else;
+        a=sqrt(1/diag(vread(dbuf,"vcphi")))|e;
+      endif;
       res=b'|a';
       if _Eprt>0;
 	"Maximum likelihood results in scale of estimation (and se's)";;
