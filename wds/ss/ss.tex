@@ -121,12 +121,12 @@ Gary King\thanks{Professor of Government, Harvard University and
 \section{Introduction}
 
 We take this opportunity to comment on Herron and Shotts' article
-(hereinafter HS) because of its potential to affect the way a
-considerable body of practical research is conducted, and because of
-its interesting and productive ideas.  The paper is based on the
-suggestions in three paragraphs in King (1997: 289--90).  Since these
-paragraphs were not summarized in HS, we thought they might be a
-useful place to start:
+(hereinafter HS) because of its interesting and productive ideas and
+because of the potential to affect the way a considerable body of
+practical research is conducted.  Their article, and the literature
+they comment on, is based on the suggestions in three paragraphs in
+King (1997: 289--90).  Since these paragraphs were not summarized in
+HS, we thought they might be a useful place to start:
 \begin{quotation}
   If a second stage analysis is conducted, least squares regression
   should probably not be used in most cases, even though it may not be
@@ -154,60 +154,67 @@ useful place to start:
   probably complete enough to be of use in many applications.
 \end{quotation}  
 
-Clearly the only logically consistent model that has been offered is
-the EI extended model that allows the second stage covariates to be
-included in the EI estimation procedure.  EI software now includes a
-feature that allows for first differences to be computed if those
-covariates are included, which should make the extended model somewhat
-easier to understand and use.  (We discuss how to use the extended
-model in Section \ref{s:exten}.)
+Clearly the only logically consistent model that has been offered for
+the issue at hand is the EI extended model that allows the second
+stage covariates to be included in the EI estimation procedure.  EI
+software now includes a feature that allows for first differences to
+be computed if those covariates are included, which should make the
+extended model somewhat easier to understand and use.  (We discuss how
+to use the extended model in Section \ref{s:exten}.)
 
 Any second stage analysis, in contrast, is by definition a second best
 procedure, when judged conditional on the model.  In contrast, second
 stage analyses --- if they give approximately correct answers --- have
-the advantage of being considerably easier to understand, use, and
-evaluate (since an estimate of the dependent variable in the second
-stage is observable), more numerically stable (hence allowing more
-covariates to be included and studied), computationally faster
-(allowing more analyses to be examined), more ameniable to diagnostics
-in verifying assumptions (since the actual estimated data points can
-be observed and the fit can be checked directly), and possibly more
-robust to certain types of misspecification.  The question at hand is
-if and when such a procedure can be used to produce answers that are
+the advantage of being easier to understand, use, and evaluate (since
+an estimate of the dependent variable in the second stage is
+observable), more numerically stable (hence allowing more covariates
+to be included and studied), computationally faster (allowing more
+analyses to be examined), more ameniable to diagnostics in verifying
+assumptions (since the actual estimated data points can be observed
+and the fit can be checked directly), and possibly more robust to
+certain types of misspecification.  The question at hand is if and
+when such a procedure can be used to produce answers that are
 approximately correct.
 
 HS's contribution is in pointing out that precinct-level estimates
 from EI regress to the mean.  This ``shrinkage'' property is indeed a
 characteristic of EI, and it is also a characteristic of every other
-Bayesian models.  Shrinkage results in optimal estimates, that is,
-with the smallest possible mean square error.  Thus, we agree with the
+Bayesian model.  Shrinkage results in optimal estimates, that is, with
+the smallest possible mean square error.  Thus, we agree with the
 implication of HS's article that the best possible estimate of
-$\beta^b_i$, under HS's assumptions, is that produced by EI.  But HS
-also make the interesting and correct point that using Bayesian mean
-posterior estimates with this property, like those given by EI, as
-dependent variables in least squares regression can, under some
-circumstances, produce biased estimates.  This central point of HS's
-paper is an important contribution and one on which we build here.
+$\beta_i^b$ (e.g., the fraction of blacks who vote), under HS's
+assumptions, is that produced by EI.  But HS also make the interesting
+and correct point that using Bayesian mean posterior estimates with
+this property, like those given by EI, as dependent variables in least
+squares regression can, under some circumstances, produce biased
+estimates.  No one disputes that second stage regressions are
+approximations or that they cause problems from some theoretical
+perspectives; the question at hand is when they cause problems that
+affect real applied research.
 
-Instead of least squares regression, HS's suggested procedure is to
-use a bias-adjusted slope for the second stage regression.  The paper
-does not mention whether the constant term should be adjusted.  Their
-slope adjustment is based on linear approximations within the
-classical linear econometric theory framework.  The problems with HS's
-approach we discuss here are due to assuming linearity when modeling
-an inherently nonlinear and bounded relationship (i.e., their methods
-by definition miss the information in the bounds), omitting the
-constant correction from the paper, and never actually computing the
-correction they propose when conducting simulations.  In addition to
-providing the first precinct-level estimates from an ecological
-inference model, the primary advance of EI was in resolving the
-half-century long debate between supporters of Goodman's (1959)
-unbounded linear regression approach and Duncan-Davis' (1953) method
-of bounds, by incorporating all information in both into the same
-model.  HS fall back to Goodman's unbounded approach and so miss the
-highly informative deterministic information in the aggregate data.
-The analyses we present here demonstrate the veracity of the advice
-given in the paragraphs quoted above.
+HS study second stage regression based on least squares and suggest
+that their bias-adjusted slope is preferable.  The article does not
+mention whether the constant term should be adjusted.  Their slope
+adjustment is based on linear approximations within the classical
+linear econometric theory framework.  The problems with HS's approach
+we discuss here are due to assuming linearity when modeling an
+inherently nonlinear and bounded relationship (i.e., their algebra by
+definition miss the information in the bounds), omitting the constant
+correction from the paper, never computing the correction they propose
+when conducting simulations, and missing the substantial advantages of
+weighted least squares to correct for the issues at hand.  We show how
+filling in this missing information (and in a sense ``completing''
+their article), leads back to the suggestions from the paragraphs
+quoted above.
+
+In addition to providing the first precinct-level estimates from an
+ecological inference model so that second-stage analyses become
+possible, the primary advance of EI was in resolving the half-century
+long debate between supporters of Goodman's (1959) unbounded linear
+regression approach and Duncan-Davis' (1953) method of bounds, by
+incorporating all information in both into the same model.  HS fall
+back to Goodman's unbounded approach and so miss the highly
+informative deterministic information in the aggregate data.
 
 We replicated HS's simulations without trouble.  We then examined how
 well their adjusted regression procedure fit the observed data based
@@ -225,42 +232,42 @@ within their linear econometric framework, by developing an adjustment
 for the constant term.  We follow the procedure that we believe Herron
 and Shots would have used if they had completed their
 work.\footnote{Indeed, after we finished a draft, Herron and Shotts
-  told us that they had a constant correction in an earlier version of
-  their paper but took it out in the final version.}  This fully
-adjusted second stage regression method naturally extends the logic in
-their paper and it dominates the slope-only procedure.  We also
-compare our fully adjusted procedure to unadjusted linear regression,
-and find that the performance of each depends crucially on the bounds.
-As it turns out, the partially adjusted procedure suggested in HS is
-never called for.  When the bounds are narrow, the fully adjusted
-procedure can be reliably computed, but the adjustment makes little
-difference.  When the bounds are wide, the true adjustment factor
-could make a big difference, but the adjustment cannot be reliably
-estimated and so the procedure cannot be applied.
-
-To aid users of second stage ecological regressions, we identify four
-prototypical situations likely to arise in practice.  Since each
-situation is easily detectable from the available aggregate data,
+  told us that they had the same constant correction in an earlier
+  version of their paper but took it out in the final version.}  This
+fully adjusted second stage regression method dominates the slope-only
+procedure.  We also compare our fully adjusted procedure to unadjusted
+linear regression, and find that the performance of each depends
+crucially on the bounds.  As it turns out, the partially adjusted
+procedure in HS is never called for.  When the bounds are narrow, the
+fully adjusted procedure can be reliably computed, but the adjustment
+makes little difference.  When the bounds are wide, the true
+adjustment factor could make a noticable difference, but the
+adjustment cannot be reliably estimated and so the procedure cannot be
+applied.  (In this case, of course, researchers should not be running
+EI in the first place because of extreme model dependence, and so it
+should be irrelevant.)  We show that in cases in the middle, and
+especially when the width of the bounds vary over observations,
+weighted least squares corrects for bias in the second stage
+regression because the weights are correlated with the degree of
+shrinkage.  The only exception is for nonlinear relationships, when a
+logistic (or other nonlinear) regression procedure is best.  The only
+situation when the adjustment would lead to improvements is when the
+bounds are wide and the true value of the adjustment is known, which
+describes the Monte Carlo procedures HS used to evaluate their method,
+but of course not any real application.  Since each of these
+situations are easily detectable from the available aggregate data,
 users will know which situation they are in and can take the
-appropriate action.  In the first prototypical case, when the bounds
-are very wide, making any ecological inferences at all in the first
-stage is inadvisable (unless one has strong auxiliary information) due
-to extreme model dependence, and in this situation the correction will
-not help.  With narrow bounds or bounds that are mixed (some wide and
-some narrow), weighted least squares works well.  The only exception
-is for nonlinear relationships, when a logistic (or other nonlinear)
-regression procedure is best.  The only situation when the adjustment
-would lead to improvements is when the bounds are wide and the true
-value of the adjustment is known, which describes the Monte Carlo
-procedures HS used to evaluate their method, but of course not any
-real application.  
+appropriate action.  We highlight the four prototypical situations
+below.
 
 We conclude that researchers with narrow enough bounds to run first
-stage EI should first examine the scatterplot (***such as fig 1***) to
-check for nonlinearities (which normally occur when the estimated
-points are near zero or one).  If there are no nonlinearities, then
-weighted least squares should be used since it offers approximately
-unbiased estimates in second stage regressions.
+stage EI should first examine a scatterplot of the covariate
+horizontally by the bounds on $\beta_i^b$ vertically (such as King,
+1997: Fig.13.2, p.238) to check for nonlinearities (which normally
+occur when the estimated points are near zero or one) and without
+assumptions.  If there are no nonlinearities, then weighted least
+squares should be used since it offers approximately unbiased
+estimates in second stage regressions.
 
 \section{A Fully Adjusted Second Stage Regression Model}
 \label{s:fulladj}
@@ -274,8 +281,8 @@ adjusted method with their adjustment as a special case.\footnote{Our
   ($\alpha+\gamma'Z_i+\nu_i$).  Later in their paper, they allow
   $\gamma$ to differ between the two (calling the first $\gamma_R$ and
   the second $\gamma_U$), but do not fix the constant term (or error
-  terms).  We fix these issues and others, since what they intended
-  seemed clear.}
+  terms).  We fix these issues and others, since what they probably
+  intended seems clear.}
 
 First, let the expectation of $\beta_i^b$ conditional on $Z_i$ be
 approximated by
@@ -307,7 +314,7 @@ result into (\ref{est}) gives a more informative version of (\ref{true}):
 Thus, we know that the quantities of interest, $\alpha_R$ and
 $\gamma_R$, can be expressed as the intercept and slope of
 (\ref{adj}).  If we can estimate the components of each, we can derive
-a consistent estimator, assuming HS's linearity and unboundedness
+a consistent estimator, at least when HS's linearity and unboundedness
 assumptions are not too far off.
 
 \section{An Improved Estimation Procedure}
