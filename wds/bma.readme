@@ -1,4 +1,12 @@
 7/31/2001 
 Note on eimodels_ave() proc
 
-Right now, eimodels_ave() allows users to use different t,x, and n for each model though it warns them by issuing a warning. However, it only stores the values of t, x and n from the first model even when users use different t,x, and n. This affects some of eiread() calculation - not the parameters stored in the output buffer such as betabs, betaws, aggs, postprob, etc. In the future we might want to modify eimodels_ave() such that it stores all the different t, x, and n. Then, we also need to adjust eiread() to compute appropriate parameter values using different t, x, and n.
+Right now, eimodels_ave() allows users to use different t,x, and n for
+each model though it warns them by issuing a warning. However, it only
+stores the values of t, x and n from the first model even when users
+use different t,x, and n. This affects some of eiread() calculation -
+not the parameters stored in the output buffer such as betabs, betaws,
+aggs, postprob, etc. In the future we might want to modify
+eimodels_ave() such that it stores all the different t, x, and
+n. Then, we also need to adjust eiread() to compute appropriate
+parameter values using different t, x, and n.
