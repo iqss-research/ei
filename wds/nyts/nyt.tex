@@ -614,15 +614,28 @@ is all the information that exists about our quantities of interest.
 In a sense, then, Figure \ref{fg:tomog} presents the data in the form
 closest the answers we seek.
 \begin{figure}[t]
-\begin{center}
-\includegraphics[width=4.5in,height=6in,angle=-90]{tomog}
-\caption{\label{fg:tomog}
-  Tomography plot for invalid overseas absentee ballots.  $\bb$ and
-  $\bg$ are the proportion of Gore's invalid and valid ballots,
-  respectively.  Each line traces out the possible values of the
-  $\bb_i,\bg_i$ point for each county $i$.}
-\end{center} 
+  \vspace{-1in}\hspace{0.5in}
+  \begin{minipage}[c]{6.5in}
+    \begin{center}
+      \includegraphics[width=4.5in,height=6in,angle=-90]{tomog}
+    \end{center}
+  \end{minipage}
+  \caption{\label{fg:tomog}
+    Tomography plot for invalid overseas absentee ballots.  $\bb$ and
+    $\bg$ are the proportion of Gore's invalid and valid ballots,
+    respectively.  Each line traces out the possible values of the
+    $\bb_i,\bg_i$ point for each county $i$.}
 \end{figure}
+% \begin{figure}[t]
+% \begin{center}
+% \includegraphics[width=4.5in,height=6in,angle=-90]{tomog}
+% \caption{\label{fg:tomog}
+%   Tomography plot for invalid overseas absentee ballots.  $\bb$ and
+%   $\bg$ are the proportion of Gore's invalid and valid ballots,
+%   respectively.  Each line traces out the possible values of the
+%   $\bb_i,\bg_i$ point for each county $i$.}
+% \end{center} 
+% \end{figure}
 
 We then add three assumptions, all conditional on $X$ and a set of
 covariates $Z$.  First, we assume that $\bb_i$ and $\bg_i$ follow a
@@ -678,33 +691,33 @@ with $X_i$ as the covariate for the mean of $\bb$, $\bg$, and for
 both.  For each model, we use the same independent prior distribution
 as explained above. The idea of Bayesian model averaging is to produce
 one set of results combining these 31 models according to how much
-support each model receives from the data.\footnote{A list of all 31
-  models follows: (1) no covariate, (2) $X_i$ for $\bb$, (3) $X_i$ for
-  $\bg$, (4) $X_i$ for both $\bb$ and $\bg$, (5) military absentee
-  voters, (6) registered Republican absentee voters, (7) registered
-  Democratic absentee voters, (8) female absentee voters, (9) White
-  absentee voters, (10) Black absentee voters, (11) Hispanic absentee
-  voters, (12) rejected military absentee voters, (13) rejected
-  registered Republican absentee voters, (14) rejected registered
-  Democratic absentee voters, (15) rejected female absentee voters,
-  (16) rejected White absentee voters, (17) rejected Black absentee
-  voters, (18) rejected Hispanic absentee voters, (19) Democratic vote
-  share among residents, (20) vote share of Republican candidates,
-  (21) vote share of other candidates, (22) registered Democratic
-  residents, (23) registered Republican residents, registered Black
-  Democratic residents, (24) proportion of voting age population not
-  registered, (25) Black registered Democrats, (26) Black registered
-  Republican residents, (27) acceptance ratio of overall absentee
-  ballots, (28) ratio of invalid absentee ballots, (29) Panhandl
-  Florida regional indicator variable, (30) Southern Florida regional
-  indicator variable, (31) corruption indicator. All the covariates
-  except indicator variables are entered as a ratio varying from 0 to
-  1.  Except the first three models, the covariate was used to model
-  the conditional untruncted mean of both parameters, $\bb$ and $\bg$.
-  Models (5) to (11) are based on information about the absentee
-  ballots and so different variables were available regarding the
-  invalid and valid ballots; we used the former group to predict $\bb$
-  and the latter to predict $\bg$.}
+support each model receives from the data.\footnote{\label{f:models}A
+  list of all 31 models follows: (1) no covariate, (2) $X_i$ for
+  $\bb$, (3) $X_i$ for $\bg$, (4) $X_i$ for both $\bb$ and $\bg$, (5)
+  military absentee voters, (6) registered Republican absentee voters,
+  (7) registered Democratic absentee voters, (8) female absentee
+  voters, (9) White absentee voters, (10) Black absentee voters, (11)
+  Hispanic absentee voters, (12) rejected military absentee voters,
+  (13) rejected registered Republican absentee voters, (14) rejected
+  registered Democratic absentee voters, (15) rejected female absentee
+  voters, (16) rejected White absentee voters, (17) rejected Black
+  absentee voters, (18) rejected Hispanic absentee voters, (19)
+  Democratic vote share among residents, (20) vote share of Republican
+  candidates, (21) vote share of other candidates, (22) registered
+  Democratic residents, (23) registered Republican residents,
+  registered Black Democratic residents, (24) proportion of voting age
+  population not registered, (25) Black registered Democrats, (26)
+  Black registered Republican residents, (27) acceptance ratio of
+  overall absentee ballots, (28) ratio of invalid absentee ballots,
+  (29) Panhandl Florida regional indicator variable, (30) Southern
+  Florida regional indicator variable, (31) corruption indicator. All
+  the covariates except indicator variables are entered as a ratio
+  varying from 0 to 1.  Except the first three models, the covariate
+  was used to model the conditional untruncted mean of both
+  parameters, $\bb$ and $\bg$.  Models (5) to (11) are based on
+  information about the absentee ballots and so different variables
+  were available regarding the invalid and valid ballots; we used the
+  former group to predict $\bb$ and the latter to predict $\bg$.}
 
 Let $M_k$ denote the $k$th model specification ($k=1,\dots,31$). Then
 we make an inference about some quantity of interest $\Delta$ by
@@ -1000,70 +1013,98 @@ reduced when these ballots are not counted).  The other covariates
 have comparatively small effects.
 \begin{table}[t]
 \begin{center}
-\begin{tabular}{r l c r@{, }l d{3} d{-3}}
-  & & \multicolumn{3}{c}{Bush's margin}& \multicolumn{1}{c}{first} 
+\begin{tabular}{l c r@{, }l d{3} d{-3}}
+  & \multicolumn{3}{c}{Bush's margin}& \multicolumn{1}{c}{first} 
   & \multicolumn{1}{c}{Posterior model} \\
-  & & \multicolumn{3}{c}{(95 \% C.I.)} & \multicolumn{1}{c}{difference} 
+  & \multicolumn{3}{c}{(95 \% C.I.)} & \multicolumn{1}{c}{difference} 
   & \multicolumn{1}{c}{probability} \\
 \hline
-\multicolumn{2}{l}{Bayesian Model Averaging} & 251 & (69 & 468) & \\
-\multicolumn{2}{l}{\emph{Individual models}}  \\ 
-\hspace{1em} 6. & Registered Republican absentee voters
+\multicolumn{1}{l}{Bayesian Model Averaging} & 251 & (69 & 468) & \\
+\multicolumn{1}{l}{\emph{Individual models}}  \\ 
+\hspace{0.5em} Registered Repub.\ absentee voters, 6$^a$
  & 269 & (97 & 475) & $-52$ &  0.565 \\
-\hspace{1em} 19. & Democratic vote share among residents
+\hspace{0.5em} Dem.\ vote share, 19
  & 232 & (69 & 448) & 3 &  0.239 \\
-\hspace{1em} 10. & Black absentee voters                
+\hspace{0.5em} Black absentee voters, 10
  & 231 & (69 & 440) & $-2$ &  0.102 \\
-\hspace{1em} 9. & White absentee voters              
+\hspace{0.5em} White absentee voters, 9
  & 123 & ($-$18& 315) & $-23$ &  0.033 \\
-\hspace{1em} 25. & Black registered Republican residents
+\hspace{0.5em} Registered black Repubs., 25
  & 229 & (62 & 441) & $-6$ &  0.021 \\
-\hspace{1em} 27. & Accepted absentee ballots            
+\hspace{0.5em} Accepted absentee ballots, 27
  & 218 & (62 & 409) & 4 &  0.004 \\
 \end{tabular}
 \caption{Estimates of Bush's margin of victory after dropping the
   invalid overseas absentee ballots --- overall and for the six
   component models with the highest posterior model probabilities
-  among the 31 models estimated. Each model is identified in the table
-  by listing the covariate we used.  The first differences represent
-  the increase or decrease in Bush's estimated margin when the value
-  of the covariate increases by 10 percentage points.}
+  among the 31 models estimated. The first differences represent the
+  increase or decrease in Bush's estimated margin when the value of
+  the covariate increases by 10 percentage points. $^a$Each model is
+  identified in the table by the covariate included, followed by the
+  model number we assign to each in Footnote \ref{f:models}.}
 \label{tb:bma}
 \end{center}
 \end{table}
 
-Finally, the large variation in our prediction for Bush's margin
-across the six models in Table~\ref{tb:bma} emphasizes a clear
-advantage of our Bayesian model averaging procedure.  The variation
-results from the large degree of model dependence in these data
-(because the data have fairly wide bounds).  For example, the
-specification with white absentee voters gives a confidence interval
-which, when considered in isolation from the other models, would not
-enable us to reject the hypothesis that Gore won if only the overseas
-absentee ballots had been rejected.  This is obviously quite different
-from our overall result of only a 0.2 percent probability that Gore
-won.  Since different specifications yield very different inferences,
-an analyst having to choose one model would be in the untenable
-position of having to defend choices without a lot of prior evidence.
-Bayesian model averaging offers a way around this common problem.
-Instead of results jumping dramatically from one specification to the
-next, results in Bayesian model averaging do not change as much when
-new models are added to the specification, unless they have especially
+The large variation in our prediction for Bush's margin across the six
+models in Table~\ref{tb:bma} emphasizes a clear advantage of our
+Bayesian model averaging procedure.  The variation results from the
+large degree of model dependence in these data (because the data have
+fairly wide bounds).  For example, the specification with white
+absentee voters gives a confidence interval which, when considered in
+isolation from the other models, would not enable us to reject the
+hypothesis that Gore won if only the overseas absentee ballots had
+been rejected.  This is obviously quite different from our overall
+result of only a 0.2 percent probability that Gore won.  Since
+different specifications yield very different inferences, an analyst
+having to choose one model would be in the untenable position of
+having to defend choices without a lot of prior evidence.  Bayesian
+model averaging offers a way around this common problem.  Instead of
+results jumping dramatically from one specification to the next,
+results in Bayesian model averaging do not change as much when new
+models are added to the specification, unless they have especially
 large probabilities of being true.
 
+Finally, we give a summary of some of the diagnostics we used to check
+the fit of the model.  First, we reran each model with different
+starting values to verify that we found the global maximum in each
+case.  We also examined each the tomography plots with contours or
+confidence intervals to search for outliers or bad model fits.  In
+addition, we plotted $E(T|X)$ or $E(T|X,Z)$ by $X$ or $Z$, and checked
+whether the observed $T$ fell within the (say) 90\% confidence
+interval 90\% of the time.
+
+We also look at whether the first stage of the model (i.e., before
+conditioning on $T_i$) fits by comparing the county-level predictive
+confidence interval for $T_i$ to its observed value.  Figure
+\ref{fg:fit} gives several examples of this strategy for two of the
+models we ran (in the first two rows), as well as for the ultimate
+model implied by the entire Bayesian model averaging procedure (in the
+last row).  The first column plots these predictive confidence
+intervals by $X_i$, the fraction of bad ballots.  The second column
+plots the same intervals by the covariate included.  The proportion of
+observed $T_i$ points falling inside the 80\% confidence intervals is
+always approximately 80\%, which is one check on model fit.  Another
+is the lack of any noticable relationship between the degree to which
+the observed $T_i$ deviates from the center of the conference interval
+and the variable plotted on the horizontal axis.  All these
+diagnostics, and other similar graphs we examined, seem to confirm the
+fit of the model to these data.
 \begin{figure}[t!]
 \begin{center}
 \includegraphics[width=4.5in,height=6in]{fit}
-\caption{Evaluation of model fit in terms of predicted distribution of
-  Gore's share of absentee ballots in each county, $T_i$. 80$\%$
+\caption{Evaluation of model fit: Predicted distribution of
+  Gore's share of absentee ballots in each county, $T_i$. 80\%
   confidence intervals of the predictive distribution of $T_i$ given
-  the observed values of $X_i$ and covariates for each county are
-  shown as bars. Dots represent the true values of $T_i$ and ``+''
-  indicates that the model predicts exactly without uncertainty.}
+  the observed values of $X_i$, in the first column, and a given
+  $Z_i$, in the second column.  The first two rows give selected
+  individual models and the last is the full model computed via
+  Bayesian model averaging.  Dots represent the true values of $T_i$
+  and ``+'' indicates that the model predicts exactly without
+  uncertainty.}
 \label{fg:fit}
 \end{center} 
 \end{figure}
-
 
 \subsection{The Minor Effects of Minor Candidates and Prior Densities} 
 \label{s:sens}
