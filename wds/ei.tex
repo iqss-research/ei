@@ -1,3 +1,7 @@
+%%
+%% EDIT in unix format only.  Don't put DOS characters in here,
+%% or latex2html won't work.
+%%
 \documentclass[11pt,titlepage]{article}
 \usepackage[reqno]{amsmath}
 \usepackage{amssymb}
@@ -2084,6 +2088,35 @@ assumptions not applying).  The benefits of EI will therefore quite
 obviously depend on the area and application and how much effort is
 put into collecting qualitative information.
 
+\paragraph{In what precise statistical sense is EI ``Robust''?}
+As aggregation bias increases, Goodman's regression becomes biased
+without limit.  The bias in EI, in contrast, has a maximum value that
+is a function of the bounds.  This is easy to see in Figure 9.6,
+p.180; note how the mean absolute error for the dotted line at the
+top, for example, is linear in the low aggregation bias region (where
+$\alpha<0.5$), but for higher levels of aggregation bias it levels
+off; in contrast, the mean absolute error for Goodman's and any method
+that does not incorporate the bounds will increase linearly without
+limit.  
+
+For a formal definition of robustness, consider the \emph{breakdown
+  point} --- the smallest fraction of observations that you'd have to
+alter to make your quantity of interest arbitrarily far from the
+truth.\footnote{D.L.\ Donoho and P.J.\ Huber. 1983. ``The Notion of
+  the Breakdown Point,'' in Peter J.\ Bickel, Kjell A.\ Doksum, and
+  J.L.\ Hodges, Eds., \emph{A Feschrift for Erich L.\ Lehmann},
+  Belmont, CA: Wadsworth; F.\R. 1971. ``A General Qualitative
+  Definition of Robstness,'' \emph{Annals of Mathematical
+    Statisticgs}, 42 (December): 1887--1896; and Jonathan N. Wand,
+  Kenneth W.\ Shotts, Jasjeet S.\ Sekhon, Walter R. Mebane, Jr.,
+  Michael C.\ Herron, and Henry E. Brady, 2002, ``The Butterfly Did
+  It: The Aberrant Vote for Buchanan in Palm Beach County, Florida,''
+  \emph{American Political Science Review}, forthcoming.}  In
+Goodman's regression only one observation is enough, and so it has a
+breakdown point of $1/n$.  For EI, even changing all the observations
+could not send the estimates out of the unit square, and so its
+breakdown point is $>n$.
+
 \paragraph{How does EI relate to the neighborhood model?}
 The neighborhood model was designed for the purpose of critiquing the
 Goodman model, and is not thought of as a plausible method of
@@ -2507,17 +2540,10 @@ procedures.  (We're working on an easier approach for $R\times C$
 tables.)
 
 \paragraph{What do I do if I have computational problems with EI2?}
-The first thing to do is to implement EI2 ``manually'' with one
-change.  First run EI with observed variables $X_i$ and $T_i$ as
-usual.  Then, instead of multiply imputing
-$\tilde{x}_i=\tilde{\beta}_i^bX_i/T_i$ by substituting in simulations
-of $\beta_i^b$ (and the observed values of $X_i$ and $T_i$), as EI2
-does, you can do a single imputation.  That is, use the mean posterior
-estimates $\hat\beta_i^b$ (i.e., \texttt{eiread(dbuf,"betaB")}) to
-compute $\hat x_i=\hat\beta_i^bX_i/T_i$.  Then use $V_i$ and $\hat
-x_i$ in a second run of EI to get estimates of $\lambda_i^b$ and
-$\lambda_i^w$.  This is the procedure described at the start of
-Section 8.4.1 (pp 151--2).
+Try \texttt{\_EisFac=-2}.  This may make the standard errors slightly
+too small, but it will make the procedure numerically more reliable
+and about four times faster.  This is the procedure described at the
+start of Section 8.4.1 (pp 151--2).
 
 \paragraph{Why does eiread report some precinct-level estimates
   as missing values?}  When $X_i=0$ (in the running example, this
@@ -2577,12 +2603,12 @@ upheld on appeal before the three judges of the Circuit Court, and
 similar language was used to describe the method (in \emph{Mallory, et
   al.\ v.\ State of Ohio, et al.}, United States Court of Appeals,
 Sixth Circuit, No.\ 97-4425, 4/13/99).  It was also accepted by the
-court in \emph{Bill Jones vs.  Ca Democratic Party}.  In each case, EI
-was unchallenged by experts on the opposing side.  Since EI starts
-with Goodman's regression, which had previously been declared as the
-appropriate method by the Supreme Court, and adds information known to
-be true (i.e., the bounds), EI has been relatively uncontroversial in
-these situations.
+court in \emph{Bill Jones vs.  Ca Democratic Party} and in a variety
+of others.  In each case, EI was unchallenged by experts on the
+opposing side.  Since EI starts with Goodman's regression, which had
+previously been declared as the appropriate method by the Supreme
+Court, and adds information known to be true (i.e., the bounds), EI
+has been relatively uncontroversial in these situations.
 
 \paragraph{What if I find a bug?}  First try to replicate the problem
 with the current version of the program (available at
