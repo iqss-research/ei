@@ -27,6 +27,7 @@
 **           eimodels_def), this global denotes which of the imputed data buffers 
 **           stored in dbuf should be accessed when running this procedure
 **           (default=1)
+** _EIread_betabs = betabs with _EIread_Zb and _EIread_Zw
 ** _EIread_Zb = recompute betabs based on new values of covariates, Zb,
 **              if {.} do not recompute;
 ** _EIread_Zw = recompute betabs based on new values of covariates, Zw,
@@ -209,7 +210,7 @@ proc eiread(dbuf,str);
   tvap,n,nb,nw,c,c0,c1,bnds,bb0,bw0,invX,invT,meanX,meanT,p00,p11,p01,p10,x2,strtmp,
   strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,_t,_x,
   postp,priorp,mrgllk;
-
+    
   /* for ei2, pull out data buffer _eimetar from meta-data buffer */
   /* for eimodels_def, pull out data buffer from meta-data buffer for Model _eimetar */
   /* for eimodels_run, pull out data buffer from meta-data buffer for Model _eimetar */
@@ -567,13 +568,11 @@ proc eiread(dbuf,str);
   elseif str$=="betabs";
     if scalmiss(_EIread_Zb) and scalmiss(_EIread_Zw);
       res=vread(dbuf,"betabs");   
-    else;
-      zb=eiread(dbuf,"zb");
-      zw=eiread(dbuf,"zw");
+    elseif scalmiss(_eiread_betabs);
+      Zb=eiread(dbuf,"zb");
+      Zw=eiread(dbuf,"zw");
       if not(scalmiss(_EIread_Zb));
-	if rows(_EIread_Zb)==rows(zb) and cols(_EIread_Zb)==cols(zb);
-          Zb=_EIread_Zb;
-	else;
+	if rows(_EIread_Zb)/=rows(zb) or cols(_EIread_Zb)/=cols(zb);
 	  "eiread: bad input for _EIread_Zb. The dimension does not";
           "        match with that of Zb.";
 	  res={.};
@@ -581,10 +580,8 @@ proc eiread(dbuf,str);
 	endif;
       endif;
       if not(scalmiss(_EIread_Zw));
-	if rows(_EIread_Zw)==rows(zw) and cols(_EIread_Zw)==cols(zw);
-          Zw=_EIread_Zw;
-	else;
-	  "eiread: bad input for _EIread_Zw. The dimension does not";
+	if rows(_EIread_Zw)/=rows(zw) or cols(_EIread_Zw)/=cols(zw);
+          "eiread: bad input for _EIread_Zw. The dimension does not";
           "        match with that of Zw.";
 	  res={.};
 	  retp(res);
@@ -598,7 +595,10 @@ proc eiread(dbuf,str);
       cv=eiread(dbuf,"vcphi");
       p=eiread(dbuf,"phi");
       {betabs, betaws}=psim1(t,x,n,Zb,Zw,p,cv);
+      _eiread_betabs=betabs;
       res=betabs;
+    else;
+      res=_eiread_betabs;
     endif;
 
 
@@ -901,7 +901,7 @@ proc eiread(dbuf,str);
     n=eiread(dbuf,"n");
     {a,res}=bounds1(t,x,n);
     if _Eprt>0;
-      let vrs="       " betaBb etaW;
+      let vrs="       " betaBb betaW;
       "Aggregate bounds";
       $vrs';
       "Lower: ";;res[.,1]';
