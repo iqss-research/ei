@@ -689,11 +689,11 @@ The correctness of the model is not assumed ex ante; nor is it merely
 based on goodness of fit; it is instead calculated from the data via
 Bayesian analysis.  The key result of Bayesian model averaging is that
 the resulting inferences (1) are more accurate than those produced by
-standard model selection criterion, (2) formally incorporate all model
-uncertainties, (3) outperform any of the individual models that are
+standard model selection criterion, (2) formally incorporate model
+uncertainty, and (3) outperform any of the individual models that are
 averaged over.  The last property does not depend on whether the true
 model generating the data lies inside or outside models averaged over.
-That is, inferences from Bayesian model averaging always outperform
+That is, inferences from Bayesian model averaging always outperforms
 any individual model considered
 \citep[e.g.,][]{madi:raft:94}.\footnote{This result is similar to
   insights from the closely related literature on committee methods
@@ -715,7 +715,7 @@ inferences can always be improved by adding additional models, no
 matter how many models have already been included.  This is not a
 unique feature of Bayesian model averaging since it is always possible
 to come up with a better model for any statistical analysis where the
-correct model is unkown to researchers.  However, Bayesian model
+correct model is unknown to researchers.  However, Bayesian model
 averaging offers a significant improvement over the usual approach of
 basing inferences on one assumed model, no matter how that model is
 chosen.
@@ -788,10 +788,24 @@ better with parsimonious specifications.\footnote{Multiple covariates
   information that makes this possible is coming from the bounds.
   Predictions about the quantities of inferences in EI are not often
   greatly affected by including more than one covariate at a time.}
-We also tested our setup by studying several 3 and 4 variable models.
-Although some of had large enough estimated weights to be meaningful,
-including these models did not appreciably change our substantive
-estimates.
+
+Although we know of no application of ecological inference that uses
+more than a single explanatory variable (and almost all applications
+use none), we also tested our setup by studying several 3 and 4
+variable models.  Although some of these highly computationally
+intensive models (each taking about a day of computer time) had large
+enough estimated weights to be meaningful, including these in the
+Bayesian model averaging procedure did not appreciably change our
+substantive estimates.  Of course, we have also omitted an infinite
+number of other possible models from the set we average over, and it
+is possible that future researchers might find and include a model we
+excluded that would change our empirical conclusions.  For example, we
+exclude all models with more than four explanatory variables, as well
+as all interactions and all models based on data we do not have.  Our
+Bayesian model averaging results are better than any individual model
+among those we average over, but they could very well be overturned if
+someone finds a plausible model to add that turns out to have a high
+probability of being correct and leads to different inferences. 
 
 \section{Empirical Results}
 \label{s:outcome}
