@@ -749,10 +749,10 @@ to discuss an important issue about how to use it.
 
 One apparently obvious, but flawed, way to use the extended model is
 to study the effects of the explantory variables only by looking at
-the parameter estimates ($\alpha^b$ and $\alpha^w$ in King, 1997: 170)
-and their standard errors.  The problem with this approach is that it
-does not include the robustness of the bounds that comes from
-conditioning on $T$.  
+the truncated normal parameter estimates ($\alpha^b$ and $\alpha^w$ in
+King, 1997: 170) and their standard errors.  The problem with this
+approach is that it does not include the robustness of the bounds that
+comes from conditioning on $T_i$.
 
 To explain, consider a simpler case: estimating the district-wide
 fraction of blacks who vote, $B^b$ without covariates.  If the model
@@ -776,27 +776,21 @@ bounds.  Finally, (3) average the precinct estimates to produce an
 estimate of $B^b$, as desired originally.
 
 Because it includes the precinct-level bounds, the second estimator is
-clearly more robust to misspecification than the first.  And since
+clearly more sensitive to misspecification than the first.  And since
 dealing with misspecification is the key issue in making ecological
 inferences in real research, we see little reason to use the first
 estimator.  An equivalent problem applies in estimating and
 interpreting $\alpha^b$ and $\alpha^w$ directly: the estimates do not
 include information from the precinct-level bounds.  Although
 conditional on the model, they are consistent and efficient, they will
-not be as robust to misspecification.  Thus, we suggest the same
-robust approach to estimating effects from the extended model: (1)
-Estimate the parameters of the truncated bivariate normal and
-$\alpha^b$ and $\alpha^w$.  (2) Choose values for each of the
-covariates. (3) Compute estimates of $\beta_i^b$ and $\beta_i^w$ by
-drawing from their posterior densities, conditional on these values.
-(4) Set values of the covariates to a different value (such as by
-changing one covariate and leaving the others set constant at their
-means). (5) Compute another set of estimates of the precinct-level
-parameters.  And finally, (6) take the difference in the estimates
-from steps 3 and 5 to produce a first difference.  The first
-differences can be studied at the precinct or district level, and with
-point estimates and confidence intervals or full distributions.  The
-result will be a much more robust set of estimates.
+be more sensitive to misspecification.  Thus, we suggest the same
+approach to estimating effects from the extended model: (1) Estimate
+the parameters of the truncated bivariate normal and $\alpha^b$ and
+$\alpha^w$.  (2) Condition on $T_i$ and compute the conditional
+densities, $\P(\beta_i^b|T_i)$.  (3) Either display all the densities
+as a function of $Z$, such as via a scatterplot of simulations from
+these densities vertically by $Z_i$ horizontally, or summarize them in
+some way.  The result will be much less sensitive to misspecification.
 
 \section{Concluding Suggestions}
 
