@@ -208,8 +208,14 @@ proc eiread(dbuf,str);
       dbuf=vread(dbuf,"dbuf"$+ftos(_eimetar,"*.*lf",1,0));
     elseif titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
       dbuf=vread(dbuf,"mod_d"$+ftos(_eimetar,"*.*lf",1,0)); 
+      if _Eprt == 3;
+        "Reading " $str " from Model " _eimetar "...";
+      endif;
     elseif titl$=="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
       dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
+      if _Eprt == 3;
+        "Reading " $str " from Model " _eimetar "...";
+      endif;
     endif; 
   endif;
   
@@ -225,14 +231,15 @@ proc eiread(dbuf,str);
     if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
       if str$=="_ealphab" or str$=="_ealphaw" or str$=="_ebeta" or str$=="_ebounds" or
          str$=="_ecdfbvn" or str$=="_edirtol" or str$=="_ecdftol" or str$=="_evtol" or
-         str$=="_edoml" or str$=="_edoml_phi", or str$=="_edomL_vcphi", or str$=="_edosim" or
+         str$=="_edoml" or str$=="_edoml_phi" or str$=="_edomL_vcphi" or str$=="_edosim" or
          str$=="_eeta" or str$=="_eigraph_bvsmth" or str$=="_eischk" or str$=="_eilliks" or
          str$=="_eisfac" or str$=="_eisn" or str$=="_eist" or str$=="emaxIter" or 
          str$=="_enoneva" or str$=="_enonnum" or str$=="_enonpar" or str$=="_enumtol" or
          str$=="_erho" or str$=="_eselect" or str$=="_eselrnd" or str$=="_esigma" or
          str$=="_esims" or str$=="_estval" or str$=="_ei_vc" or str$=="_ei2_m" or 
          str$=="_eimetar" or str$=="_eimodels_save" or
-         str$=="zb" or str$=="zw" or    
+         str$=="zb" or str$=="zw" or str$=="_t" or str$=="_x" or str$=="_ez" or
+         str$=="x2" or str$=="x2rn" or  
          str$=="checkr" or str$=="dataset" or str$=="etac" or str$=="etas" or
          str$=="expvarci" or str$=="expvarcis" or str$=="lnir" or str$=="loglik" or
          str$=="logliks" or str$=="meanir" or str$=="mppsiu" or str$=="parnames" or
@@ -246,6 +253,28 @@ proc eiread(dbuf,str);
     endif;
   endif;
 
+  /* for the output of eimodels_avg, prevent users from reading inappropriate parameters */ 
+  /* almost all of the global variables and some parameters */
+  if vin(dbuf,"titl");
+    if titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
+      if str$=="_t" or str$=="_x" or str$=="_ez" or str$=="abounds" or str$=="abounds2" or 
+         str$=="aggbias" or str$=="beta" or str$=="betab" or str$=="betabs" or str$=="betaw" or
+         str$=="betaws", or str$=="bounds" or str$=="checkr" or str$=="ci50b" or str$=="ci50w" or 
+         str$=="ci80b" or str$=="ci80bw" or str$=="ci95b" or str$=="ci95bw" or str$=="coverage" or 
+         str$=="csbetab" or str$=="csbetaw" or str$=="eaggbias" or str$=="etac" or str$=="etas" or 
+         str$=="expvarci" or str$=="expvarcis" or str$=="gebw" or str$=="gebwa" or str$=="gewb" or 
+         str$=="gewba" or str$=="goodman" or str$=="lnir" or str$=="loglik" or str$=="logliks" or 
+         str$=="maggs" or str$=="meanir" or str$=="mppsiu" or str$=="neighbor" or str$=="paggs" or 
+         str$=="palmquist" or str$=="parnames" or str$=="phi" or str$=="phisims" or str$=="pphi" or 
+         str$=="psi" or str$=="psiu" or str$=="r" or str$=="ri" or str$=="resamp" or str$=="retcode" or
+         str$=="rnbetabs" or str$=="rnbetaws" or str$=="sbetab" or str$=="sbetaw" or str$=="stbetabs" or 
+         str$=="stbetaws" or str$=="sum" or str$=="thomsen" or str$=="tsims" or str$=="vcaggs" or str$=="vcphi";
+         "ei: You cannot eiread " $strtmp " from the output buffer of eimodels_def.";
+         res={.};
+         retp(res);
+      endif;
+    endif;
+  endif;
 
 
   /***** changes in stored globals *****/
@@ -331,6 +360,21 @@ proc eiread(dbuf,str);
   elseif str$=="_eigraph_bvsmth" or str$=="bvsmth";
     if vin(dbuf,"bvsmth");
       res=vread(dbuf,"bvsmth");
+    else;
+      res={.};
+    endif;
+
+  elseif str$=="_eimodels_save";
+    if vin(dbuf,"eimsave");
+      res=vread(dbuf,"eimsave");
+    else;
+      res={.};
+    endif;
+
+  elseif str$=="_ei_bma_prior";
+    if vin(dbuf,"prprob");
+      priorp=vread(dbuf,"prprob");
+      res=priorp[.,2];
     else;
       res={.};
     endif;
