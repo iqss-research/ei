@@ -9,8 +9,7 @@
 **   mean = k x 1 vector of means
 **   invvc = k x k matrix, the negative of the hessian
 **   sims = scalar, the number of simulations
-**   bounds = 2 x k matrix, lower bounds | upper bounds
-**         or 2 x 1 vector to use the same bounds for all parameters
+**   bounds = k x 2 matrix, upper bounds ~ lower bounds
 **   tol = scalar, the tolerance level for the diagonal element of s
 **         where {u,s,v}=svd1(invvc) (for example 10^(-3))
 **
@@ -20,10 +19,11 @@
 */
 
 proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
-   local u,s,v,res;
-
+   local u,s,v,res,k,indx,dist,temp,bnds,limsim;
+ 
+   k=rows(mean);
    /* some input checks */
-   if sumc(bounds[1,.].>=bounds[2,.])/=0;
+   if sumc(bounds[.,2].>=bounds[.,1])/=0;
      "error(rndmnsvd): Upper bounds must be greater than lower bounds.";
      res={.};
      retp(res);
@@ -33,21 +33,54 @@ proc (1)=rndmnsvd(mean,invvc,sims,bounds,tol);
      res={.};
      retp(res);
    endif;
-   if rows(mean)/=rows(invvc);
+   if k/=rows(invvc);
      "error(rndmnsvd): the dimensions of the Inverse of variance matrix and";
      "mean vector have to be the same.";
      res={.};
      retp(res);
    endif;
 
-   {u,s,v}=svd1(invvc);
-   t=(diag(s) .< tol);
-   v=s+t.*eye(rows(s));
-   res=(1-t).*(u'*(rndmn(u*mean,invpd(v),sims))')
-       +t.*((rndu(rows(mean),sims).*(bounds[2,.]-bounds[1,.])'+bounds[1,.]'));
+   {s,u}=eighv(invvc); @ eigen value decomposition @
+   indx=makefac(k,2);
+   dist=zeros(2^k,1);
+   for i(1,rows(indx),1);
+     temp=-mean;
+     for j(1,k,1);
+       temp[j]=temp[j]+bounds[j,indx[i,j]];
+     endfor;
+     dist[i]=temp'*temp;
+   endfor;
+   dist=maxc(dist);
+   bnds=dist~(-dist);      @ transformed bounds @
+   mean=u'*mean;           @ transformed mean @
+   res=zeros(k,sims);
+   for i(1,sims,1);
+     limsim=1;
+     do while (sumc((bounds[.,1] .< res[.,i])+(bounds[.,2] .> res[.,i]))>0)
+              or limsim==1;
+       for j(1,k,1);
+         if (s[j] > tol);
+           res[j,i]=rndtni(mean[j],1/s[j],bnds[2]~bnds[1]);
+         else;
+           res[j,i]=rndu(1,1)*(2*bnds[1])+bnds[2];
+         endif;
+       endfor;
+       res[.,i]=u*res[.,i];
+       limsim=limsim+1;
+       if limsim==100000;
+         "error(rndmnsvd): the sampling method failed. adjust the bounds.";
+         res={.};
+         retp(res);
+       endif;
+     endo;
+   endfor;
        
    retp(res');
 endp;
+
+
+
+
 
 
 
