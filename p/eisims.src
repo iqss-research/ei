@@ -181,6 +181,7 @@ endp;
 **                   resampling (default _Eisn=10)
 **           _EisFac = factor to multiply normal variance matrix by
 **                     or -1 to do normal approximation only
+**                     or -2 to use maximum posterior estimates
 **           _EisChk = 1 if save ln(imptce Ratio)~phi in lnir;
 **                     0 otherwise save means
 **           _Eist   = 0 (default) for normal random numbers; 
@@ -202,6 +203,8 @@ proc rndisamp(&f,b,vc,dataset,sims);
     _Eres=vput(_Eres,miss(1,1),"meanIR");
     _Eres=vput(_Eres,miss(1,1),"resamp");
     retp(rndmn(b,vc,sims));
+  elseif _EisFac==-2;                 @ use maximum posterior estimates @
+    retp(b'.*ones(_Esims,1));
   else;
     vc=vc*_EisFac;
   endif;
@@ -250,10 +253,11 @@ proc rndisamp(&f,b,vc,dataset,sims);
   endif;
 
   if ismiss(lnir)==1;
-    "Importance sampling failed! Returning normal sims. ";
+    "Importance sampling failed! Using maximum posterior estimates";
+    "(equivalent to _EisFac=-2). ";
     _Eres=vput(_Eres,-1,"lliksims");
     _Eres=vput(_Eres,-1,"resamp");
-    retp(psis[1:sims,.]);
+    retp(b'.*ones(_Esims,1));
   endif;
   
   resamp=0;

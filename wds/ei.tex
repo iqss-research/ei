@@ -612,10 +612,11 @@ interactively (or with a separate program) using \texttt{eiread} and
   evaluated for each simulation; 0 saves only the means of these
   likelihoods (default).  These can be used for computing the marginal
   likelihood.
-
+  
 \item[\_EisFac] factor to multiply by estimated variance matrix in the
   normal approximation for use in importance sampling, or set to $-1$
-  to use normal approximation only.  Adjust this, \texttt{\_Eisn}, or
+  to use normal approximation only or $-2$ to condition on the maximum
+  posterior estimates.  Adjust this, \texttt{\_Eisn}, or
   \texttt{\_Eist} if eiread's \texttt{resamp} larger than 15 or 20.
   If this is set too low, estimation variability will not be
   sufficient and your confidence intervals may be too narrow; it must
@@ -2414,10 +2415,13 @@ program.  In the order in which we suggest you try them, these are,
 \item If you are willing to live with lower precision, you can draw
   fewer simulations by setting \texttt{\_Esims} to a number smaller
   than the default (100).
-
+  
 \item You can use the asymptotic normal approximation, and eliminate
   the importance sampling refinement, by setting
-  \texttt{\_EisFac}$=-1$.
+  \texttt{\_EisFac}$=-1$ or to go even faster use
+  \texttt{\_EisFac}$=-2$ to exclude estimation uncertainty.  (In the
+  first case, the posterior density is only asymptotically valid; in
+  the second, confidence intervals will probably be too small.)
 
 \item You can set \texttt{\_EdirTol} to a larger number.  The default
   is 0.0001; you can try 0.001 or larger.  You could also reduce the
@@ -2429,6 +2433,8 @@ program.  In the order in which we suggest you try them, these are,
   save a small bit of time and so is only helpful if you are running
   many analyses.  (If you turn off checking, and you define a global
   incorrectly, \EI\ will not give a pretty error message.)
+
+\item For EI2, set \texttt{\_ei2_m}=-1.
 \end{enumerate}
 
 \paragraph{Why is the program slower when using covariates?}
