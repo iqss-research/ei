@@ -163,13 +163,13 @@ extended model somewhat easier to understand and use.  (We discuss how
 to use the extended model in Section \ref{s:exten}.)
 
 Any second stage analysis, in contrast, is by definition a second best
-procedure, when judged conditional on the model.  In contrast, second
+procedure, when judged conditional on the model.  Still, second
 stage analyses --- if they give approximately correct answers --- have
 the advantage of being easier to understand, use, and evaluate (since
 an estimate of the dependent variable in the second stage is
 observable), more numerically stable (hence allowing more covariates
 to be included and studied), computationally faster (allowing more
-analyses to be examined), more ameniable to diagnostics in verifying
+analyses to be examined), more amenable to diagnostics in verifying
 assumptions (since the actual estimated data points can be observed
 and the fit can be checked directly), and possibly more robust to
 certain types of misspecification.  The question at hand is if and
@@ -203,9 +203,8 @@ definition miss the information in the bounds), omitting the constant
 correction from the paper, never computing the correction they propose
 when conducting simulations, and missing the substantial advantages of
 weighted least squares to correct for the issues at hand.  We show how
-filling in this missing information (and in a sense ``completing''
-their article), leads back to the suggestions from the paragraphs
-quoted above.
+filling in this missing information leads back to the suggestions from
+the paragraphs quoted above.
 
 In addition to providing the first precinct-level estimates from an
 ecological inference model so that second-stage analyses become
@@ -264,7 +263,7 @@ We conclude that researchers with narrow enough bounds to run first
 stage EI should first examine a scatterplot of the covariate
 horizontally by the bounds on $\beta_i^b$ vertically (such as King,
 1997: Fig.13.2, p.238) to check for nonlinearities (which normally
-occur when the estimated points are near zero or one) and without
+occur when the estimated points are near zero or one) without making any
 assumptions.  If there are no nonlinearities, then weighted least
 squares should be used since it offers approximately unbiased
 estimates in second stage regressions.
@@ -350,14 +349,14 @@ intervals, which were not available in HS's version.\footnote{To
   density with parameter vector $\tilde\psiu$, (5) compute a new $T_i$
   as $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run
   EI on $X_i$ and $\tilde T_i$ to yield estimates
-  ($\hat\tilde\beta_i^b,\hat\tilde\beta_i^w$) for all $i$; (7) regress
-  ($\hat\tilde\beta_i^b-\beta_i^b$) on $\beta_i^b$ to estimate
-  $\delta_0^b$ and $\delta_1^b$, which we label $\hat\tilde\delta_0$
-  and $\hat\tilde\delta_1$; (8) draw $\tilde\alpha_U$ and
+  ($\hat{\tilde\beta}_i^b,\hat{\tilde\beta}_i^w$) for all $i$; (7) regress
+  ($\hat{\tilde\beta}_i^b-\beta_i^b$) on $\beta_i^b$ to estimate
+  $\delta_0^b$ and $\delta_1^b$, which we label $\hat{\tilde\delta}_0$
+  and $\hat{\tilde\delta}_1$; (8) draw $\tilde\alpha_U$ and
   $\tilde\gamma_U$ from the posterior provided by LS; (9) compute the
   adjusted intercept as
-  $(\tilde\alpha_U-\hat\tilde\delta_0^b)/(1+\hat\tilde\delta_1^b)$ and
-  adjusted slope as $\tilde\gamma_U/(1+\hat\tilde\delta_1^b)$; (10)
+  $(\tilde\alpha_U-\hat{\tilde\delta}_0^b)/(1+\hat{\tilde\delta}_1^b)$ and
+  adjusted slope as $\tilde\gamma_U/(1+\hat{\tilde\delta}_1^b)$; (10)
   repeat steps (3)-(9) a sufficient number of times to eliminate Monte
   Carlo approximation error; (11) and average the simulations in (10)
   to get point estimates, take their standard deviation for standard
@@ -382,7 +381,7 @@ outside the field of ecological inference.
 
 \section{HS's Monte Carlo Simulation Procedure}
 
-HS's Monte Carlo is inappropriate for evaluating second stage
+HS's Monte Carlo procedure is inappropriate for evaluating second stage
 regressions.  HS draw $\beta_i^b$ from the EI model without
 covariates.  Then they create the covariate for the second stage
 explanatory variable $Z_i$ endogenously as equal to $\beta_i^b$ plus
@@ -537,7 +536,7 @@ not a good estimate and indeed is worse than LS and WLS.  Figure
 researcher might implement based on HS's article (marked HS), which is
 more biased than any of the alternatives, a problem which grows in
 severity as the mean of $Z$ departs from zero (The HS and FA lines are
-not exactly parallel because HS is calculated conditional on the
+not exactly parallel because HS is calculated conditional on
 $\hat\psiu$ whereas FA uses our estimation procedure.)  Since the
 partially adjusted method is never better than full adjustment, and
 often dramatically worse, we do not consider it further.
@@ -554,7 +553,7 @@ often dramatically worse, we do not consider it further.
       fits the true points best, but is unfortunately badly estimated
       by FA.  Data were generated from the extended EI model with $X
       \sim \textrm{Uniform}(0,0.2)$, $Z \sim
-      \textrm{Normal}(0.5,0.1)$, $\breve\bbeta_i^b = Z_i - 0.1$,
+      \textrm{Normal}(0.5,0.01)$, $\breve\bbeta_i^b = Z_i - 0.1$,
       $\breve\bbeta_i^w = Z_i - 0.1$, $\sigmau_b = 0.05$, $\sigmau_w =
       0.05$, and $\rhou = 0$.}
     \label{f:wide}
@@ -581,7 +580,7 @@ method all give approximately the same estimates.
       top of one another, and the fully adjusted method (FA).  Note
       how all three methods give almost the same answer. Data were
       generated from the extended EI model, with $X \sim
-      \textrm{Uniform}(0.2,1)$, $Z \sim \textrm{Normal}(0,0.1)$,
+      \textrm{Uniform}(0.2,1)$, $Z \sim \textrm{Normal}(0,0.01)$,
       $\breve\bbeta_i^b = Z_i + 0.44$, $\breve\bbeta_i^w = Z_i +
       0.68$, $\sigmau_b = 0.05$, $\sigmau_w = 0.05$, and $\rhou = 0$.}
     \label{f:narrow}
@@ -627,7 +626,7 @@ adjusted (FA) line, in contrast, over-corrects for attenuation.
       from the extended EI model, with $X \sim
       \frac{1}{2}\textrm{Uniform}(0,0.2) +
       \frac{1}{2}\textrm{Uniform}(0.8,1)$, $Z \sim
-      \textrm{Normal}(0,0.1)$, $\breve\bbeta_i^b = Z_i + 0.44$,
+      \textrm{Normal}(0,0.01)$, $\breve\bbeta_i^b = Z_i + 0.44$,
       $\breve\bbeta_i^w = Z_i + 0.68$, $\sigmau_b = 0.05$, $\sigmau_w
       = 0.05$, and $\rhou = 0$.}
     \label{f:mixed}
@@ -663,7 +662,7 @@ into the impossible region) for some values of $Z_i$.
       the better fitting logistic transformation (LT).  Note how all
       the linear methods give out of bounds predictions.  Data were
       generated from the extended EI model, with $X \sim
-      \textrm{Uniform}(0,1)$, $Z \sim \textrm{Normal}(0,2)$,
+      \textrm{Uniform}(0,1)$, $Z \sim \textrm{Normal}(0,4)$,
       $\breve\bbeta_i^b = Z_i + 1.16$, $\breve\bbeta_i^w = Z_i +
       1.16$, $\sigmau_b = 0.3$, $\sigmau_w = 0.3$, and $\rhou = 0$.}
     \label{f:nonlinear}
