@@ -15,6 +15,7 @@ lib ~/gauss/lib/ei ~/d/ei/p/eidiag.src -NOPATH;
 lib ~/gauss/lib/ei ~/d/ei/p/eigraph.src -NOPATH;
 lib ~/gauss/lib/ei ~/d/ei/p/eigrid.src -NOPATH;
 lib ~/gauss/lib/ei ~/d/ei/p/eiloglik.src -NOPATH;
+lib ~/gauss/lib/ei ~/d/ei/p/eimodels.src -NOPATH;
 lib ~/gauss/lib/ei ~/d/ei/p/einonpar.src -NOPATH;
 lib ~/gauss/lib/ei ~/d/ei/p/einormal.src -NOPATH;
 lib ~/gauss/lib/ei ~/d/ei/p/eiread.src -NOPATH;

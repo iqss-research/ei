@@ -571,10 +571,10 @@ interactively (or with a separate program) using \texttt{eiread} and
   posterior phi's to a \texttt{\_Esims}$\times$rows($\phi$) matrix of
   normal simulations of phi.
   
-\item[\_EImarg] 1 if save (\_Esims$\times 1$) the likelihoods
-  evaluated for each simulation in \texttt{marginal}; 0 saves only the
-  means of these likelihoods (default).  These can be used for
-  computing the marginal likelihood.
+\item[\_EiLlikS] 1 if save (\_Esims$\times 1$) the log-likelihoods
+  evaluated for each simulation; 0 saves only the means of these 
+  likelihoods (default).  These can be used for computing the marginal 
+  likelihood.
   
 \item[\_EisFac] factor to multiply by estimated variance matrix in the
   normal approximation for use in importance sampling, or set to $-1$
@@ -1505,9 +1505,9 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[LogLikS] value of log-likelihood at the maximum (unnormalized)
   for each observation $i$.
   
-\item{MargLik} If \texttt{\_EImarg}=1, this is \texttt{\_Esims}$\times
-  1$ vector of marginal likelihood values; otherwise it is a scalar
-  mean of these.
+\item[LLikSims] If \texttt{\_EiLlikS}=1, this is \texttt{\_Esims}$\times 
+  1$ vector of log-likelihood values for each simulation; otherwise it 
+  is a scalar mean of these.
 
 \item[Maggs] $2\times 1$: point estimate of 2 district-level
   parameters, $\hat{B}^b$ and $\hat{B}^w$: meanc(aggs).  See Section

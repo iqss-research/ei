@@ -97,6 +97,7 @@ ei.dec
     _Ez                              : matrix
     _Emaxiter                        : matrix
     _EI_vc                           : matrix
+    _EiLlikS                         : matrix
     _GhQuad                          : matrix
     _GhFall                          : matrix
     _GhDelta                         : matrix
@@ -265,6 +266,8 @@ ei.dec
     _Rconst                          : matrix
     _tokdel                          : matrix
     _tokwds                          : matrix
+    _EImodels_save                   : matrix 
+    _EI_bma_prior                    : string
 
 ei.src
     ei                               : proc
@@ -317,6 +320,11 @@ eiloglik.src
     homoindx                         : proc
     flatnorm                         : proc
     exvar                            : proc
+
+eimodels.src
+    eimodels_def                     : proc
+    eimodels_run                     : proc
+    eimodels_ave                     : proc
 
 einonpar.src
     arcsin                           : proc

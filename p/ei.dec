@@ -64,7 +64,7 @@ declare matrix _Eisn != 10;
 declare matrix _EisFix != {.};
 declare matrix _EisFac != 4;
 declare matrix _EisChk != 0;
-declare matrix _EImarg != 0;
+declare matrix _EiLlikS != 0;
 
 /* lnpdfmn */
 declare matrix _Eivc != {.};
@@ -142,3 +142,8 @@ declare matrix _Rconst  != 1;
 /* token2 */
 declare matrix _tokdel={32,10,13,44,9}; @ space, lf, cr, comma, tab @
 declare matrix _tokwds=-1;  @ null @
+
+/* eimodels */
+declare string _EImodels_save != "";
+declare matrix _EI_bma_prior != 0;
+

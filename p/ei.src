@@ -70,8 +70,11 @@
 **            1 = change lnir entry in dbuf to
 **            ln(imptce ratio) ~ phi' (_Esims*_Eisn x rows(phi)+1)
 **            and change dbuf PhiSims entry to means~stdcs.
-**  _EImarg = 1 calc likelihood at each sim (for calc'ing marg'l lik), or
-**            0 to store only the mean of these likelihoods
+**  _EiLlikS = 1 calc log-likelihood at each sim (for calc'ing marg'l lik), or
+**             0 to store only the mean of these log-likelihoods
+**  _EImodels_save = file name if you want to save the results at each iteration
+**                   in a data buffer (with the extension ".fmt") on the disk 
+**                   (default = "" which does not save on the disk).
 **  _EisFac = factor to multiply normal variance matrix by in imptce sampling
 **            or -1 to use normal approximation (default=4)
 **  _Eisn   = factor to multiply by _Esims to compute the number of normals 
@@ -109,6 +112,9 @@
 **        if covariates are used, k=5+(number of covariates), Zb before Zw
 **        For GRID SEARCH, _Estval=0 (uses 5 gridlines for each zoom)
 **        (or _Estval >=3 for that number of gridlines)
+**  _EI_bma_prior = The discrete prior probability to each model in the 
+**                  ascending order of the model number (default = 0 which 
+**                  uses the uniform prior) (# of model x 1).
 ** _EI_vc = Mx2.  Each row represents globals for 1 attempt
 **          to compute a positive definite variance matrix.  The 
 **          exits after the first one is found. options to include 
@@ -183,7 +189,7 @@ proc ei(t,x,tvap,Zb,Zw);
   _Eres=vput(_Eres,_Eeta,"_Eeta");
   _Eres=vput(_Eres,_Eigraph_bvsmth,"bvsmth"); @ **  @
   _Eres=vput(_Eres,_EisChk,"_EisChk");
-  _Eres=vput(_Eres,_EImarg,"_Eimarg");
+  _Eres=vput(_Eres,_EiLliks,"_EiLliks");
   _Eres=vput(_Eres,_EisFac,"_EisFac");
   _Eres=vput(_Eres,_Eisn,"_Eisn");
   _Eres=vput(_Eres,_Eist,"_Eist");
@@ -769,7 +775,8 @@ proc 0=eiset;
   _Eisn=10;
   _EisFac=4;
   _EisChk=0;
-  
+  _EiLliks=0;
+
   /* lnpdfmn */
   _Eivc={.};
 
@@ -847,6 +854,10 @@ proc 0=eiset;
   /* token2 */
   _tokdel={32,10,13,44,9};
   _tokwds=-1;
+
+  /* eimodels */
+  _EImodels_save=""; 
+  _EI_bma_prior=0;
 
 endp;
 

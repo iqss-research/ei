@@ -185,8 +185,8 @@ endp;
 **                     0 otherwise save means
 **           _Eist   = 0 (default) for normal random numbers; 
 **                    >2 for multivariate t, with _Eist degrees of freedom
-**           _EImarg = 1 save "marglik" marginal likelihood in dbuf
-**                     0 save mean(marglik) in dbuf
+**           _EiLlikS = 1 save "lliksims" log-likelihood at each simulation 
+**                      in dbuf; 0 save mean(lliksims) in dbuf
 */
 proc rndisamp(&f,b,vc,dataset,sims);
   local f:proc;
@@ -270,10 +270,10 @@ proc rndisamp(&f,b,vc,dataset,sims);
   
   keepsi=keepsi[2:sims+1,.];
   keeplik=keeplik[2:sims+1,.];
-  if _EImarg==1;
-    _Eres=vput(_Eres,keeplik,"marglik");
+  if _EiLlikS==1;
+    _Eres=vput(_Eres,keeplik,"lliksims");
   else;
-    _Eres=vput(_Eres,meanc(keeplik),"marglik");
+    _Eres=vput(_Eres,meanc(keeplik),"lliksims");
   endif;    
   retp(keepsi);
 endp;  

@@ -65,7 +65,7 @@ external matrix _Eist ;
 external matrix _EisFix ;
 external matrix _EisFac ;
 external matrix _EisChk ;
-external matrix _EImarg ;
+external matrix _EiLlikS ;
 
 /* graphics */
 #include pgraph.ext;
@@ -140,4 +140,12 @@ external matrix _Rconst  ;
 /* token2 */
 external matrix _tokdel;
 external matrix _tokwds;
+
+/* eimodels */
+external string _EImodels_save;
+external matrix _EI_bma_prior;
+
+
+
+
 

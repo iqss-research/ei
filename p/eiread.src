@@ -40,7 +40,7 @@
 ** _Eeta     value of this global (slope coeff on X in betab|betaw eqns)
 ** _EIgraph_bvsmth value of this global (bivariate smoothing parameter)
 ** _EisChk   value of this global (check importance sampling)
-** _EImarg   value of this global (marginal likelihood)
+** _EiLlikS  value of this global (log-likelihood at each simulation)
 ** _EisFac   value of this global (variance factor in importance sampling)
 ** _EisN     value of this global (extra sims factor for importance sampling)
 ** _Eist     value of this global (multivar t or normal for imptce samplng)
@@ -71,7 +71,7 @@
 **           else            meanc(phi)~stdc(phi)
 ** lnir      if _EisChk==1: ln(Importance Ratio)~(normal simulations of phi') 
 **           [_Esims*_Eisn x rows(phi)+1], or scalar zero otherwise.
-** marglik   _Esims x 1: marginal likelihood, or scalar mean if _EImarg=0
+** lliksims   _Esims x 1: log-likelihood, or scalar mean if _EiLlikS=0
 ** resamp    scalar: number of resampling tries
 ** betaBs    p x _Esims: simulations of betaB
 **
