@@ -1061,8 +1061,8 @@ proc ei2(V,dbuf,Gb,Gw);
     if _Eprt>0;
       ?;"==================> Starting ei2 imputation ";;(i+0);?;
     endif;
-    
-    idbuf = ei(V,recode(x2[.,i+0],(x2[.,i+0].>1)~(x2[.,i+0].<0),1|0),nt,Gb,Gw);
+    x2[.,i+0]=recode(x2[.,i+0],(x2[.,i+0].>1)~(x2[.,i+0].<0),1|0);
+    idbuf = ei(V,x2[.,i+0],nt,Gb,Gw);
     if scalmiss(idbuf) or not(vin(idbuf,"betabs"));
       "ei2: problem with EI run (noted above), terminating EI2.";
       retp(miss(1,1));
