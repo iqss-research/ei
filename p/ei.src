@@ -338,7 +338,7 @@ endp;
 **        string with error message, if problem with inputs  
 */
 proc checkinputs;
-  local t,x,tvap,zb,zw,tst,r,bnd,a,betaB,betaW,tol,indx;
+  local t,x,tvap,zb,zw,tst,r,bnd,a,betaB,betaW,tol;
   t=vread(_Eres,"t");
   x=vread(_Eres,"x");
   tvap=vread(_Eres,"n");
@@ -548,18 +548,8 @@ proc checkinputs;
   if minc(_ei_vc[.,1])<-1 or maxc(_ei_vc[.,1])>5;
     retp("ei: _EI_vc may only have integers -1,1,...,5 in first column");
   endif;
-  if minc(_ei_vc[.,1])==-1; 
-    if _eist/=0;
-      retp("ei: _EI_vc={-1 0} option is allowed only when _EIsT = 0"); 
-    endif;
-    indx=selif(seqa(1,1,rows(_ei_vc)),(_ei_vc.==(-1~0)));
-    if rows(_ei_vc)>indx;
-      if _ei_vc[indx+1,.]/=(4~0);
-        retp("ei: _EI_vc={-1 0} must be followed by _EI_vc={4 0}");
-      endif;
-    else;
-      retp("ei: _EI_vc={-1 0} must be followed by _EI_vc={4 0}");
-    endif;
+  if minc(_ei_vc[.,1])==-1 and  _eist/=0;
+    retp("ei: _EI_vc={-1 0} option is allowed only when _EIsT = 0"); 
   endif;
 
   if not(scalone(_EdoML) or scalzero(_EdoML));
