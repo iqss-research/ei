@@ -205,7 +205,7 @@ remaining files (\texttt{*.src}, \texttt{ei.dec}, \texttt{ei.ext}, and
 as the default $\backslash$\texttt{GAUSS}$\backslash$\texttt{SRC}.
 
 \paragraph{On a UNIX-based system:}
-If you have supervisor privleges, follow analogous steps as for DOS
+If you have supervisor privileges, follow analogous steps as for DOS
 systems.  If you do not have supervisor privileges, or do not wish the
 program to be installed for all users, unzip ei.zip into a directory
 and then specify ei in the library command with a path, e.g.:
@@ -319,7 +319,7 @@ as the variables are scaled to the [0,1] interval (see Section 14.3).
     are the data input to this procedure, and all global options
     chosen during the analysis.  As such, this data structure is very
     convenient if you are in the habit of following \emph{the
-      replication standard} by making publically available all the
+      replication standard} by making publicly available all the
     data and information necessary to replicate your published
     analyses.  In fact, the output data buffer is an automatically
     created and self-documented ``replication data set.'' To follow
@@ -362,7 +362,7 @@ as the variables are scaled to the [0,1] interval (see Section 14.3).
 once, and to combine them using formal Bayesian model averaging
 procedures.  The procedure, \texttt{ndbuf1 =
   eimodels\_def(ndbuf1,num,t,x,n,zb,zw);}, enables you to define a
-model specificiation (including all input variables
+model specification (including all input variables
 \texttt{t,x,n,zb,zw}, and all globals input to \EI), to assign it a
 scalar integer model number, \texttt{num}, and to store it in a ``meta
 data buffer,'' \texttt{ndbuf1}.  The meta data buffer contains a set
@@ -484,7 +484,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   slower, unless you have a good reason to do so).  However,
   fundamental progress remains to be made on methods of integrating
   the bivariate normal, as all currently available methods are
-  innacurate and jump discontinuously and for very small values.
+  inaccurate and jump discontinuously and for very small values.
   Because of this, small values are truncated at the global
   \texttt{\_EcdfTol}, which you may wish to adjust.
 
@@ -617,7 +617,7 @@ interactively (or with a separate program) using \texttt{eiread} and
   Section 7.5. (Default=4).
 
 \item[\_Eisn] factor to multiply by \texttt{\_Esims} to compute the
-  number of normals to draw before resampling.  This is used to to try
+  number of normals to draw before resampling.  This is used to try
   to get \texttt{\_Esims} samples from exact posterior.  Increase this
   or change \texttt{\_EisFac} or \texttt{\_EisT} if \texttt{resamp} is
   larger than 15 or 20.  Default=10.  See Section 7.5.
@@ -794,7 +794,7 @@ clear v,t,x,n;                @ clear all variables @
 loadvars sample2.asc v t x n; @ load variables from disk file @
 dbuf = ei(t,x,n,1,1);         @ estimate betaB and betaW @
 save racevote=dbuf;           @ save dbuf in file racevote.fmt @
-dbuf2 = ei2(v,dbuf,1,1)       @ estimate lambdaB and lambdaW @
+dbuf2 = ei2(v,dbuf,1,1);      @ estimate lambdaB and lambdaW @
 save raceDem=dbuf2;           @ save dbuf2 in file raceDem.fmt @
 \end{verbatim}
 
@@ -861,7 +861,7 @@ tables).  See \texttt{eiread} for extracting numerical information.
 This example assumes you have run \texttt{ei} and saved a data buffer
 (called \texttt{racevote.fmt} in the example below).  \texttt{eigraph}
 can be run interactively or via a batch file.  Here is a typical set
-of commands that you might run interatively on a DOS-based machine.
+of commands that you might run interactively on a DOS-based machine.
 (The calls to \texttt{graphclr;} prevent one graphic image being
 overlaid on top of the next.)  Gauss for Unix requires you to open
 graphics windows explicitly; see the reference item GRAPH on page
@@ -1197,7 +1197,7 @@ not be changed for the most common uses.
 \subsection{EIMODELS} \label{eimodels}
 \markright{Reference: EIMODELS}
 
-\paragraph{\underline{Format}:} 
+\paragraph{\underline{Format}:}
 \texttt{ndbuf2 = eimodels\_def(ndbuf1,num,t,x,n,zb,zw);}, where
 \texttt{ndbuf1} is an input meta data buffer which contains all the
 model specifications previously defined as separate EI data buffers
@@ -1312,8 +1312,8 @@ save rvdef = ndbuf;                      @ save ndbuf in file rvdef.fmt @
 ndbres = eimodels_run(ndbuf);            @ run ei on all the models @
 save rvres = ndbres;                     @ save ndbres in file rvres.fmt @
 
-_EIMetaR = 1;
-call eiread(ndbres, "sum");              @ summary info for Model 1 @
+_EIMetaR = 2;
+call eiread(ndbres, "sum");              @ summary info for Model 2 @
 
 _EIMetaR = 3;
 graphon;
@@ -1330,7 +1330,7 @@ save rvbma = dbres;                      @ save dbres in file rvbma.fmt @
 \item[\_EImodels\_save] set to ``filename'' if you want to save the
   results at each iteration in a data buffer on the disk (default =
   ``\mbox{ }''; for no save).
-  
+
 \item[\_EI\_bma\_prior] (($\#$ of models)$\times 1$) The discrete
   prior probability of each model in the ascending order of the model
   number (default = 0 which assigns the uniform prior). The elements
@@ -1385,7 +1385,7 @@ output off;                      @ close output file @
   \texttt{v}, print a display of the item to the screen (available for
   options whose description begins with an asterisk, below) (default);
   0 do not print.
-  
+
 \item[\_EIMetaR] If \texttt{dbuf} is a meta-data buffer (i.e., from
   the \texttt{\_ei2\_mta} output global of ei2; the output buffer from
   \texttt{eimodels\_def} and \texttt{eimodels\_run}), this global
@@ -1695,8 +1695,20 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
 \item[Maggs] $2\times 1$: point estimate of 2 district-level
   parameters, $\hat{B}^b$ and $\hat{B}^w$: meanc(aggs).  See Section
   8.3.  (Uses \texttt{x2} simulations when used with \texttt{ei2}).
+  
+\item[MargLLik] ($\#$ of models)$\times 2$: the first column is the
+  model number and the second column indicates the marginal
+  log-likelihood estimate of the specified model. It is used to
+  calculate the posterior model probability as a part of the Bayesian
+  Model Averaging procedure (can be read only from the output buffer
+  of \texttt{eimodels\_avg}).
 
-\item[MeanIR] scalar log of the mean importance ratio
+\item[MeanIR] scalar log of the mean importance ratio.
+  
+\item[Mfreq] ($\#$ of models)$\times 2$: the first column is the model
+  number and the second column indicates how many posterior draws are
+  taken from the specified model. (can be read only from the output
+  buffer of \texttt{eimodels\_avg}).
 
 \item[mpPsiu] Mean Posterior of $\psiu$ (rather than MLEs).
 
@@ -1764,8 +1776,21 @@ $X_i$ for some items; the correct multiply imputed values of $x_i$
   deviations of the posterior distribution of $\phi$).  See Section
   8.2.
 
+\item[PostProb] ($\#$ of models)$\times 2$: the first column is the model
+  number and the second column indicates to the posterior model
+  probability for each model as a result of the Bayesian Model
+  Averaging (can be read only from the output buffer of
+  \texttt{eimodels\_avg}).
+  
 \item[Pphi] $2\times 5$ maximum posterior estimates.  row 1: $\phi$,
   row 2: standard errors.  See Chapter 7.
+
+\item[PrProb] ($\#$ of models)$\times 2$: the first column is the
+  model number and the second column indicates to the prior model
+  probability for each model as an input of the Bayesian Model
+  Averaging specified with the global variable,
+  \texttt{\_EI\_bma\_prior} (can be read only from the output buffer
+    of \texttt{eimodels\_avg}).
 
 \item[psi] reparameterized $\phi$ into ultimate truncated scale.  See
   Section 6.2.2.
@@ -2560,7 +2585,7 @@ posterior distribution by plotting the histogram with \texttt{call
 
 \paragraph{How do I make inferences about aggregated continuous variables?}
 If the individual-level variables corresponding to $X_i$ and/or $T_i$
-are continuous but restricted to the the unit interval (such as the
+are continuous but restricted to the unit interval (such as the
 fraction correct on a test) or rescaled to this interval, then this
 program can be used without any changes.  Only the interpretation of
 the estimates change.  See Section 14.3.
