@@ -27,7 +27,7 @@
 #include ei.ext;
 proc 2=psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
   local PSIsims,k,betaBs,betaWs,Bbeta,aggs,Ebb,Vbb,tt,dataset,
-  etaB,etaW,etaBs,etaWs,c,c0,c1,i,rs,r;
+  etaB,etaW,etaBs,etaWs,c,c0,c1,i,rs,r,temp,temp1,res;
   
   /* ESTIMATION VARIABILITY */
   if _Eprt>=2;
@@ -55,14 +55,44 @@ proc 2=psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
   endif;
   if _Erho[1]==0;
     _EisFix=MLpsi[(rows(MLpsi)-2):rows(MLpsi)];
-    PSIsims=rndisamp(&eiloglik,trimr(MLpsi,0,3),
-    MLvc[1:rows(MLpsi)-3,1:rows(MLpsi)-3],dataset,_Esims)~
-    rndmn(_Erho[2],0,_Esims)~rndmn(etaB,etaBs,_Esims)~rndmn(etaW,etaBs,_Esims);
+    temp=rndisamp(&eiloglik,trimr(MLpsi,0,3),MLvc[1:rows(MLpsi)-3,
+         1:rows(MLpsi)-3],dataset,_Esims);
   else;
     _EisFix=MLpsi[(rows(MLpsi)-1):rows(MLpsi)];
-    PSIsims=rndisamp(&eiloglik,trimr(MLpsi,0,2),MLvc,dataset,_Esims)~
-    rndmn(etaB,etaBs,_Esims)~rndmn(etaW,etaBs,_Esims);
-  endif;	  
+    temp=rndisamp(&eiloglik,trimr(MLpsi,0,3),MLvc[1:rows(MLpsi)-3,
+         1:rows(MLpsi)-3],dataset,_Esims);
+  endif;
+
+  if ismiss(temp); @ if _ei_vc={-1 0} fails try _ei_vc={4 0} @ 
+    temp=_ei_vc;
+    temp1=_Ghactual;
+    _ei_vc=temp[(temp1+1):rows(_ei_vc),.];
+    MLvc=gvc(&eiloglik,MLpsi,dataset);
+    if _Erho[1]==0;
+      MLvc=MLvc~zeros(rows(MLvc),1);
+      MLvc=MLvc|zeros(1,cols(MLvc));
+      MLvc[rows(MLvc),cols(MLvc)]=0.00000000001;
+    endif;
+    if scalmiss(MLvc);
+      "guadml: couldn't compute positive definite variance matrix";
+      MLvc=miss(1,1);
+    endif;
+    _Eres=vput(_Eres,MLvc,"vcphi");  
+    {betaBs, betaWs}=psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
+    _ei_vc=temp;
+    _ghactual=temp1+1;
+    _Eres=vput(_Eres,_ei_vc,"_EI_vc");
+    _Eres=vput(_Eres,_ghactual,"GhActual");
+    retp(betaBs, betaWs);
+  endif;
+
+  if _Erho[1]==0;  
+    PSIsims=temp~rndmn(_Erho[2],0,_Esims)~rndmn(etaB,etaBs,_Esims)~
+            rndmn(etaW,etaBs,_Esims);
+  else;
+    PSIsims=temp~rndmn(etaB,etaBs,_Esims)~rndmn(etaW,etaBs,_Esims);
+  endif;
+	  
   if _EisChk;                          
     _Eres=vput(_Eres,psisims,"PhiSims");  @ save name corresponds to book @ 
   else;
@@ -181,7 +211,7 @@ proc rndisamp(&f,b,vc,dataset,sims);
     "rndisamp: input error";
     end;
   endif;
-
+  
   if _EisFac==-1;                     @ normal approximation only @
     _Eres=vput(_Eres,miss(1,1),"lnir");
     _Eres=vput(_Eres,miss(1,1),"meanIR");
@@ -197,8 +227,12 @@ proc rndisamp(&f,b,vc,dataset,sims);
   if _Eist==0;
     if _ei_vc[_Ghactual,1]/=-1;
       psis=rndmn(b,vc,k);
-    else;                             @ use when _ei_vc={-1 0} @
+    else;                     @ use when _ei_vc={-1 0} @
       psis=rndtsn(b,vc,k,_cml_bounds[1:rows(b),.],1e-3);
+      if ismiss(psis);
+        "ei: _EI_vc={-1 0} option failed. trying {-4 0} instead.";
+        retp(miss(1,1));
+      endif;
     endif;
   else;
     vc=vc*(_Eist-2)/_Eist;
@@ -272,6 +306,14 @@ proc rndisamp(&f,b,vc,dataset,sims);
   endif;    
   retp(keepsi);
 endp;  
+
+
+
+
+
+
+
+
 
 
 
