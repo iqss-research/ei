@@ -12,7 +12,8 @@
 **   bounds = 2 x k matrix, lower bounds | upper bounds
 **          or 2 x 1 vector if the same bounds can be used for all the
 **          parameters
-**   tol = scalar, the tolerance level for the infinite variance 
+**   tol = scalar, the tolerance level for the diagonal element of s
+**         where {u,s,v}=svd1(invvc) (for example 10^(-3))
 **
 ** OUTPUTS:
 **   res = sims x k matrix of the multivariate normal random draws

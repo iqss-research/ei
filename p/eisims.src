@@ -214,7 +214,7 @@ proc rndisamp(&f,b,vc,dataset,sims);
     if _ei_vc[_Ghactual,1]/=-1;
       psis=rndmn(b,vc,k);
     else;                             @ use svd when _ei_vc={-1 0} @
-      psis=rndmnsvd(b,vc,k,_cml_bounds,10^3);
+      psis=rndmnsvd(b,vc,k,_cml_bounds,10^(-3));
     endif;
   else;
     vc=vc*(_Eist-2)/_Eist;
@@ -292,4 +292,20 @@ proc rndisamp(&f,b,vc,dataset,sims);
   endif;    
   retp(keepsi);
 endp;  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

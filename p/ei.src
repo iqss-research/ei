@@ -884,7 +884,7 @@ endp;
 ** This procedure has no globals.
 */
 proc eirepl(dbufin);
-  local t,x,n,r,i,d,Zb,Zw,dbuf,nms,tst;
+  local t,x,n,r,i,d,Zb,Zw,dbuf,nms,nms1,tst;
   eiset;
   "EI now running:           ";;
   "Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+_Eversion;
@@ -921,6 +921,12 @@ proc eirepl(dbufin);
   "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
   "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
 
+  nms1="_EalphaB"|"_EalphaW"|"_Ebeta"|"_Ebounds"|"_Ecdfbvn"|
+  "_EdirTol"|"_EdoML"|"_EdoML_phi"|"_EdoML_vcphi"|"_EdoSim"|
+  "_EIgraph_bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"_EmaxIter"|
+  "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
+  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
+
   r=rows(nms);
 
   #ifdos;
@@ -943,7 +949,7 @@ proc eirepl(dbufin);
       endif;
     else;
       format/rd 7,10;
-      "eirepl warning: Essential global not in input data buffer: ";;$nms[i];
+      "eirepl warning: Essential global not in input data buffer: ";;$nms1[i];
       "   Results may not replicate exactly unless you get the version";
       "   of EI used to create the data buffer. Using current default.";
     endif;
