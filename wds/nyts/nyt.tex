@@ -127,11 +127,11 @@ Gary King\thanks{Professor of Government, Harvard University and
   received 537 more votes than Gore.  These numbers are taken from the
   official results released by the Florida Secretary of State's office
   and so do not reflect overvotes, undervotes, unsuccessful
-  litigation, butterfly ballot problems, recounts that might
-  have been allowed but were not, or any other hypothetical divergence
-  between voter preferences and counted votes.  After the election,
-  the \emph{New York Times} conducted a six month long investigation
-  and found that 680 of the overseas absentee ballots were illegally
+  litigation, butterfly ballot problems, recounts that might have been
+  allowed but were not, or any other hypothetical divergence between
+  voter preferences and counted votes.  After the election, the
+  \emph{New York Times} conducted a six month long investigation and
+  found that 680 of the overseas absentee ballots were illegally
   counted, and no partisan, pundit, or academic has publicly disagreed
   with their assessment.  In this paper, we describe the statistical
   procedures we developed and implemented for the \emph{Times} to
@@ -144,13 +144,13 @@ Gary King\thanks{Professor of Government, Harvard University and
   model choices, when model generalization is not feasible, and when
   potential critics are more partisan than academic.  We show how we
   derived the results for the \emph{Times} so that other scholars can
-  use these methods to make ecological inferences and for other
-  purposes.  We also present a variety of new empirical results that
-  delineate the precise conditions under which Al Gore would have been
-  elected president, and offer new evidence of the striking
-  effectiveness of the Republican effort to convince local election
-  officials to count invalid ballots in Bush counties and not count
-  them in Gore counties.
+  use these methods to make ecological inferences for other purposes.
+  We also present a variety of new empirical results that delineate
+  the precise conditions under which Al Gore would have been elected
+  president, and offer new evidence of the striking effectiveness of
+  the Republican effort to convince local election officials to count
+  invalid ballots in Bush counties and not count them in Gore
+  counties.
 \end{abstract}
 
 %\noindent \textbf{Keywords}: Ecological Inference, Bayesian Model
@@ -488,13 +488,13 @@ Bush was as high as 48 votes while that for Gore is zero. Thus we know
 that at least 19 percent of invalid ballots belong to Bush rather than
 Gore.  Santa Rosa County is similar: Out of the total of 55 flawed
 absentee ballots, at least 37 votes were cast for Bush.  Finally,
-Taylor County illustrates why sometimes the ``secret ballot'' is not
+Baker County illustrates why sometimes the ``secret ballot'' is not
 really secret.  In this county, only one absentee ballot was cast and
 also was found to be invalid. Hence, we know from the total tally of
 absentee ballots in this county --- one vote for Bush --- that this
 person voted for Bush and that it was an invalid ballot but included
 in the official count.  (In fact, the name, address, and individual
-vote cast of all people in counties, like Taylor, that cast all their
+vote cast of all people in counties, like Baker, that cast all their
 overseas absentee ballots for one candidate, are on the public record.
 This is because the bounds have zero width whenever either $X_i$ or
 $T_i$ is zero or one.)
@@ -509,7 +509,7 @@ County & ballots & counts & minimum & maximum & counts & minimum & maximum \\
 \hline 
 Escambia   & 102 & 47 & 0 & 47 & 154 & 48 & 102 \\
 Santa Rosa &  55 & 16 & 0 & 16 &  65 & 37 &  55 \\
-Taylor      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
+Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
 \hline
 \bf all counties & \bf 680 & \bf 836 & \bf 5 & \bf 527 & \bf 1575 & \bf 128 & \bf 668 \\ 
 \end{tabular} \caption{Analysis of bounds for the state  and 
@@ -522,9 +522,9 @@ the total number of invalid ballots for each candidate at the state
 level. The result shows that at least 8 percent, or 128 votes of
 Bush's 1,575 absentee ballots, should not have been counted, whereas
 for Gore the minimum number of invalid ballots is only 5 out of his
-total 836 votes.  Furthermore, it is possible that Bush could have
-inappropriately benefited from up to 668 out of the 680 invalid
-ballots.
+total 836 votes (0.6 percent).  Furthermore, it is possible that Bush
+could have inappropriately benefited from up to 668 out of the 680
+invalid ballots.
 
 The most significant conclusion from this analysis is that we cannot
 exclude the possibility that Gore actually won the election.  That is,
@@ -652,7 +652,7 @@ correlation in $T$ after taking into account $X$ and $Z$.  King's
 ecological inference model has not been shown to be very sensitive to
 anything but extreme levels of spatial autocorrelation, but we make
 this assumption even more plausible by including tests with covariates
-that tap into Florida's regions and other spatial features
+that tap into Florida's regions and other spatial features.
 
 The final assumption states that the two unknown quantities, $\bb_i$
 and $\bg_i$, are independent of $X_i$, given $Z$.  For example, if the
@@ -682,10 +682,10 @@ described in section 7.4 of \citet{king:97}.  This prior distribution
 and the likelihood function together define King's model in a standard
 Bayesian framework.
 
-Along with $T_i$, $X_i$ and $N_i$, we have 25 other variables
+Along with $T_i$, $X_i$ and $N_i$, we have 27 other variables
 including race, sex, and party registration for the overseas absentee
 voters as well as county level election and demographic data.  We
-define 25 models, each using one of these 25 variables as the
+define 27 models, each using one of these 27 variables as the
 covariate.  We also include a model with no covariates and 3 models
 with $X_i$ as the covariate for the mean of $\bb$, $\bg$, and for
 both.  For each model, we use the same independent prior distribution
@@ -726,7 +726,8 @@ do this, we first compute, for each of the 31 models, the posterior
 distribution of $\Delta$ (computed from Equation \ref{eq:post} with
 $\Delta$ being some known function of $\Theta$): $\P(\Delta|M_k,T)$.
 Then we average over these models by weighting by the relative
-posterior probability that each model is correct, $\Pr(M_k|T)$:
+posterior probability that each model is correct given the data,
+$\Pr(M_k|T)$:
 \begin{align} \label{eq:bma}
   \Pr(\Delta|T) &= \sum_{k=1}^{31} \P(\Delta,M_k|T)\notag\\
                 &= \sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T)
