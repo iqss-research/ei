@@ -3,5 +3,8 @@ cd ../wds
 latex ei
 latex ei
 latex ei
-latex2html -info 0 -t "EI Manual" -dir ~/www/ei/ -contents "http://gking.harvard.edu/ei/ei.html" -local_icons ei.tex
+latex2html  -noauto_link -info 0 -t "EI Manual" -dir ~/www/ei/ -contents "http://gking.harvard.edu/ei/ei.html" -local_icons ei.tex
+
+cp ~/www/ei/ei.html ~/www/ei/index.html
 chmod go+r ~/www/ei/*
+

@@ -2613,7 +2613,12 @@ better starting values (see \texttt{\_Estval}) and search constraints
 also be helpful (\texttt{\_Estval}).  Since odds are you want to
 distinguish between very small differences in the quantities of
 interest, you will probably also wish to increase the number of
-simulations substantially (\texttt{\_Esims}).
+simulations substantially (\texttt{\_Esims}).  Finally, posterior
+densities from EI are rarely normal or symmetric in the presence of
+rare events, and in this situation mean posterior point estimates are
+not good summaries of EI's inference in these situations.  Better
+would be to use a density estimate of the simulations, such as
+eigraph's \texttt{post} option.
 
 \paragraph{How do I make inferences in larger tables?}
 For $2\times C$ tables, see the \texttt{ei2} in the reference section

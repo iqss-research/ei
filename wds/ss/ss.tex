@@ -129,7 +129,7 @@ Gary King\thanks{Professor of Government, Harvard University and
 
 \section{Introduction}
 
-We take this opportunity to comment on Herron and Schotts' article
+We take this opportunity to comment on Herron and Shotts' article
 (hereinafter HS) because of its potential to affect the way a
 considerable body of practical research is conducted, and because of
 HS's interesting and productive ideas.  HS's paper is based on the
@@ -317,12 +317,14 @@ intervals, which were not available in HS's version.\footnote{To
   with parameter vector $\tilde\psiu$, (5) compute a new $T_i$ as
   $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run EI
   on $X_i$ and $\tilde T_i$ to yield estimates
-  ($\hat\beta_i^b,\hat\beta_i^w$) for all $i$; (7) regress
-  ($\hat\beta_i^b-\beta_i^b$) on $\beta_i^b$ to estimate $\delta_0^b$
-  and $\delta_1^b$; (8) draw $\tilde\alpha_U$ and $\tilde\gamma_U$
-  from the posterior provided by LS; (9) compute the adjusted
-  intercept as $(\tilde\alpha_U-\hat\delta_0^b)/(1+\hat\delta_1^b)$
-  and adjusted slope as $\tilde\gamma_U/(1+\hat\delta_1^b)$; (10)
+  ($\hat\tilde\beta_i^b,\hat\tilde\beta_i^w$) for all $i$; (7) regress
+  ($\hat\tilde\beta_i^b-\beta_i^b$) on $\beta_i^b$ to estimate
+  $\delta_0^b$ and $\delta_1^b$, which we label $\hat\tilde\delta_0$
+  and $\hat\tilde\delta_1$; (8) draw $\tilde\alpha_U$ and
+  $\tilde\gamma_U$ from the posterior provided by LS; (9) compute the
+  adjusted intercept as
+  $(\tilde\alpha_U-\hat\tilde\delta_0^b)/(1+\hat\tilde\delta_1^b)$ and
+  adjusted slope as $\tilde\gamma_U/(1+\hat\tilde\delta_1^b)$; (10)
   repeat steps (3)-(9) a sufficient number of times to eliminate Monte
   Carlo approximation error; (11) and average the simulations in (10)
   to get point estimates, take their standard deviation for standard
@@ -379,7 +381,7 @@ $\breve\psi$  & $\gamma_R$ & $\hat\gamma_R$ \\\hline
 \end{tabular}
 \end{center}
 \caption{\em Comparing the true slope on $Z$ in a 
-second-stage regression in Herron and Schott's Monte Carlo 
+second-stage regression in Herron and Shott's Monte Carlo 
 procedure with the estimate based on $\beta_i^b$ 
 (rather than $\hat\beta_i^b$) as the dependent variable.
 This table replicates the results of simulations presented in
@@ -474,9 +476,11 @@ estimated from the data also appears, but due to the wide bounds it is
 not a good estimate and indeed is worse than LS and WLS.  Figure
 \ref{f:wide} also plots Herron and Shotts' partially adjusted method
 (marked HS), which is more biased than any of the alternatives, a
-problem which grows in severity as the mean of $Z$ departs from zero.
-Since HS's proposal is never better than full adjustment, and often
-dramatically worse, we do not consider it further.
+problem which grows in severity as the mean of $Z$ departs from zero
+(The HS and FA lines are not exactly parallel because HS is calculated
+conditional on the $\hat\psiu$ whereas FA uses our estimation
+procedure.)  Since HS's proposal is never better than full adjustment,
+and often dramatically worse, we do not consider it further.
 \begin{figure}[t]
   \begin{center}
     \epsfig{file=wide.eps}
