@@ -125,11 +125,11 @@
     methods in this paper is available at
     \texttt{http://GKing.Harvard.Edu}.}}
 
-\author{Kosuke Imai\thanks{Assistant Professor, Department of Politics,
-    Princeton University. (Corwin Hall, Department of Politics,
-    Princeton University, Princeton NJ 08544;
+\author{Kosuke Imai\thanks{Assistant Professor, Department of
+    Politics, Princeton University. (Corwin Hall, Department of
+    Politics, Princeton University, Princeton NJ 08544;
     \texttt{http://www.princeton.edu/\~\,kimai},
-    \texttt{kimai@Princeton.Edu}).}
+    \texttt{kimai@Princeton.Edu}, (609) 258-6601).}
 \and %
 Gary King\thanks{David Florence Professor of Government, Harvard
   University (Center for Basic Research in the Social Sciences, 34
@@ -253,38 +253,37 @@ whether this is enough to make up for Bush's official 537 vote margin.
 Since the partisan atmosphere surrounding public discourse on this
 issue was so highly charged, we knew that our work would be subject to
 more than the usual academic scrutiny, and so we sought out methods
-that were less vulnerable to partisan criticism.  We therefore used
+that were less vulnerable to partisan criticism. We therefore used
 three separate approaches --- inference with no statistical
-assumptions, with a succession of single models, and with Bayesian
-model averaging that enable us to average over all models that any
-partisan might have considered weighted according to their relative
-probability of being correct, as indicated by the data.  So that
-others can use the methods we introduce here to analyze other
-problems, we have included all methods introduced here in the program
-\emph{EI: A Program for Ecological Inference}.
+assumptions, with a succession of single models that any partisan
+might have considered, and finally with Bayesian model averaging that
+enable us to average over all of these single models with weights
+being their relative probability of being correct, as indicated by the
+data.  So that others can use the methods we introduce here to analyze
+other problems, we have included all methods introduced here in the
+program \emph{EI: A Program for Ecological Inference}.
 
 We estimate the probability that Gore would have won the election if
 the law had been followed in this instance.  This probability is
 small, but we show that with mathematical certainty it is greater than
-zero.  Secondly, although our results suggest that it is unlikely
-that illegal overseas absentee ballots alone changed the election
-outcome, we show that Bush's margin of victory would likely have been
-much narrower if those flawed ballots had not been counted.  This
-supports the argument made by \emph{The Times} that the flawed ballots
-favored Bush much more than Gore.  We also present a variety of
-results that did not appear in \emph{The Times} article, including the
-probability that Gore would have won under various hypothetical
-scenarios, such as if Katherine Harris had accepted Palm Beach
-County's recount, which was submitted two hours late.  In some
-plausible scenarios, the probability that Gore would have won is
-nearly 100\%.  Finally, and perhaps most interesting, we present
-evidence that the propensity of local election officials to violate
-the law and accept bad ballots was substantially greater in counties
-where Bush strategists believed there were more absentee ballot
-support for Bush and tried to convince election officials to accept
-bad ballots.  This is consistent with \emph{The Times}' thesis and
-evidence that these local election officials bent to the will of
-Republican lobbyists.
+zero.  Secondly, although our results suggest that it is unlikely that
+illegal overseas absentee ballots alone changed the election outcome,
+we show that Bush's margin of victory would likely have been much
+narrower if those flawed ballots had not been counted.  This supports
+the argument made by \emph{The Times} that the flawed ballots favored
+Bush much more than Gore.  We also present a variety of results that
+did not appear in \emph{The Times} article, including the probability
+that Gore would have won under various hypothetical scenarios, such as
+if Katherine Harris had accepted Palm Beach county's recount, which
+was submitted two hours late.  In some plausible scenarios, the
+probability that Gore would have won is nearly 100\%.  Finally, and
+perhaps most interesting, we present evidence that the propensity of
+local election officials to violate the law and accept bad ballots was
+substantially greater in counties where Bush strategists believed
+there were more absentee ballot support for Bush and tried to convince
+election officials to accept bad ballots.  This is consistent with
+\emph{The Times}' thesis and evidence that these local election
+officials bent to the will of Republican lobbyists.
 
 \section{Invalid Overseas Absentee Ballots in Florida} \label{s:ballots}
 
@@ -396,9 +395,8 @@ votes.\footnote{Although our presentation always involves only the
   intensive techniques designed to model these choices separately
   confirm these results (see Rosen et al., 2001)\nocite{RosJaiKin01}.}
 While each of these quantities are observed, we denote unobserved
-quantities with Greek letters.  Namely, $\bb_i$ and $\bg_i$ represent
-the proportions of invalid and valid ballots cast for Gore,
-respectively.
+quantities with Greek letters: $\bb_i$ and $\bg_i$ represent the
+proportions of invalid and valid ballots cast for Gore, respectively.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{cccc}
@@ -432,7 +430,7 @@ average of the individual county quantities.\footnote{The weighted
 \vs
 \baselineskip=1.54\baselineskip
 \noindent Once we estimate this quantity, we can also estimate the probability
-of Gore's victory, $\Pr(\text{Bush's margin}<0)$, which is another
+of Gore's victory, $\Pr(\text{Bush's margin}<0)$, which is the main
 quantity of interest.\footnote{Note that $\bg_i$ is not used in
   Equation \ref{qoi} but is necessary as an ancillary parameter during
   estimation.}
@@ -481,6 +479,7 @@ Baker      &  1  &  0 & 0 &  0 &   1 &  1 &   1 & 0 & 0 & 0 \\
 \end{center}
 \end{table} 
 
+\vspace{-0.25in}
 Table~\ref{tb:bounds} shows how the analysis of bounds can be very
 powerful in some situations. For example, Escambia is one of the
 counties where many invalid ballots were found. At the same time, this
@@ -500,10 +499,10 @@ Bush is his official count of 154 minus these 48, which is 106.
 %ballots cast for Bush was as high as 48 votes while that for Gore is
 %zero. Thus we know that at least 19 percent of invalid ballots belong
 %to Bush rather than Gore.
-%Santa Rosa County is similar: Out of the total of 55 flawed absentee
+%Santa Rosa county is similar: Out of the total of 55 flawed absentee
 %ballots, at least 37 votes were cast for Bush, yielding the upper
 %bound on the number of valid Bush's votes, which is 28.  
-Finally, Baker County illustrates why sometimes the ``secret ballot''
+Finally, Baker county illustrates why sometimes the ``secret ballot''
 is not really secret.  In this county, only one absentee ballot was
 cast and also was found to be invalid. Hence, we know from the total
 tally of absentee ballots in this county -- one vote for Bush -- that
@@ -543,7 +542,7 @@ science research.  If the resulting bounds excluded the possibility of
 one candidate winning, our analysis would end right here.
 Unfortunately, all we know from the bounds is that there exists a
 \emph{possibility} that either Gore or Bush received more votes.
-Indeed, even of all but a tiny piece of the bounded interval reflected
+Indeed, even if all but a tiny piece of the bounded interval reflected
 a Bush (or a Gore) victory, it would provide no information about the
 \emph{probability} that a particular candidate won (since the bounds
 alone do not imply any probability distribution over the interval).
@@ -566,20 +565,20 @@ times.  Our approach to this problem is to formally incorporate
 uncertainty due to model specification into our final estimate.
 
 We use the class of ecological inference models given in King
-(1997)\nocite{king:97}, which have come to called EI after the
-software that implements them.  To begin, we summarize graphically the
-bounds obtained in Section~\ref{s:noassump}.  For each Florida
-county, we show all \emph{possible} values of $\bg_i$ and of $\bb_i$.
-As it turns out, the data tell us more than merely the bounds on each
-separately since Equation~\ref{eq:identity} says that if $\bg_i$ is
-near the top of its bounds, $\bb_i$ must be near the bottom of its
-bounds.  In fact, the two are perfectly correlated and fall on a line
-defined by that equation.  To illustrate, we plot one line for each
-county in Florida in the tomography plot of Figure~\ref{fg:tomog},
-which merely re-expresses the data in the form closest to the answers
-we seek.
+(1997)\nocite{king:97}, which has come to called EI after the software
+that implements them.  To begin, we summarize graphically the bounds
+obtained in Section~\ref{s:noassump}.  For each Florida county, we
+show all \emph{possible} values of $\bg_i$ and of $\bb_i$.  As it
+turns out, the data tell us more than merely the bounds on each
+parameter separately since Equation~\ref{eq:identity} says that if
+$\bg_i$ is near the top of its bounds, $\bb_i$ must be near the bottom
+of its bounds.  In fact, the two are perfectly correlated and fall on
+a line defined by that equation.  To illustrate, we plot one line for
+each county in Florida in the tomography plot of
+Figure~\ref{fg:tomog}, which merely re-expresses the data in the form
+closest to the answers we seek.
 \begin{figure}[t]
-  %\vspace{-1in}\hspace{0.5in}
+  \vspace{-0.5in}
   \begin{minipage}[c]{6.5in}
     \begin{center}
       %\includegraphics[width=4.5in,height=6in,angle=-90]{tomog}
@@ -645,11 +644,11 @@ uncertainty that is assumed presently is $Z$.
 Sensitivity to model specification in quantitative political science
 is perhaps most commonly seen when minor changes among the explanatory
 variables in regression-type analyses result in large differences in
-the resulting estimates.  The endemic nature of such model dependent
-inferences makes a decision to base inferences on a single model in
-most situations highly dubious.  This is all the more so in ecological
-inference where model dependence is more frequently an issue.  Yet,
-almost all existing applications of ecological inference use a single
+the estimates.  The endemic nature of such model dependent inferences
+makes a decision to base inferences on a single model highly dubious
+in many situations.  This is all the more so in ecological inference
+where model dependence is frequently an issue.  Yet, almost all
+existing applications of ecological inference use a single
 specification.  Indeed, few use any explanatory variables, $Z$, at
 all.
 
@@ -659,25 +658,25 @@ although it is not markedly different from other applications.  We
 began by following the most common procedure of estimating many models
 (i.e., with different $Z$) and assessing the degree to which our
 ultimate quantities of interest depend on the specification.  This was
-informative but insufficient, since our assignment was to provide a
-single inference with a point estimate and confidence interval.
+informative but insufficient, since our task was to provide a single
+inference with a point estimate and confidence interval.
 
-Three basic ways of drawing inferences in the presence of model
-uncertainty have been discussed.  Some researchers persist in choosing
-a single model, perhaps on the basis of qualitative arguments about
-its merits, and draw inferences assuming its veracity.  This
-optimistic approach typically overestimates the degree to which the
-researcher is certain of the correct model specification, and hence
-typically gives high variance estimates and overly narrow confidence
-intervals.  Other researchers use a formal model selection criterion,
-such as stepwise regression, Mallow's Cp, AIC, etc., to pick the best
-model.  Although these procedures are inappropriate when estimating
-causal effects, they are reasonable when the quantity of interest is
-predictive, such as ecological inference.  Unfortunately, even in
-these situations the result of applying these criteria is one model,
-which also ignores model uncertainty.
+Three basic ways of drawing a single inference in the presence of
+model uncertainty exist.  Some researchers persist in choosing a
+single model, perhaps on the basis of qualitative arguments about its
+merits, and draw inferences assuming its veracity.  This optimistic
+approach typically overestimates the degree to which the researcher is
+certain of the correct model specification, and hence typically gives
+biased estimates and overly narrow confidence intervals.  Other
+researchers use a formal model selection criterion, such as stepwise
+regression, Mallow's Cp, and AIC, to pick the best model.  Although
+these procedures are inappropriate when estimating causal effects,
+they are reasonable when the quantity of interest is predictive, such
+as ecological inference.  Unfortunately, even in these situations the
+result of applying these criteria is one model, which also ignores
+model uncertainty.
 
-An approach now widely recognized to be superior to any model
+An approach now widely recognized to be superior to standard model
 selection criterion is Bayesian model averaging, which we apply to our
 ecological inference problem.  The basic idea is to estimate a large
 number of potential models and to take the weighted average of their
@@ -685,26 +684,27 @@ results, with weights based on probability that a model is correct.
 The correctness of the model is not assumed ex ante; nor is it merely
 based on goodness of fit; it is instead calculated from the data via
 Bayesian analysis.  The key result of Bayesian model averaging is that
-the inferences it produces (1) are more accurate than those produced
-by standard model selection criterion, (2) formally incorporate all
-model uncertainties in our inferences, (3) outperform any of the
-individual models that are averaged over.  The last property does not
-depend on whether the true model generating the data lies inside or
-outside models averaged over. That is, inferences from Bayesian model
-averaging always outperform any individual model considered
-\citep{madi:raft:94}.\footnote{This result is similar to insights from
-  the closely related literature on committee methods \citep{bish:95},
-  although surprisingly the literatures have relatively few
-  cross-citations.  See also Rosen, Jiang, and Tanner (2000) and
-  Robert (1996)\nocite{rose:jian:tann:00,robe:96a}.  See
+the resulting inferences (1) are more accurate than those produced by
+standard model selection criterion, (2) formally incorporate all model
+uncertainties, (3) outperform any of the individual models that are
+averaged over.  The last property does not depend on whether the true
+model generating the data lies inside or outside models averaged over.
+That is, inferences from Bayesian model averaging always outperform
+any individual model considered
+\citep[e.g.,][]{madi:raft:94}.\footnote{This result is similar to
+  insights from the closely related literature on committee methods
+  \citep{bish:95}, although surprisingly the literatures have
+  relatively few cross-citations.  See also Rosen, Jiang, and Tanner
+  (2000) and Robert (1996)\nocite{rose:jian:tann:00,robe:96a}.  See
   \citet{hoet:madi:raft:voli:99} for a general introduction to
   Bayesian model averaging.  \citet{drap:95} discusses how Bayesian
-  model averaging deals with the model uncertainty.  See
-  \citet{bart:97}, \citet{BarZal01}, and \citet{EriBafWil02} for
-  political science applications that use an approximation to formal
-  Bayesian model averaging.} Model averaging thus allows one to
-consider a wide range of models, while still producing one set of
-results.
+  model averaging deals with the model uncertainty, while
+  \citet{raft:zhen:03} derive the optimality of its long-run
+  performance. See \citet{bart:97}, \citet{BarZal01}, and
+  \citet{EriBafWil02} for political science applications that use an
+  approximation to formal Bayesian model averaging.} Model averaging
+thus allows one to consider a wide range of models, while still
+producing one set of results.
 
 Of course, one can never cover the entire model space, which is
 normally of infinite size, since Bayesian model averaging only allows
@@ -712,10 +712,11 @@ one to include a finite number of models.  Therefore, the resulting
 inferences can always be improved by adding additional models, no
 matter how many models have already been included.  This is not a
 unique feature of Bayesian model averaging since it is always possible
-to come up with a better model in any statistical analysis.  However,
-Bayesian model averaging offers a significant improvement over the
-usual approach of basing inferences on one assumed model, no matter
-how that model is chosen.
+to come up with a better model for any statistical analysis where the
+correct model is unkown to researchers.  However, Bayesian model
+averaging offers a significant improvement over the usual approach of
+basing inferences on one assumed model, no matter how that model is
+chosen.
 
 Bayesian model averaging is especially important in our application
 since political scientists have rarely studied absentee ballots and we
@@ -725,8 +726,8 @@ without having to defend one particular specification, or even a small
 set of specifications.  We came up with our list of models by talking
 in detail to reporters and partisans on both sides.  We then
 formalized \emph{every} intuition any of them mentioned in an
-ecological inference model (by defining $Z$) and we included every one
-in our analysis.  We also included a number of others we came up with
+ecological inference model (by defining $Z$) and included every one in
+our analysis.  We also added several other models we came up with
 independently.
 
 Our search for models identified 31 possibilities for $Z$, including
@@ -771,24 +772,25 @@ part this is because no one including journalists and academics
 proposed a model that clearly was defined by more.  But more
 importantly, we know that better predictions can be obtained when not
 overfitting the data with many covariates.  Hoeting et al.\ (1999) and
-Madigan and Raftery (1994) and others have shown that Bayesian model
-averaging almost never puts much weight on such models, and predictive
-inferences (unlike some causal inferences) are typically better with
-parsimonious specifications.\footnote{Multiple covariates uncorrelated
-  with $X_i$ causes no identification problems in EI.  Ecological
-  inference models that do not incorporate information from the
-  deterministic bounds (such as in Goodman, 1953\nocite{goodman53})
-  are not identified when including $X_i$ or variables related to
-  $X_i$ as covariates (King, 1997: 42).  Thus, to the extent that
-  ecological inference models that incorporate the bounds, such as EI,
-  are estimable when including $X_i$ or covariates that are related to
-  $X_i$, the information that makes this possible is coming from the
-  bounds.  Although no covariates, or one or possibly two are often
-  well identified, the point at which the specification is trying to
-  extract information that is unavailable comes quickly.  Moreover, in
-  the space of the inferences being made, the predictions about the
-  quantities of inferences in EI are not often greatly affected by
-  including more than one covariate at a time.}
+Madigan and Raftery (1994) and many others have shown that Bayesian
+model averaging almost never puts much weight on such models, and
+predictive inferences (unlike some causal inferences) are typically
+better with parsimonious specifications.\footnote{Multiple covariates
+  uncorrelated with $X_i$ causes no identification problems in EI.
+  Ecological inference models that do not incorporate information from
+  the deterministic bounds (such as in Goodman,
+  1953\nocite{goodman53}) are not identified when including $X_i$ or
+  variables related to $X_i$ as covariates (King, 1997: 42).  Thus, to
+  the extent that ecological inference models that incorporate the
+  bounds, such as EI, are estimable when including $X_i$ or covariates
+  that are related to $X_i$, the information that makes this possible
+  is coming from the bounds.  Although no covariates, or one or
+  possibly two are often well identified, the point at which the
+  specification is trying to extract information that is unavailable
+  comes quickly.  Moreover, in the space of the inferences being made,
+  the predictions about the quantities of inferences in EI are not
+  often greatly affected by including more than one covariate at a
+  time.}
 
 \section{Empirical Results}
 \label{s:outcome}
@@ -796,7 +798,7 @@ parsimonious specifications.\footnote{Multiple covariates uncorrelated
 \subsection{The Probability That Gore Would Have Won Without Bad 
 Absentee Ballots}
 
-Figure \ref{fg:margin} portrays the posterior distribution from our
+Figure~\ref{fg:margin} portrays the posterior distribution from our
 analysis of Bush's margin of victory if the bad ballots had not been
 counted (the histogram of 1000 draws from the posterior).  Note first
 that, as required by the procedure, all area for this distribution is
@@ -827,7 +829,7 @@ illegally counted ballots could have had a much more a significant
 effect when combined with slight changes in decisions regarding the
 manual recounts.  We show this result by first focusing on several
 scenarios about the two key counties where a manual recount was
-conducted, Miami Dade and Palm Beach. In Miami Dade County, election
+conducted, Miami Dade and Palm Beach. In Miami Dade county, election
 officials decided to stop the manual recount when they made the
 judgment that they could not meet the recount deadline, set by the
 Florida Supreme Court, 5p.m.  Sunday, November 27.  The partial manual
@@ -930,7 +932,7 @@ reconvened for a second round of counting.  In each place,
 longstanding election rules were bent and even ignored.  Boards
 counted ballots postmarked as many as seven days after the election,
 including some from within the United States.  They counted two
-ballots sent by fax.  Officials in Santa Rosa County even counted five
+ballots sent by fax.  Officials in Santa Rosa county even counted five
 ballots that arrived after the Nov.\ 17 deadline.  Again and again,
 election officials crossed out the words `REJECTED AS ILLEGAL' that
 had been stamped on ballot envelopes.''
@@ -1014,11 +1016,11 @@ than in every county where the Republicans tried to have them counted.
 
 \emph{The Times'} report also helps explain some interesting
 variations in this table.  First, we would have expected more Bush
-votes among the bad ballots than we found in Duval County because it
+votes among the bad ballots than we found in Duval county because it
 had so many military personnel.  However, \emph{The Times} reported
-that an election official on the Duval County canvassing board ``held
+that an election official on the Duval county canvassing board ``held
 the line on counting ballots with missing postmarks.''  Similarly,
-Pasco County has relatively low numbers of military ballots and a
+Pasco county has relatively low numbers of military ballots and a
 small Republican vote share.  So we might expect that this county to
 have had relatively few of the bad ballots being cast for Bush.
 However, the story also described the unusually strong Republican
@@ -1039,16 +1041,14 @@ officials.  If they were as rational and deliberate as \emph{The
   Times} suggested, these would be counties where they expected the
 largest numbers of bad ballots that, if counted, would help Bush's
 cause.  Obviously, we have no such variable, but we do have a variety
-of variables related to this.
-
-Table~\ref{tb:bma} gives the top six models listed in order of the
-posterior probability of being correct.  In the top six, two have the
-largest effects and both are consistent with the theory: The more
-absentee voters registered as Republicans, and the more white absentee
-voters in a district, the more bad ballots were cast for Bush (the
-negative sign indicating that Bush's lead is reduced when these
-ballots are not counted).  The other covariates have comparatively
-small effects.
+of variables related to this.  Table~\ref{tb:bma} gives the top six
+models listed in order of the posterior probability of being correct.
+In the top six, two have the largest effects and both are consistent
+with the theory: The more absentee voters registered as Republicans,
+and the more white absentee voters in a district, the more bad ballots
+were cast for Bush (the negative sign indicating that Bush's lead is
+reduced when these ballots are not counted).  The other covariates
+have comparatively small effects.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{l c r@{, }l d{3} d{-3}}
@@ -1122,8 +1122,8 @@ the subject of the inference is far from the factual evidence.  When
 the counterfactual is very close to the data, however, we stand an
 especially good chance of making valid inferences (King and Zeng,
 2001; Lebow, 2000)\nocite{KinZen01,Lebow00}.  The counterfactuals in
-the case of Florida are especially clear and easily could have
-happened, which makes the results of this case study somewhat more
+the case of Florida are especially clear and could have happened
+easily, which makes the results of this case study somewhat more
 certain than usual.  If the problem of the overseas absentee ballots
 had been litigated and the law applied equally in every county (as
 \emph{Bush v.\ Gore} required of the votes cast on election day), the
@@ -1267,7 +1267,6 @@ which model specification is used.
 \label{fg:sensitivity}
 \end{center} 
 \end{figure}
-
 The other two lines represent the use of different prior distributions
 for the coefficients of the covariate of each model.  We use different
 prior standard deviations for the coefficients of the covariates to
