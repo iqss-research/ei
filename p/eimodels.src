@@ -99,7 +99,13 @@ endp;
  
 proc eimodels_run(ndbuf);
   local i, num, dta, simpars, dbtemp, dbres, titl;
-  
+
+  if _Eprt/=0;
+  ?;
+  "----- EIMODELS_RUN Begins -----";
+  ?;  
+  endif;   
+
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
     if _Eprt/=0;
@@ -140,6 +146,12 @@ proc eimodels_run(ndbuf);
     endif;
     i=i+1;
   endo;  
+
+  if _Eprt/=0;
+    ?;  
+    "----- EIMODELS_RUN Completed -----";
+    ?;
+  endif;   
 
   retp(dbres);
 endp;
@@ -213,7 +225,7 @@ proc 1=eimodels_ave(ndbuf);
   _Eprt=0;
   if _Eprt_temp/=0;
     ?;
-    "Starting the Bayesian Model Averaging...";
+    "----- EIMODELS_AVE Begins -----";
     ?;
   endif;
   num = rows(vnamecv(ndbuf));  
