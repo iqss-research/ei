@@ -1,6 +1,6 @@
 /*
 **  This archive is part of the program EI
-**  (C) Copyright 1995-99 Gary King
+**  (C) Copyright 1995-2001 Gary King
 **  All Rights Reserved.
 */
 /*
@@ -164,7 +164,7 @@ proc 2=quadcml(x,Zb,Zw,y);
 
   if gridl==0;         /* run CML */
     {b,mlogl,grds,vc,ret}=cml(dataset,0,&eiloglik,stval);
-    if in(ret,3|4|6|7|10,1);
+    if in(ret,3|4|6|7|10|99,1);
       ?;
       "*********************************************";
       "CML return code: ";;ret;

@@ -1,8 +1,16 @@
 /*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-2001 Gary King
+**  All Rights Reserved.
+**
+** Bayesian Model Averaging procedures, 
+** by Kosuke Imai and Gary King
+*/
+/*
 ** dbres = eimodels_def(nbuf, num, t, x, n, Zb, Zw);
 **  
-**    This proc adds a data buffer, called mod_d1, mod_d2, etc., 
-**    which contains a particular model specification to the nested data
+**    adds a data buffer, called mod_d1, mod_d2, etc., 
+**    which contains a given model specification to the nested data
 **    buffer bdres.
 **
 ** OUTPUT:
@@ -121,7 +129,6 @@ endp;
 **           extension ".fmt") on the disk (default = no save).
 **
 */
- 
 proc eimodels_run(ndbuf);
   local et, i, num, dta, simpars, dbres, titl, t, x, n, zb, zw;
 
@@ -194,8 +201,6 @@ proc eimodels_run(ndbuf);
   retp(_Eres);
 endp;
 
-
-
 /*
 ** dbres=eimodels_avg(ndbuf)
 **
@@ -238,7 +243,6 @@ endp;
 **                   assigns the uniform prior) (# of model x 1).
 **
 */
-    
 proc 1=eimodels_avg(ndbuf);
   local et, sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
         aggs, betabs, betaws, mfreq, ratio, j, titl, t, x, n, eselect,
@@ -340,15 +344,15 @@ proc 1=eimodels_avg(ndbuf);
       endif; 
       /* check the conditional maximization */
       temp=1/(sumc(1/exp(eiread(dbtemp,"lliksims")))/eiread(dbtemp,"_Esims"));      
-      if eiread(dbtemp,"retcode")/=0;
+      if not(in(eiread(dbtemp,"retcode"),0|3333);
         ?;
-        "WARNING: The value of retcode for Model " i " is not zero: the problem with";
+        "WARNING: The value of retcode for Model " i " is not zero: problem with";
         "         the conditional likelihood maximization (retcode =" temp ").";
         "         This model is excluded from model averaging.";
         ?;
       elseif scalmiss(eiread(dbtemp,"lnir"));
         ?;
-        "WARNING: The value of lnir for Model " i " is missing: the problem with";
+        "WARNING: The value of lnir for Model " i " is missing: problem with";
         "         the conditional likelihood maximization (retcode =" temp ").";
         "         This model is excluded from model averaging.";
         ?;        
@@ -359,13 +363,10 @@ proc 1=eimodels_avg(ndbuf);
         "         the fit of the model and change its specification.";
         ?;
       else;
-        @temp=eiread(dbtemp,"lliksims"); 
-        sims[i]=eiread(dbtemp,"_Esims");@
         @ harmonic mean estimate (unnormalized) @
         margllik[i,1]=i;
         margllik[i,2]=temp;
         sims[i]=eiread(dbtemp,"_Esims");
-        @margllik[i,2]=1/(sumc(1/exp(temp))/sims[i]);@  
         j[i]=1;
       endif;
     endif;
@@ -473,11 +474,3 @@ proc 1=eimodels_avg(ndbuf);
   
   retp(_Eres);
 endp;  
-
-
-
-
-
-
-
-
