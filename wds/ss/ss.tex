@@ -227,7 +227,7 @@ value of the adjustment.  Unless $Z$ has zero mean, the regression
 line from this method tends to miss the cloud of true $\beta_i^b$
 points by a wide margin.
 
-We therefore begin by extending HS's partial adjustment procedure,
+We therefore begin by extending HS's slope adjustment procedure,
 within their linear econometric framework, by developing an adjustment
 for the constant term.  We follow the procedure that we believe Herron
 and Shots would have used if they had done so.\footnote{Indeed, after
@@ -333,33 +333,33 @@ their Section 7.2.  This procedure is intuitive and we can easily
 generalize it to provide a correction for the intercept as well.
 Unfortunately, the procedure itself is flawed for two other reasons.
 First, it conditions on the point estimate for the parameters of the
-truncated bivariate normal, $\breve\psi$, and of $\delta$, and thus
-assumes the absence of estimation uncertainty.  Ignoring uncertainty
-would bias standard errors and confidence intervals, of course, which
-perhaps is why HS do not calculate these.  However, since their
-estimation procedure is nonlinear (due to the ratios in (\ref{adj})),
-ignoring estimation uncertainty also affects their point estimates in
-finite samples.  And second, the procedure calls for drawing only a
-single simulation of $(\beta_i^b,\beta_i^w)$ for each observation.  As
-a result, the estimate includes substantial Monte Carlo approximation
-error.  The error can be eliminated by running their entire procedure
-many times and averaging.  Although fixing these problems would not
-have substantially changed the estimates presented in their paper,
-they will matter in some applications.  We therefore develop and use a
-new estimation algorithm that corrects these problems, as well as
-providing the ability to compute standard errors and confidence
-intervals, which were not available in HS's version.\footnote{To
-  define our revised estimation algorithm, let a symbol with a tilde
-  on it denote a value of that quantity randomly drawn from its
-  posterior density.  For a given $X$ and $T$: (1) run EI on $X$ and
-  $T$; (2) regress $\hat\beta_i^b$ (which comes from EI) on $Z_i$
-  yielding the estimated intercept $\hat\alpha_U$ and slope
-  $\hat\gamma_U$; (3) draw $\tilde\psiu$ from its posterior provided
-  by EI; (4) take $p$ draws of $(\tilde\beta_i^b,\tilde\beta_i^w)$
-  from a truncated normal density with parameter vector $\tilde\psiu$,
-  (5) compute a new $T_i$ as $\tilde
-  T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run EI on $X_i$
-  and $\tilde T_i$ to yield estimates
+truncated bivariate normal, $\breve\psi$, and of $\delta_0^b$ and
+$\delta_1^b$, and thus assumes the absence of estimation uncertainty.
+Ignoring uncertainty would bias standard errors and confidence
+intervals, of course, which perhaps is why HS do not calculate these.
+However, since their estimation procedure is nonlinear (due to the
+ratios in (\ref{adj})), ignoring estimation uncertainty also affects
+their point estimates in finite samples.  And second, the procedure
+calls for drawing only a single simulation of $(\beta_i^b,\beta_i^w)$
+for each observation.  As a result, the estimate includes substantial
+Monte Carlo approximation error.  The error can be eliminated by
+running their entire procedure many times and averaging.  Although
+fixing these problems would not have substantially changed the
+estimates presented in their paper, they will matter in some
+applications.  We therefore develop and use a new estimation algorithm
+that corrects these problems, as well as providing the ability to
+compute standard errors and confidence intervals, which were not
+available in HS's version.\footnote{To define our revised estimation
+  algorithm, let a symbol with a tilde on it denote a value of that
+  quantity randomly drawn from its posterior density.  For a given $X$
+  and $T$: (1) run EI on $X$ and $T$; (2) regress $\hat\beta_i^b$
+  (which comes from EI) on $Z_i$ yielding the estimated intercept
+  $\hat\alpha_U$ and slope $\hat\gamma_U$; (3) draw $\tilde\psiu$ from
+  its posterior provided by EI; (4) take $p$ draws of
+  $(\tilde\beta_i^b,\tilde\beta_i^w)$ from a truncated normal density
+  with parameter vector $\tilde\psiu$, (5) compute a new $T_i$ as
+  $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run EI
+  on $X_i$ and $\tilde T_i$ to yield estimates
   ($\hat{\tilde\beta}_i^b,\hat{\tilde\beta}_i^w$) for all $i$; (7)
   regress ($\hat{\tilde\beta}_i^b-\beta_i^b$) on $\beta_i^b$ to
   estimate $\delta_0^b$ and $\delta_1^b$, which we label
@@ -461,9 +461,9 @@ neither of which alters the conclusion that it is inappropriate for
 the purpose of evaluating second-stage regressions.\footnote{A second
   interpretation of the HS Monte Carlo procedure is that $\gamma_R$ is
   the causal effect of $Z_i$ on $\beta_i^b$.  In fact, since many
-  second stage regressions are intended to be causal, this is the most
-  appropriate intepretation in some situations.  Since $Z_i$ was
-  created endogenously, no matter how one exogenously changes $Z_i$,
+  second stage regressions are intended to be causal, this is often
+  the most appropriate intepretation.  Since $Z_i$ was created
+  endogenously, no matter how one exogenously changes $Z_i$,
   $\beta_i^b$ will not budge, and hence, by this interpretation, the
   Monte Carlo procedure is setting the causal effect to zero:
   $\gamma_R=0$.  Thus, because the rightmost column of Table
@@ -477,14 +477,14 @@ the purpose of evaluating second-stage regressions.\footnote{A second
   variable that is estimated (by EI or otherwise).
   
   A third way to interpret the true value in HS's simulations is
-  conditional on \emph{each} randomly generated set of $\eta_i$'s
+  conditional on \emph{each} randomly generated set of $\tau_i$'s
   ($i=1,\dots,n$), and hence conditional on each randomly generated
   $Z_i$: $E(\beta_i^b|Z_i)=\alpha_R+\gamma_R Z_i$.  By this
   interpretation, each random draw of a set of $n$ observations from
   the Monte Carlo data generating process produces a \emph{different}
   true value of $\gamma_R$, the value of which is neither set nor
   observed by the researcher.  This value can be estimated by a LS
-  regression of the the true $\beta_i^b$ on $Z_i$, and it can also be
+  regression of the true $\beta_i^b$ on $Z_i$, and it can also be
   estimated by EI-R.  Even if we assume that the LS estimator is
   better (because it uses the true $\beta_i^b$), comparing the two
   estimators does not reveal which is closer to the unknown
@@ -501,7 +501,7 @@ the purpose of evaluating second-stage regressions.\footnote{A second
   implies that on average $\gamma_R=1$, and leads exactly to the first
   interpretation and to a regression of $\beta_i^b$ on $Z_i$
   underestimating the truth.  (That is,
-  $E_\eta[E(\beta_i^b|Z_i)]=\alpha_R+\gamma_R \beta_i$ which implies
+  $E_\tau[E(\beta_i^b|Z_i)]=\alpha_R+\gamma_R \beta_i$ which implies
   that $\alpha_R=0$ and $\gamma_R=1$.)}
 
 Whichever interpretation one has of the HS Monte Carlo procedure, it
