@@ -18,6 +18,7 @@ ei.dec
     _Ei2_m                           : matrix
     _ei2_mta                         : matrix
     _eimetar                         : matrix
+    _ei_cov                          : matrix
     _Erho                            : matrix
     _Esigma                          : matrix
     _Ebeta                           : matrix

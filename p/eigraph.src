@@ -120,6 +120,10 @@
 ** _EIMetaR = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
 **          this global denotes which of the imputed data buffers stored
 **          in dbuf should be accessed when running this procedure (default=1).
+** _EI_cov = 2x1 vector. specifies which covariate to use for plots zt,
+**           ztc, and ztfit. The first element indicates the column number
+**           of zb and the second element indicates the column number of zw.
+**           (default={1,0}; use zb[.,1]).
 */
 #include ei.ext;
 proc 1=eigraph(dbuf,str);
@@ -391,24 +395,23 @@ proc 1=eigraph(dbuf,str);
     clearg _plctrl,_plotsiz;
     _plctrl=-1;
     _plotsiz={5,5};
-    x=eiread(dbuf,"x");
+    c=eiread(dbuf,"_Eeta");
+    t=eiread(dbuf,"t");
     zb=eiread(dbuf,"zb");
     zw=eiread(dbuf,"zw");
-    if (scalone(zb) and scalone(zw)) or sumc(x.==zb)==rows(x) or
-       sumc(x.==zb)==rows(x) or cols(zb)>1 or cols(zw)>1 or 
-       (cols(zb)==1 and cols(zw)==1 and sumc(zb.==zw)/=rows(zb));
-      "eigraph: ztc only works with one covariate other than x.";
+    if c==1 or c==2 or c==3 or (scalone(zb) and scalone(zw)); 
+      "eigraph: ztc only works with covariates other than x.";
       #ifdos;
         ndpclex;
       #endif;
       retp(miss(1,1));
     endif;    
-    if scalone(zb);
-     z=zw;
-    else;
-     z=zb;
+    if not(scalzero(_ei_cov[1]));
+      z=zb[.,_ei_cov[1]];
     endif;
-    t=eiread(dbuf,"t");
+    if not(scalzero(_ei_cov[2]));
+      z=zw[.,_ei_cov[2]];
+    endif;
     if scalmiss(_eigraph_Zhi); 
       a=minc(z);
     else;
@@ -485,7 +488,7 @@ proc 1=eigraph(dbuf,str);
 
   elseif str$=="ztfit";			@ z by t with Exp and 80%CI's  @
     b=eiread(dbuf,"expvarcisz");
-    if not(scalmiss(b));  @ CI's drawn only if one Z is specified @
+    if not(scalmiss(b));  @ CI's drawn only if Z's are specified @
       graphgk;
       _plineth=0+_eigraph_thick;
       plines(b[.,1],b[.,3]);
@@ -523,15 +526,10 @@ proc 1=eigraph(dbuf,str);
     nextwind;
       graphset;
       eigraph(dbuf,"tomogp");
-    if (scalone(zb) and scalone(zw)) or x==zb or x==zw or cols(zb)>1 or cols(zw)>1 
-       or (cols(zb)==1 and cols(zw)==1 and zb/=zw);
-      endwind;
-    else;
-      nextwind;
-        graphset;
-        eigraph(dbuf,"ztfit");
-      endwind;
-    endif;
+    nextwind;
+      graphset;
+      eigraph(dbuf,"ztfit");
+    endwind;
 
   elseif str$=="fitt";		        @ tomog and mlfit  @
     x=eiread(dbuf,"x");   
@@ -1762,7 +1760,24 @@ proc checkginputs(dbuf);
       "In _eigraph_pro, Column 2 must be > Column 1";
     endif;
   endif;
-    
+
+  if rows(_ei_cov)/=2 or cols(_ei_cov)/=1;
+    retp("ei: _ei_cov must be a 2x1 vector");
+  else; 
+    a=eiread(dbuf,"zb");
+    b=eiread(dbuf,"zw");
+    if _ei_cov[1]>cols(a);
+      retp("ei: bad inputs for _ei_cov");
+    elseif _ei_cov[2]>cols(b);
+      retp("ei: bad inputs for _ei_cov");
+    elseif _ei_cov[1]==0 and _ei_cov[2]==0;
+      retp("ei: bad inputs for _ei_cov");	
+    elseif _ei_cov[1]/=0 and _ei_cov[2]/=0 and 
+           sumc(a[.,_ei_cov[1]]./=b[.,_ei_cov[2]])>0;
+      retp("ei: bad inputs for _ei_cov");
+    endif;	
+  endif;
+  
   retp("");
 endp;
 
@@ -1864,3 +1879,4 @@ proc 0=profileit(dbuf,r);
   endfor;
   endfor;
 endp;
+

@@ -32,6 +32,10 @@
 **              if {.} do not recompute;
 ** _EIread_Zw = recompute betabs based on new values of covariates, Zw,
 **              if {.} do not recompute;
+** _EI_cov = 2x1 vector. specifies which covariate to use for tsimsz,
+**           expvarciz, and expvarcisz. The first element indicates the column 
+**           number of zb and the second element indicates the column
+**           number of zw (default={1,0}; use zb[.,1]).
 **
 ** STORED (can also be retrieved with vread):
 ** _EalphaB  value of this global (prior on alphaB)
@@ -1263,9 +1267,17 @@ proc eiread(dbuf,str);
     let bnds[2,2]=0 1 0 1;
     {bb0,bw0,sb,sw,rho}=eirepar(b,0,0,0);
     res=zeros(a,_Esims);
-    if scalzero(c) and (not(scalone(zb)) or not(scalone(zw)));
-      bb=bb0+b[(rows(b)-cols(zb)-cols(zw)+1):(rows(b)-cols(zw))]'*meanwc(zb,n);
-      bw=bw0+b[(rows(b)-cols(zw)+1):rows(b)]*meanwc(zw,n); 
+    if scalzero(c) and (not(scalone(zb)) or not(scalone(zw))); 
+      if scalone(zb);
+	bb=bb0;
+	bw=bw0+b[2:(1+cols(zw))]'*meanwc(zw,n); 
+      elseif scalone(zw);
+	bb=bb0+b[2:(1+cols(zb))]'*meanwc(zb,n);
+	bw=bw0;
+      else;
+	bb=bb0+b[2:(1+cols(zb))]'*meanwc(zb,n);
+	bw=bw0+b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
+      endif;      
       bs=rndbtn(bb,bw,sb,sw,rho,bnds,_Esims);
       for i (1, a, 1);
 	t=bs[.,1].*x[i+0]+bs[.,2].*(1-x[i+0]);
@@ -1284,45 +1296,76 @@ proc eiread(dbuf,str);
     res=x~res;
 
   elseif str$=="tsimsz"; @ sims from p(T|wmeanc(X,N),Z=seqas(min(Z),max(Z),100) @       
+    c=eiread(dbuf,"_Eeta");
+    n=eiread(dbuf,"n");
     x=eiread(dbuf,"x");   
     zb=eiread(dbuf,"zb");
     zw=eiread(dbuf,"zw");
-    if (scalone(zb) and scalone(zw)) or sumc(x.==zb)==rows(x) or
-       sumc(x.==zb)==rows(x) or cols(zb)>1 or cols(zw)>1 or 
-       (cols(zb)==1 and cols(zw)==1 and sumc(zb.==zw)/=rows(zb));
-      "eiread: tsimsz only works with one covariate other than x.";
+    if c==1 or c==2 or c==3 or (scalone(zb) and scalone(zw)); 
+      "ei: tsimsz only works with covariates other than x.";
       #ifdos;
         ndpclex;
       #endif;
       retp(miss(1,1));
+    endif;    
+    if rows(_ei_cov)/=2 or cols(_ei_cov)/=1;
+      "ei: _ei_cov must be a 2x1 vector";
+      retp(miss(1,1));
+    else; 
+      if _ei_cov[1]>cols(zb);
+	"ei: bad inputs for _ei_cov";
+        retp(miss(1,1));
+      elseif _ei_cov[2]>cols(zw);  
+	"ei: bad inputs for _ei_cov";
+        retp(miss(1,1));
+      elseif _ei_cov[1]==0 and _ei_cov[2]==0;
+	"ei: bad inputs for _ei_cov";	
+	retp(miss(1,1));      
+      elseif _ei_cov[1]/=0 and _ei_cov[2]/=0 and 
+        sumc(zb[.,_ei_cov[1]]./=zw[.,_ei_cov[2]])>0;
+        "ei: bad inputs for _ei_cov";
+        retp(miss(1,1));
+      endif;	
     endif;
+
     a=100;
-    x=meanwc(x,eiread(dbuf,"n"));
-    if scalone(zb);
-      z=seqase(minc(zw),maxc(zw),a);
-      e=meanc(zw);
-    else;
-      z=seqase(minc(zb),maxc(zb),a);
-      e=meanc(zb);
+    x=meanwc(x,n);
+    if not(scalzero(_ei_cov[1]));
+      z=zb[.,_ei_cov[1]];
     endif;
+    if not(scalzero(_ei_cov[2]));
+      z=zw[.,_ei_cov[2]];
+    endif;
+    e=meanc(z);
+    z=seqase(minc(z),maxc(z),a);
     b=eiread(dbuf,"phi");
-    if scalmiss(b);
-       res=miss(1,1);
-    elseif scalone(zw) and not(scalone(zb));
-      b[rows(b)-1]=b[2];
-    elseif scalone(zb) and not(scalone(zw));
-      b[rows(b)]=b[3];
-    elseif not(scalone(zb)) and not(scalone(zw));
-      b[rows(b)-1]=b[2];
-      b[rows(b)]=b[4];
-    endif;
     call eiread(dbuf,"_Ez");
     {bb0,bw0,sb,sw,rho}=eirepar(b,0,0,0);
     res=zeros(a,_Esims);
     let bnds[2,2]=0 1 0 1;
     for i (1, a, 1);
-      bb=bb0+b[rows(b)-1]*(z[i+0]-e);
-      bw=bw0+b[rows(b)]*(z[i+0]-e);
+      if scalzero(_ei_cov[1]);
+	if scalone(zb);
+	  bb=bb0;
+	else;
+	  bb=bb0+b[2:(1+cols(zb))]'*meanwc(zb,n);
+	endif;  
+	bw=bw0+b[(2+cols(zb)+_ei_cov[2])]*(z[i+0]-e-meanwc(zw[.,_ei_cov[2]],n))
+	    +b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
+      elseif scalzero(_ei_cov[2]);
+	if scalone(zw);
+	  bw=bw0;
+	else;
+	  bw=bw0+b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
+	endif;  
+	bb=bb0+b[(1+_ei_cov[1])]*(z[i+0]-e-meanwc(zb[.,_ei_cov[1]],n))
+	    +b[2:(cols(zb)+1)]'*meanwc(zb,n);
+      else;      
+	bb=bb0+b[(1+_ei_cov[1])]*(z[i+0]-e-meanwc(zb[.,_ei_cov[1]],n))
+	    +b[2:(cols(zb)+1)]'*meanwc(zb,n);
+	bw=bw0+b[(1+cols(zb)+_ei_cov[2])]*(z[i+0]-e-meanwc(zw[.,_ei_cov[2]],n))
+	    +b[(2+cols(zb)):(1+cols(zb)+cols(zw))]'*meanwc(zw,n);
+      endif;
       bs=rndbtn(bb,bw,sb,sw,rho,bnds,_Esims);
       t=bs[.,1].*x+bs[.,2].*(1-x);
       res[i+0,.]=sortc(t,1)';
@@ -1340,18 +1383,17 @@ proc eiread(dbuf,str);
     endif;
 
   elseif str$=="expvarciz";		@ z~20%CI~mean~80%ci @
+    c=eiread(dbuf,"_Eeta");
     x=eiread(dbuf,"x");
     zb=eiread(dbuf,"Zb");
     zw=eiread(dbuf,"Zw");
-    if (scalone(zb) and scalone(zw)) or sumc(x.==zb)==rows(x) or
-       sumc(x.==zb)==rows(x) or cols(zb)>1 or cols(zw)>1 or 
-       (cols(zb)==1 and cols(zw)==1 and sumc(zb.==zw)/=rows(zb));
-      "eiread: expvarciz only works with one covariate other than x.";
+    if c==1 or c==2 or c==3 or (scalone(zb) and scalone(zw)); 
+      "eigraph: ztc only works with covariates other than x.";
       #ifdos;
         ndpclex;
       #endif;
       retp(miss(1,1));
-    endif;
+    endif;    
     b=eiread(dbuf,"tsimsz");
     if scalmiss(b);
       res={.};
