@@ -299,20 +299,13 @@ proc ei(t,x,tvap,Zb,Zw);
     _Eres=vput(_Eres,betaBs,"betaBs");@ no need to save betaWs; see eiread @
   endif;
 
-  gosub timing;                         @ subroutine @
+  gosub timing;   
   retp(res);
 
   timing:
   if _Eprt>0;
     et=hsec-et;				@ timing end  @
     fmtt;
-/*
-    flat=eicheckr(__macheps);
-    if flat;
-      "WARNING: the CDFBVN function is imprecise for your problem near";
-      "  the maximum likelihood value.";
-    endif;
-*/    
     if _GhActual/=(1~0);?;
       "WARNING: Your -hessian was not positive definite, and so a variance";
       "  matrix could not be computed by the usual methods.  Most statistical";
@@ -322,7 +315,8 @@ proc ei(t,x,tvap,Zb,Zw);
       "  eiread's ghactual and the _EI_vc global for methods of computation.)";
       "  Check eigraph's 'tomogS' and 'fit' to verify that the model fits";
       "  the data and the simulations are reasonable. Use only with caution";
-      "  and if you are comfortable taking these steps.";?;
+      "  and if you are comfortable taking these steps.  An alternative is to";
+      "  rerun with _EisFac=-2";?;
     endif;
     
     "Done. Time in minutes=";;et/100/60;

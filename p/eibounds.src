@@ -86,7 +86,7 @@ endp;
 **         rows: lambdaB, lambdaW
 */
 proc 2=bounds2(v,t,x,n);
-  clearg LlambdaB,UlambdaB,LlambdaW,UlambdaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,
+  local LlambdaB,UlambdaB,LlambdaW,UlambdaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,
   tomx,z,o,m,d;
   omx=1-x;
   Nb=x.*N;
@@ -108,6 +108,12 @@ proc 2=bounds2(v,t,x,n);
     UlambdaB[c]=minr(d,x[c])./(minr(d,x[c])+maxr(z[c],(t[c]-d)-(1-x[c])));
     LlambdaW[c]=maxr(z[c],d-x[c])./(maxr(z[c],d-x[c])+minr(t[c]-d,1-x[c]));
     UlambdaW[c]=minr(d,1-x[c])./(minr(d,1-x[c])+maxr(z[c],(t[c]-d)-x[c]));
+    
+    /* fix unanimous districts */
+    LlambdaB[c]=missrv(LlambdaB[c],v[c]);
+    UlambdaB[c]=missrv(UlambdaB[c],v[c]);
+    LlambdaW[c]=missrv(LlambdaW[c],v[c]);
+    UlambdaW[c]=missrv(UlambdaW[c],v[c]);
   endif;
     
   if not(scalmiss(c0));			@ homogeneously white @
