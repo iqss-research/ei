@@ -88,6 +88,7 @@ proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
     else;
       "Model " num "is successfully added to the output data buffer.";
       ?;
+    endif;
   endif; 
 
   ndbuf=vput(ndbuf,_Eres,"mod_d"$+ftos(num,"*.*lf",1,0));  
