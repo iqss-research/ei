@@ -1036,8 +1036,9 @@ proc ei2(V,dbuf,Gb,Gw);
   t=recode(t,t.<=_Enumtol,_Enumtol/2);
   _n=eiread(dbuf,"n");
   betabs=eiread(dbuf,"rnbetabs");
-  if _ei2_m == -1; 
-    x2=missrv(eiread(dbuf,"betab"),0).*x./t;
+  mpx=missrv(eiread(dbuf,"betab"),0).*x./t;
+  if _ei2_m == -1; /* if _ei2_m = -1, use the posterior mean */
+    x2=mpx;
     ei2m = 1;
   else;
     x2=missrv(betabs[.,1:_ei2_m],0).*x./t;
@@ -1081,7 +1082,7 @@ proc ei2(V,dbuf,Gb,Gw);
   /* prepare output */
   idbuf=vput(idbuf,lambdaBs[.,2:cols(lambdaBs)],"betaBs");
   idbuf=vput(idbuf,x2k[.,2:cols(x2k)],"x2");
-  mpx=missrv(eiread(dbuf,"betab"),0).*eiread(dbuf,"x")./t;
+  mpx=recode(mpx,(mpx.>1)~(mpx.<0),1|0);
   idbuf=vput(idbuf,mpx,"x");
   idbuf=vput(idbuf,Esims,"_Esims");
   idbuf=vput(idbuf,_t,"_t");
