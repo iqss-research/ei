@@ -5,7 +5,7 @@
 */
 
 /* general */
-declare string _Eversion != "EI Version: 1.63, 2/3/2000";
+declare string _Eversion != "EI Version: 1.7, 8/2/2001";
 declare matrix _Echeck != 1;
 declare matrix _Eres != 0;
 declare matrix _Esims != 100;

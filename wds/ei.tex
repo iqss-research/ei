@@ -45,7 +45,7 @@
     identical to the original. To request an exception, please contact
     Gary King.}}
 
-\date{Version 1.65, 17 May 2001}
+\date{Version 1.7, 5 August 2001}
 \newcommand{\Tiny}{\tiny}
 \newcommand{\sump}{\sum_{i=1}^p}
 \newcommand{\mean}{\frac{1}{p}\sump}
@@ -354,35 +354,39 @@ as the variables are scaled to the [0,1] interval (see Section 14.3).
     district-level estimates and information.
   \end{enumerate}
 
-\item It is also possible to define, run, and average multiple \EI
-  models.  The procedure, \texttt{ndbuf2 =
-    eimodels\_def(ndbuf1,"num",t,x,n,zb,zw);}, assigns a model number,
-  \texttt{"num"}, to each model, and stores it in the output meta data
-  buffer, \texttt{ndbuf2}. This meta data buffer contains all the
-  other model definitions previously stored in the input meta data
-  buffer, \texttt{ndbuf1}.  \texttt{t,x,n,zb,zw} are the usual inputs
-  to \texttt{ei()}.  \texttt{ndbuf1} is the input meta data buffer
-  where other models have been stored. The procedure, \texttt{ndbuf2 =
-    eimodels\_run(ndbuf);}, runs \texttt{ei())} on all the models
-  defined and stored in the meta data buffer, \texttt{ndbuf1}, which
-  is the output of the previous procedure, \texttt{eimodels\_def()}.
-  The resulting meta data buffer, \texttt{ndbuf2}, contains
-  \texttt{ei()} results for all the models.  Finally, the procedure,
-  \texttt{dbuf = eimodels\_ave(ndbuf);}, implements the method called,
-  \textit{Bayesian Model Averaging}, to combine the results from
-  multiple models with weights indicating how well the data supports
-  each model.  The input meta data buffer, \texttt{ndbuf}, is the
-  output from the procedure, \texttt{eimodels\_run();}, and the
-  results of this model averaging can be read using \texttt{v =
-    eiread(dbuf);} where \texttt{dbuf} is the output data buffer. To
-  use this method, the prior distribution for covariates have to be
-  specified for each model using the global variables,
-  \texttt{\_EalphaB} and \texttt{\_EalphaB}, so that the resulting
-  posterior distribution is proper.
-
 \end{enumerate}
 
+\section{Advanced Topics: Bayesian Model Averaging}
+
+\EI includes facilities to define and run multiple \EI models all at
+once, and to combine them using formal Bayesian model averaging
+procedures.  The procedure, \texttt{ndbuf1 =
+  eimodels\_def(ndbuf1,num,t,x,n,zb,zw);}, enables you to define a
+model specificiation (including all input variables
+\texttt{t,x,n,zb,zw}, and all globals input to \EI), to assign it a
+scalar integer model number, \texttt{num}, and to store it in a ``meta
+data buffer,'' \texttt{ndbuf1}.  The meta data buffer contains a set
+of individual data buffers, each containing everything needed to
+define one specification.  You can run \texttt{eimodels\_def} multiple
+times to store as many models in \texttt{ndbuf1} as needed (the first
+time you run the procedure, set \texttt{ndbuf1="";}).
+
+Once all model specifications have each been defined and stored, use
+\texttt{ndbuf2 = eimodels\_run(ndbuf1);} to run \texttt{ei())} on each
+of the stored specifications and save the results in another meta data
+buffer, \texttt{ndbuf2}.  Finally, run \texttt{dbuf =
+  eimodels\_avg(ndbuf1);} to use Bayesian Model Averaging to combine
+the results from multiple models with weights (the procedure
+calculates) indicating how much the data supports each model.  The
+results of this model averaging can be read using \texttt{v =
+  eiread(dbuf);} where \texttt{dbuf} is the output data buffer. To use
+this method, the prior distribution for covariates should be specified
+for each model using the global variables, \texttt{\_EalphaB} and
+\texttt{\_EalphaB}, so that the resulting posterior distribution is
+known to be proper.
+
 % ------------------------------------------------------------------
+
 \section{Reference}
 
 \subsection{EI} \label{ei}
@@ -1188,93 +1192,98 @@ not be changed for the most common uses.
 \markright{Reference: EIMODELS}
 
 \paragraph{\underline{Format}:} 
-\texttt{ndbuf2 = eimodels\_def(ndbuf1,"num",t,x,n,zb,zw);}, where
-\texttt{ndbuf1} is an input meta data buffer which contains all the model
-specifications previously defined and to which the current model
-definition will be added, \texttt{"num"} is the model number to be
-assigned to the current model definition, \texttt{t}, \texttt{x}, and
-\texttt{n} are $p\times 1$ vectors, \texttt{zb} is a scalar 1 for no
-covariates or a $p\times k^b$ matrix of covariates, and \texttt{zw} is
-the scalar 1 for no covariates or a $p\times k^w$ matrix of covariates
-(do not include a constant term).  \texttt{ndbuf2} is an output meta data
-buffer which contains the current model definition along with the
-previously stored ones.
+\texttt{ndbuf2 = eimodels\_def(ndbuf1,num,t,x,n,zb,zw);}, where
+\texttt{ndbuf1} is an input meta data buffer which contains all the
+model specifications previously defined as separate EI data buffers
+(or ``'' for the first run), and to which the current model definition
+will be added, \texttt{num} is the scalar integer model number to be
+assigned to the current model definition, and the rest are defined as
+in \texttt{ei}: \texttt{t}, \texttt{x}, and \texttt{n} are $p\times 1$
+vectors, \texttt{zb} is a scalar 1 for no covariates or a $p\times
+k^b$ matrix of covariates, and \texttt{zw} is the scalar 1 for no
+covariates or a $p\times k^w$ matrix of covariates (do not include a
+constant term).  \texttt{ndbuf2} is an output meta data buffer which
+contains the current model definition along with the previously stored
+ones.
 
 \texttt{ndbres = eimodels\_run(ndbuf2);}, where \texttt{ndbuf2} is the
 output meta data buffer from \texttt{eimodels\_def} which contains
-multiple model definitions. \texttt{ndbres} is the output meta data buffer.
+multiple model definitions. \texttt{ndbres} is the output meta data
+buffer, containing one data buffer for each data buffer of definitions
+in \texttt{ndbuf2}.
 
-\texttt{dbres = eimodels\_ave(ndbres);}, where \texttt{ndbres} is the
-output meta data buffer from \texttt{eimodels\_run} which contains the
-results of \texttt{ei} run for multiple models. \texttt{dbres} is the
-output data buffer.
+\texttt{dbres = eimodels\_avg(ndbres);}, where \texttt{ndbres} is the
+output meta data buffer from \texttt{eimodels\_run} containing the
+results of \texttt{ei} run for multiple models. \texttt{dbres} is a
+regular output data buffer.
 
 \paragraph{\underline{Purpose}:}
 \texttt{eimodels\_def} stores multiple model definitions in a meta
-data buffer by adding one model at a time. Each model can use
+data buffer by adding one model at a time.  Each model can use
 different covariates and/or different values of various global
-variables used for \texttt{ei} estimation. Results are stored in
-\texttt{ndbuf2}, a meta data buffer which should be read with
-\texttt{eiread} with the model number specified as the value of the
-global variable, \texttt{\_EIMetaR}.
+variables used for \texttt{ei} estimation.  \texttt{eimodels\_def}
+only stores model specifications; it does not run any models.  Results
+are stored in \texttt{ndbuf2}, a meta data buffer which should be read
+with \texttt{eiread} with the model number specified as the value of
+the global variable, \texttt{\_EIMetaR}.
 
 \texttt{eimodels\_run} takes the output meta data buffer from
 \texttt{eimodels\_def} as an input and runs all the models stored in
-that data buffer. The output is another meta data buffer which
+that meta data buffer.  The output is another meta data buffer which
 contains the results of \texttt{ei} runs for each model as a single
-data buffer. This output data buffer should be read with
+component data buffer. This output data buffer should be read with
 \texttt{eiread} and \texttt{eigraph} with the model number specified
-using the global variable, \texttt{\_EImetaR}.
+using the global variable, \texttt{\_EImetaR} (the default for which
+is 1, for the first model).
 
 \texttt{eimodels\_def} and \texttt{eimodels\_run} are useful when you
-have different number of \EI models to run but want to store the
-results in one meta data buffer rather than saving them as a separate
-data buffer. The two procedures can also be used for the method called
-\textit{Bayesian Model Averaging} as explained below.
+have different numbers of \EI models to run but want to store the
+results in one meta data buffer rather than saving them as many
+separate data buffers. The two procedures can also be used for the
+method called \textit{Bayesian Model Averaging} as explained below.
 
-\texttt{eimodels\_ave} takes the output meta data buffer from
-\texttt{eimodels\_run} as an input and implements the Bayesian Model
-Averaging over all the models stored in that data buffer. For the use
-of this procedure, three global variables are required. First,
-\texttt{\_EiLikS} should be set to 1 for each model so that the output
-data buffer from \texttt{eimodels\_run} stores the values of the
-log-likelihood at each simulation. These values are necessary to
-compute the marginal likelihood, which is used for the computation of
-the posterior model probabilities. Second, when a model includes
-covariates, the prior distributions for $\alpha^a$ and $\alpha^b$ need
-to be specified for the Bayesian Model Averaging in order to ensure
-that the posterior distribution is proper. The two global variables,
-\texttt{\_Ealpha\_B} and \texttt{\_Ealpha\_W}, perform this function.
-Finally, \EI uses the harmonic mean estimator, a variety of importance
-sampling estimation, for computing the marginal likelihoods. It is
-recommended that the number of simulations, \texttt{\_Esims}, should
-be set to 500 or more in order to improve the precision of this
-estimation.  Finally, the output data buffer should be read with
-\texttt{eiread}.
+\texttt{eimodels\_avg} takes the output meta data buffer from
+\texttt{eimodels\_run} as an input and implements Bayesian Model
+Averaging over all the models stored in that data buffer. To use this
+procedure, three global variables are required for each of the
+component EI runs.  First, \texttt{\_EiLikS} should be set to 1 for
+each model so that the output data buffer from \texttt{eimodels\_run}
+stores the values of the log-likelihood at each simulation. These
+values are necessary to compute the marginal likelihood, which is used
+for the computation of the posterior model probabilities. Second, when
+a model includes covariates, the prior distributions for $\alpha^a$
+and $\alpha^b$ need to be specified for Bayesian Model Averaging in
+order to ensure that the posterior distribution is proper. The two
+global variables, \texttt{\_Ealpha\_B} and \texttt{\_Ealpha\_W},
+perform this function.  Finally, \EI uses the harmonic mean estimator,
+a variant of importance sampling estimation, for computing the
+marginal likelihoods. It is recommended that the number of
+simulations, \texttt{\_Esims}, should be set to 500 or more in order
+to improve the precision of this estimation.  Finally, the output data
+buffer should be read with \texttt{eiread}.
 
 \paragraph{\underline{Example}:}
-The following example uses the sample file \texttt{sample.asc} that comes
-with \EI.  This file is used in the example of \texttt{ei}. Consult
-section \ref{ei} for the description of data and explanation of the
-commands to load data set. The code first stores the three different
-model definitions in a meta data buffer using \texttt{eimodels\_def},
-and then it runs \texttt{ei} for all three models. Finally, it
-implements the Bayesian Model Averaging to combine the results from the
-three models using \texttt{eimodels\_ave}. 
+The following example uses the sample file \texttt{sample.asc} that
+comes with \EI.  Consult section \ref{ei} for the description of data
+and explanation of the commands to load the data set. The code first
+stores the three different model definitions in a meta data buffer
+using \texttt{eimodels\_def}, and then it runs \texttt{ei} for each of
+the three models. Finally, it implements the Bayesian Model Averaging
+to combine the results from the three models using
+\texttt{eimodels\_avg}.
 \begin{verbatim}
-new;                        @ clear workspace @
-library ei;                 @ initialize libraries @
-clear t,x,n;                @ clear all variables in dataset @
-loadvars sample.asc t x n;  @ load variables from disk file @
-ndbuf="";                   @ initialize a data buffer @
+new;                                     @ clear workspace @
+library ei;                              @ initialize libraries @
+clear t,x,n;                             @ clear all variables in dataset @
+loadvars sample.asc t x n;               @ load variables from disk file @
 
 eiset;                                   @ clear for Model 1 @
 _Eres = vput(_Eres, "Model 1", "titl");  @ print out model number @
 _Eeta = 1;                               @ zb=x, zw=1 @
 _Ealpha_B = {0 2};                       @ prior for betaB @
 _Esims = 1000;                           @ number of simulation @
-_EiLlikS = 1;           @ store log-likelihood at each simulation @
-ndbuf = eimodels_def(ndbuf,1,t,x,n,1,1); @ save Model 1 @
+_EiLlikS = 1;                            @ store log-likelihood at each simulation @
+ndbuf = eimodels_def("",1,t,x,n,1,1);    @ save Model 1 @
 
 eiset;                                   @ clear for Model 2 @
 _Eres = vput(_Eres, "Model 2", "titl");
@@ -1285,7 +1294,7 @@ _EiLlikS = 1;
 ndbuf = eimodels_def(ndbuf,2,t,x,n,1,1); @ save Model 2 @
 
 eiset;                                   @ clear for Model 3 @
-_Eres = vput(_Eres, "Model 2", "titl");
+_Eres = vput(_Eres, "Model 3", "titl");
 _Eeta = 3;                               @ zb=x, zw=x @
 _Ealpha_B = {0 2};                       @ prior for betaB @
 _Ealpha_W = {0 2};                       @ prior for betaW @
@@ -1293,33 +1302,33 @@ _Esims = 1000;
 _EiLlikS = 1;
 ndbuf = eimodels_def(ndbuf,3,t,x,n,1,1); @ save Model 3 @
 
-save rvdef = ndbuf;       @ save ndbuf in file rvdef.fmt @
-
-ndbres = eimodels_run(ndbuf);  @ run ei on all the models @
-save rvres = ndbres;           @ save ndbres in file rvres.fmt @
+save rvdef = ndbuf;                      @ save ndbuf in file rvdef.fmt @
+ndbres = eimodels_run(ndbuf);            @ run ei on all the models @
+save rvres = ndbres;                     @ save ndbres in file rvres.fmt @
 
 _EIMetaR = 1;
-call eiread(ndbres, "sum");    @ summary info for Model 1 @
+call eiread(ndbres, "sum");              @ summary info for Model 1 @
 
 _EIMetaR = 3;
 graphon;
-call eigraph(ndbres, "tomog"); @ tomography plot for Model 3 @
+call eigraph(ndbres, "tomog");           @ tomography plot for Model 3 @
 
-_EI_bma_prior = {0.2,0.4,0.4}; @ prior model probabilities @
-dbres = eimodels_ave(ndbres);  @ Bayesian Model Averaging @
-save rvbma = dbres;            @ save dbres in file rvbma.fmt @
+_EI_bma_prior = {0.2,0.4,0.4};           @ set prior model probabilities @
+dbres = eimodels_ave(ndbres);            @ Bayesian Model Averaging @
+call eiread(dbres,"sum");                @ summary for dbres @
+save rvbma = dbres;                      @ save dbres in file rvbma.fmt @
 \end{verbatim}
 
 \paragraph{\underline{Globals}:}
 \begin{description}
-\item[\_EImodels\_save] "file name" if you want to save the results at
-  each iteration in a data buffer (assuming extension ".fmt") on the
-  disk (default = no save).
+\item[\_EImodels\_save] set to ``filename'' if you want to save the
+  results at each iteration in a data buffer on the disk (default =
+  ``\mbox{ }''; for no save).
   
-\item[\_EI\_bma\_prior] ($\#$ of model $\times 1$) The discrete prior
-  probability to each model in the ascending order of the model number
-  (default = 0 which assigns the uniform prior). The elements of this
-  vector have to sum up to unity.
+\item[\_EI\_bma\_prior] (($\#$ of models)$\times 1$) The discrete
+  prior probability of each model in the ascending order of the model
+  number (default = 0 which assigns the uniform prior). The elements
+  of this vector must sum up to 1.
 \end{description}
 
 \subsection{EIREAD} \label{eiread}
