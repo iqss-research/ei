@@ -1191,7 +1191,7 @@ truncated bivariate normality, and replaces them with assumptions that
 are now conditional on the two sets of covariates.  This also allows
 for the possibility of including $X_i$ as a covariate, which is not
 possible in prior approaches.  Our prior specification follows the
-recommendations of King \citeyear[chapter7]{king:97}.
+recommendations of King \citeyear[Ch.7]{king:97}.
 
 From one application of one specification of this model, we compute
 the posterior density of a quantity of interest $\Delta$ by drawing it
@@ -1213,16 +1213,10 @@ To compute the marginal likelihood, we use the Laplace approximation,
   \P(T|\hat{\Theta}_k) \P(\hat{\Theta}_k),
 \end{equation}
 where, for Model $k$, $\hat{\Theta}_k$ is the posterior mode, $\hat
-V(\hat\Theta_k)$ is minus the inverse Hessian of the posterior evaluated
-at the mode, and $d_k$ is the number of parameters.  The Laplace
-approximation is known to perform well compared with other methods.
-Its rate of approximation is $O(n^{-1})$, which is considerably better
-than easier-to-apply methods such as BIC, which has a rate of only
-$O(n^{-1/2})$ (Kass, Tierney, and Kadane,
-1989\nocite{kass:tier:kada:89}).  For example, Kass and Raftery (1995:
-778) say that ``even for very large samples, it [BIC] does not produce
-the correct value.''  In our small-$n$ application, the Laplace
-approximation is more appropriate
+V(\hat\Theta_k)$ is minus the inverse Hessian of the posterior
+evaluated at the mode, and $d_k$ is the number of parameters.  The
+Laplace approximation is known to perform well compared with other
+methods
 \citep{raft:96,lewi:raft:97,dici:kass:raft:wass:97}.\footnote{If a
   model is estimated through a Markov chain Monte Carlo (MCMC)
   simulation, one can construct an algorithm where the chain visits
@@ -1230,7 +1224,13 @@ approximation is more appropriate
   model probability as a direct output of the MCMC posterior draws.
   For example, see \citet{carl:chib:95} and \citet{geor:mccu:93}.
   However, this requires constructing a new MCMC algorithm for each
-  application.}
+  application.}  Its rate of approximation is $O(n^{-1})$, which is
+considerably better than easier-to-apply methods such as Bayesian
+information criteria (BIC), which has a rate of only $O(n^{-1/2})$
+\citep{kass:tier:kada:89}.  For example, Kass and Raftery (1995: 778)
+say that ``even for very large samples, it [BIC] does not produce the
+correct value.''  Hence, in our application, the Laplace approximation
+is more appropriate than BIC.
 
 \singlespacing
 \bibliographystyle{/home/willow/king/texinputs/pa}
