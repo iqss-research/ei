@@ -485,9 +485,9 @@ estimated by a LS regression of the true $\beta_i^b$ on $Z_i$, and it
 can also be estimated by EI-R.  Even if we assume that the LS
 estimator is better (because it uses the true $\beta_i^b$), comparing
 the two estimators does not reveal which is closer to the unknown
-$\gamma_R$.  Since they are probably correlated, the Monte Carlo
-procedure can only reveal how close the estimators are to each other,
-since it is unknown and changing over iterations.  By this
+$\gamma_R$.  The Monte Carlo procedure can only reveal how close the
+estimators are to each other, since the target is unknown and changing
+over iterations and the estimators are correlated.  By this
 interpretation, of course, the procedure would miss the whole point of
 running Monte Carlo experiments in the first place --- creating a
 world where we know the true quantity being estimated and then seeing
@@ -497,13 +497,13 @@ Although by this last interpretation we cannot know the different true
 $\gamma_R$ in each iteration, we can compute its expected value, i.e.,
 the estimand implied by the LS estimator of $\beta_i^b$ on $Z_i$.
 However, computing the average $\gamma_R$ requires nonlinear
-approximations,\footnote{That is, under the third interpretation
+approximations,\footnote{That is, under this third interpretation
   $\gamma_R=C(\beta_i^b,Z_i)/V(Z_i) =
   C(\beta_i^b,\beta_i^b+\tau_i)/[V(\beta_i^b)+V(\tau_i)] =
   [1+1/4V(\beta_i^b)]^{-1}$, since $V(\tau_i)$ was set at 1/4.  In
   this expression, $V(\beta_i^b)$, in turn, is a nonlinear function of
   the parameters of the truncated bivariate normal.} which in any
-event were never computed in HS and so the result was not offered as a
+event were not computed in HS and so the result was not offered as a
 standard of comparison.  Since the Monte Carlo design under this
 interpretation bears little resemblence to how second stage
 regressions are normally thought of, the standard would have little
