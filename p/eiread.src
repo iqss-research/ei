@@ -169,7 +169,7 @@
 ** _x        p x 1: the original variable X from the first stage
 ** _n        p x 1: the original variable N from the first stage
 **
-** ADDITIONAL OPTIONS IF DATA BUFFER WAD CREATED BY EIMODELS_AVE
+** ADDITIONAL OPTIONS IF DATA BUFFER WAD CREATED BY EIMODELS_AVG
 ** t = t used for the estimation; if models use different t's, only t 
 **     from the first model is stored and used for eiread() calculation.
 ** x = x used for the estimation; if models use different x's, only x 
@@ -1231,7 +1231,26 @@ proc eiread(dbuf,str);
     if in("titl    ",cv,0);
       titl=vread(dbuf,"titl");
       "** "$+titl$+" **";
+      if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
+        ?;
+        "The number of model averaged"; rows(eiread(dbuf,"postprob"));
+        ?;
+        "Posterior model probabilities";
+        "Model  Prob";;eiread(dbuf,"postprob");
+        ?;
+        "Prior model probabilities";
+        "Model  Prob";;eiread(dbuf,"prprob");
+        ?;
+        "Marginal log-likelihoods";
+        "Model  llik";;eiread(dbuf,"margllik");
+	call eiread(dbuf,"abounds");
+        ?;
+        call eiread(dbuf,"paggs");
+        res="";
+        retp(res);
+      endif;
     endif;
+
     if scalone(eiread(dbuf,"_Enonpar"));
       "Nonparametric Estimation";
       "_EnonNumInt:   ";;eiread(dbuf,"_EnonNum");
@@ -1265,6 +1284,7 @@ proc eiread(dbuf,str);
       call eiread(dbuf,"psi");
       ?;
     endif;
+
     if in("truth   ",cv,0);
       call eiread(dbuf,"psitruth");
       ?;
