@@ -106,8 +106,8 @@ endp;
 ** runs.
 ** 
 ** OUTPUT:
-**   dbres = nested data buffer with the results of ei() runs of
-**           all the models.
+**   dbuf = nested data buffer with the results of ei() runs of
+**          all the models.
 **
 ** INPUT:
 **   ndbuf = nested data buffer from eimodels_def() which contains all
@@ -122,13 +122,21 @@ endp;
 */
  
 proc eimodels_run(ndbuf);
-  local i, num, dta, simpars, dbtemp, dbres, titl, t, x, n, zb, zw;
+  local et, i, num, dta, simpars, dbres, titl, t, x, n, zb, zw;
 
+  et=hsec;	@ timing start @
   if _Eprt/=0;
   ?;
   "----- EIMODELS_RUN Begins -----";
   ?;  
   endif;   
+
+  @ check _EImodels_save @
+  if type(_EImodels_save)/=13;
+    "ei: _EImodels_save should be a string.";
+    "----- EIMODELS_RUN Aborted -----";
+    retp(ndbuf);
+  endif;
 
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
@@ -144,23 +152,22 @@ proc eimodels_run(ndbuf);
     endif;
   endif;
 
-  dbres="";
-  dbres=vput(dbres,"*MDB* Meta-Data Buffer from eimodels_run() *MDB*","titl");
+  dbres=vput(_Eres,"*MDB* Meta-Data Buffer from eimodels_run() *MDB*","titl");
 
   num = rows(vnamecv(ndbuf));
   i = 1;
   do while i <= num;
     eiset;
     if vin(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
-      dbtemp=vread(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
-      t=vread(dbtemp,"t"); x=vread(dbtemp,"x"); n=vread(dbtemp,"n"); 
-      zb=vread(dbtemp,"zb"); zw=vread(dbtemp,"zw");
-      vreadall(dbtemp);
+      _Eres=vread(ndbuf,"mod_d"$+ftos(i+0,"*.*lf",1,0));
+      t=vread(_Eres,"t"); x=vread(_Eres,"x"); n=vread(_Eres,"n"); 
+      zb=vread(_Eres,"zb"); zw=vread(_Eres,"zw");
+      vreadall(_Eres);
       ?;
       "Running EI for the Model" i " ...";
       ?;
-      dbtemp=ei(t,x,n,zb,zw);
-      dbres=vput(dbres,dbtemp,"mod_r"$+ftos(i+0,"*.*lf",1,0));
+      _Eres=ei(t,x,n,zb,zw);
+      dbres=vput(dbres,_Eres,"mod_r"$+ftos(i+0,"*.*lf",1,0));
 
       @ save the buffer @
       if _EImodels_save $/= "";
@@ -175,11 +182,15 @@ proc eimodels_run(ndbuf);
 
   if _Eprt/=0;
     ?;  
+    et=hsec-et;				@ timing end  @
+    fmtt;
+    "Done. Time in minutes=";;et/100/60;
     "----- EIMODELS_RUN Completed -----";
     ?;
-  endif;   
-
-  retp(dbres);
+  endif;
+  dbres=vput(dbres,_EImodels_save,"eimsave");   
+  _Eres=dbres;
+  retp(_Eres);
 endp;
 
 
@@ -227,10 +238,11 @@ endp;
 */
     
 proc 1=eimodels_avg(ndbuf);
-  local sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
-        aggs, betabs, betaws, mfreq, ratio, dbres, i, j, titl, t, x,
-        n, frst, prprob, _eprt_temp;
+  local et, sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
+        aggs, betabs, betaws, mfreq, ratio, i, j, titl, t, x, n,
+        frst, prprob, _eprt_temp, tst;
 
+  et=hsec;     @ timing start @
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
     if _Eprt/=0;
@@ -310,10 +322,9 @@ proc 1=eimodels_avg(ndbuf);
         if sumc(temp ./= n)>0;
           ?;
           "WARNING: The ei input, n, of Model " i " is different from Model " frst;
-          "Are you sure you want to average models based on different n?";
-          "n from Model " frst " is stored in the output data buffer and"; 
-          "will be used for eiread() calculation.";
+          "You cannot average the models using different n.";
           ?;
+          retp(ndbuf);
         endif;
       endif; 
 
@@ -408,26 +419,36 @@ proc 1=eimodels_avg(ndbuf);
     betaws[.,k] = temp[.,k];
   endfor;
   if _Eprt/=0;
+    et=hsec-et;				@ timing end  @
+    fmtt;
     ?;
+    "Done. Time in minutes=";;et/100/60;
     "----- EIMODELS_AVG Completed -----";
     ?;
   endif;
-  @ store the results in data buffer @
-  dbres = "";
-  dbres = vput(dbres,t,"t");
-  dbres = vput(dbres,x,"x");
-  dbres = vput(dbres,n,"n");
-  dbres = vput(dbres,aggs,"aggs");
-  dbres = vput(dbres,betabs,"betabs");
-  dbres = vput(dbres,betaws,"betaws");
-  dbres = vput(dbres,mfreq,"mfreq");
-  dbres = vput(dbres,postprob,"postprob");
-  dbres = vput(dbres,prprob,"prprob");
-  dbres = vput(dbres,margllik,"margllik");
-  dbres = vput(dbres,"*DB* Data Buffer from eimodels_avg() *DB*","titl"); 
 
-  retp(dbres);
+  @ store the results in data buffer @
+  _Eres = vput(_Eres,"*DB* Data Buffer from eimodels_avg() *DB*","titl"); 
+  tst="Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+_Eversion;
+  _Eres=vput(_Eres,tst,"date");
+  _Eres = vput(_Eres,t,"t");
+  _Eres = vput(_Eres,x,"x");
+  _Eres = vput(_Eres,n,"n");
+  _Eres = vput(_Eres,aggs,"aggs");
+  _Eres = vput(_Eres,betabs,"betabs");
+  _Eres = vput(_Eres,betaws,"betaws");
+  _Eres = vput(_Eres,mfreq,"mfreq");
+  _Eres = vput(_Eres,postprob,"postprob");
+  _Eres = vput(_Eres,prprob,"prprob");
+  _Eres = vput(_Eres,margllik,"margllik");
+  
+  retp(_Eres);
 endp;  
+
+
+
+
+
 
 
 
