@@ -1,3 +1,4 @@
+rm -f ~/www/ei/*.gif ~/www/ei/*.png
 cp whatsnew ~/www/ei/.
 cd ../wds
 latex ei
