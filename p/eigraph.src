@@ -156,9 +156,9 @@ proc 1=eigraph(dbuf,str);
   if vin(dbuf,"titl");
     titl=vread(dbuf,"titl");
     if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
-      if str$=="fit" or str$=="fitt" or str$=="profile" or str$=="profiler" or
-         str$=="tomog" or str$=="tomogci" or str$=="tomogci95" or str$=="tomogs" or
-         str$=="xtfit" or str$=="xtfitg";
+      let a=fit fitt profile profiler tomog tomogci tomogci95 tomogs xtfit xtfitg;
+      a=lower(a);
+      if in(str,a,0);
          "eigraph: this option cannot be used for the output data buffer"; 
          "         from eimodels_avg";
          "----- EIGRAPH Aborted -----";
