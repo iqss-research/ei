@@ -4,6 +4,7 @@
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{amsmath}
 \usepackage{enumerate}
+\usepackage[usenames]{color}
 
 \newcommand{\bb}{\beta^{\text{bad}}}
 \newcommand{\bg}{\beta^{\text{good}}}
@@ -62,9 +63,8 @@ Harvard University \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{slide}
-\heading{Late Overseas Absentee Ballots Determined}
-\heading{the Outcome of the Election}
-\bigskip
+\subsection*{Late Overseas Absentee Ballots were Decisive:\newline 
+Official Results} \bigskip
 
 \begin{table}
 \begin{center}
@@ -75,8 +75,7 @@ Ballots cast/received by Nov.\ 7 &2,911,417 & 2,911,215 & {\bf Gore leads by 202
 Overseas absentee ballots        &      836 &     1,575 & Bush leads by 739 \\
 \hline
 Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
-\end{tabular} \caption{Official results of the 2000 presidential
-  election in Florida. \newline Source: Florida Secretary of State's office.}
+\end{tabular}
 \label{tb:official}
 \end{center}
 \end{table} 
@@ -91,13 +90,12 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 
 {\bf Illegal Ballots In Florida:} 
 \begin{itemize}
-\item 680 overseas absentee ballots {\it unambiguously violated}
-  federal and state election law.
-\item No one has publicly disagreed with this \emph{New York Times}
-  finding.
-\item Other controversial aspects of the election were official and
-  legal. 
-\item Illegal actions resulted from {\it deliberate political
+\item 680 overseas absentee ballots violated state or federal election
+  law
+\item No one has publicly disagreed with this conclusion
+\item Other controversial aspects of the election were litigated,
+  decided, and generally accepted.
+\item Illegal actions resulted from  \emph{deliberate political
     strategies}.
 \end{itemize}
 
@@ -107,8 +105,8 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 
 \hspace{0.1in} useful when
 \begin{itemize}
-\item conclusions are model dependent
 \item model generalization is not feasible
+\item conclusions are model dependent
 \item when potential critics are more partisan than academic
 \end{itemize}
 
@@ -117,19 +115,19 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{slide}
-\heading{Invalid Overseas Absentee Ballots in Florida}
+\heading{Invalid Overseas Absentee Ballots}
 \bigskip
 
 \begin{itemize}
-\item 344 ballots had late, illegible or missing postmarks. \\ (postmarks
+\item 344 ballots: late, illegible or missing postmarks. \\ (postmarks
   must indicate that the ballot was cast on or before election day)
-\item 183 ballots with United States postmarks.
-\item 169 ballots were received from voters who were not registered,
-  who had failed to sign the envelope, or who had not requested a
-  ballot. \\ (A request is required by federal law).
-\item 96 ballots lacked the required signature or address of a witness
-\item 19 voters cast two ballots, both of which counted.
-\item 5 ballots were received after the Nov.\ 17 deadline but counted
+\item 183 ballots: United States postmarks.
+\item 169 ballots: from voters who were not registered, failed to sign
+  the envelope, or had not previously requested a ballot. \\ (A
+  request is required by federal law).
+\item 96 ballots: lacked the required signature or address of a witness
+\item 38 ballots: from 19 voters who cast two ballots
+\item 5 ballots: received after the 11/17 deadline
   anyway.
 \end{itemize}
 
@@ -152,7 +150,6 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
       \hline
       & 836   & 1575 &   79   & 2504   \\
     \end{tabular} 
-    \caption{\small Ecological Inference Problem in Florida.}\label{tb:ballots}
 \end{table} 
 \end{center}
 
@@ -162,41 +159,43 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 
 \begin{slide}
 
-{\bf Formulation Of Ecological Estimation}
+{\bf Notation for Ecological Inference}
 
-\begin{minipage}[c]{2.75in}
-\bigskip
-\small
+% \begin{minipage}[c]{2.75in}
+% \bigskip
+% \small
 \begin{center}
-\begin{tabular}{cccc}
-                & Gore  & Bush &         \\
-\hline 
-invalid ballots & $\bb_i$  & $1-\bb_i$ & $X_i$   \\
-valid ballots   & $\bg_i$  & $1-\bg_i$ & $1-X_i$ \\
-\hline
-                & $T_i$ & $1-T_i$ &         \\
+\begin{tabular}{llcccrl}
+                && Gore  && Bush &&         \\
+\cline{2-6}
+invalid ballots &\vline& $\textcolor{Red}{\bb_i}$ &\vline & $1-\bb_i$ &\vline& $X_i$
+\\
+\cline{2-6}
+valid ballots   &\vline& $\bg_i$ &\vline & $1-\bg_i$ &\vline& $1-X_i$ \\
+\cline{2-6}
+                && $T_i$ && $1-T_i$ &&         \\
 \end{tabular} 
 \end{center}
-\end{minipage}
-\begin{minipage}[c]{2in}
-\small
-\vspace{0.2in}\hspace{-0.1in}
-\begin{tabular}{l @{= } l}
-$X_i$ & fraction of bad ballots \\
-$T_i$ &  fraction of Gore's ballots \\
-$\bb_i$ & fraction of bad ballots for Gore \\ 
-$\bg_i$ & fraction of good ballots for Gore \\ 
-\end{tabular}
-\end{minipage}
+%\end{minipage}
+% \begin{minipage}[c]{2in}
+% \small
+% \vspace{0.2in}\hspace{-0.1in}
+% \begin{tabular}{l @{= } l}
+% $X_i$ & fraction of bad ballots \\
+% $T_i$ &  fraction of Gore's ballots \\
+% $\bb_i$ & fraction of bad ballots for Gore \\ 
+% $\bg_i$ & fraction of good ballots for Gore \\ 
+% \end{tabular}
+% \end{minipage}
 
 \bigskip
 \normalsize
 {\bf Ultimate Quantity of Interest}
 \begin{align*}
   \text{Bush's margin} & = \text{official margin}
-  - [\text{Bush's bad ballots} - \text{Gore's bad ballots}] \notag\\
-  & = 537 - [(1-\bb)680-\bb 680]\\
-  & = 1360 \bb - 143. \label{qoi}
+               &&- &&[\text{Bush's bad ballots} - \text{Gore's bad ballots}] \\
+  & = 537      &&- &&[(1-\textcolor{Red}{\bb})680-\textcolor{Red}{\bb} 680]\\
+  & = 1360 \textcolor{Red}{\bb} &&- &&143. \label{qoi}
 \end{align*}
 
 \end{slide}
@@ -241,7 +240,7 @@ $\bg_i$ & fraction of good ballots for Gore \\
   \multicolumn{3}{c}{\bf Bush's votes} \\
   & invalid & official & \multicolumn{2}{c|}{invalid ballots} & official &
   \multicolumn{2}{c}{invalid ballots} \\
-County & ballots & counts & min & max & counts & min & max \\
+County & ballots & count & min & max & counts & min & max \\
 \hline 
 Escambia   & 102 & 47 & 0 & 47 & 154 & 48 & 102 \\
 Santa Rosa &  55 & 16 & 0 & 16 &  65 & 37 &  55 \\
