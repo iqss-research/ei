@@ -1285,15 +1285,15 @@ methods
   simulation, one can construct an algorithm where the chain visits
   each model stochastically so that you can compute the posterior
   model probability as a direct output of the MCMC posterior draws.
-  For example, see \citet{carl:chib:95} and \citet{geor:mccu:93}.
-  However, this requires constructing a new MCMC algorithm for each
-  application.}  Its rate of approximation is $O(n^{-1})$, which is
-considerably better than easier-to-apply methods such as Bayesian
-information criteria (BIC), which has a rate of only $O(n^{-1/2})$
-\citep{kass:tier:kada:89}.  For example, Kass and Raftery (1995: 778)
-say that ``even for very large samples, it [BIC] does not produce the
-correct value.''  Hence, in our application the Laplace approximation
-is more appropriate than BIC.
+  For example, see \citet{geor:mccu:93}, \citet{carl:chib:95} and
+  \citet{chib:95}.  However, this requires constructing a new MCMC
+  algorithm for each application.}  Its rate of approximation is
+$O(n^{-1})$, which is considerably better than easier-to-apply methods
+such as Bayesian information criteria (BIC), which has a rate of only
+$O(n^{-1/2})$ \citep{kass:tier:kada:89}.  For example, Kass and
+Raftery (1995: 778) say that ``even for very large samples, it [BIC]
+does not produce the correct value.''  Hence, in our application the
+Laplace approximation is more appropriate than BIC.
 
 \singlespacing
 \bibliographystyle{/home/willow/king/texinputs/pa}
