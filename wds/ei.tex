@@ -1266,7 +1266,7 @@ a variant of importance sampling estimation, for computing the
 marginal likelihoods. It is recommended that the number of
 simulations, \texttt{\_Esims}, should be set to 500 or more in order
 to improve the precision of this estimation.  Finally, the output data
-buffer should be read with \texttt{eiread}.
+buffer should be read with \texttt{eiread} and \texttt{eigraph}.
 
 \paragraph{\underline{Example}:}
 The following example uses the sample file \texttt{sample.asc} that
@@ -1321,9 +1321,13 @@ call eigraph(ndbres, "tomog");           @ tomography plot for Model 3 @
 
 _EI_bma_prior = {0.2,0.4,0.4};           @ set prior model probabilities @
 dbres = eimodels_ave(ndbres);            @ Bayesian Model Averaging @
-call eiread(dbres,"sum");                @ summary for dbres @
 save rvbma = dbres;                      @ save dbres in file rvbma.fmt @
-\end{verbatim}
+
+call eiread(dbres,"sum");                @ summary for dbres @
+graphclr;                                @ clear graphics screen @
+call eigraph(dbres,"post");              @ draw district level posterior @
+graphoff;                                @ close graphics window @
+\end{verbatim} 
 
 \paragraph{\underline{Globals}:}
 \begin{description}
