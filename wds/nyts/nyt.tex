@@ -180,7 +180,7 @@ Democrats to object to this ballot design prior to the election when
 they were permitted to do so, and it was not illegal.  We also now
 know a great deal about hanging chads, overvotes, undervotes, and
 various other failures of punch card ballot designs.\footnote{See
-  Herron and Sekhon (2001).\nocite{HerSek01} The 2000 election
+  Herron and Sekhon (2001).\nocite{HerSek03} The 2000 election
   produced literally dozens of papers, many written within days of the
   election and posted on the web.  For links to many on this growing
   list, see \url{http://madison.hss.cmu.edu/}.}  Democrats and
@@ -500,12 +500,25 @@ Table~\ref{tb:bounds} shows how the analysis of bounds can be very
 powerful in some situations. For example, Escambia is one of the
 counties where many invalid ballots were found. At the same time, this
 county is one of Bush's strongholds: about 76 percent of overseas
-absentee ballots for this county were counted for Bush. The analysis
-of bounds shows that the minimum number of invalid ballots cast for
-Bush was as high as 48 votes while that for Gore is zero. Thus we know
-that at least 19 percent of invalid ballots belong to Bush rather than
-Gore.  Santa Rosa County is similar: Out of the total of 55 flawed
-absentee ballots, at least 37 votes were cast for Bush.  Finally,
+absentee ballots for this county were counted for Bush. In Escambia,
+there were 208 total votes, 47 for Gore, 154 for Bush, and 7 for
+others. Of these votes, there were 102 invalid ballots. Because Bush
+had 154 total votes, it is possible that all 102 of these invalid
+ballots were Bush's votes. This produces the lower bound on the number
+of valid Bush's votes, namely 52.  The upper bound occurs when Gore
+and other candidates get assigned the maximum number of invalid
+ballots. Since Gore had 47 votes and other candidates got 7 votes, the
+maximum number of invalid ballots that can be assigned to them is 54,
+leaving 48 invalid votes for Bush. Hence, the maximum number of valid
+votes for Bush is his official count of 154 minus these 48, which is
+106.
+%The analysis of bounds shows that the minimum number of invalid
+%ballots cast for Bush was as high as 48 votes while that for Gore is
+%zero. Thus we know that at least 19 percent of invalid ballots belong
+%to Bush rather than Gore.
+Santa Rosa County is similar: Out of the total of 55 flawed absentee
+ballots, at least 37 votes were cast for Bush, yielding the upper
+bound on the number of valid Bush's votes, which is 28.  Finally,
 Baker County illustrates why sometimes the ``secret ballot'' is not
 really secret.  In this county, only one absentee ballot was cast and
 also was found to be invalid. Hence, we know from the total tally of
@@ -651,7 +664,7 @@ near the top of its bounds, $\bb_i$ must be near the bottom if its
 bounds.  In fact, the two are perfectly correlated and fall on a line
 defined precisely by that equation.  To illustrate, we plot one line
 for each county in Florida in the tomography plot in Figure
-\ref{fg:tomog}.  Figure \ref{fg:tomog} thus merely reexpresses the
+\ref{fg:tomog}.  Figure \ref{fg:tomog} thus merely re-expresses the
 data in the form closest to the answers we seek.
 \begin{figure}[t]
   %\vspace{-1in}\hspace{0.5in}
@@ -809,7 +822,7 @@ where the posterior model probability is computed as
 \end{equation}
 This is the probability that model $k$ is correct, given the set of
 models in the analysis; it should not be confused with $R^2$-like
-measures which typically reward models that overfit without
+measures which typically reward models that over-fit without
 distinguishing systematic from idiosyncratic features of the data.
 
 To compute the posterior model probability, we need two elements.
@@ -1315,15 +1328,14 @@ methods
   simulation, one can construct an algorithm where the chain visits
   each model stochastically so that you can compute the posterior
   model probability as a direct output of the MCMC posterior draws.
-  For example, see \citet{geor:mccu:93}, \citet{carl:chib:95} and
-  \citet{chib:95}.  However, this requires constructing a new MCMC
-  algorithm for each application.}  Its rate of approximation is
-$O(n^{-1})$, which is considerably better than easier-to-apply methods
-such as Bayesian information criteria (BIC), which has a rate of only
-$O(n^{-1/2})$ \citep{kass:tier:kada:89}.  For example, Kass and
-Raftery (1995: 778) say that ``even for very large samples, it [BIC]
-does not produce the correct value.''  Hence, in our application the
-Laplace approximation is more appropriate than BIC.
+  For example, see \citet{chib:95}.  However, this requires
+  constructing a new MCMC algorithm for each application.}  Its rate
+of approximation is $O(n^{-1})$, which is considerably better than
+easier-to-apply methods such as Bayesian information criteria (BIC),
+which has a rate of only $O(n^{-1/2})$ \citep{kass:tier:kada:89}.  For
+example, Kass and Raftery (1995: 778) say that ``even for very large
+samples, it [BIC] does not produce the correct value.''  Hence, in our
+application the Laplace approximation is more appropriate than BIC.
 
 \section{Implementation Issues} \label{a:impl}
 
@@ -1412,7 +1424,7 @@ posterior point in particular is hardly changed across the models.
 
 \singlespacing
 \clearpage
-\bibliographystyle{/home/king/c/gkbibtex/polisci}
-%\bibliographystyle{pa}
+%\bibliographystyle{/home/king/c/gkbibtex/polisci}
+\bibliographystyle{pa}
 \bibliography{stat,polisci}
 \end{document}
