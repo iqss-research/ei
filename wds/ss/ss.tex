@@ -626,8 +626,9 @@ The dependent variable is the estimated proportion of
 voters who split their tickets between the Republican presidential 
 candidate and a Democratic Congressional candidate in the 1988 general 
 election, obtained from EI.  LS denotes least squares estimates, FA 
-full adjustment, and WLS weighted least squares.  Standard errors in 
-parentheses.}
+full adjustment, and WLS weighted least squares.  Note the similarity
+of the point estimates but the much larger standard errors (given in 
+parentheses) for FA.}
 \end{table}
 
 Burden and Kimball investigated ticket-splitting behavior in the 1988
@@ -662,6 +663,20 @@ Kimball's model, spending ratio and ideological distance.  All three
 methods thus support Burden and Kimball's argument that
 ticket-splitting results not from intentional balancing, but as an
 unintentional result of campaign specific factors.
+
+The large standard errors in the FA column, relative to the others in
+Table \ref{t:bkrep}, highlight the relative inefficiency of the
+adjusted estimator.  Thus, in this example the minor reduction in bias
+is overwhelmed by the dramatic increase in variance.  A mean square
+error criterion, which combines bias and variance, would suggest not
+making the adjustment even in the presence of attenuation bias.  (We
+confirmed that this result was fairly general with Monte Carlo
+simulations, but we do not present them here.)  This is an intuitive
+result given that the bias adjustment takes the form of a ratio, and
+both the numerator and denominator contain estimation uncertainty.  It
+is also consistent with the experience of many others trying to create
+bias adjustments in a wide variety of models outside of the field of
+ecological inference.
 
 \section{Concluding Suggestions}
 
