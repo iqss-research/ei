@@ -19,7 +19,7 @@
 **                                            random numbers
 ** f = rndbtni(bb,bw,sb,sw,rho,bounds); truncated bivar normal random numbers
 **                                       of one simulation per row of bb~bb
-** g = rndtsn(mu,negHess,sims,bounds,tol); sims from truncated singular normal
+** g = rndtsn(mu,negHess,sims,bounds,tol); sims from truncated singular multivar normal
 */
 #include ei.ext;
 /* The inverse normal CDF (not standardized)

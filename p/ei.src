@@ -309,19 +309,6 @@ proc ei(t,x,tvap,Zb,Zw);
   if _Eprt>0;
     et=hsec-et;				@ timing end  @
     fmtt;
-    if _GhActual/=(1~0);?;
-      "WARNING: Your -hessian was not positive definite, and so a variance";
-      "  matrix could not be computed by the usual methods.  Most statistical";
-      "  software will bomb out at this point.  However, the importance";
-      "  sampling can often draw from the correct posterior anyway, and so";
-      "  EI computed a pseudo-variance matrix as a first approximation.  (See";
-      "  eiread's ghactual and the _EI_vc global for methods of computation.)";
-      "  Check eigraph's 'tomogS' and 'fit' to verify that the model fits";
-      "  the data and the simulations are reasonable. Use only with caution";
-      "  and if you are comfortable taking these steps.  An alternative is to";
-      "  rerun with _EisFac=-2";?;
-    endif;
-    
     "Done. Time in minutes=";;et/100/60;
     "----- EI Completed -----";
   endif;
