@@ -28,7 +28,8 @@ Please email King@Harvard.Edu (for EI) or KBenoit@Harvard.Edu (for EzI)
 * What's new in this version of EI? *
 *************************************
 
-7/31/01 Added Bayesian model averaging
+8/5/31 Added Bayesian model averaging (see EIMODELS), and an option
+to EI2 that eliminates most cases of it bombing out (set _EI2_m=-1).
 
 7/29/01 Fixed bug in handling of trap
 
