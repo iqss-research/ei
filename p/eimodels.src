@@ -161,7 +161,7 @@ endp;
 
 
 /*
-** dbres=eimodels_ave(ndbuf)
+** dbres=eimodels_avg(ndbuf)
 **
 ** Bayesian Model Averaging for EI
 **
@@ -173,7 +173,7 @@ endp;
 **   dbres = data buffer containing the following parameters as the
 **           result of Bayesian Model Averaging using the Harmonic
 **           mean estimator for the marginal likelihoods, and
-**           titl="*DB* Data Buffer from eimodels_ave() *DB*"
+**           titl="*DB* Data Buffer from eimodels_avg() *DB*"
 **     t = t used for the estimation; if models use different t's, only t 
 **         from the first model is stored and used for eiread() calculation.
 **     x = x used for the estimation; if models use different x's, only x 
@@ -202,7 +202,7 @@ endp;
 **
 */
     
-proc 1=eimodels_ave(ndbuf);
+proc 1=eimodels_avg(ndbuf);
   local sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
         aggs, betabs, betaws, mfreq, ratio, dbres, i, j, titl, t, x,
         n, frst, prprob, _eprt_temp;
@@ -227,7 +227,7 @@ proc 1=eimodels_ave(ndbuf);
   _Eprt=0;
   if _Eprt_temp/=0;
     ?;
-    "----- EIMODELS_AVE Begins -----";
+    "----- EIMODELS_AVG Begins -----";
     ?;
   endif;
   num = rows(vnamecv(ndbuf));  
@@ -385,7 +385,7 @@ proc 1=eimodels_ave(ndbuf);
   endfor;
   if _Eprt/=0;
     ?;
-    "----- EIMODELS_AVE Completed -----";
+    "----- EIMODELS_AVG Completed -----";
     ?;
   endif;
   @ store the results in data buffer @
@@ -400,7 +400,7 @@ proc 1=eimodels_ave(ndbuf);
   dbres = vput(dbres,postprob,"postprob");
   dbres = vput(dbres,prprob,"prprob");
   dbres = vput(dbres,margllik,"margllik");
-  dbres = vput(dbres,"*DB* Data Buffer from eimodels_ave() *DB*","titl"); 
+  dbres = vput(dbres,"*DB* Data Buffer from eimodels_avg() *DB*","titl"); 
 
   retp(dbres);
 endp;  
