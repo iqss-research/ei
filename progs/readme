@@ -1,0 +1,23 @@
+PROGRAM NAME   FUNCTIONS
+
+cln.g          delete invalid precincts
+intpl.g        interpolate the demographic variables
+globals.g      set some globals for EI
+minr1.g        returns the minimum value of each row
+
+txprint.g      prints out EI/EI2 results 
+txbprint.g     prints out EI results only
+stwprint.g     prints out statelevel aggregated results
+plansprt.g     prints out aggregated results according to each plan
+complect.g     support proc for compare.prg 
+
+finalrun.prg   run EI/EI2 
+primary.prg    run EI 
+stwtotal.prg   produce statewide results
+compare.prg    compare the EI results over different plans
+plans.prg      aggregates the EI results using different plans
+ck.prg         look at the eigraphs
+
+merge.prg      merge the primary data with the demographic data
+merge1.prg     merge the primary data with the plan data sets
+
