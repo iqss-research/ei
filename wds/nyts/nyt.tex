@@ -385,9 +385,9 @@ information to improve our ecological inferences.
 Table~\ref{tb:ei} presents our notation.  For each county $i$
 ($i=1,\dots,67$), we denote the proportion of invalid ballots among
 all overseas absentee ballots as $X_i$, and the total number of
-overseas absentee ballots which were counted as $N_i$.  We also let
-Gore's proportion of the vote be $T_i$.  To simplify presentation, we
-combine the votes for Bush and the other minor candidates as Bush
+overseas absentee ballots which were counted as $N_i$.  We let Gore's
+proportion of the vote be $T_i$.  To simplify presentation, we combine
+the votes for Bush and the other minor candidates as Bush
 votes.\footnote{Although our presentation always involves only the
   Bush/Gore choice, our empirical results using deterministic bounds
   in Section \ref{s:noassump} includes the possibility of bad ballots
@@ -399,9 +399,10 @@ votes.\footnote{Although our presentation always involves only the
   result.  Other analyses (not shown) using more computationally
   intensive techniques designed to model these choices separately
   confirm these results (see Rosen et al., 2001)\nocite{RosJaiKin01}.}
-Each of these quantities are observed.  We denote unobserved
-quantities with Greek letters.  Thus, the proportions of invalid and
-valid ballots cast for Gore are $\bb_i$ and $\bg_i$, respectively.
+While each of these quantities are observed, we denote unobserved
+quantities with Greek letters.  Namely, $\bb_i$ and $\bg_i$ represent
+the proportions of invalid and valid ballots cast for Gore,
+respectively.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{cccc}
@@ -436,9 +437,9 @@ average of the individual county quantities.\footnote{The weighted
 \baselineskip=1.54\baselineskip
 \noindent Once we estimate this quantity, we can also estimate the probability
 of Gore's victory, $\Pr(\text{Bush's margin}<0)$, which is another
-quantity of interest.  (Note that $\bg_i$ is not used in Equation
-\ref{qoi} but is necessary as an ancillary parameter during
-estimation.)
+quantity of interest.\footnote{Note that $\bg_i$ is not used in
+  Equation \ref{qoi} but is necessary as an ancillary parameter during
+  estimation.}
 
 \subsection{Analysis Without Statistical Assumptions} \label{s:noassump}
 
@@ -454,47 +455,14 @@ linear relationship between the two unknown parameters,
 \end{equation}
 which traces out what \citet{king:97} calls a tomography line.  In
 addition, before we observe $X_i$ and $T_i$ in any county, we also
-know that $\bb_i$ and $\bg_i$ are each between 0 and 1.
+know that $\bb_i$ and $\bg_i$ are each between 0 and 1.  Once we
+observe $X_i$ and $T_i$, we can narrow the bounds further (by
+projecting the line in Equation \ref{eq:identity} to the two axes).
+Thus, without any statistical assumptions, we can derive the upper and
+lower bounds of $\bg_i$ and $\bb_i$ for each county $i$, which in turn
+imply the bounds for our quantity of interest, Bush's margin after
+dropping flawed overseas absentee ballots.
 
-Once we observe $X_i$ and $T_i$, we can narrow the bounds further
-(simply by projecting the line in Equation \ref{eq:identity} to the
-two axes).  Thus, without any statistical assumptions, we can derive
-the upper and lower bounds of $\bg_i$ and $\bb_i$ for each county $i$,
-which in turn implies the bounds for our quantity of interest, Bush's
-margin after dropping flawed overseas absentee ballots.
-
-Table~\ref{tb:bounds} shows how the analysis of bounds can be very
-powerful in some situations. For example, Escambia is one of the
-counties where many invalid ballots were found. At the same time, this
-county is one of Bush's strongholds: about 76 percent of overseas
-absentee ballots for this county were counted for Bush. In Escambia,
-there were 208 total votes, 47 for Gore, 154 for Bush, and 7 for
-others. Of these votes, 102 ballots were invalid. Because Bush had 154
-total votes, it is possible that all 102 of these invalid ballots were
-Bush's votes. This produces the lower bound on the number of valid
-Bush's votes, namely 52.  The upper bound occurs when Gore and other
-candidates get assigned the maximum number of invalid ballots. Since
-Gore had 47 votes and other candidates got 7 votes, the maximum number
-of invalid ballots that can be assigned to them is 54, leaving 48
-invalid votes for Bush. Hence, the maximum number of valid votes for
-Bush is his official count of 154 minus these 48, which is 106.
-%The analysis of bounds shows that the minimum number of invalid
-%ballots cast for Bush was as high as 48 votes while that for Gore is
-%zero. Thus we know that at least 19 percent of invalid ballots belong
-%to Bush rather than Gore.
-Santa Rosa County is similar: Out of the total of 55 flawed absentee
-ballots, at least 37 votes were cast for Bush, yielding the upper
-bound on the number of valid Bush's votes, which is 28.  Finally,
-Baker County illustrates why sometimes the ``secret ballot'' is not
-really secret.  In this county, only one absentee ballot was cast and
-also was found to be invalid. Hence, we know from the total tally of
-absentee ballots in this county --- one vote for Bush --- that this
-person voted for Bush and that it was an invalid ballot but included
-in the official count.  (In fact, the name, address, and individual
-vote cast of all people in counties, like Baker, that cast all their
-overseas absentee ballots for one candidate, are on the public record.
-This is because the bounds have zero width whenever either $X_i$ or
-$T_i$ is zero or one.)
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{l c |ccc|ccc|ccc}
@@ -518,6 +486,40 @@ Baker      &  1  &  0 & 0 &  0 &   1 &  1 &   1 & 0 & 0 & 0 \\
 \end{center}
 \end{table} 
 
+Table~\ref{tb:bounds} shows how the analysis of bounds can be very
+powerful in some situations. For example, Escambia is one of the
+counties where many invalid ballots were found. At the same time, this
+county is one of Bush's strongholds: about 76 percent of overseas
+absentee ballots for this county were counted for Bush. In Escambia,
+there were 208 total votes, 47 for Gore, 154 for Bush, and 7 for
+others. Of these votes, 102 ballots were invalid. Because Bush had 154
+total votes, it is possible that all 102 of these invalid ballots were
+Bush's votes. This produces the lower bound on the number of valid
+Bush's votes, namely 52.  The upper bound occurs when Gore and other
+candidates get assigned the maximum number of invalid ballots. Since
+Gore had 47 votes and other candidates got 7 votes, the maximum number
+of invalid ballots that can be assigned to them is 54, leaving 48
+invalid votes for Bush. Hence, the maximum number of valid votes for
+Bush is his official count of 154 minus these 48, which is 106.
+%The analysis of bounds shows that the minimum number of invalid
+%ballots cast for Bush was as high as 48 votes while that for Gore is
+%zero. Thus we know that at least 19 percent of invalid ballots belong
+%to Bush rather than Gore.
+%Santa Rosa County is similar: Out of the total of 55 flawed absentee
+%ballots, at least 37 votes were cast for Bush, yielding the upper
+%bound on the number of valid Bush's votes, which is 28.  
+Finally, Baker County illustrates why sometimes the ``secret ballot''
+is not really secret.  In this county, only one absentee ballot was
+cast and also was found to be invalid. Hence, we know from the total
+tally of absentee ballots in this county -- one vote for Bush -- that
+this person voted for Bush and that it was an invalid ballot but
+included in the official count.\footnote{Indeed, the name, address,
+  and individual vote cast of all people in counties, like Baker, that
+  cast all their absentee ballots for one candidate, are on the public
+  record.  This is because the bounds have zero width whenever either
+  $X_i$ or $T_i$ is zero or one.}
+
+
 From these county level bounds, we can derive the aggregate bounds for
 the total number of invalid ballots for each candidate at the state
 level. The result shows that at least 8 percent, or 128 votes of
@@ -535,9 +537,10 @@ media discussion that followed their story), the 537 Bush margin now
 changes to somewhere from a 126 vote victory for Gore to a 936 vote
 victory for Bush.  Once the ballots were removed from the envelopes,
 America forever gave up the possibility of knowing for certain who won
-the 2000 election.
+the most votes in the 2000 election.
 
-\subsection{Statistical Analysis with a Single Model Specification} \label{s:onemodel}
+\subsection{Statistical Analysis with a Single Model Specification}
+\label{s:onemodel} 
 
 The lack of any statistical assumptions puts the analysis in Section
 \ref{s:noassump} on extremely firm footing.  In fact, measurement
@@ -1292,8 +1295,8 @@ particularly sensitive to the prior specification.  The median
 posterior point in particular is hardly changed across the models.
 
 \singlespacing
-\bibliographystyle{/home/king/c/gkbibtex/polisci}
-%\bibliographystyle{pa}
+%\bibliographystyle{/home/king/c/gkbibtex/polisci}
+\bibliographystyle{pa}
 \bibliography{stat,polisci}
 \end{document}
 
