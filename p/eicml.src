@@ -249,7 +249,11 @@ proc 2=quadcml(x,Zb,Zw,y);
     fmt=("*.*s"~  1~8)|
         ("*.*lf"~ 10~4)|
 	("*.*lf"~ 10~4);
-    se=sqrt(diag(vc))|0|0;	
+    if _ei_vc[_Ghactual,.]/=-1;
+      se=sqrt(diag(vc))|0|0;
+    else;
+      se=miss(0,0).*ones(rows(b),1);
+    endif;	
     call printfm(_cml_ParNames~b~se,mask,fmt);
     ?;
     {bb,bw,sb,sw,rho}=eirepar(b,Zb,Zw,x);
