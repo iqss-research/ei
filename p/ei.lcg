@@ -1,0 +1,768 @@
+ei.dec
+    _Eversion                        : string
+    _Echeck                          : matrix
+    _Eres                            : matrix
+    _Esims                           : matrix
+    _Eprt                            : matrix
+    _EdoSim                          : matrix
+    _EdoML                           : matrix
+    _EdoML_phi                       : matrix
+    _EdoML_vcphi                     : matrix
+    _Ecdfbvn                         : matrix
+    _Eselect                         : matrix
+    _EselRnd                         : matrix
+    _EnumTol                         : matrix
+    _EnonEval                        : matrix
+    _EnonNumInt                      : matrix
+    _EnonPar                         : matrix
+    _Ei2_m                           : matrix
+    _ei2_mta                         : matrix
+    _ei2_r                           : matrix
+    _Erho                            : matrix
+    _Esigma                          : matrix
+    _Ebeta                           : matrix
+    _EalphaB                         : matrix
+    _EalphaW                         : matrix
+    _cml_version                     : matrix
+    _cml_Algorithm                   : matrix
+    _cml_CovPar                      : matrix
+    _cml_ParNames                    : matrix
+    _cml_LineSearch                  : matrix
+    _cml_DirTol                      : matrix
+    _cml_HessProc                    : matrix
+    _cml_GradProc                    : matrix
+    _cml_GradMethod                  : matrix
+    _cml_MaxIters                    : matrix
+    _cml_IterData                    : matrix
+    _cml_UserSearch                  : matrix
+    _cml_UserNumGrad                 : matrix
+    _cml_UserNumHess                 : matrix
+    _cml_Extrap                      : matrix
+    _cml_Interp                      : matrix
+    _cml_Delta                       : matrix
+    _cml_MaxTry                      : matrix
+    _cml_Options                     : matrix
+    _cml_Lag                         : matrix
+    _cml_FinalHess                   : matrix
+    _cml_NumObs                      : matrix
+    _cml_HessCov                     : matrix
+    _cml_XprodCov                    : matrix
+    _cml_Key                         : matrix
+    _cml_MaxTime                     : matrix
+    _cml_Active                      : matrix
+    _cml_GradStep                    : matrix
+    _cml_GradCheckTol                : matrix
+    _cml_Diagnostic                  : matrix
+    _cml_Increment                   : matrix
+    _cml_Center                      : matrix
+    _cml_Width                       : matrix
+    _cml_NumSample                   : matrix
+    _cml_NumCat                      : matrix
+    _cml_Select                      : matrix
+    _cml_BootFname                   : string
+    _cml_PriorProc                   : matrix
+    _cml_BayesAlpha                  : matrix
+    _cml_Kernel                      : matrix
+    _cml_Smoothing                   : matrix
+    _cml_EndPoints                   : matrix
+    _cml_NumPoints                   : matrix
+    _cml_Truncate                    : matrix
+    _cml_Alpha                       : matrix
+    _cml_HessPD                      : matrix
+    _cml_Switch                      : matrix
+    _cml_DFTol                       : matrix
+    _cml_FeasibleTest                : matrix
+    _cml_InfCorr                     : matrix
+    _cml_TrustRadius                 : matrix
+    _cml_Trust                       : matrix
+    _cml_A                           : matrix
+    _cml_B                           : matrix
+    _cml_C                           : matrix
+    _cml_D                           : matrix
+    _cml_Bounds                      : matrix
+    _cml_EqProc                      : matrix
+    _cml_IneqProc                    : matrix
+    _cml_EqJacobian                  : matrix
+    _cml_IneqJacobian                : matrix
+    _cml_Lagrange                    : matrix
+    _cml_eps2                        : matrix
+    _cml_eps3                        : matrix
+    _cml_dsn                         : string
+    _Estval                          : matrix
+    _Ebounds                         : matrix
+    _Eeta                            : matrix
+    _EdirTol                         : matrix
+    _EcdfTol                         : matrix
+    _EvTol                           : matrix
+    _Ez                              : matrix
+    _Emaxiter                        : matrix
+    _EI_vc                           : matrix
+    _GhQuad                          : matrix
+    _GhFall                          : matrix
+    _GhDelta                         : matrix
+    _GhStart                         : matrix
+    _GhFix                           : matrix
+    _GhActual                        : matrix
+    _gvc_dataset                     : matrix
+    _gvc_procname                    : matrix
+    _gvc_fixKeep                     : matrix
+    _EbetaWs                         : matrix
+    _Eist                            : matrix
+    _Eisn                            : matrix
+    _EisFix                          : matrix
+    _EisFac                          : matrix
+    _EisChk                          : matrix
+    _Eivc                            : matrix
+    _pqg_ver                         : matrix
+    _pagedim                         : matrix
+    _pappend                         : matrix
+    _parrow                          : matrix
+    _parrow3                         : matrix
+    _pascx                           : matrix
+    _pascy                           : matrix
+    _paxes                           : matrix
+    _paxht                           : matrix
+    _paxmarx                         : matrix
+    _pbox                            : matrix
+    _pcrop                           : matrix
+    _pcolor                          : matrix
+    _pcross                          : matrix
+    _pcwin                           : matrix
+    _pncwin                          : matrix
+    _pcsel                           : matrix
+    _perrbar                         : matrix
+    _pfonts                          : matrix
+    _pframe                          : matrix
+    _pgrid                           : matrix
+    _plctrl                          : matrix
+    _pline                           : matrix
+    _plotsiz                         : matrix
+    _plotshf                         : matrix
+    _pageshf                         : matrix
+    _pagesiz                         : matrix
+    _plegctl                         : matrix
+    _plsel                           : matrix
+    _pltype                          : matrix
+    _plwidth                         : matrix
+    _pmargin                         : matrix
+    _pmcolor                         : matrix
+    _pmsgctl                         : matrix
+    _pnotify                         : matrix
+    _pnum                            : matrix
+    _pnumht                          : matrix
+    _protate                         : matrix
+    _pqgplay                         : matrix
+    _pqgtype                         : matrix
+    _pscreen                         : matrix
+    _psilent                         : matrix
+    _pssel                           : matrix
+    _pstype                          : matrix
+    _psym                            : matrix
+    _psymsiz                         : matrix
+    _ptitlht                         : matrix
+    _pworld                          : matrix
+    _pxpmax                          : matrix
+    _pxscale                         : matrix
+    _pypmax                          : matrix
+    _pyscale                         : matrix
+    _pwindmx                         : matrix
+    _pwindno                         : matrix
+    _pfirstw                         : matrix
+    _pxmem                           : matrix
+    _pxsci                           : matrix
+    _pysci                           : matrix
+    _pzsci                           : matrix
+    _pzclr                           : matrix
+    _pzoom                           : matrix
+    _pcmdlin                         : string
+    _pcvfile                         : string
+    _pdate                           : string
+    _phard                           : string
+    _plegstr                         : string
+    _pmsgstr                         : string
+    _prtfile                         : string
+    _ptek                            : string
+    _ptitle                          : string
+    _pversno                         : string
+    _pxfmt                           : string
+    _pxlabel                         : string
+    _pyfmt                           : string
+    _pylabel                         : string
+    _pqgedit                         : matrix
+    _pmnr                            : matrix
+    _pmjr                            : matrix
+    _poptic                          : matrix
+    _pmtic                           : matrix
+    _pbarwid                         : matrix
+    _pbartyp                         : matrix
+    _pboxctl                         : matrix
+    _pboxlim                         : matrix
+    _pbox3d                          : matrix
+    _psym3d                          : matrix
+    _pline3d                         : matrix
+    _psurf                           : matrix
+    _pview                           : matrix
+    _pvolume                         : matrix
+    _pticout                         : matrix
+    _pzlabel                         : string
+    _pzpmax                          : matrix
+    _pzscale                         : matrix
+    _pzfmt                           : string
+    _plev                            : matrix
+    _plinet                          : matrix
+    _plineth                         : matrix
+    _plinec                          : matrix
+    _plinerev                        : matrix
+    _plines                          : matrix
+    _plinesc                         : matrix
+    _graphon_pqg                     : matrix
+    _eigraphC                        : matrix
+    _eigraph_thick                   : matrix
+    _eigraph_xlo                     : matrix
+    _eigraph_xhi                     : matrix
+    _eigraph_tlo                     : matrix
+    _eigraph_thi                     : matrix
+    _eigraph_bblo                    : matrix
+    _eigraph_bbhi                    : matrix
+    _eigraph_bwlo                    : matrix
+    _eigraph_bwhi                    : matrix
+    _eigraph_x                       : string
+    _eigraph_t                       : string
+    _eigraph_bb                      : string
+    _eigraph_bw                      : string
+    _eigraph_loess                   : matrix
+    _eigraph_eval                    : matrix
+    _eigraph_bvsmth                  : matrix
+    _eigraph_dbuf                    : matrix
+    _eigraph_smpl                    : matrix
+    _eigraph_pro                     : matrix
+    _tomogClr                        : matrix
+    _tomogPct                        : matrix
+    _Evc                             : matrix
+    _Etruth                          : matrix
+    _eicond_nums                     : matrix
+    _eigraph_circ                    : matrix
+    _eigraph_psiu                    : matrix
+    _smth                            : matrix
+    _strt                            : matrix
+    _endd                            : matrix
+    _pts                             : matrix
+    _Tleft                           : matrix
+    _Tright                          : matrix
+    _kern                            : string
+    _whiskr                          : matrix
+    _jitter                          : matrix
+    _output                          : matrix
+    _Loutput                         : matrix
+    _Rweight                         : matrix
+    _Rxnames                         : matrix
+    _Ryname                          : matrix
+    _Rfmt                            : matrix
+    _Rselect                         : matrix
+    _Rrobust                         : matrix
+    _Rtheta                          : matrix
+    _Routput                         : matrix
+    _Rconst                          : matrix
+    _tokdel                          : matrix
+    _tokwds                          : matrix
+
+ei.src
+    ei                               : proc
+    checkinputs                      : proc
+    eiset                            : proc
+    eirepl                           : proc
+    ei2                              : proc
+
+eibounds.src
+    bounds1                          : proc
+    bounds2                          : proc
+    maxr                             : proc
+    minr                             : proc
+
+eicml.src
+    quadcml                          : proc
+    gvc                              : proc
+    _gvc_procedure                   : proc
+    ghessp                           : proc
+    sechol                           : proc
+
+eidata.src
+    pluckdta                         : proc
+    packdta                          : proc
+
+eidiag.src
+
+eigraph.src
+    eigraph                          : proc
+    tomog                            : proc
+    kerneln                          : proc
+    kernelTN                         : proc
+    kernele                          : proc
+    kernelb                          : proc
+    kernelt                          : proc
+    kernelr                          : proc
+    density                          : proc
+    dens                             : proc
+    pline                            : proc
+    plines                           : proc
+    checkginputs                     : proc
+    profileit                        : proc
+
+eigrid.src
+    eigrid                           : proc
+    makegrid                         : proc
+
+eiloglik.src
+    eiloglik                         : proc
+    homoindx                         : proc
+    flatnorm                         : proc
+    exvar                            : proc
+
+einonpar.src
+    arcsin                           : proc
+    arccos                           : proc
+    perpdist                         : proc
+    unitarea                         : proc
+    nonbiv                           : proc
+    einonp                           : proc
+
+einormal.src
+    rndmn                            : proc
+    rndmt                            : proc
+    pdfNorm                          : proc
+    lpdfnorm                         : proc
+    lnpdfmn                          : proc
+    lnpdfmt                          : proc
+    lpdfbvn                          : proc
+    cdfnorm                          : proc
+    lcdfnormi                        : proc
+    lncdfbvnu                        : proc
+    lncdfbvn2i                       : proc
+    cdfbvnormig                      : proc
+    cdfbvnormi                       : proc
+    cdfbvnorme                       : proc
+    cdfbvnorma                       : proc
+    cdfnormdif                       : proc
+    cdfbvnunit                       : proc
+    _cdfbvnunit_proc                 : proc
+    lcdfbvnorma                      : proc
+    bvnu                             : proc
+    bvnuphi                          : proc
+    bvn_mask                         : proc
+    bvn_pi2                          : proc
+
+eiread.src
+    eiread                           : proc
+    reg                              : proc
+    checkr                           : proc
+
+eirepar.src
+    eirepar                          : proc
+    eirepart                         : proc
+    eireparinv                       : proc
+
+eisims.src
+    psim1                            : proc
+    betab2w                          : proc
+    rndisamp                         : proc
+
+eitnorm.src
+    invcdfnm                         : proc
+    cdftnorm                         : proc
+    invcdftn                         : proc
+    rndtn                            : proc
+    rndtni1                          : proc
+    rndtni0                          : proc
+    rndtni                           : proc
+    rndbtn                           : proc
+    rndbtni                          : proc
+
+eiutil.src
+    fisherzi                         : proc
+    fisherz                          : proc
+    graphgk                          : proc
+    ismissm                          : proc
+    meanWc                           : proc
+    rndchi                           : proc
+    seqase                           : proc
+    in                               : proc
+    scalone                          : proc
+    ftosm                            : proc
+    makefacn                         : proc
+    makefac                          : proc
+    facvec                           : fn
+    mkmissm                          : proc
+    fmtt                             : proc
+    vin                              : proc
+    propit                           : proc
+    subdatv                          : proc
+    subdat                           : proc
+    triple                           : proc
+    scalzero                         : proc
+    listwis2                         : proc
+    listwis3                         : proc
+    seqas                            : proc
+    graphon                          : proc
+    graphons                         : proc
+    graphclr                         : proc
+    graphno                          : proc
+    graphwait                        : proc
+    graphoff                         : proc
+    printfl                          : keyword
+    exist                            : proc
+    loada                            : proc
+    loadvars                         : keyword
+    str2mat                          : proc
+    token2                           : proc
+    infrv                            : proc
+
+cml.dec
+    _cml_version                     : matrix
+    _cml_Algorithm                   : matrix
+    _cml_CovPar                      : matrix
+    _cml_ParNames                    : matrix
+    _cml_LineSearch                  : matrix
+    _cml_DirTol                      : matrix
+    _cml_HessProc                    : matrix
+    _cml_GradProc                    : matrix
+    _cml_GradMethod                  : matrix
+    _cml_MaxIters                    : matrix
+    _cml_IterData                    : matrix
+    _cml_UserSearch                  : matrix
+    _cml_UserNumGrad                 : matrix
+    _cml_UserNumHess                 : matrix
+    _cml_Extrap                      : matrix
+    _cml_Interp                      : matrix
+    _cml_Delta                       : matrix
+    _cml_MaxTry                      : matrix
+    _cml_Options                     : matrix
+    _cml_Lag                         : matrix
+    _cml_FinalHess                   : matrix
+    _cml_NumObs                      : matrix
+    _cml_HessCov                     : matrix
+    _cml_XprodCov                    : matrix
+    _cml_Key                         : matrix
+    _cml_MaxTime                     : matrix
+    _cml_Active                      : matrix
+    _cml_GradStep                    : matrix
+    _cml_GradCheckTol                : matrix
+    _cml_Diagnostic                  : matrix
+    _cml_Increment                   : matrix
+    _cml_Center                      : matrix
+    _cml_Width                       : matrix
+    _cml_NumSample                   : matrix
+    _cml_NumCat                      : matrix
+    _cml_Select                      : matrix
+    _cml_BootFname                   : string
+    _cml_PriorProc                   : matrix
+    _cml_BayesAlpha                  : matrix
+    _cml_Kernel                      : matrix
+    _cml_Smoothing                   : matrix
+    _cml_EndPoints                   : matrix
+    _cml_NumPoints                   : matrix
+    _cml_Truncate                    : matrix
+    _cml_Alpha                       : matrix
+    _cml_HessPD                      : matrix
+    _cml_Switch                      : matrix
+    _cml_DFTol                       : matrix
+    _cml_FeasibleTest                : matrix
+    _cml_InfCorr                     : matrix
+    _cml_A                           : matrix
+    _cml_B                           : matrix
+    _cml_C                           : matrix
+    _cml_D                           : matrix
+    _cml_Bounds                      : matrix
+    _cml_EqProc                      : matrix
+    _cml_IneqProc                    : matrix
+    _cml_EqJacobian                  : matrix
+    _cml_IneqJacobian                : matrix
+    _cml_Lagrange                    : matrix
+    _cml_eps2                        : matrix
+    _cml_eps3                        : matrix
+    _cml_dsn                         : string
+    _cml_TrustRadius                 : matrix
+    _cml_Trust                       : matrix
+
+cmlcheck.src
+    _cml_check                       : proc
+    _eps                             : proc
+
+cml.src
+    cml                              : proc
+    CMLset                           : proc
+    CMLprt                           : proc
+    CMLCLprt                         : proc
+    cmltlimits                       : proc
+
+cmlutil.src
+    _cml                             : proc
+    _cml_sctu                        : proc
+    _cml_stepl                       : proc
+    _cml_bhhhstp                     : proc
+    _cml_stepbt                      : proc
+    _cml_usrsch1                     : proc
+    _cml_bracket                     : proc
+    _cml_feasible                    : proc
+    _cml_brent                       : proc
+    _cml_half                        : proc
+    _cml_rdd                         : proc
+    _cml_deriv                       : proc
+    _cml_grdfd                       : proc
+    _cml_grdcd                       : proc
+    _cml_grdf1                       : proc
+    _cml_grdc1                       : proc
+    _cml_hssp                        : proc
+    _cml_meritFunct                  : proc
+    _cml_fix0                        : proc
+    _cml_HPD                         : proc
+    _cml_gradp_hpd                   : proc
+
+cmlhist.src
+    CMLhist                          : proc
+
+cmldens.src
+    CMLdensity                       : proc
+
+cmlboot.src
+    CMLboot                          : proc
+    _rnd3                            : proc
+
+cmlblim.src
+    CMLBlimits                       : proc
+
+cmlclim.src
+    cmlclimits                       : proc
+    _cl_test                         : proc
+    _cl_set                          : proc
+    _cl_quad                         : proc
+    _cl_feasible                     : proc
+    _cl_stepl                        : proc
+    _cl_meritFunct                   : proc
+    _cl_fnct                         : proc
+    _cl_grad                         : proc
+    _cl_hess                         : proc
+
+cmlprof.src
+    CMLProfile                       : proc
+    _pf_feasible                     : proc
+
+cmlbayes.src
+    CMLBayes                         : proc
+    _cml_rndp                        : proc
+
+cmlpflcl.src
+    CMLPflCLimits                    : proc
+    _pf_test                         : proc
+    _pf_magnitude                    : proc
+    _pfcl_set                        : proc
+    _pfcl_quad                       : proc
+
+cmlmlim.src
+    cmlmlimits                       : proc
+    _lmcl_set                        : proc
+    _lmcl_magnitude                  : proc
+    _lmcl_quad                       : proc
+    _lmcl_test                       : proc
+
+pgraph.dec
+    _pqg_ver                         : matrix
+    _pagedim                         : matrix
+    _pappend                         : matrix
+    _parrow                          : matrix
+    _parrow3                         : matrix
+    _pascx                           : matrix
+    _pascy                           : matrix
+    _paxes                           : matrix
+    _paxht                           : matrix
+    _paxmarx                         : matrix
+    _pbox                            : matrix
+    _pcrop                           : matrix
+    _pcolor                          : matrix
+    _pcross                          : matrix
+    _pcwin                           : matrix
+    _pncwin                          : matrix
+    _pcsel                           : matrix
+    _perrbar                         : matrix
+    _pfonts                          : matrix
+    _pframe                          : matrix
+    _pgrid                           : matrix
+    _plctrl                          : matrix
+    _pline                           : matrix
+    _plotsiz                         : matrix
+    _plotshf                         : matrix
+    _pageshf                         : matrix
+    _pagesiz                         : matrix
+    _plegctl                         : matrix
+    _plsel                           : matrix
+    _pltype                          : matrix
+    _plwidth                         : matrix
+    _pmargin                         : matrix
+    _pmcolor                         : matrix
+    _pmsgctl                         : matrix
+    _pnotify                         : matrix
+    _pnum                            : matrix
+    _pnumht                          : matrix
+    _protate                         : matrix
+    _pqgplay                         : matrix
+    _pqgtype                         : matrix
+    _pscreen                         : matrix
+    _psilent                         : matrix
+    _pssel                           : matrix
+    _pstype                          : matrix
+    _psym                            : matrix
+    _psymsiz                         : matrix
+    _ptitlht                         : matrix
+    _pworld                          : matrix
+    _pxpmax                          : matrix
+    _pxscale                         : matrix
+    _pypmax                          : matrix
+    _pyscale                         : matrix
+    _pwindmx                         : matrix
+    _pwindno                         : matrix
+    _pfirstw                         : matrix
+    _pxmem                           : matrix
+    _pxsci                           : matrix
+    _pysci                           : matrix
+    _pzsci                           : matrix
+    _pzclr                           : matrix
+    _pzoom                           : matrix
+    _pcmdlin                         : string
+    _pcvfile                         : string
+    _pdate                           : string
+    _phard                           : string
+    _plegstr                         : string
+    _pmsgstr                         : string
+    _prtfile                         : string
+    _ptek                            : string
+    _ptitle                          : string
+    _pversno                         : string
+    _pxfmt                           : string
+    _pxlabel                         : string
+    _pyfmt                           : string
+    _pylabel                         : string
+    _pqgedit                         : matrix
+    _pmnr                            : matrix
+    _pmjr                            : matrix
+    _poptic                          : matrix
+    _pmtic                           : matrix
+    _pbarwid                         : matrix
+    _pbartyp                         : matrix
+    _pboxctl                         : matrix
+    _pboxlim                         : matrix
+    _pbox3d                          : matrix
+    _psym3d                          : matrix
+    _pline3d                         : matrix
+    _psurf                           : matrix
+    _pview                           : matrix
+    _pvolume                         : matrix
+    _pticout                         : matrix
+    _pzlabel                         : string
+    _pzpmax                          : matrix
+    _pzscale                         : matrix
+    _pzfmt                           : string
+    _plev                            : matrix
+
+paxnum.src
+    _paxnum                          : proc
+    _popt                            : proc
+    _pfeq                            : proc
+
+pbar.src
+    bar                              : proc
+
+pbox.src
+    box                              : proc
+    calcbox                          : proc
+    _pcntclc                         : proc
+
+pcart.src
+    _endgrph                         : proc
+    _pcartx                          : proc
+    _pcarty                          : proc
+    _pcartz                          : proc
+    _fontsiz                         : proc
+    _pwrscal                         : proc
+    _linfilt                         : proc
+    _txtfilt                         : proc
+    _cmnfilt                         : proc
+    _prngerr                         : proc
+    _setpage                         : proc
+    _decreas                         : proc
+    _range                           : proc
+
+pcart3d.src
+    _3dfilt                          : proc
+    _pwrsc3d                         : proc
+    _volum3d                         : proc
+
+pcontour.src
+    contour                          : proc
+
+pdraw.src
+    draw                             : proc
+
+pgraph.src
+    asclabel                         : proc
+    fonts                            : proc
+    graphset                         : proc
+    title                            : proc
+    view                             : proc
+    viewxyz                          : proc
+    volume                           : proc
+    xlabel                           : proc
+    ylabel                           : proc
+    zlabel                           : proc
+    margin                           : proc
+    axmargin                         : proc
+    graphprt                         : proc
+    rerun                            : proc
+
+phist.src
+    hist                             : proc
+    histp                            : proc
+    histf                            : proc
+
+play.src
+    hardcopy                         : proc
+    setcnvrt                         : proc
+    replay                           : proc
+
+ploglog.src
+    loglog                           : proc
+
+plogx.src
+    logx                             : proc
+
+plogy.src
+    logy                             : proc
+
+polar.src
+    polar                            : proc
+
+pscale.src
+    scale                            : proc
+    scale3d                          : proc
+    xtics                            : proc
+    ytics                            : proc
+    ztics                            : proc
+
+psurface.src
+    surface                          : proc
+
+pwindow.src
+    begwind                          : proc
+    endwind                          : proc
+    window                           : proc
+    makewind                         : proc
+    setwind                          : proc
+    nextwind                         : proc
+    getwind                          : proc
+    savewind                         : proc
+    loadwind                         : proc
+
+pxy.src
+    xy                               : proc
+
+pxyz.src
+    xyz                              : proc
+
