@@ -360,29 +360,35 @@ as the variables are scaled to the [0,1] interval (see Section 14.3).
 
 \EI includes facilities to define and run multiple \EI models all at
 once, and to combine them using formal Bayesian model averaging
-procedures.  The procedure, \texttt{ndbuf1 =
-  eimodels\_def(ndbuf1,num,t,x,n,zb,zw);}, enables you to define a
+procedures.  The procedure, \texttt{dbufdef =
+eimodels\_def(dbufdef,num,t,x,n,zb,zw);}, enables you to define a
 model specificiation (including all input variables
 \texttt{t,x,n,zb,zw}, and all globals input to \EI), to assign it a
 scalar integer model number, \texttt{num}, and to store it in a ``meta
-data buffer,'' \texttt{ndbuf1}.  The meta data buffer contains a set
+data buffer,'' \texttt{dbufdef}.  The meta data buffer contains a set
 of individual data buffers, each containing everything needed to
 define one specification.  You can run \texttt{eimodels\_def} multiple
-times to store as many models in \texttt{ndbuf1} as needed (the first
-time you run the procedure, set \texttt{ndbuf1="";}).
+times to store as many models in \texttt{dbufdef} as needed (the first
+time you run the procedure, set \texttt{dbufdef="";}).
 
 Once all model specifications have each been defined and stored, use
-\texttt{ndbuf2 = eimodels\_run(ndbuf1);} to run \texttt{ei())} on each
+\texttt{dbufrun = eimodels\_run(dbufdef);} to run \texttt{ei} on each
 of the stored specifications and save the results in another meta data
-buffer, \texttt{ndbuf2}.  Finally, run \texttt{dbuf =
-  eimodels\_avg(ndbuf1);} to use Bayesian Model Averaging to combine
-the results from multiple models with weights (the procedure
-calculates) indicating how much the data supports each model.  The
-results of this model averaging can be read using \texttt{v =
-  eiread(dbuf);} where \texttt{dbuf} is the output data buffer. To use
-this method, the prior distribution for covariates should be specified
-for each model using the global variables, \texttt{\_EalphaB} and
-\texttt{\_EalphaB}, so that the resulting posterior distribution is
+buffer, \texttt{dbufrun}. The results of each \texttt{ei} run can be
+read using \texttt{v = eiread(dbufrun);} and \texttt{v =
+eigraph(dbufrun);} while specifying the model number with the global
+variable, \texttt{_EIMetaR} (default of this variable is 1 which reads
+the results of \texttt{ei} run for Model 1).  
+
+Finally, run \texttt{dbufavg = eimodels\_avg(dbufrun);} to use
+Bayesian Model Averaging to combine the results from multiple models
+with weights (the procedure calculates) indicating how much the data
+supports each model.  The results of this model averaging can be read
+using \texttt{v = eiread(dbufavg);} and \texttt{v = eigraph(dbufavg);}
+where \texttt{dbufavg} is the output data buffer. To use this method,
+the prior distribution for covariates should be specified for each
+model using the global variables, \texttt{\_EalphaB} and
+\texttt{\_EalphaW}, so that the resulting posterior distribution is
 known to be proper.
 
 % ------------------------------------------------------------------
@@ -1198,29 +1204,29 @@ not be changed for the most common uses.
 \markright{Reference: EIMODELS}
 
 \paragraph{\underline{Format}:} 
-\texttt{ndbuf2 = eimodels\_def(ndbuf1,num,t,x,n,zb,zw);}, where
-\texttt{ndbuf1} is an input meta data buffer which contains all the
+\texttt{dbufdef = eimodels\_def(ndbufdef,num,t,x,n,zb,zw);}, where
+\texttt{dbufdef} is an input meta data buffer which contains all the
 model specifications previously defined as separate EI data buffers
-(or ``'' for the first run), and to which the current model definition
-will be added, \texttt{num} is the scalar integer model number to be
-assigned to the current model definition, and the rest are defined as
-in \texttt{ei}: \texttt{t}, \texttt{x}, and \texttt{n} are $p\times 1$
-vectors, \texttt{zb} is a scalar 1 for no covariates or a $p\times
-k^b$ matrix of covariates, and \texttt{zw} is the scalar 1 for no
-covariates or a $p\times k^w$ matrix of covariates (do not include a
-constant term).  \texttt{ndbuf2} is an output meta data buffer which
-contains the current model definition along with the previously stored
-ones.
+(or \texttt{""} for the first run), and to which the current model
+definition will be added, \texttt{num} is the scalar integer model
+number to be assigned to the current model definition, and the rest
+are defined as in \texttt{ei}: \texttt{t}, \texttt{x}, and \texttt{n}
+are $p\times 1$ vectors, \texttt{zb} is a scalar 1 for no covariates
+or a $p\times k^b$ matrix of covariates, and \texttt{zw} is the scalar
+1 for no covariates or a $p\times k^w$ matrix of covariates (do not
+include a constant term).  \texttt{dbufdef} is an updated output meta
+data buffer which contains the current model definition along with the
+previously stored ones.
 
-\texttt{ndbres = eimodels\_run(ndbuf2);}, where \texttt{ndbuf2} is the
+\texttt{dbufrun = eimodels\_run(dbufdef);}, where \texttt{dbufdef} is the
 output meta data buffer from \texttt{eimodels\_def} which contains
-multiple model definitions. \texttt{ndbres} is the output meta data
+multiple model definitions. \texttt{dbufrun} is the output meta data
 buffer, containing one data buffer for each data buffer of definitions
-in \texttt{ndbuf2}.
+in \texttt{dbufdef}.
 
-\texttt{dbres = eimodels\_avg(ndbres);}, where \texttt{ndbres} is the
+\texttt{dbufavg = eimodels\_avg(dbufrun);}, where \texttt{dbufrun} is the
 output meta data buffer from \texttt{eimodels\_run} containing the
-results of \texttt{ei} run for multiple models. \texttt{dbres} is a
+results of \texttt{ei} run for multiple models. \texttt{dbufavg} is a
 regular output data buffer.
 
 \paragraph{\underline{Purpose}:}
@@ -1289,7 +1295,7 @@ _Eeta = 1;                               @ zb=x, zw=1 @
 _Ealpha_B = {0 2};                       @ prior for betaB @
 _Esims = 1000;                           @ number of simulation @
 _EiLlikS = 1;                            @ store log-likelihood at each simulation @
-ndbuf = eimodels_def("",1,t,x,n,1,1);    @ save Model 1 @
+dbufdef = eimodels_def("",1,t,x,n,1,1);  @ save Model 1, the first model @
 
 eiset;                                   @ clear for Model 2 @
 _Eres = vput(_Eres, "Model 2", "titl");
@@ -1297,7 +1303,7 @@ _Eeta = 2;                               @ zb=1, zw=x @
 _Ealpha_W = {0 2};                       @ prior for betaW @
 _Esims = 1000;
 _EiLlikS = 1;
-ndbuf = eimodels_def(ndbuf,2,t,x,n,1,1); @ save Model 2 @
+dbufdef = eimodels_def(dbufdef,2,t,x,n,1,1); @ save Model 2 @
 
 eiset;                                   @ clear for Model 3 @
 _Eres = vput(_Eres, "Model 3", "titl");
@@ -1306,26 +1312,26 @@ _Ealpha_B = {0 2};                       @ prior for betaB @
 _Ealpha_W = {0 2};                       @ prior for betaW @
 _Esims = 1000;
 _EiLlikS = 1;
-ndbuf = eimodels_def(ndbuf,3,t,x,n,1,1); @ save Model 3 @
+dbufdef = eimodels_def(dbufdef,3,t,x,n,1,1); @ save Model 3 @
 
-save rvdef = ndbuf;                      @ save ndbuf in file rvdef.fmt @
-ndbres = eimodels_run(ndbuf);            @ run ei on all the models @
-save rvres = ndbres;                     @ save ndbres in file rvres.fmt @
+save rvdef = dbufdef;                    @ save ndbuf in file rvdef.fmt @
+dbufrun = eimodels_run(dbufdef);         @ run ei on all the models @
+save rvrun = dbufrun;                    @ save ndbres in file rvrun.fmt @
 
 _EIMetaR = 1;
-call eiread(ndbres, "sum");              @ summary info for Model 1 @
+call eiread(dbufrun, "sum");             @ summary of ei run for Model 1 @
 
 _EIMetaR = 3;
 graphon;
-call eigraph(ndbres, "tomog");           @ tomography plot for Model 3 @
+call eigraph(dbufrun, "tomog");          @ tomography plot for Model 3 @
 
 _EI_bma_prior = {0.2,0.4,0.4};           @ set prior model probabilities @
-dbres = eimodels_ave(ndbres);            @ Bayesian Model Averaging @
-save rvbma = dbres;                      @ save dbres in file rvbma.fmt @
+dbufavg = eimodels_avg(dbufrun);         @ Bayesian Model Averaging @
+save rvavg = dbufavg;                    @ save dbres in file rvavg.fmt @
 
-call eiread(dbres,"sum");                @ summary for dbres @
+call eiread(dbufavg,"sum");              @ summary for dbres @
 graphclr;                                @ clear graphics screen @
-call eigraph(dbres,"post");              @ draw district level posterior @
+call eigraph(dbufavg,"post");              @ draw district level posterior @
 graphoff;                                @ close graphics window @
 \end{verbatim} 
 
