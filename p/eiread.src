@@ -195,8 +195,9 @@
 #include ei.ext;
 proc eiread(dbuf,str);
   local vrs,a,res,tt,x,t,v,omx,b,bb,bw,sb,sw,rho,sbw,cv,Zb,Zw,titl,bs,p,d,
-  tvap,n,nb,nw,c,c0,c1,bnds,bb0,bw0,invX,invT,meanX,meanT,p00,p11,p01,p10,x2,
-  strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,_t,_x;
+  tvap,n,nb,nw,c,c0,c1,bnds,bb0,bw0,invX,invT,meanX,meanT,p00,p11,p01,p10,x2,strtmp,
+  strc,betabs,betaws,i,stbetabs,stbetaws,e,f,truth,mask,fmt,betab,betaw,max,_t,_x,
+  postp,priorp,mrgllk;
 
   /* for ei2, pull out data buffer _eimetar from meta-data buffer */
   /* for eimodels_def, pull out data buffer from meta-data buffer for Model _eimetar */
@@ -208,14 +209,44 @@ proc eiread(dbuf,str);
     elseif titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
       dbuf=vread(dbuf,"mod_d"$+ftos(_eimetar,"*.*lf",1,0)); 
     elseif titl$=="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
-      dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0)); 
-    endif;
+      dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
+    endif; 
   endif;
   
+  strtmp=str;
   str=lower(str);
   
   cv=vnamecv(dbuf);
   strc=strput(str,"        ",1);
+  
+  /* for the output of eimodels_avg, prevent users from reading inappropriate parameters */ 
+  /* almost all of the global variables and some parameters */
+  if vin(dbuf,"titl");
+    if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
+      if str$=="_ealphab" or str$=="_ealphaw" or str$=="_ebeta" or str$=="_ebounds" or
+         str$=="_ecdfbvn" or str$=="_edirtol" or str$=="_ecdftol" or str$=="_evtol" or
+         str$=="_edoml" or str$=="_edoml_phi", or str$=="_edomL_vcphi", or str$=="_edosim" or
+         str$=="_eeta" or str$=="_eigraph_bvsmth" or str$=="_eischk" or str$=="_eilliks" or
+         str$=="_eisfac" or str$=="_eisn" or str$=="_eist" or str$=="emaxIter" or 
+         str$=="_enoneva" or str$=="_enonnum" or str$=="_enonpar" or str$=="_enumtol" or
+         str$=="_erho" or str$=="_eselect" or str$=="_eselrnd" or str$=="_esigma" or
+         str$=="_esims" or str$=="_estval" or str$=="_ei_vc" or str$=="_ei2_m" or 
+         str$=="_eimetar" or str$=="_eimodels_save" or
+         str$=="zb" or str$=="zw" or    
+         str$=="checkr" or str$=="dataset" or str$=="etac" or str$=="etas" or
+         str$=="expvarci" or str$=="expvarcis" or str$=="lnir" or str$=="loglik" or
+         str$=="logliks" or str$=="meanir" or str$=="mppsiu" or str$=="parnames" or
+         str$=="phi" or str$=="phisims" or str$=="pphi" or str$=="psi" or
+         str$=="psitruth" or str$=="psiu" or str$=="r" or str$=="ri" or str$=="retcode" or
+         str$=="tsims" or str$=="vcphi";
+         "ei: You cannot eiread " $strtmp " from the output buffer of eimodels_avg.";
+         res={.};
+         retp(res);
+      endif;
+    endif;
+  endif;
+
+
 
   /***** changes in stored globals *****/
   
@@ -1232,18 +1263,17 @@ proc eiread(dbuf,str);
       titl=vread(dbuf,"titl");
       "** "$+titl$+" **";
       if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
+        postp=vread(dbuf,"postprob");
+        priorp=vread(dbuf,"prprob");
+        mrgllk=vread(dbuf,"margllik");
         ?;
-        "The number of model averaged"; rows(eiread(dbuf,"postprob"));
+        "The number of model averaged"; rows(vread(dbuf,"postprob"));
         ?;
-        "Posterior model probabilities";
-        "Model  Prob";;eiread(dbuf,"postprob");
+        "Model  Posterior Prior  Marginal";
+        "Number   Prob     Prob   LogLik ";
+        postp~priorp[.,2]~mrgllk[.,2];
         ?;
-        "Prior model probabilities";
-        "Model  Prob";;eiread(dbuf,"prprob");
-        ?;
-        "Marginal log-likelihoods";
-        "Model  llik";;eiread(dbuf,"margllik");
-	call eiread(dbuf,"abounds");
+        call eiread(dbuf,"abounds");
         ?;
         call eiread(dbuf,"paggs");
         res="";
