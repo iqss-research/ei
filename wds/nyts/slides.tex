@@ -2,6 +2,7 @@
 \usepackage{amsfonts}
 \usepackage{fancybox}%,times}
 \usepackage{graphicx,psfrag,epsf}
+\usepackage{epsfig}
 \usepackage{amsmath}
 \usepackage{enumerate}
 \usepackage[usenames]{color}
@@ -63,18 +64,20 @@ Harvard University \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{slide}
-\subsection*{Late Overseas Absentee Ballots were Decisive:\newline 
-Official Results} \bigskip
+  \begin{center}
+    \textbf{Absentee Ballots were Decisive: The Official Results} 
+  \end{center}
+\bigskip
 
 \begin{table}
 \begin{center}
 \begin{tabular}{lcccc}
-                                 & Gore      & Bush      & margin \\ 
-\hline 
+                             & Gore      & Bush      & margin \\ 
+\cline{2-4}
 Ballots cast/received by Nov.\ 7 &2,911,417 & 2,911,215 & {\bf Gore leads by 202} \\
-Overseas absentee ballots        &      836 &     1,575 & Bush leads by 739 \\
-\hline
-Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
+Overseas absentee ballots    &      836 &     1,575 & Bush leads by 739 \\
+\cline{2-4}
+Total                        & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 \end{tabular}
 \label{tb:official}
 \end{center}
@@ -88,15 +91,15 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 \heading{Overview}
 \smallskip
 
-{\bf Illegal Ballots In Florida:} 
+{\bf Illegal Ballots Found:} 
 \begin{itemize}
 \item 680 overseas absentee ballots violated state or federal election
   law
 \item No one has publicly disagreed with this conclusion
 \item Other controversial aspects of the election were litigated,
-  decided, and generally accepted.
-\item Illegal actions resulted from  \emph{deliberate political
-    strategies}.
+  decided, and generally accepted.  Not about voter intentions.
+\item Illegal actions resulted from  deliberate political
+    strategies.
 \end{itemize}
 
 \bigskip
@@ -115,20 +118,22 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{slide}
-\heading{Invalid Overseas Absentee Ballots}
+\centerline{\textbf{Invalid Overseas Absentee Ballots Found}}
 \bigskip
 
 \begin{itemize}
-\item 344 ballots: late, illegible or missing postmarks. \\ (postmarks
-  must indicate that the ballot was cast on or before election day)
-\item 183 ballots: United States postmarks.
-\item 169 ballots: from voters who were not registered, failed to sign
+\item \textcolor{Blue}{344 ballots:} late, illegible or missing
+  postmarks. \\ (postmarks must indicate that the ballot was cast on
+  or before election day)
+\item \textcolor{Blue}{183 ballots:} U.S.\ postmarks (postmarks must 
+  be from overseas).
+\item \textcolor{Blue}{169 ballots:} from voters who 
+  were not registered, failed to sign
   the envelope, or had not previously requested a ballot. \\ (A
   request is required by federal law).
-\item 96 ballots: lacked the required signature or address of a witness
-\item 38 ballots: from 19 voters who cast two ballots
-\item 5 ballots: received after the 11/17 deadline
-  anyway.
+\item \textcolor{Blue}{96 ballots:} lacked the required signature or address of a witness
+\item \textcolor{Blue}{38 ballots:} 19 voters who cast two ballots each
+\item \textcolor{Blue}{5 ballots:} received after the 11/17 deadline
 \end{itemize}
 
 \end{slide}
@@ -136,22 +141,29 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{slide}
-\heading{Ecological Inference for Flawed Ballots}
+  \begin{center}
+    \textbf{Invalid Ballots as an Ecological Inference Problem}
+  \end{center}
 
 \smallskip
 \begin{center}
 \small
 \begin{table}
     \begin{tabular}{ccccc}
-      & Gore  & Bush & Others & total  \\
-      \hline 
-      invalid ballots &   ?   &   ?  &   ?    &  680   \\
-      valid ballots   &   ?   &   ?  &   ?    & 1824   \\
-      \hline
-      & 836   & 1575 &   79   & 2504   \\
+      & Gore  & Bush & \textcolor{Blue}{Others} & Total  \\
+      \cline{2-4}
+      Invalid ballots &   \textcolor{Red}{?}   &   \textcolor{Red}{?}  &   \textcolor{Blue}{?}    &  680   \\
+      Valid ballots   &   \textcolor{Red}{?}   &   \textcolor{Red}{?}  &   \textcolor{Blue}{?}    & 1824   \\
+      \cline{2-4}
+      & 836   & 1575 &   \textcolor{Blue}{79}   & 2504   \\
     \end{tabular} 
 \end{table} 
 \end{center}
+
+\begin{itemize}
+\item We'll ignore votes for \textcolor{Blue}{other candidates} for expository purposes.
+\item Goal: How much did \textcolor{Red}{Bush and Gore benefit} from the invalid ballots?
+\end{itemize}
 
 \end{slide}
 
@@ -212,15 +224,32 @@ valid ballots   & &  $\bg_i$ & $1-\bg_i$  & $1-X_i$ \\
 {\bf Tomography Line}     & $\bg_i$ & $\frac{T_i}{1-X_i}-\frac{X_i}{1-X_i}\bb_i$.
 \end{tabular}
 
-\begin{figure}
-\hspace{1.4in}\vspace{-0.3in}\begin{minipage}[l]{3in}
-  \vspace{-0.2in}
-    \begin{center}
-      \includegraphics[width=2.25in,height=3in,angle=-90]{tomog}
-    \end{center}
-  \end{minipage}
-  \caption{\small \label{fg:tomog} Tomography Plot for Florida Counties.}
-\end{figure}
+% \begin{figure}
+% \hspace{1.4in}\vspace{-0.3in}\begin{minipage}[l]{3in}
+%   \vspace{-0.2in}
+%     \begin{center}
+% %      \includegraphics[width=2.25in,height=3in,angle=-90]{tomog}
+%     \end{center}
+%   \end{minipage}
+%   \caption{\small \label{fg:tomog} Tomography Plot for Florida Counties.}
+% \end{figure}
+
+\begin{minipage}[b]{0.5\linewidth} % A minipage that covers half the page
+  \centering \color{Red}
+  \begin{equation*}
+    \text{Citrus County: $T=.13$, $X=.25$} 
+  \end{equation*}
+  \begin{align*}
+    \bg_i &= \frac{T_i}{1-X_i}-\frac{X_i}{1-X_i}\bb_i\\
+    &= \frac{.13}{1-.25}-\frac{.25}{1-.25}\bb_i\\
+    &= .173 - .333\bb_i
+  \end{align*}
+\end{minipage}
+\hspace{0.5cm} % To get a little bit of space between the figures
+\begin{minipage}[b]{0.5\linewidth}
+  \centering
+  \epsfig{file=tomogc.eps, width=2in}
+\end{minipage}
 
 \end{slide}
 
@@ -230,26 +259,32 @@ valid ballots   & &  $\bg_i$ & $1-\bg_i$  & $1-X_i$ \\
 \heading{Analysis of Bounds}
 \bigskip
 
-{\bf Bush's margin without bad ballots} $\in [-126, 936]$
-
 \smallskip
 \begin{table}
 \begin{center}
-\begin{tabular}{l c |ccc|ccc}
-  & \bf Total   & \multicolumn{3}{c|}{\bf Gore's votes} &
-  \multicolumn{3}{c}{\bf Bush's votes} \\
-  & invalid & official & \multicolumn{2}{c|}{invalid ballots} & official &
-  \multicolumn{2}{c}{invalid ballots} \\
-County & ballots & count & min & max & counts & min & max \\
+\begin{tabular}{l |ccc|ccc| c}
+  & \multicolumn{3}{c|}{\bf Gore's votes} &
+  \multicolumn{3}{c|}{\bf Bush's votes} & \bf Total   \\
+   & official & \multicolumn{2}{c|}{\textcolor{Red}{invalid ballots}} & official &
+  \multicolumn{2}{c|}{\textcolor{Red}{invalid ballots}} & invalid\\
+County  & count & \textcolor{Red}{min} & \textcolor{Red}{max} & count & \textcolor{Red}{min} & \textcolor{Red}{max} & ballots\\
 \hline 
-Escambia   & 102 & 47 & 0 & 47 & 154 & 48 & 102 \\
-Santa Rosa &  55 & 16 & 0 & 16 &  65 & 37 &  55 \\
-Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
+Baker      &  0 & \textcolor{Red}{0} & \textcolor{Red}{0} &   1 &  \textcolor{Red}{1} &   \textcolor{Red}{1} &   1 \\
+Escambia   & 47 & \textcolor{Red}{0} & \textcolor{Red}{47} & 154 & \textcolor{Red}{48} & \textcolor{Red}{102} & 102 \\
+Santa Rosa & 16 & \textcolor{Red}{0} & \textcolor{Red}{16} &  65 & \textcolor{Red}{37} &  \textcolor{Red}{55} &  55 \\
+$\vdots$ & $\vdots$ &
+$\textcolor{Red}{\vdots}$ & $\textcolor{Red}{\vdots}$ &
+$\vdots$ & $\textcolor{Red}{\vdots}$ &
+$\textcolor{Red}{\vdots}$ & $\vdots$ \\
 \hline
-\bf all counties & \bf 680 & \bf 836 & \bf 5 & \bf 527 & \bf 1575 & \bf 128 & \bf 668 \\ 
-\end{tabular} \caption{Analysis of bounds.}
+\bf all counties  & \bf 836 & \bf \textcolor{Red}{5} & \bf \textcolor{Red}{527} & \bf 1575 & \bf \textcolor{Red}{128} & \bf \textcolor{Red}{668} & \bf 680\\ 
+\end{tabular} 
 \end{center}
 \end{table} 
+
+\begin{center}
+  {\bf Bush's margin without bad ballots} $\in \textcolor{Red}{[-126, 936]}$
+\end{center}
 
 \end{slide}
 
@@ -259,9 +294,9 @@ Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
 \heading{Statistical Modeling}
 \bigskip
 
-{\bf Key Assumptions of King's Ecological Inference Model}
+{\bf Key Assumptions of EI}
 \begin{itemize}
-\item Systematic differences about $\bb_i$ and $\bg_i$ are accounted
+\item Systematic differences in $\bb_i$ and $\bg_i$ are accounted
   for by covariates.
 \item Conditional on covariates, there is no spatial correlation.
 \item Conditional on covariates, $\bb_i$ and $\bg_i$ are independent
@@ -294,28 +329,32 @@ Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
 race, sex, party registration for the absentee voters, county level
 election results, and demographic variables.
 
-{\bf Bayesian Inference:} $\P(\Delta|T) \propto \P(\Delta)\P(T|\Delta).$
+{\bf Bayesian Inference:} 
+$\textcolor{Purple}{\P(\Delta|T,M)} \propto \P(\Delta|M)\P(T|\Delta,M).$
 
 {\bf Model Averaging:} 
 \begin{equation*}
- \Pr(\Delta|T) = \sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T).
+\Pr(\Delta|T) 
+ = \sum_{k=1}^{31} \textcolor{Purple}{\P(\Delta|M_k,T)} \textcolor{Red}{\Pr(M_k|T)}
 \end{equation*}
 
-{\bf Posterior Model Probability:}
+\textcolor{Red}{{\bf Posterior Model Probability:}}
 \begin{itemize} 
 \item The probability of the model, $k$, being true given the data.
 \item Different from measures of fit like $R^2$.
-\item Computed via the Bayes Theorem\begin{equation*}
-\Pr(M_k|T) =  \frac{\P(T|M_k)\Pr(M_k)}{\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  
-\end{equation*}
+\item Computed via the Bayes Theorem
+  \begin{equation*}
+    \textcolor{Red}{\Pr(M_k|T)} =  \frac{\P(T|M_k)\Pr(M_k)}{\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  
+  \end{equation*}
 \end{itemize}
+
 
 \end{slide}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{slide}
-\heading{\small Probability that Gore Would Have Won Without Flawed Ballots}
+\centerline{\textbf{\small Probability that Gore Would Have Won Without Flawed Ballots}}
 
 \begin{figure}
 \begin{center}
@@ -393,31 +432,31 @@ had been stamped on ballot envelopes.''
 \begin{tabular}{l....|.}
 & \multicolumn{1}{c}{military} 
 & \multicolumn{1}{c}{Republican} 
-& \multicolumn{1}{c}{Bad ballot}
-& \multicolumn{1}{c}{Bad Ballots} 
+& \multicolumn{1}{c}{\textcolor{Purple}{Bad ballot}}
+& \multicolumn{1}{c}{\textcolor{Purple}{Bad Ballots}}
 \\ 
 & \multicolumn{1}{c}{ballots} 
 & \multicolumn{1}{c}{vote} 
-& \multicolumn{1}{c}{acceptance}
-& \multicolumn{1}{c}{counted for Bush} 
+& \multicolumn{1}{c}{\textcolor{Purple}{acceptance}}
+& \multicolumn{1}{c}{\textcolor{Purple}{counted for Bush}}
 & \multicolumn{1}{c}{all ballots}\\    \hline
     \multicolumn{4}{l}{\bf Republican pressure to count} \\
-    \hspace{1em}Collier  & 46.7\% & 65.6\% & 53.7\% & 64.5\% & 60 \\    
-    \hspace{1em}Duval    & 83.8 & 57.5 & 62.3 & 67.8 & 637 \\
-    \hspace{1em}Escambia & 88.6 & 62.6 & 64.2 & 80.3 & 272 \\         
-    \hspace{1em}Okaloosa & 88.9 & 73.7 & 42.0 & 69.4 & 189 \\          
-    \hspace{1em}Pasco    & 62.3 & 48.0 & 60.5 & 76.4 & 53 \\                
-    \hspace{1em}Santa Rosa & 90.3 & 72.1 & 84.6 & 84.4 & 93 \\
-    \hspace{1em}\emph{Average} & \emph{83}.\emph{4} & \emph{60}.\emph{0} & \emph{61}.\emph{5} & \emph{74}.\emph{3} & 1304 \\
+    \hspace{1em}Collier  & 46.7\% & 65.6\% & \textcolor{Purple}{53}.\textcolor{Purple}{7\%} & \textcolor{Purple}{64}.\textcolor{Purple}{5\%} & 60 \\    
+    \hspace{1em}Duval    & 83.8 & 57.5 & \textcolor{Purple}{62}.\textcolor{Purple}{3} & \textcolor{Purple}{67}.\textcolor{Purple}{8} & 637 \\
+    \hspace{1em}Escambia & 88.6 & 62.6 & \textcolor{Purple}{64}.\textcolor{Purple}{2} & \textcolor{Purple}{80}.\textcolor{Purple}{3} & 272 \\         
+    \hspace{1em}Okaloosa & 88.9 & 73.7 & \textcolor{Purple}{42}.\textcolor{Purple}{0} & \textcolor{Purple}{69}.\textcolor{Purple}{4} & 189 \\          
+    \hspace{1em}Pasco    & 62.3 & 48.0 & \textcolor{Purple}{60}.\textcolor{Purple}{5} & \textcolor{Purple}{76}.\textcolor{Purple}{4} & 53 \\                
+    \hspace{1em}Santa Rosa & 90.3 & 72.1 & \textcolor{Purple}{84}.\textcolor{Purple}{6} & \textcolor{Purple}{84}.\textcolor{Purple}{4} & 93 \\
+    \hspace{1em}\emph{Average} & \emph{83}.\emph{4} & \emph{60}.\emph{0} & \textcolor{Purple}{\emph{61}}.\textcolor{Purple}{\emph{5}} & \textcolor{Purple}{\emph{74}}.\textcolor{Purple}{\emph{3}} & 1304 \\
 \multicolumn{5}{l}{\bf Counties not mentioned by the \emph{Times}}
 & \\ 
-\hspace{1em}\emph{Average} & \emph{67}.\emph{6} & \emph{51}.\emph{8} & \emph{30}.\emph{0} & \emph{71}.\emph{5} & 1751\\
+\hspace{1em}\emph{Average} & \emph{67}.\emph{6} & \emph{51}.\emph{8} & \textcolor{Purple}{\emph{30}}.\textcolor{Purple}{\emph{0}} & \textcolor{Purple}{\emph{71}}.\textcolor{Purple}{\emph{5}} & 1751\\
 \multicolumn{4}{l}{\bf Republican pressure not to count}\\ 
-    \hspace{1em}Alachua    & 46.8 & 39.8 & 12.5 & 54.5 & 77 \\ 
-    \hspace{1em}Broward    & 46.9 & 30.9 & 21.8 & 54.3 & 213 \\  
-    \hspace{1em}Miami Dade & 44.4 & 46.3 & 11.7 & 57.1 & 306 \\
-    \hspace{1em}Palm Beach & 45.3 & 35.3 & 40.7 & 56.2 & 53 \\ 
-    \hspace{1em}\emph{Average} & \emph{45}.\emph{6} & \emph{38}.\emph{1} & \emph{17}.\emph{2} & \emph{55}.\emph{4} &  649 \\
+    \hspace{1em}Alachua    & 46.8 & 39.8 & \textcolor{Purple}{12}.\textcolor{Purple}{5} & \textcolor{Purple}{54}.\textcolor{Purple}{5} & 77 \\ 
+    \hspace{1em}Broward    & 46.9 & 30.9 & \textcolor{Purple}{21}.\textcolor{Purple}{8} & \textcolor{Purple}{54}.\textcolor{Purple}{3} & 213 \\  
+    \hspace{1em}Miami Dade & 44.4 & 46.3 & \textcolor{Purple}{11}.\textcolor{Purple}{7} & \textcolor{Purple}{57}.\textcolor{Purple}{1} & 306 \\
+    \hspace{1em}Palm Beach & 45.3 & 35.3 & \textcolor{Purple}{40}.\textcolor{Purple}{7} & \textcolor{Purple}{56}.\textcolor{Purple}{2} & 53 \\ 
+    \hspace{1em}\emph{Average} & \emph{45}.\emph{6} & \emph{38}.\emph{1} & \textcolor{Purple}{\emph{17}}.\textcolor{Purple}{\emph{2}} & \textcolor{Purple}{\emph{55}}.\textcolor{Purple}{\emph{4}} &  649 \\
     \hline                                                       
   \end{tabular}                                                
   \caption{\footnotesize Counties classified by whether the \emph{Times} reported evidence of Republican pressure.} 
@@ -509,26 +548,28 @@ had been stamped on ballot envelopes.''
 \heading{Concluding Remarks}
 \bigskip
 
-\begin{itemize}
-\item {\bf Bush won? But we will never know with certainty:} 
+\begin{enumerate}
+\item Voter intentions aside, who won according to the law?  
+  \begin{enumerate}
+  \item We will never know for certain.
+  \item Bush probably won, fixing only the bad ballot problem
+  \item Almost any other scenerio would have probably led to a Gore
+    victory
+  \end{enumerate}
   
-  Some scenarios show the high probability that Gore would have won.
-
-\item {\bf Strong support for the \emph{New York Times} thesis:}
-
-  Quantitative evidence confirms qualitative stories.
-
-\item {\bf Validity of counterfactuals:} 
+\item Quantitative evidence confirms qualitative stories of Republican
+  pressure (which is fine) and local election officials responding
+  (which is not).
   
-  Our counterfactual questions are very close to the data.
-  
+\item Our counterfactual questions are very close to the data and
+  easier to validate.
 \item First political science application of formal Bayesian model averaging.
-\item First use of Bayesian model averaging in the growing Ecological
-  Inference literature.
+\item First use of Bayesian model averaging in the growing ecological
+  inference literature.
 \item An approach towards the uncertainty of model choice.
 \item Model averaging cannot substitute for the investigator's
   judgment.
-\end{itemize}
+\end{enumerate}
 
 \end{slide}
 
