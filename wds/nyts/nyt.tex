@@ -99,21 +99,22 @@
 \newcommand{\bb}{\beta^{\text{bad}}}
 \newcommand{\bg}{\beta^{\text{good}}}
 
-\title{Did Illegally Counted Absentee Ballots Decide the 2000 U.S.\ 
+\title{Did Illegally Counted Overseas Absentee Ballots Decide the 2000 U.S.\ 
   Presidential Election?}
 
 \author{Kosuke Imai\thanks{Ph.D. candidate, Department of Government,
     Harvard University. (Center for Basic Research in the Social
     Sciences, 34 Kirkland, Cambridge MA 02138;
     \texttt{http://www.people.fas.harvard.edu/\~\,kimai},
-    \texttt{KImai@Fas.Harvard.Edu})}
+    \texttt{KImai@Fas.Harvard.Edu}).}
 \and %
 Gary King\thanks{Professor of Government, Harvard University and
   Senior Science Advisor, Evidence and Information for Policy Cluster,
   World Health Organization (Center for Basic Research in the Social
   Sciences, 34 Kirkland Street, Harvard University, Cambridge MA
   02138; \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu},
-  (617) 495-2027).}  }
+  (617) 495-2027).}  
+}
 
 \begin{document}
 \maketitle
@@ -226,14 +227,19 @@ ballot problem was due to blatantly illegal actions on the part of
 local election officials that had not been previously noticed.  The
 \emph{Times} argued that local officials were influenced by the
 deliberate political strategies employed by the Bush campaign, and
-comparative neglect by the Democrats.\footnote{Democratic Vice
-  Presidential candidate Joe Lieberman publicly announced his party's
-  decision not to contest the overseas absentee ballots, so as not to
-  be seen as opposing the many military personnel who cast their votes
-  in that fashion.}  They concluded that ``Under intense pressure from
-the Republicans, Florida officials accepted hundreds of overseas
-absentee ballots that failed to comply with the state laws'' (Barstow
-and Van Natta, Jr., 2001)\nocite{BarVan01}.
+comparative neglect by the Democrats.\footnote{The Democrats had
+  planned to contest the absentee ballots, but Democratic Vice
+  Presidential Candidate Joe Lieberman on Meet the Press ended this
+  strategy when he explained that he ``would give the benefit of the
+  doubt to ballots coming in from military personnel generally.\ldots
+  Al Gore and I don't want to ever be part of anything that would put
+  an extra burden on the military personnel abroad who want to vote.''
+  Gore then backed him up and the Democrats left the Republicans
+  strategies unchallenged.  See Berke (2001).}  They concluded that
+``Under intense pressure from the Republicans, Florida officials
+accepted hundreds of overseas absentee ballots that failed to comply
+with the state laws'' (Barstow and Van Natta, Jr.,
+2001)\nocite{BarVan01}.
 
 Were these 680 inappropriately counted ballots enough to have thrown
 the election to the wrong candidate?  The \emph{Times} hired us to
@@ -324,13 +330,15 @@ respond to this pressure by treating voters unequally is a more
 serious claim.  The \emph{Times'} view --- ``The result was unequal
 treatment of ballots with the same flaws.'' --- contradicts statements
 by Florida Secretary of State, Katherine Harris, that the rules were
-applied uniformly.  It also violates the Equal Protection Clause of
-the U.S.\ Constitution, which was part of the stated grounds under
-which the United States Supreme Court in \emph{Bush v.\ Gore} stopped
-the manual recounts.
+applied uniformly.  It also would seem to violate the Equal Protection
+Clause of the U.S.\ Constitution, which was part of the stated grounds
+under which the United States Supreme Court in \emph{Bush v.\ Gore}
+stopped the manual recounts.
 
-The 680 ballots that the \emph{Times} found were flawed met one or more
-of these conditions:
+The 680 ballots that the \emph{Times} found were flawed met one or
+more of these conditions (Barstow and Van Natta, Jr.,
+2001):\footnote{For pictures of some of the bad ballots, see
+  \url{http://www.nytimes.com/images/2001/07/15/politics/absentee/nat_ABSENTEE_count_index.html}.}
 \begin{itemize}
 \item 344 ballots had late, illegible or missing postmarks (postmarks
   must indicate that the ballot was cast on or before election day).
@@ -531,7 +539,7 @@ exclude the possibility that Gore actually won the election.  That is,
 without making any assumptions other than that the \emph{Times} coding
 decisions were correct (and again, we saw no objection to them in the
 media discussion that followed their story), the 537 Bush margin now
-changes to somewhere from a 119 vote victory for Gore to a 911 vote
+changes to somewhere from a 126 vote victory for Gore to a 936 vote
 victory for Bush.  Once the ballots were removed from the envelopes,
 America forever gave up the possibility of knowing for certain who won
 the 2000 election.
@@ -569,9 +577,9 @@ the data.
 Ecological inferences about bad ballots in Florida is an especially
 good application of Bayesian model averaging methodology for the
 following reasons.  First, model assumptions can play a critical role
-in ecological inference when the bounds are wide.  This sensitivity to
-model specification can also result in weak model identification which
-is an inherent feature of the ecological inference problem in general.
+in ecological inference when the bounds are wide.  In addition to
+sensitivity to model specification, an inherent feature of the
+ecological inference problem in general is often weak identification.
 One consequence is that one cannot always use models with as many
 covariates as are available to analyze ecological data because such
 `big' models are often not identified.  On the other hand, if we have
@@ -746,9 +754,8 @@ To compute the posterior model probability, we need two elements.
 First is a prior probability that each model is correct, $\Pr(M_k)$.
 For simplicity, we assign an equal prior probability, $1/31$, to each
 model.  This at least does not given any a priori advantage to one
-model over another.  We conducted sensitivity analyses that did not
-reveal much change in our overall estimates by making changes to this
-prior (see Section \ref{s:sens}).
+model over another.  (Section \ref{s:sens} discusses sensitivity to
+priors.)
 
 The other quantity we need to compute for the posterior model
 probability is the marginal likelihood, $\P(T|M_k)$, which is
@@ -762,13 +769,11 @@ obtained by averaging the likelihood over the prior distribution.  The
 marginal likelihood can be thought of as ``the probability of seeing
 the data that actually were observed, calculated \emph{before} any
 data became available'' \cite[p.776]{kass:raft:95}.  That is, the
-marginal likelihood is exactly a likelihood but for the model rather
-than a parameter of the model.  Hence, the marginal likelihood tells
-us how well each model is supported by the data, just as the
-likelihood tells us how well each parameter is supported by a
-likelihood in traditional likelihood models.  It is used to calculate
-the posterior model probabilities.  We discuss computational issues in
-the Appendix.
+marginal likelihood would be exactly the likelihood for the model
+(rather than a parameter of the model) if the data turn out to look
+exactly like your prior.  Hence, the marginal likelihood tells us how
+well each model would be supported by the prior.  We discuss
+computational issues in the Appendix.
 
 \section{Empirical Results}
 \label{s:outcome}
@@ -780,7 +785,7 @@ Figure \ref{fg:margin} portrays the posterior distribution from our
 analysis of Bush's margin of victory if the bad ballots had not
 been counted (the histogram of 1000 draws from the posterior).  Note
 first that all area for this distribution is contained with the bounds
-we found for this quantity of $-119$ to 911.  The weight of the
+we found for this quantity of $-126$ to 936.  The weight of the
 statistical evidence within these bounds clearly demonstrates that
 Bush benefited considerably by the bad ballots, and removing them thus
 takes away from his margin.  This is evident in the figure because
@@ -812,14 +817,13 @@ officials decided to stop the manual recount when they made the
 judgment that they could not meet the recount deadline, set by the
 Florida Supreme Court, 5p.m.  Sunday, November 27.  The partial manual
 recount gave a net gain of 157 votes to Gore. In Palm Beach county,
-they also could not finish the manual recount, but they
-submitted the result of the partial recount just before the deadline,
-which would have given Gore a net gain of 192 votes for
-Gore. Later that day, Palm Beach
-electoral officials reported the result of the complete recount to
-Harris.  She rejected this complete recount as well as the
-partial recount and did not include them in the certified official
-tally, thereby denying Gore a total of 349 votes.
+they also could not finish the manual recount, but they submitted the
+result of the partial recount just before the deadline, which would
+have given Gore a net gain of 192 votes for Gore. Later that day, Palm
+Beach electoral officials reported the result of the complete recount
+to Harris.  She rejected this complete recount as well as the partial
+recount and did not include them in the certified official tally,
+thereby denying Gore a total of 349 votes.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{l..}
@@ -1076,10 +1080,10 @@ whether the observed $T$ fell within the (say) 90\% confidence
 interval 90\% of the time.
 
 We also look at whether the first stage of the model (i.e., before
-conditioning on $T_i$) fits by comparing the county-level predictive
-confidence interval for $T_i$ to its observed value.  Figure
-\ref{fg:fit} gives several examples of this strategy for two of the
-models we ran (in the first two rows), as well as for the ultimate
+conditioning on $T_i$) fits by comparing the county-level posterior
+predictive confidence interval for $T_i$ to its observed value.
+Figure \ref{fg:fit} gives several examples of this strategy for two of
+the models we ran (in the first two rows), as well as for the ultimate
 model implied by the entire Bayesian model averaging procedure (in the
 last row).  The first column plots these predictive confidence
 intervals by $X_i$, the fraction of bad ballots.  The second column
