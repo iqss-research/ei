@@ -9,6 +9,7 @@
 \newcommand{\bb}{\beta^{\text{bad}}}
 \newcommand{\bg}{\beta^{\text{good}}}
 \renewcommand{\P}{\text{P}}
+\renewcommand{\sc}{\scriptsize}
 
 % === dcolumn package ===
 \usepackage{dcolumn}
@@ -87,25 +88,30 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 
 \begin{slide}
 \heading{Overview}
+\smallskip
+
+{\bf I{\sc LLEGAL} B{\sc ALLOTS} I{\sc N} F{\sc LORIDA}:} 
+\begin{itemize}
+\item 680 overseas absentee ballots {\it unambiguously violated} state
+  election law.
+\item No one has publicly disagreed with this \emph{New York Times}
+  finding.
+\item Other controversial aspects of the election were official and
+  legal. 
+\item Illegal actions resulted from {\it deliberate political
+    strategies}.
+\end{itemize}
+
 \bigskip
 
+{\bf E{\sc COLOGICAL} I{\sc NFERENCE} W{\sc ITH} B{\sc AYESIAN} M{\sc
+    ODEL} A{\sc VERAGING}:} 
+
+\hspace{0.1in} useful when
 \begin{itemize}
-\item {\bf ILLEGALITY:} 680 of the overseas absentee ballots that had
-  been counted by Florida counties \emph{unambiguously violated}
-  Florida election law. In contrast, many political decisions made by
-  the courts and officials were controversial but they were official,
-  legal and were eventually accepted by all concerned.
-\smallskip
-\item {\bf POLITICAL STRATEGIES:} The illegal actions of local election
-  officials were due to \emph{deliberate political strategies}
-  employed by the Bush campaign.  The problem was not caused by an old
-  voting machine.
-\smallskip  
-\item {\bf Ecological Inference with Bayesian Model Averaging:} The
-  methodology is useful when substantive conclusions depend heavily on
-  indefensible model choices, when model generalization is not
-  feasible, and when potential critics are more partisan than
-  academic.
+\item conclusions are model dependent
+\item model generalization is not feasible
+\item when potential critics are more partisan than academic
 \end{itemize}
 
 \end{slide}
@@ -115,8 +121,6 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 \begin{slide}
 \heading{Invalid Overseas Absentee Ballots in Florida}
 \bigskip
-
-{\bf The New York Times found the following 680 illegal ballots:}
 
 \begin{itemize}
 \item 344 ballots had late, illegible or missing postmarks. \\ (postmarks
@@ -139,7 +143,6 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
 \begin{slide}
 \heading{Ecological Inference for Flawed Ballots}
 
-{\bf Ultimate Quantity of Interest:} Bush's margin without invalid ballots.
 \smallskip
 \begin{center}
 \small
@@ -154,9 +157,20 @@ Total                          & 2,912,253 & 2,912,790 & Bush leads by 537 \\
     \end{tabular} 
     \caption{\small Ecological Inference Problem in Florida.}\label{tb:ballots}
 \end{table} 
+\end{center}
 
+\end{slide}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{slide}
+
+{\bf F{\sc ORMULATION} O{\sc F} E{\sc COLOGICAL} E{\sc STIMATION}}
+
+\begin{minipage}[c]{2.75in}
 \bigskip
-\begin{table}
+\small
+\begin{center}
 \begin{tabular}{cccc}
                 & Gore  & Bush &         \\
 \hline 
@@ -165,10 +179,29 @@ valid ballots   & $\bg_i$  & $1-\bg_i$ & $1-X_i$ \\
 \hline
                 & $T_i$ & $1-T_i$ &         \\
 \end{tabular} 
-\caption{\small Formulation of Ecological Estimation.}\label{tb:ei}
-\end{table} 
 \end{center}
+\end{minipage}
+\begin{minipage}[c]{2in}
+\small
+\vspace{0.2in}
+\begin{tabular}{l @{= } l}
+$X_i$ & fraction of bad ballots \\
+$T_i$ &  fraction of Gore's ballots \\
+$\bb_i$ & fraction of Gore's bad ballots \\ 
+$\bg_i$ & fraction of Gore's good ballots \\ 
+\end{tabular}
+\end{minipage}
+
+\bigskip
 \normalsize
+{\bf U{\sc LTIMATE} Q{\sc UANTITY} O{\sc F} I{\sc NTEREST}} 
+\begin{align*}
+  \text{Bush's margin} & = \text{official margin}
+  - [\text{Bush's bad ballots} - \text{Gore's bad ballots}] \notag\\
+  & = 537 - [(1-\bb)680-\bb 680]\\
+  & = 1360 \bb - 143. \label{qoi}
+\end{align*}
+
 \end{slide}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -177,13 +210,15 @@ valid ballots   & $\bg_i$  & $1-\bg_i$ & $1-X_i$ \\
 \heading{Analysis Without Statistical Assumptions}
 \bigskip
 
-{\bf Accounting Identity:} $T_i=\bb_i X_i+\bg_i (1-X_i)$.
-\bigskip
-
-{\bf Tomography line:} $\bg_i = \frac{T_i}{1-X_i}-\frac{X_i}{1-X_i}\bb_i.$
+\begin{tabular}{l c @{= } l}
+{\bf Accounting Identity} & $T_i$ & $\bb_i X_i+\bg_i (1-X_i)$.\\
+\\
+{\bf Tomography Line}     & $\bg_i$ & $\frac{T_i}{1-X_i}-\frac{X_i}{1-X_i}\bb_i$.
+\end{tabular}
 
 \begin{figure}
-\hspace{1.4in}\begin{minipage}[l]{3in}
+\hspace{1.4in}\vspace{-0.3in}\begin{minipage}[l]{3in}
+  \vspace{-0.2in}
     \begin{center}
       \includegraphics[width=2.25in,height=3in,angle=-90]{tomog}
     \end{center}
@@ -199,8 +234,7 @@ valid ballots   & $\bg_i$  & $1-\bg_i$ & $1-X_i$ \\
 \heading{Analysis of Bounds}
 \bigskip
 
-{\bf We CANNOT exclude the possibility that Gore would have won if 680
-invalid ballots had not been counted.}
+{\bf Bush's margin without bad ballots} $\in [-126, 936]$
 
 \smallskip
 \begin{table}
@@ -227,26 +261,29 @@ Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
 
 \begin{slide}
 \heading{Statistical Modeling}
+\bigskip
 
 {\bf Key Assumptions of King's Ecological Inference Model}
 \begin{itemize}
-\item The unknown parameters from Florida's 67 counties have something
-  common and any systematic difference is accounted by covariates.
+\item Systematic differences about $\bb_i$ and $\bg_i$ are accounted
+  for by covariates.
 \item Conditional on covariates, there is no spatial correlation.
 \item Conditional on covariates, $\bb_i$ and $\bg_i$ are independent
   of $X_i$. 
 \end{itemize}
 
+\bigskip
 {\bf Difficulties of Ecological Inference}
 \begin{itemize}
 \item Sensitivity: Estimation results tend to be sensitive to model specification.
-\item Identifiability: We cannot include many covariates in one model.
+\item Weak identifiability: We cannot include many covariates in one model.
 \end{itemize}
 
+\bigskip
 {\bf Particular Challenges of this Study}
 \begin{itemize}
 \item No strong theoretical guidance for model choice.
-\item Need to conduct a non-partisan analysis.
+\item Need to build models not vulnerable to criticism from partisans.
 \end{itemize}
 
 \end{slide}
@@ -255,27 +292,26 @@ Baker      &   1 &  0 & 0 &  0 &   1 &  1 &   1 \\
 
 \begin{slide}
 \heading{Bayesian Model Averaging}
-\bigskip
 
-Along with $T_i$, $X_i$ and $N_i$, we have 27 other variables
-including race, sex, and party registration for the overseas absentee
-voters as well as county level election and demographic data. We
-define 31 different models using this data.
-
-\smallskip
+{\bf Data and Model:} 31 models using covariables including $X_i$,
+race, sex, party registration for the absentee voters, county level
+election results, and demographic variables.
 
 {\bf Bayesian Inference:} $\P(\Delta|T) \propto \P(\Delta)\P(T|\Delta).$
 
-{\bf Model Averaging:} Obtain one set of results by averaging multiple
-models according to the support each of them receives from the data.
-\begin{align*}
-  \Pr(\Delta|T) &= \sum_{k=1}^{31} \P(\Delta,M_k|T)\notag\\
-                &= \sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T).
-\end{align*}
-where the posterior model probability is computed as
+{\bf Model Averaging:} 
 \begin{equation*}
-\Pr(M_k|T)=\frac{\P(T|M_k)\Pr(M_k)}{\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  
+ \Pr(\Delta|T) = \sum_{k=1}^{31} \P(\Delta|M_k,T) \Pr(M_k|T).
 \end{equation*}
+
+{\bf Posterior Model Probability:}
+\begin{itemize} 
+\item The probability of the model, $k$, being true given the data.
+\item It is different from an idiosyncratic measure of fit such as $R^2$.
+\item Computed via the Bayes Theorem\begin{equation*}
+\Pr(M_k|T) =  \frac{\P(T|M_k)\Pr(M_k)}{\sum_{j=1}^{31} \Pr(T|M_j) \Pr(M_j)}.  
+\end{equation*}
+\end{itemize}
 
 \end{slide}
 
@@ -399,18 +435,15 @@ had been stamped on ballot envelopes.''
 \bigskip
 
 \begin{itemize}
-\item The \emph{Times} reported that an election official on the Duval
-  County canvassing board ``held the line on counting ballots with
-  missing postmarks.''
+\item An election official on the Duval County canvassing board ``held
+  the line on counting ballots with missing postmarks.''
 
 \bigskip
   
-\item the story also described the unusually strong Republican
-  pressure applied in \emph{Pasco county}: ```It looks to me like
-  we've got a lot of pressure here,' Judge Robert P.  Cole, chairman
-  of the Pasco board, said as he faced a throng of cheering
-  Republicans and more than a dozen Bush representatives [and no
-  officials from the Gore campaign].''
+\item ```It looks to me like we've got a lot of pressure here,' Judge
+  Robert P.  Cole, chairman of the Pasco board, said as he faced a
+  throng of cheering Republicans and more than a dozen Bush
+  representatives [and no officials from the Gore campaign].''
 \end{itemize}
 
 \end{slide}
@@ -480,23 +513,27 @@ had been stamped on ballot envelopes.''
 \bigskip
 
 \begin{itemize}
-\item {\bf Bush won? But we will never know with certainty:} Some
-  scenarios show the high probability that Gore would have won.
+\item {\bf Bush won? But we will never know with certainty:} 
+  
+  Some scenarios show the high probability that Gore would have won.
 
 \item {\bf Strong support for the \emph{New York Times} thesis:}
+
   Quantitative evidence confirms qualitative stories.
 
-\item {\bf Validity of counterfactuals:} When the counterfactual is
-  very close to the data, we stand an especially good chance of making
-  valid inference. The counterfactual questions we ask in this paper
-  represent such a situation.
-
-\item {\bf First application of Bayesian model averaging in Political
-    Science:}  A clear improvement on the usual situation of having to
-  select and defend a single model. A contribution to Ecological
-  Inference literature. However, model averaging cannot substitute for
-  the investigator's judgment.
-
+\item {\bf Validity of counterfactuals:} 
+  
+  Our counterfactual questions are very close to the data.
+  
+\item {\bf Methodological contributions:} 
+  \begin{itemize}
+  \item First political science application of formal Bayesian model averaging.
+  \item First use of Bayesian model averaging in the growing Ecological
+    Inference literature.
+  \item A solution to the uncertainty of model choice.
+  \item Model averaging cannot substitute for the investigator's
+    judgment.
+  \end{itemize}
 \end{itemize}
 
 \end{slide}
