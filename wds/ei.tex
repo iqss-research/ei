@@ -1330,8 +1330,7 @@ dbufavg = eimodels_avg(dbufrun);         @ Bayesian Model Averaging @
 save rvavg = dbufavg;                    @ save dbres in file rvavg.fmt @
 
 call eiread(dbufavg,"sum");              @ summary for dbres @
-graphclr;                                @ clear graphics screen @
-call eigraph(dbufavg,"post");              @ draw district level posterior @
+call eigraph(dbufavg,"post");            @ draw district level posterior @
 graphoff;                                @ close graphics window @
 \end{verbatim} 
 
