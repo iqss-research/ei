@@ -894,7 +894,28 @@ proc eirepl(dbufin);
   clearg _Eres;
   _Eres=dbufin;
 
-/*
+  setglobals(dbufin);
+  
+  dbuf=ei(t,x,n,Zb,Zw);
+  retp(dbuf);
+endp;
+
+
+/* -------------------------------------------------------------------
+**  setglobals(dbufin);
+**
+**  The purpose of this procedure is to reset the values of the global
+**  variables to their values stored in a data buffer. There is no
+**  output for this procedure.
+**
+**  INPUT 
+**    dbufin = EI data buffer
+**
+*/
+
+proc(0)=setglobals(dbufin);
+  local nms, nms1,r,tst,d;
+/*  
   /* CHANGE THIS TO $| WHEN NEW VERSION OF GAUSS COMES!!! */
   
   /*  names of essential globals (_Eeta is vread above) */
@@ -919,15 +940,13 @@ proc eirepl(dbufin);
   "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
 
   r=rows(nms);
-
-    for i (1, r, 1);
-    
+  for i (1, r, 1);    
     tst=vin(dbufin,nms[i]);
     if tst==1;
       d = eiread(dbufin,nms[i]);
       tst = varput(d,nms[i]);
       if tst==0;
-	"eirepl: problem creating globals";
+	"setglobals: problem creating globals";
 	#ifdos;
 	ndpclex;
 	#endif;
@@ -935,15 +954,15 @@ proc eirepl(dbufin);
       endif;
     else;
       format/rd 10,10;
-      "eirepl warning: Essential global not in input data buffer: ";;$nms1[i];
+      "setglobals warning: Essential global not in input data buffer: ";;$nms1[i];
       "   Results may not replicate exactly unless you get the version";
       "   of EI used to create the data buffer. Using current default.";
     endif;
-    endfor;
-    
-  dbuf=ei(t,x,n,Zb,Zw);
-  retp(dbuf);
+  endfor;
 endp;
+
+
+
 
 /* -----------------------------------------------------------------------
    dbuf2 = ei2(V,dbuf,Gb,Gw);

@@ -25,7 +25,12 @@
 ** _Eprt  = 0 don't print; 1 = do print selected items.
 ** _EIMetaR = If dbuf is a meta-data buffer (output from ei2, eimodels_run, or
 **           eimodels_def), this global denotes which of the imputed data buffers 
-**           stored in dbuf should be accessed when running this procedure (default=1)
+**           stored in dbuf should be accessed when running this procedure
+**           (default=1)
+** _EIread_Zb = recompute betabs based on new values of covariates, Zb,
+**              if {.} do not recompute;
+** _EIread_Zw = recompute betabs based on new values of covariates, Zw,
+**              if {.} do not recompute;
 **
 ** STORED (can also be retrieved with vread):
 ** _EalphaB  value of this global (prior on alphaB)
@@ -241,6 +246,7 @@ proc eiread(dbuf,str);
   str=lower(str);
   
   cv=vnamecv(dbuf);
+  cv=delif(cv,cv.$=="betaBs  ");
   strc=strput(str,"        ",1);
   
   /* for the output of eimodels_avg, prevent users from reading inappropriate parameters */ 
@@ -558,6 +564,44 @@ proc eiread(dbuf,str);
     _Eselect=eiread(dbuf,"_Eselect");
     res=packdta(x,Zb,Zw,t);
   
+  elseif str$=="betabs";
+    if scalmiss(_EIread_Zb) and scalmiss(_EIread_Zw);
+      res=vread(dbuf,"betabs");   
+    else;
+      zb=eiread(dbuf,"zb");
+      zw=eiread(dbuf,"zw");
+      if not(scalmiss(_EIread_Zb));
+	if rows(_EIread_Zb)==rows(zb) and cols(_EIread_Zb)==cols(zb);
+          Zb=_EIread_Zb;
+	else;
+	  "eiread: bad input for _EIread_Zb. The dimension does not";
+          "        match with that of Zb.";
+	  res={.};
+	  retp(res);
+	endif;
+      endif;
+      if not(scalmiss(_EIread_Zw));
+	if rows(_EIread_Zw)==rows(zw) and cols(_EIread_Zw)==cols(zw);
+          Zw=_EIread_Zw;
+	else;
+	  "eiread: bad input for _EIread_Zw. The dimension does not";
+          "        match with that of Zw.";
+	  res={.};
+	  retp(res);
+	endif;
+      endif;
+
+      setglobals(dbuf);
+      t=eiread(dbuf,"t");
+      x=eiread(dbuf,"x");
+      n=eiread(dbuf,"n");
+      cv=eiread(dbuf,"vcphi");
+      p=eiread(dbuf,"phi");
+      {betabs, betaws}=psim1(t,x,n,Zb,Zw,p,cv);
+      res=betabs;
+    endif;
+
+
   elseif str$=="betaws";		@ betaW simulations @
     t=vread(dbuf,"t");
     if vin(dbuf,"x2");
@@ -998,7 +1042,7 @@ proc eiread(dbuf,str);
       nb=eiread(dbuf,"nb");
       nw=eiread(dbuf,"nw");
     endif;
-    res=meanwc(vread(dbuf,"betaBs"),nb)
+    res=meanwc(eiread(dbuf,"betaBs"),nb)
        ~meanwc(eiread(dbuf,"betaWs"),nw);
     
   elseif str$=="maggs";		        @ 2 x 1: meanc(aggBs~aggWs) @

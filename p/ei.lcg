@@ -23,6 +23,8 @@ ei.dec
     _Ebeta                           : matrix
     _EalphaB                         : matrix
     _EalphaW                         : matrix
+    _EIread_Zb                       : matrix
+    _EIread_Zw                       : matrix
     _cml_version                     : matrix
     _cml_Algorithm                   : matrix
     _cml_CovPar                      : matrix
@@ -279,6 +281,7 @@ ei.src
     eiset                            : proc
     eirepl                           : proc
     ei2                              : proc
+    setglobals                       : proc
 
 eibounds.src
     bounds1                          : proc
