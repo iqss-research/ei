@@ -54,7 +54,7 @@ proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
   _Eres=vput(_Eres,_EisFac,"_EisFac");
   _Eres=vput(_Eres,_Eisn,"_Eisn");
   _Eres=vput(_Eres,_Eist,"_Eist");
-  _Eres=vput(_Eres,_EmaxIter,"EmaxIter");
+  _Eres=vput(_Eres,_EmaxIter,"EmaxIter");     @ **  @
   _Eres=vput(_Eres,_EnonEval,"_EnonEva");     @ **  @
   _Eres=vput(_Eres,_EnonNumInt,"_EnonNum");   @ **  @
   _Eres=vput(_Eres,_EnonPar,"_EnonPar");

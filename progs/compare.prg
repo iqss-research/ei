@@ -2,7 +2,7 @@
 **
    compare.prg 
 **
-** This program shows how to compare different redistricinting
+** This program shows how to compare different redistricting
 ** plans using the procedure, compelct.g
 **
 ** distplan = redistricting plan indicator variable.
