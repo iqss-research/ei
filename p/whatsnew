@@ -1,0 +1,165 @@
+
+                EI: A Program for Ecological Inference
+                              Gary King
+			   King@Harvard.Edu
+                       http://GKing.Harvard.Edu
+
+	    (c) Copyright 1995-2001, All rights Reserved.
+            
+What's new?  What's planned?  How do I make suggestions?  See below.
+For automatic notification via email of all program updates, see
+http://GKing.Harvard.Edu/netmind.shtml.
+
+***************************************
+* What's Planned for Future Versions? *
+***************************************
+
+-- Automating procedures to whittle down the number of problem cases
+   of nonfitting
+-- An automatic procedure for RxC tables
+
+*****************************
+* Any ideas or suggestions? * 
+*****************************
+
+Please email King@Harvard.Edu (for EI) or KBenoit@Harvard.Edu (for EzI)
+
+*************************************
+* What's new in this version of EI? *
+*************************************
+
+6/28/01 fixed bug in bounds2
+
+5/17/01 added bounds2, abounds2, double, _t, and _x to eiread
+
+12/29/00 Fixed _Ebounds error
+
+9/18/00 Added functions R, Ri, and loglikS to eiread.
+
+4/13/99 switched to new gauss cdfni function, a bit faster and more
+accurate, added cdfbvng function and _Ecdfbvn=6 option which is much more 
+accurate but slower.
+
+12/28/98 Improved eigraph profile and profileR functions.  Fixed rare
+problem with infinities showing up in likelihood function.
+
+12/25/98 Added eiread 'checkr' option.  The library command to
+intialize ei should now be "library ei;" rather than the old version,
+"library ei,cml,pgraph;".  Added some programming efficiencies
+(switched to Gauss loess procedure).
+
+12/15/98 Added eigraph options "profile" and "profileR" (and
+corresponding eigraph global _eigraph_pro).  These are useful for
+exploring the likelihood function, or for checking for the effect of
+potential cdfbvn inaccuracies.
+
+12/4/98 Fixed a bug with _Erho
+
+10/24/98 Increased speed and numerical stability slightly by switching to
+new Gauss procs for lncdfn, lncdfn2, etc.  Changed PhiSims option in eiread
+
+10/12/98 increased the speed of the importance sampling
+
+9/22/98 new global for _EcdfTol.  This fixes most of the numerically
+induced discontinuities in the likelihood function, while keeping cdfbvn
+as precise as possible.
+
+8/6/98 changed _EvTol's default to 1e-322 (previously it was
+  1e-15). This makes EI more accurate.
+
+7/28/98 Added new EI global _EvTol, fixed several buglets.  More
+problems fit well automatically.  _EcdfTol now works for all values of
+_Ecdfbvn (although _Ecdfbvn should probably not be changed from the
+default any longer).
+
+7/6/98  Added eiread option "ebounds"
+
+6/16/98 Added new grid search option (see _Estval and the FAQ), which
+can be useful for problem cases (it is also nice if you don't like the
+uncertainty of how long the iterations may take; the grid search
+procedure tells you at the start).  Added new EI global _EcdfTol, to
+tune the new lncdfbvn function.  Added new eiread options: beta
+(combination of betaB and betaW), and GEbw, GEbwa, GEwb, GEwba (gives
+estimates if you know that betaB>betaW or betaB<betaW).  Added new
+eigraph option "results".  Please also see the FAQ at the end of the
+documentation.
+
+5/19/98 uses Gauss' new cdfbvn2 function that makes EI run about 1.6
+times faster and more accurately. _Ecdfbvn=5 is now the default
+(previously it was 2). Note that this requires a version of Gauss that
+includes the new procedure (if you use the HP version, it should be
+3.2.39, or later).
+
+5/4/98 Fixed HP core dump problem
+
+3/31/98 Fixed bug in EI2
+
+2/23/98 Confidence intervals (which are conditional on X) on FIT graph
+    are no longer drawn when Z's are specified.
+
+2/20/98 Added EIGRAPH GLOBALS _eigraph_Xhi, _eigraph_Xlo,
+    _eigraph_Thi, _eigraph_Tlo, removed _eigraphlo, _eigraphhi, and
+    made _eigraph_BBlo, _eigraph_BBhi, _eigraph_BWlo, eigraph_BWhi
+    more precisely adjustable (especially useful for data sets, like
+    mortality, that have only very small values of T).
+
+2/18/98 Added eigraph option movieD
+
+2/1/98 Added a much improved method of computing the variance matrix
+    in troublesome cases (see _ei_vc) and added it to the default list
+    as the second option.  For backwards compatibility and
+    replication, the old default value is _ei_vc={1 0, 2 0.1, 2 0.05,
+    3 0.1,1 0.1, 1 0.2}. Included workaround to avoid Gauss core
+    dumps.  
+   
+1/13/97 Unified DOS/Unix version to cover differences in Gauss across
+     platforms 
+
+11/12/97 A bug was fixed that will improve variance matrix
+     calculations in a larger fraction of very difficult cases.
+
+5/22/97 EI is now faster (due to using new Gauss looping procedures)
+
+4/8/97 Bug fixed in Palmquist's Inflation Factor computation
+
+11/1/96 added _EselRnd global to allow randomly selected
+       observations to be deleted from the estimation stage.  This is
+       useful for increasing the speed of the program when operating
+       with very large datasets. estimates will still be available for
+       all precincts.
+
+10/12/96 new global _EisT to allow the multivariate t density to
+       substitute for the multivariate normal in importance
+       sampling; also fixed a bug that affected the variance matrix
+       calculation in rare situations.
+
+9/25/96 fixed a bug that affected homogeneous precincts rarely
+
+9/15/96 fixed a small buglet for unanimous precincts
+
+8/20/96 eigraph's "movie" option is now much faster on DOS systems
+
+8/11/96 Globals _GhFall, _GhDelta, _GhStart, and _GhQuad have been
+        replaced by _ei_vc.  This provides the user more flexibility
+        in choosing methods to compute the variance matrix of phi.
+        The defaults now rarely need to be changed.
+
+8/6/96  Fixed bug in eiread/ei2 that occured when reading betaW from
+        ei2 data buffers (thanks to Mike Alvarez for finding this
+        one!).  Also fixed bug that occasionally made it seem like the
+        variance matrix computation was stuck.
+
+7/23/96 Added _Eres support for ei2, and fixed a likelihood function
+        buglet for homogeneous precincts
+
+7/9/96  Added facilities to do 2xC tables for C>=2.  See ei2() and new
+        options, and newly modified options, under eiread and eigraph.
+        These methods appear in versions of the manuscript only after
+        7/1/96.
+
+7/9/96  changed the graphs included in tomogS
+
+7/5/96  Added a more robust version of the proc called by _Ecdfbvn=2.
+        _Ecdfbvn=1 will often be faster now, although often less
+        accurate.
+

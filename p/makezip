@@ -1,0 +1,19 @@
+cd ~/d/ei/wds
+latex ei
+latex ei
+latex ei
+dvips -o ei.ps ei
+ps2pdf ei.ps ei.pdf
+mv ei.pdf ~/www/files/ei.pdf
+
+cd ~/d/ei/p
+mv ~/d/ei/wds/ei.ps .
+cp ~/gauss/lib/ei.lcg .
+rm ei.zip
+zip -l ei.zip README whatsnew *.src ei.lcg ei.ext ei.dec sample.asc sample2.asc ei.ps
+rm ei.ps ei.lcg
+cp ei.zip ~/www/files/.
+
+cd ~/www/files
+chmod go+r ei.zip ei.pdf
+

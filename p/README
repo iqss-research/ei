@@ -1,0 +1,64 @@
+               EI: A Program for Ecological Inference
+                              Gary King
+                          <King@Harvard.Edu>
+                      <HTTP://GKing.Harvard.Edu>
+
+             (c) Copyright 1995-2001, All rights Reserved.
+
+This program provides easy methods of running the statistical
+procedures, diagnostics, and graphics in _A Solution to the Ecological
+Inference Problem: Reconstructing Individual Behavior from Aggregate
+Data_, a book by Gary King (Princeton University Press, 1997).
+
+EI requires Gauss and the Gauss module CML. It can run on any computer
+system that runs Gauss.  (A stand-alone, menu-driven program called
+EzI that runs without Gauss, is available from my homepage, but it
+is less flexible.)
+
+**************
+*INSTALLATION*
+**************
+
+(1) Unzip this file with the public domain unzip program:
+
+             from DOS:     unzip ei.zip
+             from UNIX:    unzip -a ei.zip
+
+(2) print the documentation by copying it to a postscript printer.
+(If you do not have a postscript printer, obtain the public domain
+program Ghostscript, which translates from postscript to other printer
+formats. You can get information about how to obtain Ghostscript from
+my homepage.  You can also bring the postscript file to most xerox
+shops, which will print it for you.  Alternative, the documentation
+can also be read on-line, and printed from your web browser, from my
+web page.  A PDF version can also be found there.):
+
+             From DOS:    copy ei.ps lpt1:
+             From Unix:   lp ei.ps
+
+(3a) ON A DOS, WINDOWS 3.1, OS/2 or WIN95/98-BASED SYSTEM: Copy ei.lcg to
+your c:\gauss\lib subdirectory, and copy the remaining program files
+(*.src, ei.dec, ei.ext) to somewhere on the GAUSSPATH, such as the
+default c:\gauss\src.  For example:
+
+             copy ei.lcg c:\gauss\lib
+
+             copy *.src c:\gauss\src
+             copy ei.dec c:\gauss\src
+             copy ei.ext c:\gauss\src
+
+(3b) ON A UNIX-BASED SYSTEM: If you have supervisor privleges, follow
+analogous steps as for DOS systems.  If you are not a supervisor, or
+do not wish the program to be installed for all users, specify ei in
+the library command with a path, e.g.: library /files/gking/ecinf/ei;
+
+(4) If you have used an earlier version of EI, see the file "whatsnew"
+for major changes.
+
+
+Copyright information
+
+EI is copyrighted, but you may use, copy, and distribute this program
+for educational use provided that no charge is made and the copy is
+identical to the original. To request an exception, please contact
+Gary King.

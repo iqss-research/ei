@@ -1,0 +1,184 @@
+From Micah_Altman@harvard.edu Thu Sep 28 23:19:47 2000
+Date: Thu, 28 Sep 2000 18:10:21 -0400 (EDT)
+From: Micah Altman <Micah_Altman@harvard.edu>
+To: "King; Gary" <king@harvard.edu>
+Subject: laundry list of EI/EZI bugs
+
+
+General EZI Problems
+
+> 1, when we export, we shouldn't trucate to 5 digits.
+
+Verified, yes. If you import & then export you can lose precision, for
+example
+
+> 2. when we eirepl, all globals get set and the data are run.  but
+there's
+
+Note I didn't verify that all globals actually get set.
+
+> an ambiguity when you load a data buffer into ezi since you apparently
+set
+> some things (perhaps only t, x, n) and not others (like most of the
+> globals).
+
+2.a
+	in particular, reading in a FMT file loads some globals like
+retcode and Ghactual, and the model spec, but doesn't seem to read CONFIG
+variables. 
+	
+
+2.b
+Like _Eselect. Actually _Eselect is  inconstent in another way -- if you
+set _Eselect to the var "foo". It reads "foo", but if then replicate the
+FMT
+file back in (using EIreplicate) it reads "1+". Furthermore if you don't
+explicitly keep the variable you _Eselected, it can be really hard to know
+what was _Eselected from the FMT file.
+
+ Perhaps _Eselect should be treated by the UI like it was a model
+parameter -- saved, and listed later.
+
+3. The displayed built in help for the config of some variables is
+wrong. The defaults listed for _EI_vc,  _EnonNumInt, and _Ecdfbvn are not
+the
+defaults implemented.
+
+4. global missing from the config screen?
+_EvTol
+
+5. --- configuration screen only shows 6 decimal places and doesn't use
+sci notation,   so very small tolerance values are displayed as 0.000000,
+but
+can't tell their real value byinspection.
+
+6. Check whether EZI loads all globals?
+
+7. EZI v 2.23 uses EI v. 1.62 but ships with 1the EI 1.61 version of the
+manual, which
+   listed different defaults.
+
+8. If you load a dataset that has the model specifications in it already
+(or use
+EIREPL to get the model specifications), the CONFIG option on the main
+menu still
+complains that you need to specify, and won't let you in until you
+actually
+click on specify. 
+
+9. In the config menu, if you use Eselect to select a variable, you can't
+reset it one, unless you use the global Reset.
+
+10. EIgraph makes you run the model first. But some graphs are data only
+-- you should be able
+to do those w/out running the model. 
+
+11. If you do a nonparametric estimation only, some of the EIgraph options
+will cause the
+program to exit. 
+
+
+12. EZI's import functionality is brain-dead:
+	- although dataload works on some files (excel 3, with variable
+name row)
+		EZI exits on same files
+	- very very very finicky on delimeters, end row return character,
+	  etc. No docs to indicate exact rule.
+	- some formats that dataload says it supports don't work in
+dataloab (excel 2, for example)
+
+13. For file names that fit the DOS 8.3 you can type "foo" and
+"foo.fmt" is assumed,
+but can not type "foofoofoo" and load "foofoofoo.fmt", instead have to
+type full name.	
+b
+14. When EZI starts up, it displays the error "0) : error G0014
+: 'C:\EZI223\startrun.GCG' : File not found"
+in the Gauss window
+
+15. If you run two instances of EZI simultaneously, things appear to work
+well, but any output that you choose to "reView" gets corrupted!
+--- 
+EI Problems (also inherited by EZI)
+
+- EI probably shouldn't try to compute generalized hessian when CML
+return-code is non-zero. The results aren't reasonable.
+
+- Defaults have been changed to invoke Generalized inverse right away,
+rather than other quasi inverses -- this changes results significantly
+across versions.
+
+- EI manual refers to a nonexistent Appendix F for the vc and cdfbvn
+globals
+
+- EI standard errors (and CI's,etc) are supposed to be 
+"very similar to, and can be interpreted analogously to, standard errors
+in LR  [Linear Regression] "
+
+Seems to contradict  King 1997, 149.
+
+Also, one indication of bad fit/instability seems to be that the CI's are 
+humongous in comparison the  std error.
+
+
+- EI Repl doesn't do the right things with globals that are "new":
+EI provides replication datasets which saves Global params. BUT...
+	- new globals are added, and defaults for these do not
+ 	  necessarily match defaults of previous version. EIREPL does
+	  not restore these to the implicit default of the version the
+	  replication set was created in. (This would be the "Right
+	Thing")
+(EI repl does add warnings however, so it's not the wrong thing exactly!)
+
+- EI docs say that you should always check fit:
+
+"What statistical issues should I check?  It is essential to verify that
+the model fits the data. First, look at eigraph's fit: for the X by T
+graph on the left, verify that the E(Ti|Xi) line passes through the middle
+of the points, and the 80% confidence intervals capture around 80% of the
+points, vertically for each value of X on the horizontal axis."
+
+BUT E(Ti|Xi) doesn't show up with a covariate. (Need a fit surface?)
+
+Also -- no non-graphical FIT check. Both of these fit criteria could be
+made quantitative  or more quantitative. (E.g. a count of %age of the
+points falling in the 80% CI's would be useful!)
+
+- The spikes in the log-likelihood because of switching CDFBVN methods are 
+  see like a bad thing. They can be avoided with smoothing splines.
+  
+
+- EI reports time in minute starting before midnight and completing after
+gives a large negative value (eg. -1434 minutes, actual time was ~ 7
+minutes)
+
+
+- EI2
+	-- imputations assume normal (?) distribution of B's, even where
+CI's show this isn't true. Moral: check the first stage CI's carefully?
+
+- EI2 -- _Ghactual and retcode should return vector (one for each
+imputation)
+	instead only stores scalar value for LAST imputation. Can;t detect
+	errors in intermediate ones
+--
+Other inconsistencies
+
+- Gauss changed defaults in CML (used by EI and EZI0 from forward to
+central derivatives,
+but this can affect the solution! Also changed implementation of
+CDFBVN. Unlike STATA there 
+is no "version" declaration that allows a user to replicate the
+settings/implementation of 
+a previous version.
+-  web page lists EZI version as 2.22, actually 2.23
+
+______________________________________________________________________________
+Micah Altman, Ph.D. 		Associate Director, Harvard-MIT Data Center
+	 	Director, Virtual Data Center Project, Harvard U. Library
+		   Postdoctoral Fellow, Department of Government, Harvard U.
+micah_altman@harvard.edu  	   http://data.fas.harvard.edu/micah_altman/
+"Entia non sunt multiplicanda sine necessitate" - Doctor Invincibilis
+     		("Ad indicia spectate." - Micah's corollary)
+Disclaimer: This is an unofficial, unsigned, document.  (Copyright 2000)
+

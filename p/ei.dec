@@ -1,0 +1,144 @@
+/* 
+**  global declaration file for EI
+**  (C) Copyright 1995-2001 Gary King
+**  All Rights Reserved.
+*/
+
+/* general */
+declare string _Eversion != "EI Version: 1.63, 2/3/2000";
+declare matrix _Echeck != 1;
+declare matrix _Eres != 0;
+declare matrix _Esims != 100;
+declare matrix _Eprt != 2;
+declare matrix _EdoSim != 1;
+declare matrix _EdoML != 1;
+declare matrix _EdoML_phi != 0;
+declare matrix _EdoML_vcphi != 0;
+declare matrix _Ecdfbvn != 5;
+declare matrix _Eselect != 1;
+declare matrix _EselRnd != 1;
+declare matrix _EnumTol != 0.0001;
+declare matrix _EnonEval != 11;
+declare matrix _EnonNumInt != 11;
+declare matrix _EnonPar != 0;
+declare matrix _Ei2_m != 4;
+declare matrix _ei2_mta != 0;
+declare matrix _ei2_r != 1;
+
+/* priors */
+declare matrix _Erho != 0.5;
+declare matrix _Esigma != 0.5;
+declare matrix _Ebeta != 0;
+declare matrix _EalphaB != {.};
+declare matrix _EalphaW != {.};
+
+/* quadcml */
+#include cml.dec;
+declare matrix _Estval != 1;
+declare matrix _Ebounds != 1;
+declare matrix _Eeta != 0;
+declare matrix _EdirTol != 0.0001;
+declare matrix _EcdfTol != 3e-15;
+declare matrix _EvTol != 5e-307;
+declare matrix _Ez != {1,1};
+declare matrix _Emaxiter != 500;
+
+/* gvc */
+declare matrix _EI_vc != {1 0, 4 0, 2 0.1, 2 0.05, 3 0.1, 1 0.1, 1 0.2};
+declare matrix _GhQuad != 0;
+declare matrix _GhFall != 0.1;
+declare matrix _GhDelta != 0.1;
+declare matrix _GhStart != 0;
+declare matrix _GhFix != 1;
+declare matrix _GhActual != 0;
+declare matrix _gvc_dataset !=0;
+declare matrix _gvc_procname != 0;
+declare matrix _gvc_fixKeep != 0;
+
+/* psim1 */
+declare matrix _EbetaWs != 0;
+  
+/* rndisamp */
+declare matrix _Eist != 0;
+declare matrix _Eisn != 10;
+declare matrix _EisFix != {.};
+declare matrix _EisFac != 4;
+declare matrix _EisChk != 0;
+declare matrix _EImarg != 0;
+
+/* lnpdfmn */
+declare matrix _Eivc != {.};
+
+/* graphics */
+#include pgraph.dec;
+declare matrix _plinet != 6;
+declare matrix _plineth != 0;
+declare matrix _plinec != 14;
+declare matrix _plinerev != 0;
+declare matrix _plines != 0;
+declare matrix _plinesc != 12;
+declare matrix _graphon_pqg != 1;
+
+/* eigraph */
+declare matrix _eigraphC != 1;
+declare matrix _eigraph_thick != 1;
+declare matrix _eigraph_xlo != 0;
+declare matrix _eigraph_xhi != 1;
+declare matrix _eigraph_tlo != 0;
+declare matrix _eigraph_thi != 1;
+declare matrix _eigraph_bblo != 0;
+declare matrix _eigraph_bbhi != 1;
+declare matrix _eigraph_bwlo != 0;
+declare matrix _eigraph_bwhi != 1;
+declare string _eigraph_x != "X";
+declare string _eigraph_t != "T";
+declare string _eigraph_bb != "betaB";
+declare string _eigraph_bw != "betaW";
+declare matrix _eigraph_loess != 0;
+declare matrix _eigraph_eval != 31;
+declare matrix _eigraph_bvsmth != 0.08;
+declare matrix _eigraph_dbuf != 0;
+declare matrix _eigraph_smpl != 1;
+declare matrix _eigraph_pro != {.};
+
+/* tomog */
+declare matrix _tomogClr ?= { 12, 9, 10, 11, 13, 5 };
+declare matrix _tomogPct ?= { 0.5, 0.95 };
+
+/* eibias */
+declare matrix _Evc!=1;
+declare matrix _Etruth!=0;
+
+/* eicond */
+declare matrix _eicond_nums != { -1.5, 1.5, 50 };
+
+/* internal globals; don't change */
+declare matrix _eigraph_circ != 0;
+declare matrix _eigraph_psiu != 0;
+
+/* dens */
+declare matrix _smth != 0.03;
+declare matrix _strt != 0;
+declare matrix _endd != 0;
+declare matrix _pts  != 100;
+declare matrix _Tleft != 0;
+declare matrix _Tright != 0;
+declare string _kern != "E";
+declare matrix _whiskr != -1;
+declare matrix _jitter != 0;
+declare matrix _output != 1;
+
+/* reg */
+declare matrix _Rweight != 1;
+declare matrix _Rxnames != 0;
+declare matrix _Ryname  != 0;
+declare matrix _Rfmt    != 4;
+declare matrix _Rselect != 1;
+declare matrix _Rrobust != -1;
+declare matrix _Rtheta  != 0;
+declare matrix _Routput != 1;
+declare matrix _Rconst  != 1;
+
+/* token2 */
+declare matrix _tokdel={32,10,13,44,9}; @ space, lf, cr, comma, tab @
+declare matrix _tokwds=-1;  @ null @

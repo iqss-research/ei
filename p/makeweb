@@ -1,0 +1,9 @@
+cd ~/d/ei/wds
+latex ei
+latex ei
+latex ei
+mkdir ~/www/ei
+latex2html -info 0 -t "EI Manual" -dir ~/www/ei/ -contents "http://gking.harvard.edu/ei/ei.html" -local_icons ei.tex
+cd ~/www/
+cp ~/d/ei/p/whatsnew ~/www/ei/.
+chmod go+r ei/*
