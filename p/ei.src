@@ -782,8 +782,6 @@ proc 0=eiset;
   _eigraph_thick=1;
   _eigraph_Xlo=0;
   _eigraph_Xhi=1;
-  _eigraph_Zlo={.};
-  _eigraph_Zhi={.};
   _eigraph_Tlo=0;
   _eigraph_Thi=1;
   _eigraph_bblo=0;
@@ -791,7 +789,6 @@ proc 0=eiset;
   _eigraph_bwlo=0;
   _eigraph_bwhi=1;
   _eigraph_x="X";
-  _eigraph_z="Z";
   _eigraph_t="T";
   _eigraph_bb="betaB";
   _eigraph_bw="betaW";
@@ -853,11 +850,6 @@ proc 0=eiset;
   _EI_bma_prior=0;
   _EI_bma_est=1;
 
-  /* eiread */
-  _EIread_betabs={.};
-  _EIread_Zb={.};
-  _EIread_Zw={.};
-  
 endp;
 
 /* ----------------------------------------------------------------
@@ -895,31 +887,11 @@ proc eirepl(dbufin);
   n=eiread(dbufin,"n");
   Zb=vread(dbufin,"Zb");
   Zw=vread(dbufin,"Zw");
+  _Eeta=vread(dbufin,"_Eeta");
   clearg _Eres;
   _Eres=dbufin;
 
-  setglobals(dbufin);
-  
-  dbuf=ei(t,x,n,Zb,Zw);
-  retp(dbuf);
-endp;
-
-
-/* -------------------------------------------------------------------
-**  setglobals(dbufin);
-**
-**  The purpose of this procedure is to reset the values of the global
-**  variables to their values stored in a data buffer. There is no
-**  output for this procedure.
-**
-**  INPUT 
-**    dbufin = EI data buffer
-**
-*/
-
-proc(0)=setglobals(dbufin);
-  local nms, nms1,r,tst,d;
-/*  
+/*
   /* CHANGE THIS TO $| WHEN NEW VERSION OF GAUSS COMES!!! */
   
   /*  names of essential globals (_Eeta is vread above) */
@@ -935,24 +907,24 @@ proc(0)=setglobals(dbufin);
   "_EdirTol"|"_EdoML"|"doml_phi"|"doml_vc"|"_EdoSim"|
   "bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"EmaxIter"|
   "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
-  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol"
-  |"_Eeta";
+  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
 
   nms1="_EalphaB"|"_EalphaW"|"_Ebeta"|"_Ebounds"|"_Ecdfbvn"|
   "_EdirTol"|"_EdoML"|"_EdoML_phi"|"_EdoML_vcphi"|"_EdoSim"|
   "_EIgraph_bvsmth"|"_EisChk"|"_EisFac"|"_Eisn"|"_EisT"|"_EmaxIter"|
   "_EnonEval"|"_EnonNumInt"|"_EnonPar"|"_EnumTol"|"_Erho"|"_Eselect"|
-  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol"
-  |"_Eeta";
+  "_EselRnd"|"_Esigma"|"_Esims"|"_Estval"|"_EI_vc"|"_EcdfTol"|"_EvTol";
 
   r=rows(nms);
-  for i (1, r, 1);    
+
+    for i (1, r, 1);
+    
     tst=vin(dbufin,nms[i]);
     if tst==1;
       d = eiread(dbufin,nms[i]);
       tst = varput(d,nms[i]);
       if tst==0;
-	"setglobals: problem creating globals";
+	"eirepl: problem creating globals";
 	#ifdos;
 	ndpclex;
 	#endif;
@@ -960,15 +932,15 @@ proc(0)=setglobals(dbufin);
       endif;
     else;
       format/rd 10,10;
-      "setglobals warning: Essential global not in input data buffer: ";;$nms1[i];
+      "eirepl warning: Essential global not in input data buffer: ";;$nms1[i];
       "   Results may not replicate exactly unless you get the version";
       "   of EI used to create the data buffer. Using current default.";
     endif;
-  endfor;
+    endfor;
+    
+  dbuf=ei(t,x,n,Zb,Zw);
+  retp(dbuf);
 endp;
-
-
-
 
 /* -----------------------------------------------------------------------
    dbuf2 = ei2(V,dbuf,Gb,Gw);
