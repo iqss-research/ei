@@ -178,11 +178,11 @@ point of HS's paper is an important contribution and one on which we
 build here.
 
 Instead of least squares regression, HS's suggested procedure is to
-use a bias adjusted slope for the second stage regression but to leave
+use a bias-adjusted slope for the second stage regression but to leave
 the constant term unchanged.  Their adjustment is based on linear
 approximations within the classical linear econometric theory
-framework.  The problems with identify with HS's approach are due to
-assuming linearity when modeling an inherently nonlinear and bounded
+framework.  The problems with HS's approach are due to assuming
+linearity when modeling an inherently nonlinear and bounded
 relationship (i.e., their methods by definition misses the information
 in the bounds), not completing the task they set for themselves within
 this framework, and never actually computing the correction they
@@ -199,36 +199,40 @@ well their adjusted regression procedure fit the observed data based
 on the estimated $\hat\beta_i^b$ and the true (normally unobserved)
 $\beta_i^b$.  We find that correcting the slope but not the constant,
 as HS suggest, is considerably worse than an unadjusted regression of
-$\hat\beta_i^b$ on $Z$ and every other procedure discussed in HS's
+$\hat\beta_i^b$ on $Z_i$ and every other procedure discussed in HS's
 paper and the literature we have examined.  This is true even if we
-knew the true value of the adjustment.  The regression line from HS's
-method usually misses the cloud of true $\beta_i^b$ points by a wide
-margin.
+knew the true value of the adjustment.  Unless $Z$ has a zero mean,
+the regression line from HS's method tends to miss the cloud of true
+$\beta_i^b$ points by a wide margin.
 
 We therefore begin by extending HS's partial adjustment procedure,
 within their linear econometric framework, by developing an adjustment
-for the constant term also.  This fully adjusted second stage
-regression method naturally extends HS's framework and dominates HS's
-procedure.  We also compare our fully adjusted procedure to unadjusted
-linear regression and find four prototypical situations likely to
-arise in practice.  Since each situation is easily detectable from the
-available aggregate data, users will know which situation they are in
-and can take the appropriate action.  As it turns out, the HS
-partially adjusted procedure is never called for.  Overall, when the
-bounds are narrow, the fully adjusted procedure can be computed, but
-the adjustment makes little difference.  When the bounds are wide, the
-true adjustment factor could make a big difference but the adjustment
-cannot be reliably estimated, and so the procedure cannot be applied.
-Thus, in the first prototypical case, when the bounds are very wide,
-making any ecological inferences at all in the first stage is
-inadvisable (unless one has strong auxiliary information), due to
-extreme model dependence; and in this situation the correction will
-not help.  In the other three situations, the best procedures are
-unadjusted least squares, unadjusted weighted least squares
-regression, and a logistic regression procedure, respectively.  (The
-only situation when the adjustment will lead to improvements is with
-wide bounds and the true value of the adjustment is known, which
-describes HS's simulation techniques but not any real application.)
+for the constant term.  This fully adjusted second stage regression
+method naturally extends HS's framework and dominates HS's procedure.
+We also compare our fully adjusted procedure to unadjusted linear
+regression, and find that the performance of each depends crucially on
+the bounds.  As it turns out, the HS partially adjusted procedure is
+never called for.  Overall, when the bounds are narrow, the fully
+adjusted procedure can be computed, but the adjustment makes little
+difference.  When the bounds are wide, the true adjustment factor
+could make a big difference, but the adjustment cannot be reliably
+estimated and so the procedure cannot be applied.
+
+To aid users of second stage ecological regressions, we identify four
+prototypical situations likely to arise in practice.  Since each
+situation is easily detectable from the available aggregate data,
+users will know which situation they are in and can take the
+appropriate action.  In the first prototypical case, when the bounds
+are very wide, making any ecological inferences at all in the first
+stage is inadvisable (unless one has strong auxiliary information) due
+to extreme model dependence, and in this situation the correction will
+not help.  In the other three cases---narrow bounds, mixed bounds, and
+nonlinear relationships---the best procedures are unadjusted least
+squares, unadjusted weighted least squares, and a logistic (or other
+nonlinear) regression procedure, respectively.  The only situation
+when the adjustment would lead to improvements is when the bounds are
+wide and the true value of the adjustment is known, which describes
+HS's simulation technique but not any real application.
 
 \section{A Fully Adjusted Second Stage Regression Model}
 \label{s:fulladj}
@@ -304,25 +308,25 @@ intervals, which were not available in HS's version.\footnote{To
   define our estimation algorithm, let a symbol with a tilde on it
   denote a value of that quantity randomly drawn from its posterior
   density.  To implement our procedure for a given $X$ and $T$: (1)
-  run EI on $X$ and $T$; (2) draw one value of the parameter vector
-  $\tilde\psiu$ from its posterior as provided by EI; (3) take $p$
+  run EI on $X$ and $T$; (2) regress $\hat\beta_i^b$ on $Z_i$ yielding
+  the estimated intercept $\hat\alpha_U$ and slope $\hat\gamma_U$; (3)
+  draw $\tilde\psiu$ from its posterior provided by EI; (4) take $p$
   draws of $(\tilde\beta_i^b,\tilde\beta_i^w)$ from a truncated normal
-  with parameter vector $\tilde\psiu$, (4) compute a new $T_i$ as
-  $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (5) run EI
-  on $X_i$ and $\tilde T_i$ to yield estimates
-  ($\hat\beta_i^b,\hat\beta_i^w$) for all $i$; (6) regress
-  ($\hat\beta_i^b-\tilde\beta_i^b$) on $\tilde\beta_i^b$ to estimate
-  by least squares the intercept $\tilde\delta_0^b$ and slope
-  $\tilde\delta_1^b$; (7) regress $\hat\beta_i^b$ on $Z_i$ and draw
-  one value of the intercept $\tilde\alpha_U$ and slope
-  $\tilde\gamma_U$ from their posterior density; (8) compute the
-  adjusted intercept as
-  $(\tilde\alpha_U-\tilde\delta_0^b)/(1+\tilde\delta_1^b)$ and
-  adjusted slope as $\tilde\gamma_U/(1+\tilde\delta_1^b)$; (9) repeat
-  steps (2)-(8) a sufficient number of times to eliminate Monte Carlo
-  approximation error; (10) and average the simulations in (9) to get
-  point estimates, take their standard deviation for standard errors,
-  or sort them and use percentile values for confidence intervals.}
+  density with parameter vector $\tilde\psiu$, (5) compute a new $T_i$
+  as $\tilde T_i=\tilde\beta_i^bX_i+\tilde\beta_i^w(1-X_i)$; (6) run
+  EI on $X_i$ and $\tilde T_i$ to yield estimates
+  ($\hat\beta_i^b,\hat\beta_i^w$) for all $i$; (7) regress
+  ($\hat\beta_i^b-\beta_i^b$) on $\beta_i^b$ to estimate $\delta_0^b$
+  and $\delta_1^b$; (8) draw $\tilde\alpha_U$ and
+  $\tilde\gamma_U$ from the posterior provided by LS; (9) compute
+  the adjusted intercept as
+  $(\tilde\alpha_U-\hat\delta_0^b)/(1+\hat\delta_1^b)$ and
+  adjusted slope as $\tilde\gamma_U/(1+\hat\delta_1^b)$; (10)
+  repeat steps (3)-(9) a sufficient number of times to eliminate Monte
+  Carlo approximation error; (11) and average the simulations in (10)
+  to get point estimates, take their standard deviation for standard
+  errors, or sort them and use percentile values for confidence
+  intervals.}
 
 \section{Herron and Shotts' Monte Carlo Simulations}
 
@@ -330,13 +334,12 @@ The Monte Carlo procedure used to generate results by HS is
 inappropriate to the task of evaluating second stage regressions.  HS
 draw $\beta_i^b$ from the EI model without covariates.  Then they
 create the covariate for the second stage $Z_i$ endogenously as equal
-to $\beta_i^b$ plus random noise.  The problem with this procedure is
-that it induces immense attenuation bias due to random measurement
-error in the explanatory variable, quite apart from any attenuation
-bias that may occur due to the Bayesian shrinkage error in the EI
-estimate.
+to $\beta_i^b$ plus random noise.  Unfortunately, this induces immense
+attenuation bias due to random measurement error in the explanatory
+variable, quite apart from any attenuation bias that may occur due to
+the Bayesian shrinkage in the EI estimate.
 
-This problem can be seen by studying the parameters of the model they
+This problem can be seen by studying the parameters of the model HS
 created from which to draw their Monte Carlo data.  In this model, the
 slope of the coefficient on the covariate in the second stage
 regression is 1 (in their notation, $\gamma_R=1$).\footnote{Under the
@@ -390,6 +393,16 @@ $\beta_i^b$.  Within this framework, testing the robustness of the HS
 adjustment to the sort of nonlinear relationships which may crop up in
 applied research is impossible.
 
+Finally, HS' Monte Carlo simulations do not test the actual adjustment
+procedure they propose.  All the results they present in their Section 6
+rely on the true $\beta_i^b$'s to estimate $\delta_0^b$ and
+$\delta_1^b$, though this is the one quantity users of second-stage
+regressions are sure to lack.  Appropriately, HS recommend a different
+estimation procedure (in their Section 7.2) for use when $\beta_i^b$
+is unknown, but leave this procedure untested.  Hence there is no
+direct evidence that adjustment would be less biased or more efficient
+than unadjusted least squares in practice.
+
 \section{An Improved Monte Carlo Simulation} \label{s:alt}
 
 Most of our conclusions below do not depend on changing the simulation
@@ -410,34 +423,33 @@ influential, a regression of the true $\beta_i^b$ on $Z_i$ recovers
 the intercept and slope coefficients accurately.
 
 We use this Monte Carlo setup to illustrate four prototypical
-situations that in our experience maps out the space of applications
-in which the various methods work in different ways.  (That is, all
-the simulations we have run look like these plots or roughly speaking
-convex combinations of them.)
+situations that in our experience map out the space of applications in
+which the various second-stage methods work in different ways.  (That
+is, all the simulations we have run look like these plots or, roughly
+speaking, convex combinations of them.)
 
 First, when ecological data have very wide bounds, EI (and any method
-of ecological inference) will be sensitive to modeling assumptions,
-(the problem inherent in the original Goodman's regression no matter
-what the data looked like).  In many applications with data like
-these, no ecological inference should be conducted unless one has some
-special auxiliary information about the model assumptions.  If one
-proceeds to the second stage anyway then, since shrinkage probably
-exists in the $\beta_i^b$'s, the true (unobserved) value of the full
-adjustment would make for an improvement over least squares on the
-estimated $\hat\beta_i^b$'s.  Of course, the true adjustment is not
-known and needs to be estimated.  Unfortunately, it cannot.  The
-reason is that EI models $\beta_i^b$ as a random effect constrained to
-be within the precinct-level bounds.  If $Z_i$ is not in the EI first
-stage (which is true by definition, since if it were included we
-wouldn't need a second stage), then the \emph{only} information in
-$\hat\beta_i^b$ that could be predicted by $Z_i$ would come from the
-bounds.  The same is true of the adjustment procedure: the \emph{only}
-information with which to estimate $\delta_0$ and $\delta_1$ comes
-from the bounds.  If the bounds are relatively uninformative, as we
-are assuming in this first prototypical case, then there is little
-information with which to estimate the adjustment.  On reflection,
-this should not be a surprise: an unbounded random effect variable
-must be unrelated to all measured variables except by chance.
+of ecological inference) will be sensitive to modeling assumptions.
+In many applications with data like these, no ecological inference
+should be conducted unless one has some special auxiliary information
+about the model assumptions.  If one nevertheless proceeds to the
+second stage, then, since shrinkage probably exists in the
+$\beta_i^b$'s, the true (unobserved) value of the full adjustment
+would make for an improvement over least squares on the estimated
+$\hat\beta_i^b$'s.  Of course, the true adjustment is not known and
+needs to be estimated.  Unfortunately, it cannot.  The reason is that
+EI models $\beta_i^b$ as a random effect constrained to be within the
+precinct-level bounds.  If $Z_i$ is not in the EI first stage (which
+is true by definition, since if it were included we wouldn't need a
+second stage), then the \emph{only} information in $\hat\beta_i^b$
+that could be predicted by $Z_i$ would come from the bounds.  The same
+is true of the adjustment procedure: the \emph{only} information with
+which to estimate $\delta_0^b$ and $\delta_1^b$ comes from the bounds.  If
+the bounds are relatively uninformative, as we are assuming in this
+first prototypical case, then there is little information with which
+to estimate the adjustment.  On reflection, this should not be a
+surprise: an unbounded random effect variable must be unrelated to all
+measured variables except by chance.
 
 Figure \ref{f:wide} plots the covariate $Z_i$ horizontally by the true
 $\beta_i^b$ (in the left graph) and the estimated $\hat\beta_i^b$ (in
@@ -510,7 +522,7 @@ give approximately the same estimates.
 Third, when some observations have wide bounds and others have narrow
 bounds, and $\hat\beta_i^b$ is an approximate (or locally) linear
 function of $Z_i$, (unadjusted) weighted least squares regression will
-often be substantially less biased than least squares, and be
+often be substantially less biased than least squares, and
 approximately equivalent to or better than the fully adjusted
 procedure.\footnote{Like all weighted regressions, this procedure
   would have higher variance than LS. HS studied consistency, and
@@ -524,7 +536,7 @@ that the degree of attenuation is greater when the bounds are wider
 \ref{f:narrow} --- and so the weights are correlated with the
 attenuation bias and can at least partially adjust for it.  Figure
 \ref{f:mixed} provides an example of this phenomenon.  We generated
-the data for this figure from the same model as the other figures,
+the data for this figure from the same model as Figure \ref{f:narrow},
 changing only the parameter values so that the points were affected by
 the bounds.  The effect of the wide bounds on some observations can be
 seen by the attenuation in the set of points forming a flatter slope
@@ -532,8 +544,8 @@ in the right graph (as compared to the left graph which has no such
 feature).  As a result, the least squares (LS) line is a good deal
 flatter than it should be (as judged by the fit to the points in the
 left graph) but the (unadjusted) weighted least squares (WLS) line
-corrects for most of the attenuation.  The fully adjusted (FA) line is
-badly estimated and misses the mark.
+corrects for most of the attenuation.  The fully adjusted (FA) line,
+in contrast, over-corrects for attenuation.
 \begin{figure}[t]
   \begin{center}
     \epsfig{file=mixed.eps}
@@ -596,10 +608,10 @@ into the impossible region) for some values of $Z_i$.
 At least in some applications, differences among the various methods
 of second stage analysis make little difference.  We replicate Burden
 and Kimball's (1998) study of split-ticket voting, the empirical study
-HS focus the most, and find that none of the proposed corrections
-affect the substantive conclusions of the original study.  Table
-\ref{t:bkrep} presents these results (assuming arguendo that other
-features of their model are correctly specified).
+on which HS focus the most, and find that none of the proposed
+corrections affect the substantive conclusions of the original study.
+Table \ref{t:bkrep} presents these results (assuming arguendo that
+other features of their model are correctly specified).
 \begin{table}[th]
 \label{t:bkrep}
 \begin{center}
@@ -645,7 +657,7 @@ differing campaign resources (Jacobson, 1997) and ballot formats
 (Beck, 1997).  They found that the degree of ticket splitting falls
 with the ideological distance between presidential and Senate
 candidates, undermining the balancing thesis, but also that
-differences in campaign resources appear to predict ticket splitting
+differences in campaign resources appear to predict ticket-splitting
 quite well.
 
 Burden and Kimball's work is consistent with our recommendations.  The
@@ -668,7 +680,7 @@ unintentional result of campaign specific factors.
 
 The large standard errors in the FA column, relative to the others in
 Table \ref{t:bkrep}, highlight the relative inefficiency of the
-adjusted estimator.  Thus, in this example the minor reduction in bias
+adjusted estimator.  Thus, in this example, the minor reduction in bias
 is outweighed by the substantial increase in variance.  A mean square
 error criterion, which combines bias and variance, would suggest not
 making the adjustment even in the presence of attenuation bias.  (We
@@ -690,9 +702,9 @@ be sufficient evidence to complete the second stage analysis.''  This
 approach remains accurate.  Indeed \emph{show us the data} is a good
 general motto for any statistical analysis, especially those with
 complex nonlinear and bounded variables such as those resulting from
-making ecological inferences.  To this scatterplot, we would suggest
-adding information on the bounds.  This can be done by adding a thin
-vertical line representing the bounds on $\beta_i^b$ for each
+ecological inference.  To this scatterplot, we would suggest adding
+information on the bounds.  This can be done by adding a thin vertical
+line representing the bounds on $\beta_i^b$ for each
 $(\hat\beta_i^b,Z_i)$ point plotted (e.g., King, 1997: Figure 13.2).
 From this figure, we can then see all the information in the data,
 precisely how informative the bounds are, and whether the bounds are
@@ -700,8 +712,8 @@ of constant or variable width.
 
 For researchers who wish a simple approximation to estimating a second
 stage relationship, the information provided in this article should
-provide a guide to helping choose intelligently among the unadjusted,
-adjusted, weighted, or nonlinear methods.  Researchers can easily tell
+provide a guide to choosing intelligently among the unadjusted,
+adjusted, weighted, and nonlinear methods.  Researchers can easily tell
 in which of the four prototypical situations listed and illustrated in
 Section \ref{s:alt} their data fall, and they can take the action
 indicated.
