@@ -8,7 +8,7 @@
 ** OUTPUT:
 **    dbres = updated data buffer containing an additional model
 **            specification. 
-**            titl="*NDB* Nested Data Buffer from eimodels_def() *NDB*"
+**            titl="*MDB* Meta-Data Buffer from eimodels_def() *MDB*"
 **
 **   
 ** INPUTS:
@@ -72,7 +72,7 @@ proc eimodels_def(ndbuf, num, t, x, n, Zb, Zw);
   ?;
   "Model " num "is successfully added to the data buffer.";
   ndbuf=vput(ndbuf,dbtemp,"mod_d"$+ftos(num,"*.*lf",1,0));  
-  ndbuf=vput(ndbuf,"*NDB* Nested Data Buffer from eimodels_def() *NDB*","titl"); 
+  ndbuf=vput(ndbuf,"*MDB* Meta-Data Buffer from eimodels_def() *MDB*","titl"); 
 
   retp(ndbuf);
 endp;
@@ -92,13 +92,13 @@ endp;
 ** INPUT:
 **   ndbuf = nested data buffer from eimodels_def() which contains all
 **           the globals for each model.
-**           titl="*NDB* Nested Data Buffer from eimodels_run() *NDB*"
+**           titl="*MDB* Meta-Data Buffer from eimodels_run() *MDB*"
 **
 ** GLOBAL:
 **   _EImodels_save = file name if you want to save the results at 
-**                   each iteration in a data buffer (with the 
-**                   extension ".fmt") on the disk (default = 
-**                   does not save on the disk).
+**                    each iteration in a data buffer (with the 
+**                    extension ".fmt") on the disk (default = 
+**                    does not save on the disk).
 **
 */
  
@@ -107,16 +107,16 @@ proc eimodels_run(ndbuf);
   
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
-    "WARNING: the input data buffer is not a resulting buffer from eimodels_def().";
+    "WARNING: the input data buffer is not a output buffer from eimodels_def().";
   else;
     titl=vread(ndbuf,"titl");
-    if titl$/="*NDB* Nested Data Buffer from eimodels_def() *NDB*";
-      "WARNING: the input data buffer is not a resulting buffer from eimodels_def().";
+    if titl$/="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
+      "WARNING: the input data buffer is not a output buffer from eimodels_def().";
     endif;
   endif;
 
   dbres="";
-  dbres=vput(dbres,"*NDB* Nested Data Buffer from eimodels_run() *NDB*","titl");
+  dbres=vput(dbres,"*MDB* Meta-Data Buffer from eimodels_run() *MDB*","titl");
 
   num = rows(vnamecv(ndbuf));
   i = 1;
@@ -162,20 +162,26 @@ endp;
 **           result of Bayesian Model Averaging using the Harmonic
 **           mean estimator for the marginal likelihoods.
 **           titl="*DB* Data Buffer from eimodels_ave() *DB*"
-**   betabs   =  betab draws from its posterior (p x _Esims)
-**   betaws   =  betaw draws from its posterior (p x _Esims)
-**   mfreq    =  first column contains the model number and the second 
-**               column contains the frequency of sampling from each 
-**               model (# of model x 2)
-**   postprob =  first column contains the model number and the second 
-**               column contains the posterior model probabilities 
-**               (# of model x 2)
-**   prprob = first column contains the model number and the second 
-**            column contains the prior model probability used for 
-**            calculation (# of model x 2).
-**   margllik =  first column contains the model number and the second 
-**               column contains the marginal log-likelihood for each 
-**               model (# of model x 2)
+**     t = t used for the estimation; if models use different t's, only t 
+**         from the first model is stored and used for eiread() calculation.
+**     x = x used for the estimation; if models use different x's, only x 
+**         from the first model is stored and used for eiread() calculation.
+**     n = n used for the estimation; if models use different n's, only n 
+**         from the first model is stored and used for eiread() calculation.     
+**     betabs   =  betab draws from its posterior (p x _Esims)
+**     betaws   =  betaw draws from its posterior (p x _Esims)
+**     mfreq    =  first column contains the model number and the second 
+**                 column contains the frequency of sampling from each 
+**                 model (# of model x 2)
+**     postprob =  first column contains the model number and the second 
+**                 column contains the posterior model probabilities 
+**                 (# of model x 2)
+**     prprob = first column contains the model number and the second 
+**              column contains the prior model probability used for 
+**              calculation (# of model x 2).
+**     margllik =  first column contains the model number and the second 
+**                 column contains the marginal log-likelihood for each 
+**                 model (# of model x 2)
 **  
 ** GLOBAL:
 **   _EI_bma_prior = The discrete prior probability to each model in the 
@@ -187,17 +193,17 @@ endp;
 proc 1=eimodels_ave(ndbuf);
   local sims, num, nobs, temp, dbtemp, dta, margllik, postprob, zi,
         aggs, betabs, betaws, mfreq, ratio, dbres, i, j, titl, t, x,
-        prprob, _eprt_temp;
+        n, frst, prprob, _eprt_temp;
 
   @ checking the input buffer @
   if not(vin(ndbuf,"titl"));
     ?;
-    "WARNING: the input data buffer is not a resulting buffer from eimodels_run().";
+    "WARNING: the input data buffer is not a output buffer from eimodels_run().";
   else;
     titl=vread(ndbuf,"titl");
-    if titl$/="*NDB* Nested Data Buffer from eimodels_run() *NDB*";
+    if titl$/="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
       ?;
-      "WARNING: the input data buffer is not a resulting buffer from eimodels_run().";
+      "WARNING: the input data buffer is not a output buffer from eimodels_run().";
     endif;
   endif;
 
@@ -228,11 +234,13 @@ proc 1=eimodels_ave(ndbuf);
         nobs = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"nobs");
         t = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"t");
         x = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"x");         
+        n = eiread(vread(ndbuf,"mod_r"$+ftos(i+0,"*.*lf",1,0)),"n");
+        frst = i;         
       else;
         temp = eiread(dbtemp,"nobs");
         if (temp /= nobs);
           ?;
-          "ei: The number of observation is different for Model " i;
+          "ei: This Model uses the number of observation different from Model " frst;
           "You cannot average the models with different number of observations.";
           "----- EIBMA Aborted -----";
           ?;
@@ -241,15 +249,28 @@ proc 1=eimodels_ave(ndbuf);
         temp = eiread(dbtemp,"t");
         if sumc(temp ./= t)>0;
           ?;
-          "WARNING: The ei input, t, is different for Model " i;
-          "Are you sure you want to average models based on different t's?";
+          "WARNING: The ei input, t, of Model " i " is different from Model " frst;
+          "Are you sure you want to average models based on different t?";
+          "t from Model " frst " is stored in the output data buffer and"; 
+          "will be used for eiread() calculation.";
           ?;
         endif;
         temp = eiread(dbtemp,"x");
         if sumc(temp ./= x)>0;
           ?;
-          "WARNING: The ei input, x, is different for Model " i;
-          "Are you sure you want to average models based on different x's?";
+          "WARNING: The ei input, x, of Model " i " is different from Model " frst;
+          "Are you sure you want to average models based on different x?";
+          "n from Model " frst " is stored in the output data buffer and";
+          "will be used for eiread() calculation.";
+          ?;
+        endif;
+        temp = eiread(dbtemp,"n");
+        if sumc(temp ./= n)>0;
+          ?;
+          "WARNING: The ei input, n, of Model " i " is different from Model " frst;
+          "Are you sure you want to average models based on different n?";
+          "n from Model " frst " is stored in the output data buffer and"; 
+          "will be used for eiread() calculation.";
           ?;
         endif;
       endif; 
@@ -306,13 +327,13 @@ proc 1=eimodels_ave(ndbuf);
       ?;
       retp(ndbuf);
     endif;
-        prprob[.,2] = _EI_bma_prior;
+    prprob[.,2] = _EI_bma_prior;
   endif;
   _Eprt=_eprt_temp;
 
   @ posterior model probability with flat model prior @
   postprob = margllik;
-  postprob[.,2] = margllik[.,2].*_EI_bma_prior/sumc(margllik[.,2].*_EI_bma_prior);   
+  postprob[.,2] = margllik[.,2].*prprob[.,2]/sumc(margllik[.,2].*prprob[.,2]);   
   margllik[.,2] = log(margllik[.,2]);             @ the marginal log-likelihood @
 
   @ initialize more local parameters @
@@ -344,10 +365,13 @@ proc 1=eimodels_ave(ndbuf);
     betaws[.,k] = temp[.,k];
   endfor;
   ?;
-  "Sampling done!";
+  "----- EIMODELS_AVE Completed -----";
   ?;
   @ store the results in data buffer @
   dbres = "";
+  dbres = vput(dbres,t,"t");
+  dbres = vput(dbres,x,"x");
+  dbres = vput(dbres,n,"n");
   dbres = vput(dbres,aggs,"aggs");
   dbres = vput(dbres,betabs,"betabs");
   dbres = vput(dbres,betaws,"betaws");
@@ -359,3 +383,6 @@ proc 1=eimodels_ave(ndbuf);
 
   retp(dbres);
 endp;  
+
+
+
