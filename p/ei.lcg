@@ -428,6 +428,7 @@ eiutil.src
     infrv                            : proc
     vreadall                         : proc
     _vreadallvrs                     : matrix
+    strstrip                         : proc
     
 cml.dec
     _cml_version                     : matrix
