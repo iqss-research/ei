@@ -398,16 +398,6 @@ inferences.
 
 \section{Ecological Inference for Flawed Ballots} \label{s:ecinf}
 
-One difficulty with ecological inference modeling is that
-specifications with many covariates are infeasible, since such models
-are sometimes only weakly identified, if at all.  However, at the same
-time, the results can be sensitive to model specification.  This
-combination of problems thus suggests that this will be an especially
-appropriate use of Bayesian model averaging, which allows results to
-be based on multiple models and on information in a large set of
-covariates, even if a more theoretically satisfying generalized model
-is infeasible.
-
 Table~\ref{tb:ei} presents our formal notation.  For each county $i$
 ($i=1,\dots,67$), we denote the proportion of invalid ballots among
 all overseas absentee ballots as $X_i$, and the total number of
@@ -421,10 +411,13 @@ cast for minor party candidates.  We handle minor parties in our
 statistical analyses in Section \ref{s:stat} by ignoring the problem
 at first and then conducting sensitivity analyses; since votes for
 minor party candidates only total 3 percent, we find, as expected,
-that they have a very small effect on the overall result.)  Each of
-these quantities are observed.  We denote unobserved quantities with
-Greek letters.  Thus, the proportions of invalid and valid ballots
-cast for Gore are $\bb_i$ and $\bg_i$, respectively.
+that they have a very small effect on the overall result.  Other
+analyses (not shown) using more computationally intensive techniques
+designed to model these choices separately confirm these results (see
+Rosen et al., 2001)\nocite{RosJaiKin01}.)  Each of these quantities
+are observed.  We denote unobserved quantities with Greek letters.
+Thus, the proportions of invalid and valid ballots cast for Gore are
+$\bb_i$ and $\bg_i$, respectively.
 \begin{table}[t]
 \begin{center}
 \begin{tabular}{cccc}
@@ -578,16 +571,29 @@ good application of Bayesian model averaging methodology for the
 following reasons.  First, model assumptions can play a critical role
 in ecological inference when the bounds are wide.  In addition to
 sensitivity to model specification, an inherent feature of the
-ecological inference problem in general is often weak identification.
-One consequence is that one cannot always use models with as many
-covariates as are available to analyze ecological data because such
-`big' models are often not identified.  On the other hand, if we have
-many covariates to predict individual behavior, it makes sense that we
-should be able to improve our inferences by using them.  After all,
-more data should be better in this area as it is in every other.  Our
-application of Bayesian model averaging reduces this problem by
-letting analysts combine many small models with the full range of
-covariates.
+ecological inference problem is weak
+identification.\footnote{Including multiple covariates uncorrelated
+  with $X_i$ cause no identification problems in ecological inference.
+  Ecological inference models that do not incorporate information from
+  the deterministic bounds (such as in Goodman
+  (1953)\nocite{goodman53}) are not identified when including $X_i$ or
+  variables related to $X_i$ as covariates (King, 1997: 42).  Thus, to
+  the extent that ecological inference models that incorporate the
+  bounds, such as King's (1997), are estimable when including $X_i$ or
+  covariates that are related to $X_i$, the information that makes
+  this possible is coming from the bounds.  Hence, weak identification
+  with multiple covariates in modern ecological inference models
+  occurs primarly when both the data have relatively uninformative
+  bounds and the model includes one or more covariates that are
+  correlated with $X_i$.}  A consequence is that one cannot always use
+models with as many covariates as are available to analyze ecological
+data because such models are often not identified.  On the other hand,
+if we have many covariates to predict individual behavior, it makes
+sense that we should be able to improve our inferences by using them.
+After all, more data should be better in this area as it is in every
+other.  Our application of Bayesian model averaging reduces this
+problem by letting analysts combine many small models with the full
+range of covariates.
 
 Bayesian model averaging was especially important here since political
 scientists have only rarely studied absentee ballots and we therefore
@@ -598,18 +604,15 @@ specifications.  We can, and did, include any specification in the
 analysis that we or anyone we discussed the matter with thought might
 be relevant.
 
-In the following section, we first briefly review King's (1997)
-ecological inference model \nocite{king:97} and its assumptions in the
-context of our overseas absentee ballot analysis.  Then, we explain
-the Bayesian model averaging procedure and the logic behind it.
-Finally, we show how to incorporate this methodology into the King's
-model.  Appendix~\ref{appx:king} gives technical details.
-
 \subsubsection{Ecological Inference}
 
-A formal presentation of the basic ecological inference model we
-discuss here is given in King (1997) and summarized in the appendix.
-In this section, we give a more qualitative overview.
+We now give a brief qualitative overview of King's (1997) models of
+ecological inference \nocite{king:97} and their assumptions in the
+context of our overseas absentee ballot analysis.  These models have
+come to called EI, after the software that implements them.  We then
+explain the Bayesian model averaging procedure and the logic behind it
+and show how to incorporate this methodology into EI.
+Appendix~\ref{appx:king} gives technical details.
 
 We begin by thinking about the data in terms of the \emph{possible}
 values of the ($\bg_i,\bb_i$) points for each county as line segments
@@ -652,7 +655,8 @@ parameters from Florida's 67 counties on their respective tomography
 lines, they all have something in common, and that any systematic
 difference between them will be picked up by covariates.  The main
 constraint of this assumption is that the bivariate density is
-unimodal.
+unimodal and that it is constrained to the [0,1] interval in both
+directions.
 
 The second assumption is that the absence of residual spatial
 correlation in $T$ after taking into account $X$ and $Z$.  King's
@@ -1314,7 +1318,6 @@ Laplace approximation is more appropriate than BIC.
 
 \singlespacing
 \bibliographystyle{/home/willow/king/texinputs/pa}
-%\bibliography{/home/who/kimai/localtexmf/BibTeX/stat,/home/who/kimai/localtexmf/BibTeX/polisci}
 \bibliography{stat,polisci}
 
 \end{document}
