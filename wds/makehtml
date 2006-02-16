@@ -1,0 +1,1 @@
+ latex2html -noauto_link -info "" -contents "http://gking.harvard.edu/ei/ei.html" -t "EI: A Program for Ecological Inference" -local_icons -dir ~/www/ei/ ei.tex
