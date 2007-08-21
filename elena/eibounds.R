@@ -11,7 +11,13 @@
 ##         cols: lower ~ upper
 ##         rows: beta-b, beta-w
 ###
-
+### USES: recode
+###
+### Translation of the Gauss code by Gary King
+### AUTHOR: Ferdinand Alhimadi & Elena Villalon
+###         evillalon@iq.harvard.edu
+###         falhimadi@iq.harvard.edu
+###
 #include ei.ext;
 bounds1<-function(t,x,n){
         ## local LbetaB,UbetaB,LbetaW,UbetaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,tomx,z,o,m;
@@ -25,15 +31,16 @@ bounds1<-function(t,x,n){
         c1<-cs$c1
         p<-length(x);                    # nr of precinct could by nrow(data) if the args are dataset
         
-        LbetaB<-zeros(p,1)
-        UbetaB<-zeros(p,1)
-        LbetaW<-zeros(p,1)
-        UbetaW<-zeros(p,1)
-        z<-zeros(p,1)
-        o<-ones(p,1)
+        LbetaB<-matrix(0, nrow=p,ncol=1)
+        UbetaB<-matrix(0,nrow=p,ncol=1)
+        LbetaW<- matrix(0, nrow=p,ncol=1)
+        UbetaW<-matrix(0, nrow=p,ncol=1)
+        z<-matrix(0, nrow=p,ncol=1)
+        o<-matrix(1, nrow=p,ncol=1)
         m<-o*NA;
-
-        if (length(c)){## heterogeneous precincts @
+        
+        cna <- na.omit(c)
+        if (length(c) >1 || length(cna)){
                 tx<-t[c]/x[c]
                 tomx<-t[c]/omx[c]
                 LbetaB[c]<-maxr(z[c],tx-(omx[c]/x[c]))
@@ -41,15 +48,15 @@ bounds1<-function(t,x,n){
                 LbetaW[c]<-maxr(z[c],tomx-(x[c]/(1-x[c])))
                 UbetaW[c]<-minr(tomx,o[c])
         }
-        
-        if (length(c0)){## homogeneously white @
+        c0na <- na.omit(c0)
+        if (length(c0) > 1 || length(c0na)){## homogeneously white 
                 LbetaB[c0]<-m[c0]
                 UbetaB[c0]<-m[c0]
                 LbetaW[c0]<-t[c0]
                 UbetaW[c0]<-t[c0]
         }
-        
-        if (length(c1)){## homogeneously black @
+        c1na <- na.omit(c1)
+        if (lengt(c1) > 1 || length(c1na)){## homogeneously black @
                 LbetaB[c1]<-t[c1]
                 UbetaB[c1]<-t[c1]
                 LbetaW[c1]<-m[c1]
@@ -64,7 +71,8 @@ bounds1<-function(t,x,n){
         UbetaW=recode(UbetaW,cbind((UbetaW<0),(UbetaW>1)),c(0,1))
         
         res<-list()
-        res$aggs<-rbind(cbind(meanwc(LbetaB,Nb),meanwc(UbetaB,Nb)),cbind(meanwc(LbetaW,Nw),meanwc(UbetaW,Nw)))
+        res$aggs<-rbind(cbind(weighted.mean(LbetaB,Nb),weighted.mean(UbetaB,Nb)),
+                        cbind(weighted.mean(LbetaW,Nw),weighted.mean(UbetaW,Nw)))
         res$bs<-cbind(LbetaB,UbetaB,LbetaW,UbetaW)
         
         return(res)
