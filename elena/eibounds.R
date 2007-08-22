@@ -16,7 +16,6 @@
 ### Translation of the Gauss code by Gary King
 ### AUTHOR: Ferdinand Alhimadi & Elena Villalon
 ###         evillalon@iq.harvard.edu
-###         falhimadi@iq.harvard.edu
 ###
 #include ei.ext;
 bounds1<-function(t,x,n){

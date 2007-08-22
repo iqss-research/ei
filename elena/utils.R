@@ -176,6 +176,36 @@ vread <- function(dbuf, str){
   return(dbuf[[ix]]) 
   
 }
+
+vget <- function(dbuf, str){
+ 
+  cv=names(dbuf)
+  ix <- grep(str, cv, ignore.case=T)
+  if(!is.list(dbuf) || length(ix) <=0){
+     warning(paste("ei: vget. Variable", str, "is not in data buffer"))
+     return(list())
+   }
+  var <- dbuf[[ix]]
+  dbufnew <- dbuf[-ix]
+  lst <- c(list(var), dbufnew)
+  return(lst)
+}  
+### Similar to the Gauss vput: It inserts
+### a new element in the list dbuf and
+### return the new list
+
+vput <- function(dbuf=list(), x, xname){
+  if(!is.list(dbuf))
+    stop("Ei: vput the input buffer needs to be a list")
+  nm <- NULL
+  nc <- length(dbuf)
+  if(length(dbuf))
+    nm <- names(dbuf)
+  dbuf[[nc+1]] <- x
+  names(dbuf) <- c(nm, xname)
+  
+return(dbuf)
+}
 ### DESCRIPTION similar to the recode func in Gauss
 ###             x vector of N values
 ###             e matrix NxK of 1's and 0's

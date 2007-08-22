@@ -1,12 +1,213 @@
 
-ei <- function(t,x,tvap,Zb, Zw){
+ei <- function(t,x,tvap,Zb, Zw)
+{
   evbase <- eiset()
-  res <- ls(env=evbase)
-  lapply(res, function(x){
+  param <- ls(env=evbase)
+  evei <- environment()
+  ass <- lapply(param, function(att,evbase,evei) {
+    val <- get(att, env=evbase)
+    assign(att, val,env=evei)}, evbase,evei)
+         
+  if(length(grep("Eptr", param)) && length(grep("Eversion", param)))
+    message(Eversion)
+  
+  if(length(Eres) && vin(Eres,"titl") && Eptr >0)
+    message(vread(Eres,"titl"))
+  Eres <- add.to.Eres(Eres, round=1, evbase)
+            
+  lapply(param, function(x){
     print(get(x, env=evbase))})
 ##  checkinputs(t,x,n,Z0b,Zw);
+
+  /* verify inputs */
+  if(Echeck){
+    tst <- checkinputs(t,x,tvap,Zb, Zw)
+    if(tst != ""){
+      print(tst)
+  ###    "----- EI Aborted -----";
+      return(Eres)
+    }
+    if(Eprt>0){
+      if(EnonPar)
+        print("Inputs ok, beginning nonparametric estimation...")
+      else;
+      print("Inputs ok, beginning preliminary estimation...")
+    }
+  }
+
+ ###  /* augment _Eselect if _EselRnd<1 */
+  Eselect <- Eselect;  ###$@ save existing value @
+  Eselect <- matrix(1,rows(x),1)*Eselect;
+  if(EselRnd<1){
+    vec <- runif(nrow(x),min=0,max=1)
+    vec <- matrix(vec)
+    Eselect <- Eselect & (vec < EselRnd);
+  }
+
+
+###  /* nonparametric estimation */
+  if(EnonPar){
+    betaBs <- einonp(t,x);
+    Eres <- vput(Eres,betaBs,"betabs");
+    Eres <- add.to.Eres(Eres, round=2, evbase)  
+    gosub timing;
+    return(res);
+  }
+  ### /* parametric estimation: */
+  
+  ###/* eta influence on Zb,Zw */
+  if(nrow(Eeta)!=4){
+  if(Eeta[1]==1){
+    Zb=x;
+    Zw=1;
+  }else if(Eeta[1]==2){
+    Zb=1;
+    Zw=x;
+  }else if(Eeta[1]==3){
+    Zb=x;
+    Zw=x;
+  }else if(Eeta[1]==4){
+    Zb=x;
+    Zw=1;
+  }else if(Eeta[1]==5){
+    Zb=1;
+    Zw=x;
+  }
 }
 
+  ### /* set internal global */
+
+  assign("Ez", 0, env=evbase)
+ ### clearg _Ez;	@ n of covariates, incl. implied constant term for Zb|Zw @
+  Ez <- (ncol(Zb)+1-scalone(Zb))|(ncol(Zw)+1-scalone(Zw)));
+
+
+###  /* likelihood estimation */
+  if(EdoML==1){
+   
+     lst  <- quadcml(x,Zb,Zw,T);
+     MLpsi <- lst$Mlpsi
+     MLvc <- lst$MLvc
+     
+     if(is.na(MLvc)){
+       Eres=vput(Eres,MLpsi,"phi");
+       Eres=vput(Eres,MLvc,"vcphi");
+      return(Eres);
+     }
+  
+    message("Skipping likelihood estimation..");
+     Eres <- add.to.Eres(Eres, round=3, evbase)  
+  
+    MLpsi <- mlpsi <- EdoML.phi;
+    MLvc <-  mlvc <- EdoML.vcphi;
+    if(nrow(mlvc)!= nrow(mlpsi))
+      stop("ei: EdoML.phi or EdoML.vcphi input error");
+      
+    
+   }
+
+ ###/* simulation */
+  if(EdoSim==1){
+  ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
+     lst <- psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
+     betaBs <- lst$betaBs
+     betaWs <- lst$betaWs
+     Eres=vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @
+   }
+
+##  gosub timing;   
+  return(res);
+### timing:
+  if (Eprt>0){
+    et <- hsec-et;				@ timing end  @
+    fmtt()
+    message("Done. Time in minutes=", et/100/60);
+  ###  "----- EI Completed -----";
+  }
+
+tst <- paste("Run time: ", date(), "\nEversion", sep="")
+  Eres=vput(Eres,tst,"date");
+  res <- Eres;
+  Eres <- vput("",tst,"date");
+
+  Eselect <- Eselect;
+  #ifdos;
+    ndpclex;
+  #endif;
+  
+}
+
+          
+           
+  add.to.Eres <- function(Eres=list(), round=1, evbase=NULL){
+    if(!length(evbase))
+      evbase <- eiset()
+    param <- ls(env=evbase)
+    evei <- environment()
+    ass <- lapply(param, function(att,evbase,evei) {
+      val <- get(att, env=evbase)
+      assign(att, val,env=evei)}, evbase,evei)
+
+### inputs
+    if(round <= 1){
+      Eres <- vput(Eres,t,"t");
+      Eres <- vput(Eres,x,"x");
+      Eres <- vput(Eres,tvap,"n");
+      Eres <- vput(Eres,Zb,"Zb");
+      Eres <- vput(Eres,Zw,"Zw");
+    
+## essential globals 
+      Eres <- vput(Eres,EalphaB,"EalphaB");
+      Eres <- vput(Eres,EalphaW,"EalphaW");
+      Eres <- vput(Eres,Ebeta,"Ebeta");
+      Eres <- vput(Eres,Ebounds,"Ebounds");
+      Eres <- vput(Eres,Ecdfbvn,"Ecdfbvn");
+      Eres <- vput(Eres,EdirTol,"EdirTol");
+      Eres <- vput(Eres,EcdfTol,"EcdfTol");
+      Eres <- vput(Eres,EvTol,"EvTol");
+      Eres <- vput(Eres,EdoML,"EdoML");
+      Eres <- vput(Eres,EdoML.phi,"doml.phi");   
+      Eres <- vput(Eres,EdoML.vcphi,"doml.vc");   
+      Eres <- vput(Eres,EdoSim,"EdoSim");
+      Eres <- vput(Eres,Eeta,"Eeta");
+      Eres <- vput(Eres,Eigraph.bvsmth,"bvsmth"); 
+      Eres <- vput(Eres,EisChk,"EisChk");
+      Eres <- vput(Eres,EiLliks,"EiLliks");
+      Eres <- vput(Eres,EisFac,"EisFac");
+      Eres <- vput(Eres,Eisn,"Eisn");
+      Eres <- vput(Eres,Eist,"Eist");
+      Eres <- vput(Eres,EmaxIter,"EmaxIter");
+      Eres <- vput(Eres,EnonEval,"EnonEva"); 
+      Eres <- vput(Eres,EnonNumInt,"EnonNum");
+      Eres <- vput(Eres,EnonPar,"EnonPar");
+      Eres <- vput(Eres,EnumTol,"EnumTol");
+      Eres <- vput(Eres,Erho,"Erho");
+      Eres <- vput(Eres,Eselect,"Eselect");
+      Eres <- vput(Eres,EselRnd,"EselRnd");
+      Eres <- vput(Eres,Esigma,"Esigma");
+      Eres <- vput(Eres,Esims,"Esims");
+      Eres <- vput(Eres,Estval,"Estval");
+      Eres <- vput(Eres,ei.vc,"ei.vc");
+    }else if (round <= 2){
+    ###   Eres <- vput(Eres,betaBs,"betabs");
+       Eres <- vput(Eres,NA,"retcode");
+       Eres <- vput(Eres,NA,"phi");
+       Eres <- vput(Eres,NA,"loglik");
+       Eres <- vput(Eres,NA,"ghactual");
+       Eres <- vput(Eres,NA,"vcphi");  
+       Eres <- vput(Eres,Esims,"Esims");
+
+     }else if(round <= 3){
+       Eres <- vput(Eres,NA,"retcode");
+       Eres <- vput(Eres,EdoML.phi,"phi");
+       Eres <- vput(Eres,NA,"loglik");
+       Eres <- vput(Eres,NA,"ghactual");
+       Eres <- vput(Eres,EdoML.vcphi,"vcphi");
+     }
+    return(Eres)
+        
+  }
+  
 checkinputs <- function(t,x,n,Zb, Zw){
   tvap <- n
   zb <- Zb
