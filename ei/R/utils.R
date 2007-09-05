@@ -79,7 +79,8 @@ lag<-function(x){
 ##
 
 scalzero<-function(y){
-       length(y) ==1  && !any(is.na(y)) && all(y == 0)  
+  
+       length(y) ==1  && !any(is.na(y)) && is.numeric(y) && all(y == 0)  
       
 }
 
@@ -91,7 +92,7 @@ scalzero<-function(y){
 ##    as.numeric(TRUE) =1, as.numeric(FALSE) =0
 
 scalone<-function(y){
- length(y) ==1  && !any(is.na(y)) && all(y == 1)  
+ length(y) ==1  && !any(is.na(y))&& is.numeric(y)  && all(y == 1)  
        
 }
 ### test if y is scalar missing value
@@ -157,17 +158,18 @@ seqase<-function(strt,endd,pts){
 
 vin <- function(dbuf,str){
   
-  cv=names(dbuf)
+  cv <- names(dbuf)
   res <- TRUE
   ix <- grep(str, cv, ignore.case=T)
-  if(length(res) <= 0)
+  if(length(ix) <= 0)
     res <- FALSE
+
   return(res);
 }
 
 vread <- function(dbuf, str){
  
-  cv=names(dbuf)
+  cv <- names(dbuf)
   ix <- grep(str, cv, ignore.case=T)
   if(length(ix) <=0){
      warning(paste("Variable", str, "is not in the data buffer"))
@@ -179,7 +181,7 @@ vread <- function(dbuf, str){
 
 vget <- function(dbuf, str){
  
-  cv=names(dbuf)
+  cv <- names(dbuf)
   ix <- grep(str, cv, ignore.case=T)
   if(!is.list(dbuf) || length(ix) <=0){
      warning(paste("ei: vget. Variable", str, "is not in data buffer"))
