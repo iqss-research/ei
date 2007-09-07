@@ -79,8 +79,8 @@ lag<-function(x){
 ##
 
 scalzero<-function(y){
-  
-       length(y) ==1  && !any(is.na(y)) && is.numeric(y) && all(y == 0)  
+    y <- as.vector(y)
+    length(y) ==1  && !any(is.na(y)) && is.numeric(y) && all(y == 0)  
       
 }
 
@@ -92,6 +92,8 @@ scalzero<-function(y){
 ##    as.numeric(TRUE) =1, as.numeric(FALSE) =0
 
 scalone<-function(y){
+  y <- as.vector(y)
+  
  length(y) ==1  && !any(is.na(y))&& is.numeric(y)  && all(y == 1)  
        
 }
@@ -157,7 +159,7 @@ seqase<-function(strt,endd,pts){
 ### names of dbuf independently of case.
 
 vin <- function(dbuf,str){
-  
+  str <- paste("^",str,"$",sep="")
   cv <- names(dbuf)
   res <- TRUE
   ix <- grep(str, cv, ignore.case=T)
@@ -170,6 +172,7 @@ vin <- function(dbuf,str){
 vread <- function(dbuf, str){
  
   cv <- names(dbuf)
+  str <- paste("^",str,"$",sep="")
   ix <- grep(str, cv, ignore.case=T)
   if(length(ix) <=0){
      warning(paste("Variable", str, "is not in the data buffer"))
@@ -178,9 +181,10 @@ vread <- function(dbuf, str){
   return(dbuf[[ix]]) 
   
 }
-
+### similar to vread but returns also the list dbufnew without
+### the element str 
 vget <- function(dbuf, str){
- 
+   str <- paste("^",str,"$",sep="")
   cv <- names(dbuf)
   ix <- grep(str, cv, ignore.case=T)
   if(!is.list(dbuf) || length(ix) <=0){
@@ -196,7 +200,7 @@ vget <- function(dbuf, str){
 ### a new element in the list dbuf and
 ### return the new list
 
-vput <- function(dbuf=list(), x, xname){
+vput <- function(dbuf=list(), x, xname=NULL){
   if(!is.list(dbuf))
     stop("Ei: vput the input buffer needs to be a list")
   nm <- NULL
@@ -204,7 +208,17 @@ vput <- function(dbuf=list(), x, xname){
   if(length(dbuf))
     nm <- names(dbuf)
   dbuf[[nc+1]] <- x
-  names(dbuf) <- c(nm, xname)
+  ### trying to figure out names
+  xname1 <- NULL
+  if(length(names(x)))
+    xname1 <- names(x)
+  else  if(length(colnames(x)))
+    xname1 <- colnames(x)
+  if(!length(xname))
+    xname <- xname1 
+  if(length(xname))
+    names(dbuf) <- c(nm, xname)
+  
   
 return(dbuf)
 }

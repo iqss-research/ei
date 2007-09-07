@@ -119,7 +119,7 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
     evbase <- eiset()
   
   evei <- getEnvVar(evbase, environment())
-       
+        
  ### inputs
     if(round == 1){
       Eres <- vput(Eres,t,"t");
@@ -127,7 +127,7 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
       Eres <- vput(Eres,tvap,"n");
       Eres <- vput(Eres,Zb,"Zb");
       Eres <- vput(Eres,Zw,"Zw");
-    
+  
 ## essential globals 
       Eres <- vput(Eres,EalphaB,"EalphaB");
       Eres <- vput(Eres,EalphaW,"EalphaW");
@@ -160,6 +160,7 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
       Eres <- vput(Eres,Esims,"Esims");
       Eres <- vput(Eres,Estval,"Estval");
       Eres <- vput(Eres,ei.vc,"ei.vc");
+      assign("Eres",Eres, env=evbase)
       return(Eres)
     }
     if (round == 2){
@@ -170,7 +171,8 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
        Eres <- vput(Eres,NA,"ghactual");
        Eres <- vput(Eres,NA,"vcphi");  
        Eres <- vput(Eres,Esims,"Esims");
-         Eres <- vput(Eres,ei.vc,"ei.vc");
+       Eres <- vput(Eres,ei.vc,"ei.vc");
+       assign("Eres",Eres, env=evbase)
       return(Eres)
      }
 
@@ -181,6 +183,7 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
        Eres <- vput(Eres,NA,"ghactual");
        Eres <- vput(Eres,EdoML.vcphi,"vcphi");
        Eres <- vput(Eres,ei.vc,"ei.vc");
+       assign("Eres",Eres, env=evbase)
        return(Eres)
      }
      

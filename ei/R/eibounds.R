@@ -14,7 +14,7 @@
 ### USES: recode
 ###
 ### Translation of the Gauss code by Gary King
-### AUTHOR: Ferdinand Alhimadi & Elena Villalon
+### AUTHOR: Ferdinand Alhimadi
 ###         evillalon@iq.harvard.edu
 ###
 #include ei.ext;
