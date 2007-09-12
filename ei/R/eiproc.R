@@ -47,7 +47,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
       print("Inputs ok, beginning preliminary estimation...")
     }
   }
-  return(evbase)
+  
  ###  /* augment _Eselect if _EselRnd<1 */
   assign("Eselect", Eselect, env=evbase);  ###$@ save existing value @
 
@@ -424,50 +424,54 @@ checkinputs <- function(t,x,n,Zb, Zw){
     if(length(EIMetaR) >1 ||  EIMetaR %% floor(EIMetaR) > 0)
       stop("ei: EiMetaR must be a scalar integer");
     
-    if(vin(Eres, "truth")){
-      ## eiread not written yet but returns vread     
-      betaB <- eiread(Eres, "truthB")
-      betaW <- eiread(Eres, "truthW")
-      if(nrow(betaB) != nrow(x) || nrow(betaW) != nrow(x))
-        stop("ei: stored 'truth' must have same dimensions as x & t")
-      if (any(betaB >1)  || any(betaB <0))
-        stop("ei: 'truthB' input must be between 0 and 1");
-      if (any(betaW >1)  || any(betaW <0))
-        stop("ei: 'truthW' input must be between 0 and 1");
-
-      res <- bounds1(t, x, tvap)
-      bnd <- res$bs
-      a <- res$aggs
-      a <- na.omit(cbind(betaB, bnd[,1]))
-      tol <- Enumtol
-      
-      if(any((a[,1]+tol) < a[, 2])){
-        evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
-        str <- "ei: truthB < lower bound";
-        return(str);
-      }
-    
-        
-      a <- na.omit(cbind(betaB, bnd[,2]));
-      if(any((a[,1]-tol)> a[,2])){
-         evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
-        str <- "ei: truthB > upper bound"
-        return(str)
-      }
-      a <- na.omit(cbind(betaW, bnd[,3]));
-      if(any((a[,1]+tol) < a[,2])){
-        evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
-        str <- "ei: truthW < lower bound"
-        return(str)
-      }
-      
-      a <- na.omit(cbind(betaW, bnd[,4]));
-    if(any((a[,1]-tol) >a[,2])){
-      evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
-      str <- "ei: truthW > upper bound";
+    if(!vin(Eres, "truth")){
+    ###  message("No truth")
+      str <- " "
       return(str)
     }
-    }
+      ## eiread not written yet but returns vread     
+  betaB <- eiread(Eres, "truthB")
+  betaW <- eiread(Eres, "truthW")
+  if(nrow(betaB) != nrow(x) || nrow(betaW) != nrow(x))
+    stop("ei: stored 'truth' must have same dimensions as x & t")
+  if (any(betaB >1)  || any(betaB <0))
+    stop("ei: 'truthB' input must be between 0 and 1");
+  if (any(betaW >1)  || any(betaW <0))
+    stop("ei: 'truthW' input must be between 0 and 1");
+
+  res <- bounds1(t, x, tvap)
+  bnd <- res$bs
+  a <- res$aggs
+  a <- na.omit(cbind(betaB, bnd[,1]))
+  tol <- Enumtol
+  
+  if(any((a[,1]+tol) < a[, 2])){
+    evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
+    str <- "ei: truthB < lower bound";
+    return(str);
+  }
+    
+        
+  a <- na.omit(cbind(betaB, bnd[,2]));
+  if(any((a[,1]-tol)> a[,2])){
+    evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
+    str <- "ei: truthB > upper bound"
+    return(str)
+  }
+  a <- na.omit(cbind(betaW, bnd[,3]));
+  if(any((a[,1]+tol) < a[,2])){
+    evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
+    str <- "ei: truthW < lower bound"
+    return(str)
+  }
+      
+  a <- na.omit(cbind(betaW, bnd[,4]));
+  if(any((a[,1]-tol) >a[,2])){
+    evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
+    str <- "ei: truthW > upper bound";
+    return(str)
+  }
+
                
   str <- " "
   return(str)
@@ -637,8 +641,38 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
   EImodels.save<- ""; 
   EI.bma.prior<- as.matrix(0);
   EI.bma.est<- as.matrix(1);
+
+  ### gauss is case independent
+  param <- ls(env=environment())
+  paramlower <- sapply(param,tolower)
+  ix <- 1:length(paramlower)
+  ### assign the values in param to the lower case names
+  evloc <- environment()
+  res <- sapply(ix,function(n, ev =evloc){
+    if(identical(paramlower[n], param[n]))
+      return(NULL)
+    assign(paramlower[n], get(param[n], env=evloc),env=ev)
+    if(n >= length(ix))
+      return(ev)
+  })
+  ### lower case only the first letter
+  evloc <- unlist(res)[[1]]
+  paraml <- sapply(param, function(m){
+    mm <- strsplit(m, NULL)[[1]]
+    mm[1] <- tolower(mm[1])
+    return(paste(mm,collapse=""))})
   
-  return(environment())
+  ix <- 1:length(paraml)
+  res <- sapply(ix,function(n, ev =evloc){
+    nml <- strsplit(paraml[[n]], NULL)[[1]]
+    nm  <- strsplit(param[[n]],NULL)[[1]]
+    if(identical(nml[1], nm[1]))
+      return(NULL)
+    assign(paraml[n], get(param[n], env=evloc),env=ev)
+    if(n >= length(ix))
+      return(ev)})
+  res <- unlist(res)[[1]]
+  return(res)
 
 }
 

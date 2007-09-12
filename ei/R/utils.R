@@ -222,6 +222,29 @@ vput <- function(dbuf=list(), x, xname=NULL){
   
 return(dbuf)
 }
+vnamecv <- function(dbuf){
+  return(names(dbuf))
+}
+### DESCRIPTION the gauss code is case insensitive and that it was
+###             inG is doing, which is a wrapper around %in% but ignoring case
+### flag =0, 1, 2 for character case sensitive, numeric , character case insensitive
+"%inG%" <- function(y,vars){
+  y <- unique.default(y)
+  vars <- unique.default(vars)
+  retp <- FALSE
+  ###make it case insensitive
+  if(!is.numeric(y)) 
+    y <- toupper(y)
+  if(!is.numeric(vars))
+    vars <- toupper(vars)
+    
+  ##  mat <- setdiff(y, vars)
+  ##  if(length(mat))
+  ##    retp <- TRUE
+  retp <- all(y %in% vars)
+  return(retp)                 
+    
+}
 ### DESCRIPTION similar to the recode func in Gauss
 ###             x vector of N values
 ###             e matrix NxK of 1's and 0's
