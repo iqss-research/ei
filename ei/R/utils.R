@@ -298,3 +298,14 @@ recode.test <- function(){
    recode(x,e,v)
    
  }
+selif <- function(x, e){
+  subset(x, subset=e)
+}
+
+test.selif <- function(){
+  x <- matrix(c(0, 30, 60, 10, 40, 70, 20, 50, 80), nrow=3)
+  e <- (x[, 1] > 0 & x[,3] < 100)
+}
+
+
+sumc <- function(x){ return(colSums(x))}

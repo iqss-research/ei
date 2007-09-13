@@ -286,12 +286,30 @@ eiread <- function(dbuf, str, compute =FALSE){
          x <- eiread(dbuf, "x2")
          n <- eiread(dbuf, "n")
          res <- x * n
-       }
+       }else if( identical(tolower(str),"wvap") || identical(tolower(str),"nw")) {###@ white vap  @
+         x <- vread(dbuf, "x")
+         n <- eiread(dbuf, "n")
+         res <- (1-x) * n
+       } else if(identical(tolower(str),"nw2"){	###@ white vap  @
+         x <- eiread(dbuf,"x2");
+         n <- eiread(dbuf,"n");
+         res <- (1-x)*n;
 
-       }
-         
-                
-           
+       } else if(identical(tolower(str),"nt")){		###	@ number of people who Turnout @
+           t <- eiread(dbuf,"t");
+           n <- eiread(dbuf,"n");
+           res <- t*n;
+
+       } else if(tolower(str,"dataset")){	###	@ dataset for input to eiloglik() @
+         x <- vread(dbuf,"x");                  ### @ ignore _EselRnd @
+         t <- vread(dbuf,"t");
+         Zb <- eiread(dbuf,"Zb");
+         Zw <- eiread(dbuf,"Zw");
+         eiread(dbuf,"Ez");
+         Eselect <- eiread(dbuf,"Eselect");
+         assign("Eselect",Eselect, env=evbase) 
+         res <- packdta(x,Zb,Zw,t);
+        }   
          
                 
          
