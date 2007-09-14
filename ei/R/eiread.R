@@ -470,9 +470,9 @@ eiread <- function(dbuf, str, compute =FALSE){
       assign("Rconst",0, env=evbase)
       
       Rconst <- 1;
-      {b,bb,t,t,t,t}=reg(x,truth[.,1]);
+    ###  {b,bb,t,t,t,t}=reg(x,truth[.,1]);
       res <- cbind(b,bb)
-      {b,bb,t,t,t,t}=reg(x,truth[.,2]);
+    ###  {b,bb,t,t,t,t}=reg(x,truth[.,2]);
       res <- rbind(res,cbind(b,bb));
       if(Eprt>0){
         vrs <- as.matrix(c("TRUEDepV", "       ", "coeffs", "se's"));
@@ -484,12 +484,12 @@ eiread <- function(dbuf, str, compute =FALSE){
         a <- cbind(vrs,a)
         b <- matrix(1, nrow=4,ncol=1);
         mask <- cbind(matrix(0,nrow=4,ncol=2), matrix(1,nrow=4,ncol=2));
-	let fmt[4,3]=
+	
       fmt <- matrix(c("-*.*s ", 8, 8,
                      "-*.*s ", 8, 8,
                      "*.*lf", 7, 4,
                      "*.*lf", 7, 4), nrow=4, ncol=3)
-        call printfm(a,mask,fmt);		  
+ ###       call printfm(a,mask,fmt);		  
       }
     }
     }else if(identical(tolower(str),"eaggbias")){###	@ estimated aggregation bias regressions @
@@ -502,10 +502,10 @@ eiread <- function(dbuf, str, compute =FALSE){
       assign("Rconst",0, env=evbase)
       Rconst <- 1;
       
-      {b,bb,t,t,t,t}=reg(x,betab);
+###      {b,bb,t,t,t,t}=reg(x,betab);
       res <- cbind(b,bb);
-      {b,bb,t,t,t,t}=reg(x,betaw);
-      res <- rbind(res, cbind((b,bb)));
+###      {b,bb,t,t,t,t}=reg(x,betaw);
+      res <- rbind(res, cbind(b,bb));
       if(Eprt>0){
         vrs <- as.matrix(c("ESTDepV", "       ", "coeffs", "se's"))
         print(t(vrs))
@@ -519,7 +519,7 @@ eiread <- function(dbuf, str, compute =FALSE){
                         "-*.*s ", 8, 8,
                         "*.*lf", 7, 4,
                         "*.*lf", 7, 4), nrow=4, ncol=3)
-        call printfm(a,mask,fmt);		   
+   ##     call printfm(a,mask,fmt);		   
       }
     }
     } else if(identical(tolower(str),"csbetab")){###		@ CI-based sd(betaB)  @
@@ -539,6 +539,19 @@ eiread <- function(dbuf, str, compute =FALSE){
       betaBs <- mkmissm(betaBs,a);
       betaWs <- mkmissm(betaWs,a);
       res <- cbind(meanwc(t(betaBs),1),meanwc(t(betaWs),1), colSums(1-t(a)));
+    }  else if(identical(tolower(str),"gebwa")){ ###                @ B^b ~ B^w for sims betaB >= betaW @
+      a <- eiread(dbuf,"gebw");
+      res <- cbind(meanwc(a[,1],a[,3])~meanwc(a[,2],a[,3]));\
+    } else if(identical(tolower(str),"gewb")){ ###  @ betaB~betaW for sims betaW>=betaB @
+      betaBs <- eiread(dbuf,"betabs");
+      betaWs <- eiread(dbuf,"betaws");
+      a <- betaBs> betaWs;
+      betaBs <- mkmissm(betaBs,a);
+      betaWs <- mkmissm(betaWs,a);
+      res <- cbind(meanwc(t(betaBs),1), meanwc(t(betaWs),1), colSums(1-t(a)));
+    } else if(identical(tolower(str),"gewba")){###                 @ B^b ~ B^w for sims betaW >= betaB @
+      a <- eiread(dbuf,"gewb");
+      res <- cbind(meanwc(a[,1],a[,3]), meanwc(a[,2],a[,3]));
     }
                    
     
