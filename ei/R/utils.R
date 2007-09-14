@@ -38,6 +38,13 @@ meanc<-function(x, na.rm=F){
  
 
 }
+
+
+
+
+###DESCRIPTION calculate standard deviations along the columns of
+###            a matrix x, same as the Gauss function
+###
 stdc <- function(x){
   x <- as.data.frame(x)
   return(sd(x))
@@ -105,7 +112,9 @@ scalmiss <- function(y){
   length(y) ==1 && any(is.na(y))
 }
 
-
+###DESCRIPTION sort a matrix rows according to a column
+###            as the corresponding Gauss
+###
 sortc <- function(mat, c=1, decreasing=FALSE){
   mat <- as.matrix(mat)
   ord <- order(mat[,c],na.last=TRUE)
@@ -121,7 +130,7 @@ sortc <- function(mat, c=1, decreasing=FALSE){
 ##  works with missing values; packs rowwise.
 ## weighted.mean
 
-meanwc<-function(x,wt){
+meanwc<-meanWc <- function(x,wt){
      
      ###  lapply(as.data.frame(x), weighted.mean, wt)
 
@@ -265,9 +274,13 @@ vnamecv <- function(dbuf){
 ### Date August 17th, 2007
 ###
 recode <- function(x,e,v){
-  x <- matrix(x)
-  v <- matrix(v)
+  x <- as.matrix(x)
+  e <- as.matrix(e)
   dm <- dim(e)
+ 
+  if(length(v) <= 1 && dm[[2]]> 1)
+    v <- rep(v,dm[[2]])
+  v <- as.matrix(v)
   if(dm[1] != nrow(x) || nrow(v) != dm[2] || !all(e %in% c(0,1)))
     stop("recode: check your inputs")
   y <- e %*% v
@@ -312,6 +325,9 @@ selif <- function(x, e){
   subset(x, subset=e)
 }
 
+delif <- function(x, e){
+  subset(x, subset=!e)
+}
 test.selif <- function(){
   x <- matrix(c(0, 30, 60, 10, 40, 70, 20, 50, 80), nrow=3)
   e <- (x[, 1] > 0 & x[,3] < 100)
@@ -321,7 +337,7 @@ test.selif <- function(){
 sumc <- function(x){ return(colSums(x))}
 
 ###DESCRIPTION Takes a matrix and sort all rows independently
-###            from each other or only the rows in ix
+###            from each other or only the rows in index ix
 ###
 sortbyRow <- function(mat, ix=NULL){
   mad <- as.data.frame(t(mat))
@@ -337,7 +353,7 @@ sortbyRow <- function(mat, ix=NULL){
   return(mm)
 }
 ### DESCRIPTION finds the index (row number) of the smallest element
-###             in each column of a matrix
+###             in each column of a matrix as the Gauss function
 minindc <- function(mat){
   mad <- as.data.frame(mat)
   ind <- 1:length(mad)
@@ -353,3 +369,32 @@ minindc <- function(mat){
  }
   return(res)
 }
+### DESCRIPTION Correspond to Gauss function
+###             For each column of x finds the values equal to the
+###             corresponding v entry and turn it into NA
+###
+miss <- function(x, v){
+  v <- sapply(v, function(m) paste("^", m, "$", sep=""))
+  xx <- as.data.frame(x)
+  for(n in 1:length(v)){
+    if(n > length(xx)) break; 
+    ind <- grep(v[[n]], xx[[n]])
+    x[ind, n] <- NA
+  }
+ 
+  return(x)
+}
+### DESCRIPTION Correspond to Gauss function
+###             For each column of x finds the values that are NA
+###             and substitute them with the corresponding v entry.
+###
+missrv <- function(x, v){
+    xx <- as.data.frame(x)
+  for(n in 1:length(v)){
+    if(n > length(xx)) break; 
+    ind <- is.na(xx[[n]])
+    x[ind, n] <- v[n]
+  }
+ 
+  return(x)
+  }
