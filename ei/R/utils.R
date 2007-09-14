@@ -374,6 +374,15 @@ minindc <- function(mat){
 ###             corresponding v entry and turn it into NA
 ###
 miss <- function(x, v){
+  x <- as.matrix(x)
+  
+  if(length(v) <= 1) {
+    v <- paste("^",v, "$", sep="")
+    ind <- grep(v, x)
+    if(length(ind))
+      x[ind] <- NA
+    return(x)
+  }
   v <- sapply(v, function(m) paste("^", m, "$", sep=""))
   xx <- as.data.frame(x)
   for(n in 1:length(v)){
@@ -389,12 +398,45 @@ miss <- function(x, v){
 ###             and substitute them with the corresponding v entry.
 ###
 missrv <- function(x, v){
-    xx <- as.data.frame(x)
+  x <- as.matrix(x)
+  if(length(v) <= 1){
+   ind <- is.na(x)
+   if(length(ind))
+     x[ind] <- v
+   return(x)
+ }
+  xx <- as.data.frame(x)
+  
   for(n in 1:length(v)){
     if(n > length(xx)) break; 
     ind <- is.na(xx[[n]])
-    x[ind, n] <- v[n]
+    if(any(ind))
+      x[ind, n] <- v[n]
   }
  
   return(x)
-  }
+}
+
+##    y = mkmissm(x,m);
+##
+##  x = n x k data matrix
+##  m = n x k matrix of 0's and 1's
+##
+##  y[i,j] = missing if m[i,j]=1; else y[i,j]=x[i,j]
+##
+##  example:
+##
+##  m=ismissm(d);       /* remember which are missing */
+##  d2=missrv(d,-9)     /* change missing to -9's */
+##  /* do recodes to d2 as if no missing values were present */
+##  d3=mkmissm(data2,m)  /* after recodes, return to missing*/
+##
+## From Gary's code
+
+mkmissm <- function(x, m){
+  if( !all(as.vector(m) %in% 0:1))
+    warning("mkmissm: m must have only 0 or 1 or T, F entries")
+  y <- miss(m, 1) + x
+  return(y)
+
+}
