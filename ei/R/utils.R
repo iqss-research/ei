@@ -38,7 +38,10 @@ meanc<-function(x, na.rm=F){
  
 
 }
-
+stdc <- function(x){
+  x <- as.data.frame(x)
+  return(sd(x))
+}
 
 ###
 ## counts the number of elemetns of a vector that fall into a specific rage
@@ -102,6 +105,13 @@ scalmiss <- function(y){
   length(y) ==1 && any(is.na(y))
 }
 
+
+sortc <- function(mat, c=1, decreasing=FALSE){
+  mat <- as.matrix(mat)
+  ord <- order(mat[,c],na.last=TRUE)
+  mat <- mat[ord,]
+  return(mat)
+}
 ###
 ##  y = meanWc(x,wt);
 ##
@@ -309,3 +319,37 @@ test.selif <- function(){
 
 
 sumc <- function(x){ return(colSums(x))}
+
+###DESCRIPTION Takes a matrix and sort all rows independently
+###            from each other or only the rows in ix
+###
+sortbyRow <- function(mat, ix=NULL){
+  mad <- as.data.frame(t(mat))
+  mm <- mat
+  ind <- 1:length(mad)
+  if(length(ix))
+    ind <- ix
+  for( n in ind){
+    v <- sort(mad[[n]])
+    mm[n, ] <- v
+  }
+  
+  return(mm)
+}
+### DESCRIPTION finds the index (row number) of the smallest element
+###             in each column of a matrix
+minindc <- function(mat){
+  mad <- as.data.frame(mat)
+  ind <- 1:length(mad)
+  res <- ind
+  for(n in ind){
+   v <- mad[[n]]
+   mn <- min(v)
+   ix <- grep(mn, v)
+   if(length(ix) > 1)
+     warning("minindc finds multiple values of min in col ", n)
+   
+   res[n] <- ix[1]
+ }
+  return(res)
+}

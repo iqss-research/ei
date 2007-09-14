@@ -309,7 +309,73 @@ eiread <- function(dbuf, str, compute =FALSE){
          Eselect <- eiread(dbuf,"Eselect");
          assign("Eselect",Eselect, env=evbase) 
          res <- packdta(x,Zb,Zw,t);
-        }   
+        }else if (identical(tolower(str),"betaws")){	###	@ betaW simulations @
+          t <- vread(dbuf,"t");
+          if (vin(dbuf,"x2"))
+            x <- vread(dbuf,"x2")
+          else
+            x <- vread(dbuf,"x")
+    
+          betaBs <- eiread(dbuf,"betabs")
+          res <- NA
+          if(!scalmiss(betabs))
+            res <- betab2w(t,x,betaBs);
+        } else if(identical(tolower(str),"beta")){ ###   @ E(betab)~E(betaw) by precinct @
+          res <- cbind(eiread(dbuf,"betab"),eiread(dbuf,"betaw"))
+        } else if(identical(tolower(str),"betab")){	###		@ E(betab) for each precinct @
+          res <- colMeans(t(eiread(dbuf,"betabs")))
+        } else if(identical(tolower(str),"betaw")){ ###			@ E(betaW) for each precinct @
+          res <- colMeans(t(eiread(dbuf,"betaws")))
+        }  else if (identical(tolower(str), "sbetab")){###		@ sd(betab) for each precinct @
+          res <- sd(as.data.frame(t(eiread(dbuf,"betabs"))))
+        } else if( identical(tolower(str), "sbetaw")){ ###		@ sd(betaW) for each precinct @
+          res <- sd(as.data.frame(t(eiread(dbuf,"betaws"))))
+        } else if(identical(tolower(str), "rnbetabs")){###		@ randomly permuted betabs sims @
+          res <- eiread(dbuf,"betabs")
+          a <- nrow(res)
+          c <- ncol(res);
+          for( i in 1:a)
+            res[i,] <- res[i,order(runif(c))]   
+   
+        } else if(identical(tolower(str), "rnbetaws")){ ###		@ randomly permuted betabs sims @
+          res <- eiread(dbuf,"betaws");
+          a <- nrow(res);
+          c <- ncol(res);
+          for( i in 1:a)
+            res[i,] <- res[i,order(runif(c))]
+        } else if( identical(tolower(str), "stbetabs")){ ###		@ sorted betaB simulations  @
+          betabs <- betaBs <- eiread(dbuf,"betaBs");
+          res <- NA
+          if(!scalmiss(betabs))
+            res <- betabs <- betaBs <- sortbyRow(betabs)
+          
+        } else if(identical(tolower(str), "stbetaws")){ ###		@ sorted betaW simulations  @
+          betaWs <- betaws <- eiread(dbuf,"betaWs");
+          res <- NA
+          if(!scalmiss(betaws))
+             res <- betaws <- betaWs <- sortbyRow(betaws)
+        
+        }else if(identical(tolower(str,"truptile"))){###	@ percentile at which true value falls @
+          if(!vin(dbuf,"truth")){
+           message("eiread: truth needs to be stored first")
+           return(NA)
+         }
+          
+          stbetabs <- eiread(dbuf,"stbetabs");
+          stbetaws <- eiread(dbuf,"stbetaws");
+          truth <- eiread(dbuf,"truth");
+          b <- ncol(stbetabs);
+          
+          res <- minindc(t(abs(stbetabs-truth[,1])))/b;    
+          res <- cbind(res, (minindc(abs(stbetaws-truth[.,2])')/b);
+    res[.,1]=recode(res[.,1],stdc(stbetabs').<=_EnumTol,0.5); @ homog prects @
+    res[.,2]=recode(res[.,2],stdc(stbetaws').<=_EnumTol,0.5);
+
+      
+
+  
+    
+    
          
                 
          
