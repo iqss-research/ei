@@ -1,0 +1,77 @@
+##
+##  This archive is part of the program EI
+##  (C) Copyright 1995-2001 Gary King
+##  All Rights Reserved.
+##
+##  various reparameterization procs
+##
+##
+## {bb,bw,sb,sw,rho} = eirepar(params,Zb,Zw,x);
+## 
+## INPUTS: 
+## params = params in scale of estimation (eta's at end)
+## Zb,Zw = covariates (without constant term) or scalar 1
+## x = aggregate-level classifying variable
+## 
+## OUTPUTS: on untruncated normal scale
+## bb,bw = Px1 vectors of precinct means
+## sb,sw = 1x1 standard deviations
+## rho   = correlation 
+##
+## reparametrization from scale of estimation
+## to the untruncated scale.  (see eirepart.g for truncated scale)
+##
+#include ei.ext;
+eirepar <- function(b,Zb,Zw,x){
+ ## local bb0,bw0,sb0,sw0,rho0,sb,sw,bb,bw,rho,pb,m,o,Bb0v,Bw0v,
+ ## etaB,etaW,r;
+  
+ ## /* pluck off params */
+  o <- matrix(1, nrow=nrow(x),ncol=1);
+
+  Bb0 <- b[1:Ez[1]];
+  if (Ez[1]==1)
+    Bb0v <- 0
+  else
+    Bb0v <- trimr(Bb0,1,0); ### @ vector of params for mean-adjusted Zb @
+ 
+  Bb0 <- Bb0[1]*o;###		  @ constant term @
+  
+  Bw0 <- b[(Ez[1]+1):colSums(Ez)];
+  if(Ez[2]==1)
+    Bw0v <- 0
+  else
+    Bw0v <- trimr(Bw0,1,0); ### @ vector of params for mean-adjusted Zw @
+  
+  Bw0 <- Bw0[1]*o;	###	  @ constant term @
+    
+  r <- nrow(b);
+  sb0 <- b[r-4];
+  sw0 <- b[r-3];
+  rho0 <- b[r-2];
+  etaB <- b[r-1];
+  etaW <- b[r];
+
+  ###/* reparameterize */
+  sb <- exp(sb0);
+  sw <- exp(sw0);
+
+  m <- x-colMeans(x);
+  
+  if( any(is.na(eiread.zb)))
+    Zb <- Zb-t(colMeans(Zb));
+ 
+  if(any(is.na(eiread.zw)))
+    Zw <- Zw-t(colMeans(Zw))
+ 
+  
+  Zb <- Zb-t(colMeans(Zb));
+  Zw <- Zw-t(colMeans(Zw));
+  
+  Bb <- Bb0*(0.25+sb^2)+0.5+(Zb*Bb0v+etaB*m);
+  Bw <- Bw0*(0.25+sw^2)+0.5+(Zw*Bw0v+etaW*m);
+  
+  rho <- fisherzi(rho0);
+  lst <- c(list(Bb=Bb), list(Bw=Bw), list(sb=sb), list(sw=sw), list(rho=rho))
+  return(lst)
+}

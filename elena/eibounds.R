@@ -64,10 +64,10 @@ bounds1<-function(t,x,n){
         
 ### fix rounding errors due to machine precision */
 ### basically change any negative value to 0 and any value >1 to 1
-        LbetaB=recode(LbetaB,cbind((LbetaB<0),(LbetaB>1)),c(0,1))
-        UbetaB=recode(UbetaB,cbind((UbetaB<0),(UbetaB>1)),c(0,1))
-        LbetaW=recode(LbetaW,cbind((LbetaW<0),(LbetaW>1)),c(0,1))
-        UbetaW=recode(UbetaW,cbind((UbetaW<0),(UbetaW>1)),c(0,1))
+        LbetaBa <- recode(LbetaB,cbind((LbetaB<0),(LbetaB>1)),c(0,1))
+        UbetaB  <- recode(UbetaB,cbind((UbetaB<0),(UbetaB>1)),c(0,1))
+        LbetaW  <- recode(LbetaW,cbind((LbetaW<0),(LbetaW>1)),c(0,1))
+        UbetaW  <- recode(UbetaW,cbind((UbetaW<0),(UbetaW>1)),c(0,1))
         
         res<-list()
         res$aggs<-rbind(cbind(weighted.mean(LbetaB,Nb),weighted.mean(UbetaB,Nb)),
@@ -77,7 +77,82 @@ bounds1<-function(t,x,n){
         return(res)
 }
 
+##
+##  {bnds,aggs} = bounds2(v,t,x,n);
+##
+##  INPUTS:
+##  v = democratic fraction of the two party vote
+##  t = fraction of people turning out to vote
+##  x = fraction of people who are black
+##  n = number of voting age people in each precinct
+##
+##  OUTPUTS: 
+##  Bounds on fraction of blacks (lambdaB) and whites (lambdaW) voting for the dems
+##  bnds = lower_lambdaB ~ upper_lambdaB ~ lower_lambdaW ~ upper_lambdaW
+##  aggs =  bounds on district aggregates
+##         cols: lower ~ upper
+##         rows: lambdaB, lambdaW
+##
+bounds2 <- function(v,t,x,n){
 
+###  local LlambdaB,UlambdaB,LlambdaW,UlambdaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,
+###  tomx,z,o,m,d;
+  omx <- 1-x;
+  Nb <- x*N;
+  Nw <- omx*N;
+  lst <- homoindx(x);
+  c <- lst$c
+  c0 <- lst$c0
+  c1 <- lst$c1
+  p <- nrow(x);
+  
+  LlambdaB <- matrix(0, nrow=p,ncol=1);
+  UlambdaB <- matrix(0,nrow=p,ncol=1);
+  LlambdaW <- matrix(0,nrow=p,ncol=1);
+  UlambdaW <- matrix(0,nrow=p,ncol=1);
+  z <- matrix(0,nrow=p,ncol=1);
+  o <- matrix(1, nrow=p,ncol=1);
+  m <- o*NA;
+  
+  if(!scalmiss(c)){###			@ heterogeneous precincts @
+    d <- v[c]*t[c];
+    LlambdaB[c] <- maxr(z[c],d-(1-x[c]))/(maxr(z[c],d-(1-x[c]))+minr(t[c]-d,x[c]));
+    UlambdaB[c] <- minr(d,x[c])/(minr(d,x[c])+maxr(z[c],(t[c]-d)-(1-x[c])));
+    LlambdaW[c] <- maxr(z[c],d-x[c])/(maxr(z[c],d-x[c])+minr(t[c]-d,1-x[c]));
+    UlambdaW[c] <- minr(d,1-x[c])/(minr(d,1-x[c])+maxr(z[c],(t[c]-d)-x[c]));
+    
+   ### /* fix unanimous districts */
+    LlambdaB[c] <- missrv(LlambdaB[c],v[c]);
+    UlambdaB[c] <- missrv(UlambdaB[c],v[c]);
+    LlambdaW[c] <- missrv(LlambdaW[c],v[c]);
+    UlambdaW[c] <- missrv(UlambdaW[c],v[c]);
+  }
+   ### 
+  if(!scalmiss(c0)){ ###			@ homogeneously white @
+    LlambdaB[c0] <- m[c0];
+    UlambdaB[c0] <- m[c0];
+    LlambdaW[c0] <- v[c0];
+    UlambdaW[c0] <- v[c0];
+  }
+    
+  if(!scalmiss(c1)){###			@ homogeneously black @
+    LlambdaB[c1] <- v[c1];
+    UlambdaB[c1] <- v[c1];
+    LlambdaW[c1] <- m[c1];
+    UlambdaW[c1] <- m[c1];
+  }
+
+  ###/* fix rounding errors due to machine precision */
+  LlambdaB <- recode(LlambdaB,cbind(LlambdaB<0,LlambdaB>1),as.matrix(0:1));
+  UlambdaB <- recode(UlambdaB,cbind(UlambdaB<0, UlambdaB>1),as.matrix(0:1));
+  LlambdaW <- recode(LlambdaW,cbind(LlambdaW<0, LlambdaW>1),as.matrix(0:1));
+  UlambdaW <- recode(UlambdaW,cbind(UlambdaW<0, UlambdaW>1),as.matrix(0:1));
+  
+  aggs <- rbind(cbind(meanwc(LlambdaB,Nb),meanwc(UlambdaB,Nb)), 
+                cbind(meanwc(LlambdaW,Nw),meanwc(UlambdaW,Nw)));
+  lst <- c(list(cbind(LlambdaB,UlambdaB,LlambdaW,UlambdaW)), list(aggs=aggs))
+ 
+}
 ### support proc
 ## row maximum
 ###
