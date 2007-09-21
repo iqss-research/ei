@@ -535,3 +535,11 @@ ftos <-  function(x){
   nc  <- nchar(as.character(floor(x))) 
       fmt <- formatC(x,width=nc,digits=0, format="f")
 }
+loess <- function(depvar, indvars,data, loess.span, loess.wgtType){
+  y.loess <- loess(depvar~indvars, data, weights=loess.wgType, span=loess.span)
+  yhat <- y.loess$fitted
+  ys <- y.loess$y
+  xs <- y.loess$x
+  lst <- c(list(yhat=yhat), list(ys=ys), list(xs=xs))
+  return(lst)
+}
