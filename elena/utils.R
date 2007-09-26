@@ -173,6 +173,10 @@ seqase<-function(strt,endd,pts){
         res<-seq(strt,endd,t)
         return (res)
 }
+seqa <- function(st, inc, n){
+
+  seq(from=st, length.out=n, by=inc)
+}
 
 ### dbuf is a named list 
 ### str is string.
@@ -180,8 +184,10 @@ seqase<-function(strt,endd,pts){
 ### names of dbuf independently of case.
 
 vin <- function(dbuf,str){
+  str <- tolower(str)
   str <- paste("^",str,"$",sep="")
   cv <- names(dbuf)
+  cv <- unlist(sapply(cv,tolower))
   res <- TRUE
   ix <- grep(str, cv, ignore.case=T)
   if(length(ix) <= 0)
@@ -193,6 +199,8 @@ vin <- function(dbuf,str){
 vread <- function(dbuf, str){
  
   cv <- names(dbuf)
+  cv <- unlist(sapply(cv,tolower))
+  str <- tolower(str)
   str <- paste("^",str,"$",sep="")
   ix <- grep(str, cv, ignore.case=T)
   if(length(ix) <=0){
@@ -248,7 +256,10 @@ vnamecv <- function(dbuf){
 }
 ### DESCRIPTION the gauss code is case insensitive and that it was
 ###             inG is doing, which is a wrapper around %in% but ignoring case
-### flag =0, 1, 2 for character case sensitive, numeric , character case insensitive
+###             Note that "in" may return a vector of T and F but inG applies
+###             all to the results of in and it is only T if all vector elemnts
+###             are T.
+###
 ### as in(y,cv,0)
 ###
 "%inG%" <- function(y,vars){
@@ -392,7 +403,8 @@ miss <- function(x, v){
   for(n in 1:length(v)){
     if(n > length(xx)) break; 
     ind <- grep(v[[n]], xx[[n]])
-    x[ind, n] <- NA
+    if(length(ind))
+      x[ind, n] <- NA
   }
  
   return(x)
@@ -448,7 +460,8 @@ mkmissm <- function(x, m){
 ###            with the diagonal values of mat, but diag in R builds
 ###            a diagonal matrix.  To avoid confusion we call extract.diag
 ###            to the R function that extracts the diagonal elemnts of a matrix
-###            and returns a matrix with one column. 
+###            and returns a matrix with one column.
+###
 extract.diag <- function(mat){
   v <- mat[col(mat)==row(mat)]
   return(as.matrix(v))
@@ -480,13 +493,15 @@ fisherz <- function(x){
 ###DESCRIPTION x is a matrix compute variance covariance along cols
 vcx <- function(x){return(var(x))}
 cdfni <- function(x){qnorm(x)} ###inverse cumulative density  
-cdfn <- function(x){pnorm(x)} ### cumulative density 
+cdfn <- function(x){pnorm(x)} ### cumulative density
+cdfnc <- function(x) {1- pnorm(x)}
 corrx <- function(x){cor(x)} ###correlation matrix
 rndn <- function(r, c){
   return(matrix(rnorm(r*c, mean=0, sd=1), nrow=r, ncol=c, byrow=T))}
 rndu <- function(r, c){
   matrix(runif(r*c), nrow=r, ncol=c, byrow=TRUE)}
-
+pdf <- function(x){
+  return(dnorm(x))}
                        
 ###DESCRIPTION If v is scalar finds the indices of elements in x == v
 ###            If v is length two find the indices of elements in x
@@ -531,10 +546,17 @@ cdfbvn <- function(x,t,rho, maxpts=25000, abseps=0.001, releps=0){
   p00 <- pmvnorm(lower=low, upper=v,mean=rep(0, ln), sigma=rho, maxpts=maxpts,abseps=abseps, releps=releps);
   return(p00)
  }
+###DESCRIPTION As in the Gauss function based on cdfbvn or bivariate normal.
+###
+cdfbvn2 <- function(h,dh,k,dk,r){
+y <- cdfbvn(h+dh, k+dk,r)+cdfbvn(h,k,r) - cdfbvn(h,k+dk,r) - cdfbvn(h+dh, k, r)
+return(y)
+}
 ftos <-  function(x){
   nc  <- nchar(as.character(floor(x))) 
       fmt <- formatC(x,width=nc,digits=0, format="f")
 }
+
 loess <- function(depvar, indvars,data, loess.span, loess.wgtType){
   y.loess <- loess(depvar~indvars, data, weights=loess.wgType, span=loess.span)
   yhat <- y.loess$fitted
@@ -543,3 +565,65 @@ loess <- function(depvar, indvars,data, loess.span, loess.wgtType){
   lst <- c(list(yhat=yhat), list(ys=ys), list(xs=xs))
   return(lst)
 }
+strput <- function(substr, str,off){
+  if(off > 1) stp <- off-1
+  strp <- substr(str, 1, stp)
+  return(paste(strp,substr, sep=""))
+}
+
+
+rows <- function(mat){
+  mat <- as.matrix(mat)
+  return(nrow(mat))
+}
+ 
+
+cols <- function(mat){
+  mat <- as.matrix(mat)
+  return(ncol(mat))
+}
+
+vec <- function(mat){
+  v <- matrix(as.vector(mat), ncol=1)
+  return(v)
+}
+rndu <- function(r, c){
+  mat <- matrix(runif(r*c), nrow=r, ncol=c)
+  return(mat)
+}
+
+##/* reverse infinities
+##
+## y = infrv(x,minus,plus);
+## x = input vector
+## minus, plus = scalars
+## y = an ExE conformable matrix with -INF changed to minus and +INF changed
+##       to plus
+##
+infrv <- function(x,m,p){
+  x <- as.matrix(x)
+  plus <- Inf
+  minus <- -Inf;
+  s <- seq(from=1,by=1, length.out=nrow(x))
+ 
+
+  pinf <- subset(s,subset= !(x != plus))  ###=(.not(x ./= plus)));
+  minf <- subset(s,subset=!(x != minus));
+  pinf <- as.matrix(pinf)
+  minf <- as.matrix(minf)
+  res <- x
+  
+  if(!scalmiss(pinf))
+    res[pinf] <- matrix(p,nrow=nrow(pinf),ncol=1);
+  
+  
+  if(!scalmiss(minf))
+    res[minf] <- matrix(m,nrow=nrow(as.matrix(minf)),ncol=1)
+  
+  return(res)
+}
+
+  intquad1 <- function(f,v){
+    lst <- integrate(f, lower=v[2], upper=v[1])
+    return(lst$y)
+  }
