@@ -66,8 +66,9 @@ counts<-function(x,v){
 ## remove t first and b last rows from x
 
 trimr<-function(x,t,b){
+  x <- as.matrix(x)
         
-        return(x[(t+1):(nrow(x)-b),])
+  return(x[(t+1):(rows(x)-b),])
 }
 
 ###
@@ -110,6 +111,10 @@ scalone<-function(y){
 ### test if y is scalar missing value
 scalmiss <- function(y){
   length(y) ==1 && any(is.na(y))
+}
+sortind <- function(x){
+  x <- as.vector(x)
+  return(as.matrix(order(x)))
 }
 
 ###DESCRIPTION sort a matrix rows according to a column
@@ -205,9 +210,10 @@ vread <- function(dbuf, str){
   ix <- grep(str, cv, ignore.case=T)
   if(length(ix) <=0){
      warning(paste("Variable", str, "is not in the data buffer"))
-     return(list())
+     return(NA)
    }
-  return(dbuf[[ix]]) 
+  res <- as.matrix(dbuff[[ix]])
+  return(res) 
   
 }
 ### similar to vread but returns also the list dbufnew without
@@ -218,9 +224,10 @@ vget <- function(dbuf, str){
   ix <- grep(str, cv, ignore.case=T)
   if(!is.list(dbuf) || length(ix) <=0){
      warning(paste("ei: vget. Variable", str, "is not in data buffer"))
-     return(list())
+     return(NA)
    }
-  var <- dbuf[[ix]]
+  var <- as.matrix(dbuff[[ix]])
+   
   dbufnew <- dbuf[-ix]
   lst <- c(list(var), dbufnew)
   return(lst)
@@ -251,8 +258,11 @@ vput <- function(dbuf=list(), x, xname=NULL){
   
 return(dbuf)
 }
-vnamecv <- function(dbuf){
-  return(names(dbuf))
+vnamecv <- function(dbuf, trim=T){
+  res <- names(dbuf)
+  if(trim)
+    res <- unlist(sapply(res, trim.blanks))
+  return(res)
 }
 ### DESCRIPTION the gauss code is case insensitive and that it was
 ###             inG is doing, which is a wrapper around %in% but ignoring case
@@ -627,3 +637,63 @@ infrv <- function(x,m,p){
     lst <- integrate(f, lower=v[2], upper=v[1])
     return(lst$y)
   }
+###DESCRIPTION : trims leading and trailing blanks for any string but not
+###              inter-words blanks.  For example, trim.blanks("   abc  ") = "abc";
+###              but trim.blanks("   abc    def ")= "abc    def".
+### AUTHOR: Elena Villalon
+##          evillalon@iq.harvard.edu
+###
+trim.blanks <- function(x) {
+### at the beginning of string"^" gets anny number (+) of white spaces
+  f <- x
+  if(length(x))
+    f <- na.omit(x)
+  
+  if(length(f) <= 0)
+    return(x)
+  if(length(f)>1)
+    print(f)
+  if(f=="" )
+    return(x)
+  x <- sub("^[[:space:]]*(.*)", "\\1",x) ###get \n\t
+  x <- sub('^ +', '', x) ###get white spaces
+  
+### at the ending of string"$" gets anny number (+) of white spaces
+  
+  x <- sub("(.*)[[:space:]]*$", "\\1", x)
+  x <- sub(' +$', '', x)
+  return(x)
+}
+
+##DESCRIPTION as in the Gauss function. Substitutes old values
+##            for new values in matrix x, according to  the
+##            outcome of the logical expression e and values in v.
+###
+## Elena Villalon (evillalon@iq.harvard.edu)
+###
+substute <- function(x, e, v){
+  x <- as.matrix(x)
+  ee <- e <- as.matrix(e)
+  e <- as.logical(e)
+  if(!is.matrix(e))
+    e <- matrix(e,nrow=nrow(ee),ncol=ncol(ee))
+  v <- as.matrix(v)
+  ix <- grep(TRUE, e)
+  if(length(v)< length(x)){
+    mat <- matrix(FALSE, nrow=nrow(x), ncol=ncol(x))
+    mat[e] <- v
+  }else
+  mat <- v
+ 
+    x[ix] <- mat[ix]
+  return(x)
+}
+substute.test <- function(){
+  x <- matrix(c("Y", "N", "Y", "N", "Y", "N", 1:12), nrow=6)
+  e <- as.matrix(c(1,0,0,0,1,0))
+  v <- c("R", "S")
+###  v <- rep("R", length(x))
+  return(substute(x,e,v))
+}
+cumsumc <- function(mat){
+  cumsum(as.data.frame(mat))}

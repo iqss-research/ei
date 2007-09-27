@@ -69,11 +69,11 @@ bounds1<-function(t,x,n){
         LbetaW  <- recode(LbetaW,cbind((LbetaW<0),(LbetaW>1)),c(0,1))
         UbetaW  <- recode(UbetaW,cbind((UbetaW<0),(UbetaW>1)),c(0,1))
         
-        res<-list()
-        res$aggs<-rbind(cbind(weighted.mean(LbetaB,Nb),weighted.mean(UbetaB,Nb)),
-                        cbind(weighted.mean(LbetaW,Nw),weighted.mean(UbetaW,Nw)))
-        res$bs<-cbind(LbetaB,UbetaB,LbetaW,UbetaW)
         
+        bs<-list(bs=cbind(LbetaB,UbetaB,LbetaW,UbetaW))
+        aggs<-list(aggs=rbind(cbind(weighted.mean(LbetaB,Nb),weighted.mean(UbetaB,Nb)),
+                        cbind(weighted.mean(LbetaW,Nw),weighted.mean(UbetaW,Nw))))
+        res <- c(bs, aggs)
         return(res)
 }
 

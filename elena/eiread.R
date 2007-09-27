@@ -41,6 +41,8 @@ eiread <- function(dbuf, str, compute =FALSE){
 ###  cv <- vnamecv(dbuf)
   cv <- names(dbuf)
   strc <- str
+###    /* for the output of eimodels_avg, prevent users from reading inappropriate parameters */ 
+###    /* almost all of the global variables and some parameters */
   if(vin(dbuf, "titl")){
     
     titl <- vread(dbuf, "titl")
@@ -53,8 +55,7 @@ eiread <- function(dbuf, str, compute =FALSE){
                ###aqui unknown
                ,"x2","x2rn", "checkr", "dataset", "etac", "etas", "expvarci","expvarcis","lnir"
                ,"loglik", "logliks", "meanir", "mppsiu", "parnames","phi","phisims", "pphi"
-               ,"psi", "psitruth", "psiu", "r",  "ri", "retcode", "tsims","vcphi"
-               );
+               ,"psi", "psitruth", "psiu", "r",  "ri", "retcode", "tsims","vcphi");
       vrs <- as.matrix(tolower(vrs))
      if(identical(str, "esims")){
        res <- ncol(as.matrix(eiread(dbuf,"betabs")))
@@ -67,11 +68,15 @@ eiread <- function(dbuf, str, compute =FALSE){
      }
     }
   }### if(vin(dbuf, "titl"))
-   
+  
+###  /* for the output of eimodels_avg, prevent users from reading inappropriate parameters */ 
+###  /* almost all of the global variables and some parameters */  
      
   if (vin(dbuf,"titl")){
+    titl <- vread(dbuf, "titl")
     if(identical(titl,"*MDB* Meta-Data Buffer from eimodels_def() *MDB*")){
-      vrs <- c("under.t", "or",  "under.x", "under.ez", "abounds", "abounds2", "aggbias", "beta", "betab", "betabs",
+      vrs <- c("under.t", "or",  "under.x", "under.ez", "abounds", "abounds2",
+               "aggbias", "beta", "betab", "betabs",
                "betaw", "betaws", "bounds", "checkr", "ci50b", "ci50w", "ci80b", "ci80bw", "ci95b", "ci95bw",
                "coverage", "csbetab", "csbetaw", "eaggbias", "etac", "etas", "expvarci", "expvarcis", "gebw",
                "gebwa", "gewb", "gewba", "goodman", "lnir", "loglik", "logliks", "maggs", "meanir", "mppsiu",
@@ -89,13 +94,13 @@ eiread <- function(dbuf, str, compute =FALSE){
   }  ### if (vin(dbuf,"titl"))
   
 ### changes in stored globals
-  res <- NA
+  res <- as.matrix(NA)
   if(vin(dbuf, str)){
-    res <- vread(dbuf, str)
+    res <- vread(dbuf, str) ##returns lement or NA
     res <- as.matrix(res)
   }
   if(identical(str, "eeta")){
-
+   
     if(scalmiss(res))
       res <- matrix(0, nrow=4, ncol=1)
     else if(ncol(as.matrix(res)) == 2)
@@ -126,8 +131,9 @@ eiread <- function(dbuf, str, compute =FALSE){
    
 ###    	@ horizontally randomly permuted x2  @
   }else if(identical(str, "x2rn")){
-    res <- 
+    
     if(vin(dbuf, "x2")){
+    
       res <- as.matrix(vread(dbuf, "x2"))
       a <- nrow(res)
       c <- ncol(res)
@@ -136,7 +142,7 @@ eiread <- function(dbuf, str, compute =FALSE){
     }else
       message("eiread: 'x2' option is only available in data buffers created by ei2")
       
- 
+  ###else if identical(str, "emaxiter"): already taken care of  
     
   }else if(identical(str,"eigraph.bvsmth")){
     
@@ -170,7 +176,7 @@ eiread <- function(dbuf, str, compute =FALSE){
     if (vin(dbuf,"enonnum"))
       res <- vread(dbuf,"enonnum")
  
-    
+#### left checking here#######################################    
   }else if (identical(str, "meanir") && is.na(res)){
    
     if(vin(dbuf, "EmeanIR"))
