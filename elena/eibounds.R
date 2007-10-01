@@ -28,7 +28,7 @@ bounds1<-function(t,x,n){
         c<-cs$c
         c0<-cs$c0
         c1<-cs$c1
-        p<-length(x);                    # nr of precinct could by nrow(data) if the args are dataset
+        p<-rows(x);                    # nr of precinct could by nrow(data) if the args are dataset
         
         LbetaB<-matrix(0, nrow=p,ncol=1)
         UbetaB<-matrix(0,nrow=p,ncol=1)
@@ -38,8 +38,8 @@ bounds1<-function(t,x,n){
         o<-matrix(1, nrow=p,ncol=1)
         m<-o*NA;
         
-        cna <- na.omit(c)
-        if (length(c) >1 || length(cna)){
+        c <- na.omit(c)
+        if (length(c)){
                 tx<-t[c]/x[c]
                 tomx<-t[c]/omx[c]
                 LbetaB[c]<-maxr(z[c],tx-(omx[c]/x[c]))
@@ -47,15 +47,15 @@ bounds1<-function(t,x,n){
                 LbetaW[c]<-maxr(z[c],tomx-(x[c]/(1-x[c])))
                 UbetaW[c]<-minr(tomx,o[c])
         }
-        c0na <- na.omit(c0)
-        if (length(c0) > 1 || length(c0na)){## homogeneously white 
+        c0 <- na.omit(c0)
+        if (length(c0)){## homogeneously white 
                 LbetaB[c0]<-m[c0]
                 UbetaB[c0]<-m[c0]
                 LbetaW[c0]<-t[c0]
                 UbetaW[c0]<-t[c0]
         }
-        c1na <- na.omit(c1)
-        if (lengt(c1) > 1 || length(c1na)){## homogeneously black @
+        c1 <- na.omit(c1)
+        if (length(c1)){## homogeneously black @
                 LbetaB[c1]<-t[c1]
                 UbetaB[c1]<-t[c1]
                 LbetaW[c1]<-m[c1]
@@ -64,15 +64,19 @@ bounds1<-function(t,x,n){
         
 ### fix rounding errors due to machine precision */
 ### basically change any negative value to 0 and any value >1 to 1
-        LbetaBa <- recode(LbetaB,cbind((LbetaB<0),(LbetaB>1)),c(0,1))
-        UbetaB  <- recode(UbetaB,cbind((UbetaB<0),(UbetaB>1)),c(0,1))
-        LbetaW  <- recode(LbetaW,cbind((LbetaW<0),(LbetaW>1)),c(0,1))
-        UbetaW  <- recode(UbetaW,cbind((UbetaW<0),(UbetaW>1)),c(0,1))
+        vu <- as.matrix(c(0,1))
+        LbetaBa <- recode(LbetaB,cbind((LbetaB<0),(LbetaB>1)),vu)
+        UbetaB  <- recode(UbetaB,cbind((UbetaB<0),(UbetaB>1)),vu)
+        LbetaW  <- recode(LbetaW,cbind((LbetaW<0),(LbetaW>1)),vu)
+        UbetaW  <- recode(UbetaW,cbind((UbetaW<0),(UbetaW>1)),vu)
         
         
         bs<-list(bs=cbind(LbetaB,UbetaB,LbetaW,UbetaW))
-        aggs<-list(aggs=rbind(cbind(weighted.mean(LbetaB,Nb),weighted.mean(UbetaB,Nb)),
-                        cbind(weighted.mean(LbetaW,Nw),weighted.mean(UbetaW,Nw))))
+       
+        
+        
+        aggs<-list(aggs=rbind(cbind(meanwc(LbetaB,Nb), meanwc(UbetaB,Nb)),
+                        cbind(meanwc(LbetaW,Nw),meanwc(UbetaW,Nw))))
         res <- c(bs, aggs)
         return(res)
 }
@@ -98,8 +102,8 @@ bounds2 <- function(v,t,x,n){
 ###  local LlambdaB,UlambdaB,LlambdaW,UlambdaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,
 ###  tomx,z,o,m,d;
   omx <- 1-x;
-  Nb <- x*N;
-  Nw <- omx*N;
+  Nb <- x*n;
+  Nw <- omx*n;
   lst <- homoindx(x);
   c <- lst$c
   c0 <- lst$c0
@@ -157,15 +161,20 @@ bounds2 <- function(v,t,x,n){
 ## row maximum
 ###
 maxr<-function(a,b){
-        res<-apply(cbind(a,b),1,max)
-        return (res)
+  a <- as.matrix(a)
+  b <- as.matrix(b)
+  res<-apply(cbind(a,b),1,max)
+  
+  return (as.matrix(res))
 }
 
 ### support proc
 ## row minimum
 ###
 minr<-function(a,b){
-        res<-apply(cbind(a,b),1,min)
-        return (res)
+  a <- as.matrix(a)
+  b <- as.matrix(b)
+  res<-apply(cbind(a,b),1,min)
+  return (as.matrix(res))
 }
 

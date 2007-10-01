@@ -71,9 +71,15 @@ getEnvVar <- function(evfrom, evto, vecvar=NULL){
      ix <- unlist(ix)
      if(length(ix)) param <- param[ix]
    }
-   
+  evfrom <- as.environment(evfrom)
+  evto <- as.environment(evto)
+  
   ass <- lapply(param, function(att,evfrom,evto) {
-    val <- get(att, env=evfrom)
+  
+    val <- try(get(att, env=evfrom))
+  
+    if(class(val) == "try-error")
+      message("Error getting param")
     assign(att, val,env=evto)}, evfrom,evto)
   
 return(evto)

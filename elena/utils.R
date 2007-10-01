@@ -126,6 +126,18 @@ sortc <- function(mat, c=1, decreasing=FALSE){
   mat <- mat[ord,]
   return(mat)
 }
+meanwc<-meanWc <- function(x,wt){
+  x <- as.matrix(x)
+  if(length(wt) < length(x))
+    wt <- rep(wt,length(x))
+  if(length(wt) > length(x))
+    wt <- wt[1:length(x)]
+  wt <- as.matrix(wt)
+
+  return(weighted.mean(x,wt))
+}
+              
+    
 ###
 ##  y = meanWc(x,wt);
 ##
@@ -135,10 +147,10 @@ sortc <- function(mat, c=1, decreasing=FALSE){
 ##  works with missing values; packs rowwise.
 ## weighted.mean
 
-meanwc<-meanWc <- function(x,wt){
+meanwcF<-meanWcF <- function(x,wt){
      
      ###  lapply(as.data.frame(x), weighted.mean, wt)
-
+        x <- as.matrix(x)
         if(all(is.na(wt)) || wt==1)
           wt<-rep(1,nrow(x))
         wwt<-wt
@@ -172,15 +184,26 @@ ismiss <- function(x){
 ##  create vector of PTS evenly spaced points between STRT and ENDD,
 ##  including the end points.
 
-seqase<-function(strt,endd,pts){
+seqaseF<-function(strt,endd,pts){
 
         t<-(endd-strt)/(pts-1)
         res<-seq(strt,endd,t)
         return (res)
 }
+### same as seqase but not including the end-points
+seqas <- function(strt,endd,pts){
+res <- seq(from=strt, to=endd, length.out=pts)
+res <- res[-1] ###exclude strt
+ln <- length(res) 
+res <- res[-ln] ###exclude endd
+return(res)
+}
+seqase<-function(strt,endd,pts){
+  return(seq(from=strt, to=endd, length.out=pts))}
+
 seqa <- function(st, inc, n){
 
-  seq(from=st, length.out=n, by=inc)
+  return(seq(from=st, length.out=n, by=inc))
 }
 
 ### dbuf is a named list 
@@ -236,22 +259,24 @@ vget <- function(dbuf, str){
 ### a new element in the list dbuf and
 ### return the new list
 
-vput <- function(dbuf=list(), x, xname=NULL){
+vput <- function(dbuf=list(), x, xname=""){
   if(!is.list(dbuf))
     stop("Ei: vput the input buffer needs to be a list")
   nm <- NULL
   nc <- length(dbuf)
   if(length(dbuf))
     nm <- names(dbuf)
+  
   dbuf[[nc+1]] <- x
   ### trying to figure out names
-  xname1 <- NULL
+  xname1 <- xname
   if(length(names(x)))
     xname1 <- names(x)
   else  if(length(colnames(x)))
     xname1 <- colnames(x)
   if(!length(xname))
-    xname <- xname1 
+    xname <- xname1
+  
   if(length(xname))
     names(dbuf) <- c(nm, xname)
   

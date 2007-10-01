@@ -20,7 +20,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  
   ### copy variables from evbase to local environment evei
   evei <- getEnvVar(evbase, environment())  ##environment 
-
+ 
   if(!scalzero(Eres) && vin(Eres,"titl") && Eprt >0)
     message(vread(Eres,"titl"))
  
@@ -33,8 +33,10 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 ###    checkinputs(t,x,n,Zb,Zw);
 ###   return(evbase)
 ###  /* verify inputs */
-  if(Echeck){
-    tst <- checkinputs(t,x,tvap,Zb, Zw)
+  if(as.logical(Echeck)){
+ 
+    tst <- ""
+    tst <- checkinputs(t,x,tvap,Zb, Zw,evbase)
     if(tst != ""){
       print(tst)
   ###    "----- EI Aborted -----";
@@ -61,11 +63,14 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 
 
 ###  /* nonparametric estimation */
-  if(EnonPar){
-    betaBs <- einonp(t,x);
-    Eres <- vput(Eres,betaBs,"betabs");
+  ###if(EnonPar){ ### check remove
+    if(T){
+       
+    betaBs <- einonp(t,x, evbase);
+    if(length(betaBs))
+      Eres <- vput(Eres,betaBs,"betabs");
     Eres <- add.to.Eres(Eres, round=2, evbase)  
-    return(timing(et))
+    return(timing(et,Eprt,Eres))
   }
   ### /* parametric estimation: */
   
@@ -123,10 +128,14 @@ ei <- function(t,x,tvap,Zb, Zw,...)
    }
 
 
- return(timing(et));
+ return(timing(et,Eprt,Eres));
  
+
+}
+
+          
 ### timing:
-timing <- function(et){
+timing <- function(et, Eprt,Eres){
   if (Eprt>0){
     et <- proc.time() -et;###@ timing end  @
     et <- na.omit(et)
@@ -143,22 +152,19 @@ timing <- function(et){
 tst <- paste("Run time: ", date(), "\nEversion", sep="")
   Eres <- vput(Eres,tst,"date");
   res <- Eres;
-  Eres <- vput("",tst,"date");
+  Eres <- vput(list(),tst,"date");
 
-  assign("Eselect", Eselect, env=evbase)
+##  assign("Eselect", Eselect, env=evbase)
  
   return(res)
 }
-  
-}
+             
 
-          
-           
-
-checkinputs <- function(t,x,n,Zb, Zw){
+checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
  
 ###getting all global parameters from env=evbase
-  evbase <- get("evbase", env=parent.frame())
+  if(!length(evbase))
+    evbase <- get("evbase", env=parent.frame())
   ### assign the globals to local environment 
   evei <- getEnvVar(evbase, environment())
 ###  t <- as.matrix(t)
@@ -483,7 +489,6 @@ checkinputs <- function(t,x,n,Zb, Zw){
 ### INPUT the same as in ei() call
 ### OUTPUT the envoronment containing all globals parameters
 ###
-### AUTHOR E. Villalon:evillalon@iq.harvard.edu
 ###
 eiset <- function(t,x,tvap,Zb,Zw,...){
   ## general
@@ -498,7 +503,7 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
     
 
   Eres <- c(Eres,list(eiversion=Eversion))
-  Echeck <- as.matrix(1);
+    Echeck <- as.matrix(0);###Echeck <- as.matrix(1); check remove
   Esims <- as.matrix(100);
   Eprt <- as.matrix(2);
   Eselect <- as.matrix(1);
@@ -672,7 +677,7 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
     if(n >= length(ix))
       return(ev)})
   res <- unlist(res)[[1]]
-  return(res)
+  return(as.environment(res))
 
 }
 

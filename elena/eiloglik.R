@@ -131,7 +131,8 @@ evlocal <- getEnvVar(evbase, environment())
 ## Date August 17th, 2007
 
 homoindx<-function(x){
-        EnumTol <- try(grep("EnumTol", env=grep("evbase", env=parent.frame())))
+  
+        EnumTol <- try(get("EnumTol", env=get("evbase", env=parent.frame())))
         if(class(EnumTol) == "try-error")
           EnumTol <- 0.0001
         x <- as.matrix(x)
