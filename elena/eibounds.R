@@ -18,13 +18,13 @@
 ###         evillalon@iq.harvard.edu
 ###
 #include ei.ext;
-bounds1<-function(t,x,n){
+bounds1<-function(t,x,n,tol){
         ## local LbetaB,UbetaB,LbetaW,UbetaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,tomx,z,o,m;
         omx<-1-x;
         Nb<-x*n;                       #nr of black people
         Nw<-omx*n;                     #nr of white people
         ##  {c,c0,c1} = homoindx(x);       # proc in eiloglik.src
-        cs<-homoindx(x)
+        cs<-homoindx(x,tol)
         c<-cs$c
         c0<-cs$c0
         c1<-cs$c1
@@ -97,14 +97,14 @@ bounds1<-function(t,x,n){
 ##         cols: lower ~ upper
 ##         rows: lambdaB, lambdaW
 ##
-bounds2 <- function(v,t,x,n){
+bounds2 <- function(v,t,x,n,tol){
 
 ###  local LlambdaB,UlambdaB,LlambdaW,UlambdaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,
 ###  tomx,z,o,m,d;
   omx <- 1-x;
   Nb <- x*n;
   Nw <- omx*n;
-  lst <- homoindx(x);
+  lst <- homoindx(x,tol);
   c <- lst$c
   c0 <- lst$c0
   c1 <- lst$c1

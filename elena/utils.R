@@ -192,13 +192,31 @@ seqaseF<-function(strt,endd,pts){
 }
 ### same as seqase but not including the end-points
 seqas <- function(strt,endd,pts){
-res <- seq(from=strt, to=endd, length.out=pts)
-res <- res[-1] ###exclude strt
-ln <- length(res) 
-res <- res[-ln] ###exclude endd
-return(res)
+  if(!length(na.omit(strt)))
+     return(strt); 
+  if(is.na(endd)){
+    isna <- is.na(strt)
+    if(!any(isna == TRUE))
+      return(strt)
+    ix <- grep(TRUE, isna)
+    endd <- endd[ix[1]]
+  }
+  res <- seq(from=strt, to=endd, length.out=pts)
+  res <- res[-1] ###exclude strt
+  ln <- length(res) 
+  res <- res[-ln] ###exclude endd
+  return(res)
 }
 seqase<-function(strt,endd,pts){
+  if(!length(na.omit(strt)))
+     return(strt); 
+  if(is.na(endd)){
+    isna <- is.na(strt)
+    if(!any(isna == TRUE))
+      return(strt)
+    ix <- grep(TRUE, isna)
+    endd <- endd[ix[1]]
+  }
   return(seq(from=strt, to=endd, length.out=pts))}
 
 seqa <- function(st, inc, n){

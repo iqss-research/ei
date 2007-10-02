@@ -16,9 +16,15 @@ einonp <- function(t,x, evbase=parent.frame()){
     message("Nonparametric Density Estimation...")
  
   Enumtol <- EnumTol <- as.vector(EnumTol)
-  x <- recode(x,cbind(x<Enumtol,x>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)));
-  t <- recode(t,cbind(t<Enumtol, t>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)));
-  lst <- bounds1(t,x,1,Enumtol);
+  xr <- recode(x,cbind(x<Enumtol,x>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)));
+  tr <- recode(t,cbind(t<Enumtol, t>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)));
+  x[x<Enumtol] <- EnumTol
+  t[t<Enumtol] <- EnumTol
+  x[x>(1-Enumtol)] <- 1-EnumTol
+  t[t>(1-Enumtol)] <- 1-EnumTol
+  if(any(x != xr) || any(t != tr))
+    stop("Recode does not work")
+  lst <- bounds1(t,x,1);
   
   bnds <- lst[[1]]
   tt <- lst[[2]]
@@ -39,12 +45,12 @@ einonp <- function(t,x, evbase=parent.frame()){
     message("Drawing simulations...");
   
   ###/* compute interpolated trapazoidal areas */
-  areas <- (betab[2,]-betab[1,])*(pz+0.5*abs(pz-lag(pz)));
+  areas <- (betab[2,]-betab[1,])*na.omit(pz+0.5*abs(pz-lag(pz)));
   nr <- rows(areas)
   areas <- na.omit(areas)
   dc <- nr - rows(areas)
   areas <- cumsum(as.data.frame(areas/as.vector(colSums(areas))));
-  
+   
   betabs <- matrix(0,nrow=nobs,ncol=Esims);
   for (i in 1:nobs){
   
@@ -65,11 +71,13 @@ einonp <- function(t,x, evbase=parent.frame()){
     CD <- C*D;
     
     res <- 0;
+    
     for (j in 1:(EnonEval-1)){
       if (!is.na(cnts[j+0]) &&  cnts[j+0]>0 ){
         res <- rbind(res, (-CD[j+0]+sqrt((C[j+0]^2)*(D[j+0]^2)+ 2*CE[j+0]*(CD[j+0]*a[j+0]+0.5*CE[j+0]*(a[j+0]^2)+as.matrix(runif(cnts[j+0])))))/CE[j])
       }
     }
+
 
     res <- as.vector(trimr(res,1,0))
     betabs[i+0,] <- res[order(runif(Esims))];
@@ -77,6 +85,8 @@ einonp <- function(t,x, evbase=parent.frame()){
   }
   if(dim(betabs)[[1]] != length(x) ||  dim(betabs)[[2]] != Esims)
     stop("Dimension betabs do not agree with spec")
+  message("betabs <- einonp()")
+  print(betabs)
   return(betabs);
 }
 ##/*
@@ -94,14 +104,15 @@ einonp <- function(t,x, evbase=parent.frame()){
 nonbiv <- function(t,x,px,py, evbase=parent.frame()){
 
   eigraph.bvsmth <- get("eigraph.bvsmth",env=evbase)
-  Enumtol <- as.vector(get("EnumTol", env=evbase))
   col <- cols(px);
   pz <- matrix(0, nrow=rows(px),ncol=col)
-  c <- unitarea(t,x,evbase);###         @ scale factor to divide by @ 
+
+  c <- unitarea(t,x,evbase);###         @ scale factor to divide by @
+
   r <- rows(x);
  
   for (i in 1:col){
-    d <- perpdist(t,x,px[,i+0],py[,i+0],Enumtol) ### @ perpendicular distance to line @
+    d <- perpdist(t,x,px[,i+0],py[,i+0],evbase) ### @ perpendicular distance to line @
 
   ###  /* sheet-normal kernel */
     z <- d / eigraph.bvsmth;
@@ -118,6 +129,7 @@ nonbiv <- function(t,x,px,py, evbase=parent.frame()){
   pz <- pz/eigraph.bvsmth^2;
   if(any(dim(pz)!= dim(px)) ||any(dim(pz)!= dim(py)))
     stop("Wrong dimensions for pz <- nonbiv()")
+  
   return(pz)
 }
 ##/*  area = unitarea(t,x);
@@ -130,57 +142,75 @@ nonbiv <- function(t,x,px,py, evbase=parent.frame()){
 unitarea <- function(t,x, evbase=parent.frame()){
 
   EnonNumInt <- get("EnonNumInt", env=evbase)
-
   Enumtol <- as.vector(get("EnumTol", env=evbase))
   eigraph.bvsmth <- get("eigraph.bvsmth", env=evbase)
-
-  x <- recode(x,cbind(x<Enumtol,x>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)))
-  lst <- bounds1(t,x,1,Enumtol);
+  xr <- recode(x,cbind(x<Enumtol,x>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)))
+  x[x < Enumtol] <- Enumtol
+  x[x > (1-Enumtol)] <- (1-Enumtol)
+  if(any(x != xr))
+    stop("Recode does not work")
+ 
+  lst <- bounds1(t,x,1);
  
   bnds <- lst[[1]]
   tt <- lst[[2]]
-  lb <- lB <- bnds[,1];
-  ub <- uB <- bnds[,2];
-  lw <- lW <- bnds[,3];
-  uw <- uW <- bnds[,4];
+  lb <- lB <- na.omit(bnds[,1]);
+  ub <- uB <- na.omit(bnds[,2]);
+  lw <- lW <- na.omit(bnds[,3]);
+  uw <- uW <- na.omit(bnds[,4]);
   x1 <- 1-x;
   xx1 <- x/x1;
   x1x <- x1/x;
   nobs <- rows(x);
   area <- matrix(0, nrow=nobs,ncol=1);
   var <- eigraph.bvsmth^2;
- 
+
   for (i in 1:nobs){
     
     c <- maxr(cbind(1-uB[i+0],lW[i+0]),maxr(lB[i+0],1-uW[i+0]))
    
     c <- substute(c,c<0.00001,c*0+0.00001);
-   
-    d <- perpdist(t[i+0],x[i+0],c(1,0),c(0,1), Enumtol);
+    ###c[ c<0.00001] <- c*0+0.00001
+    ###if(any(cs != c))
+    ###  stop("substute not working")
+
+    d <- perpdist(t[i+0],x[i+0],c(1,0),c(0,1));
+
     mx <- max(c(length(c), length(d)))
-    if(length(c) < mx)
-      c <- rep(c, mx/length(c))
-    if(length(d) < mx)
-      d <- rep(d, mx/length(d))
+    if(!is.na(mx))
+      {
+        if(length(c) < mx && length(c))
+          c <- rep(c, mx/length(c))
+        if(length(d) < mx && length(d))
+          d <- rep(d, mx/length(d))
+      }
+  
     a <- sqrt(c^2-d^2);
     k <- a*cos(asin(a/c));
     mx <- max(c(length(a), length(k)))
-    if(length(a) < mx)
-      a <- rep(a, mx/length(a))
-    if(length(k) < mx)
-      k <- rep(k, mx/length(k))
+     if(!is.na(mx))
+      {
+        if(length(a) < mx && length(a))
+          a <- rep(a, mx/length(a))
+        if(length(k) < mx && length(k))
+          k <- rep(k, mx/length(k))
+      }
+     
     g <- sqrt(a^2-k^2);
-    
+  
   ###  /* coordinates of tomography line extended so that the end points
   ##  are perpendicular to the 1,0 0,1 coordinates of the unit square:
   ##  (uB+k[.,1])~(lW-g[.,1])~(lB-k[.,2])~(uW+g[.,2]);  */
     
   ###  /* points to evaluate on the tomography line */
+   
+    
     betabS <- seqase(lb[i+0]-k[,2],ub[i+0]+k[,1],EnonNumInt);
+     
     betawS <- (t[i+0]/x1[i+0])-(x[i+0]/x1[i+0])*betabS;
     z <- matrix(0,nrow=EnonNumInt,ncol=1);
     o <- matrix(1, nrow=EnonNumInt,ncol=1);
-    
+ 
   ###  /* lengths of perpendicular lines within the unit square */
     minbetaw <- maxr(z,betawS-x1x[i+0]*betabS);
     maxbetaw <- minr(o,betawS+x1x[i+0]*(1-betabS));
@@ -189,7 +219,7 @@ unitarea <- function(t,x, evbase=parent.frame()){
     a <- sqrt((maxbetaw-betawS)^2+(maxbetab-betabS)^2);
     b <- sqrt((betabS-minbetab)^2+(betawS-minbetaw)^2);
     S <- (betabS>=minbetab)&(betabS<=maxbetab);
-    
+     
    ### /* area within square for each perpendicular line */
    ##  print(a)
    ## print(b)
@@ -200,7 +230,6 @@ unitarea <- function(t,x, evbase=parent.frame()){
   }
    if(any(dim(area)!= dim(t)))
       stop("area dimension do not agrre with x and t")
-   
   return(area);
 }
 
@@ -213,14 +242,14 @@ unitarea <- function(t,x, evbase=parent.frame()){
 ##** OUTPUT: dist = (PxM) perpendicular distance from each point in px,py
 ##**                 to the tomography line betaW=(t./(1-x))-(x./(1-x))*betaB
 ##**/
-perpdist <- function(t,x,px,py,tol){
+perpdist <- function(t,x,px,py,evbase=parent.frame()){
  
   t <- matrix(t, ncol=length(t))
   x <- matrix(x, ncol=length(x))
   px <- as.matrix(px)
   py <- as.matrix(py)
 
-  lst <- bounds1(t,x,1,tol);
+  lst <- bounds1(t,x,1);
   bnds <- lst[[1]]
  
   tt <- lst[[2]]
@@ -231,33 +260,38 @@ perpdist <- function(t,x,px,py,tol){
   uW <- bnds[,4];
  
   A <- sqrt((uW-lW)^2+(uB-lB)^2);
- 
-  a <- A <- recode(A,A<=0.0001,0.0001);
- 
+  a <- A[A <=0.0001] <- 0.0001
+  aR <- AR <- recode(A,A<=0.0001,0.0001);
+  if(any(AR != A))
+    stop("Recode is not working properly")
   B <- sqrt((uW-t(py))^2+(lB-t(px))^2);
+  
   b <- B <- substute(B,B<0.00001,B*0+0.00001);
+ ### b <- B[B<0.00001] <- B*0+0.00001
+ ### if(any(B != Bs))
+ ###   stop("substute not working properly")
   c <- C <- sqrt((lW-t(py))^2+(uB-t(px))^2);
   mx <- max(c(length(a), length(b), length(c)))
-
-  if(length(a) < mx)
-    a <- A <- rep(a, mx/length(a))
+    if(!is.na(mx))
+      {
+        if(length(a) < mx)
+          a <- A <- rep(a, mx/length(a))
     
-   if(length(b) < mx)
-    b <- B <- rep(b, mx/length(b))
+        if(length(b) < mx)
+          b <- B <- rep(b, mx/length(b))
   
-  if(length(c) < mx)
-    c <- C <- rep(c, mx/length(c))
+        if(length(c) < mx)
+          c <- C <- rep(c, mx/length(c))
+      }
   
   acarg <- (a^2+b^2-c^2)/(2 *a *b);
   tst1 <- (acarg>1);
   tst2 <- (acarg < -1);
   acarg <- substute(acarg,rbind(tst1,tst2),0*acarg+tst1-tst2);
   acarg <- na.omit(acarg)
- 
-   
+  
   D <- B*sin(acos(acarg));
   if(dim(D)[[1]] != dim(x) || dim(D)[[2]] != dim(px))
     stop("dimension perpdist do not agree with dim(x) X dim(px)")
-  
   return(D)
 }

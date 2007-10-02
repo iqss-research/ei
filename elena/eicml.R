@@ -19,7 +19,6 @@
 ##  Zb = 1 or covariates for Bb (constant term included automatically)
 ##  Zw = 1 or covariates for Bw (constant term included automatically)
 ##  y = dependent variable
-**
 ##  OUTPUT:
 ##  b = {Bb, Bw, sb, sw, rho}, where Bb, Bw are vectors if Zb,Zw have vars
 ##  vc = estimation global var cov matrix of b
@@ -41,13 +40,10 @@
 ##  _Eselect = scalar 1 to use all observations
 ##             vector of 1's to select and 0's to discard observations during
 ##             likelihood estimation.
-*/
+
 #include ei.ext;
 quadcml <- function(x,Zb,Zw,y) {
-  local vars,stval,ret,stb,t,bb,bw,sb,sbw,sw,vc,bnds,nbnds,tdiag,logl,
-  b,tt1,tt2,tt,dataset,vrs,Dvrs,r,rho,pb,mlogl,grds,se,mask,fmt,eta,
-  gridl,gr1;
-
+ 
   if _Eprt>=2;
     printfl "Likelihood estimation...";
   endif;

@@ -130,10 +130,10 @@ evlocal <- getEnvVar(evbase, environment())
 ## Ferdinand Alhimadi & Elena Villalon (evillalon@iq.harvard.edu)
 ## Date August 17th, 2007
 
-homoindx<-function(x){
+homoindx<-function(x, EnumTol=0.0001){
   
-        EnumTol <- try(get("EnumTol", env=get("evbase", env=parent.frame())))
-        if(class(EnumTol) == "try-error")
+      ###  EnumTol <- try(get("EnumTol", env=get("evbase", env=parent.frame())))
+        if(!length(EnumTol))
           EnumTol <- 0.0001
         x <- as.matrix(x)
         indx <- seq(1,nrow(x), 1)
