@@ -14,7 +14,7 @@ betab2w <- function(t,x,betab, evbase=NULL){
 ###  local c,c0,c1,betaw,i,col,x1;
   if(!length(evbase))
     evbase <- get("evbase", env=parent.frame())
-  col <- ncol(x);
+  col <- cols(x);
   x1 <- 1-x;
   betaB <- betab
   betaW <- betaw <- betab;
@@ -29,14 +29,14 @@ betab2w <- function(t,x,betab, evbase=NULL){
       betaW[c,] <- (t[c]/x1[c])-((betaB[c,]*x[c])/x1[c]);
     
     if(!scalmiss(c0))
-      betaW[c0,] <- matrix(t[c0],nrow=nrow(c0),ncol=ncol(betaB));
+      betaW[c0,] <- matrix(t[c0],nrow=rows(c0),ncol=cols(betaB));
     
     if(!scalmiss(c1))
-      betaW[c1,] <- matrix(NA, nrow=nrow(c1),ncol=ncol(betaB));
+      betaW[c1,] <- matrix(NA, nrow=rows(c1),ncol=cols(betaB));
     
     
   }else{
-    if (col!=ncol(betaB))
+    if (col!=cols(betaB))
       stop("EI internal error, betab2w")
      
     for( i in 1:col){
@@ -49,10 +49,10 @@ betab2w <- function(t,x,betab, evbase=NULL){
         betaW[c,i] <- (t[c]/x1[c,i])-((betaB[c,i]*x[c,i])/x1[c,i]);
       
       if(!scalmiss(c0))
-        betaW[c0,i] <- matrix(t[c0],nrow=nrow(c0),ncol=1);
+        betaW[c0,i] <- matrix(t[c0],nrow=rows(c0),ncol=1);
       
       if(!scalmiss(c1))
-        betaW[c1,i] <- matrix(NA,nrow=nrow(c1),ncol=1);
+        betaW[c1,i] <- matrix(NA,nrow=rows(c1),ncol=1);
       
     }
     

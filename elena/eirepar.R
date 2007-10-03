@@ -27,7 +27,7 @@ eirepar <- function(b,Zb,Zw,x){
  ## etaB,etaW,r;
   
  ## /* pluck off params */
-  o <- matrix(1, nrow=nrow(x),ncol=1);
+  o <- matrix(1, nrow=rows(x),ncol=1);
 
   Bb0 <- b[1:Ez[1]];
   if (Ez[1]==1)
@@ -45,7 +45,7 @@ eirepar <- function(b,Zb,Zw,x){
   
   Bw0 <- Bw0[1]*o;	###	  @ constant term @
     
-  r <- nrow(b);
+  r <- rows(b);
   sb0 <- b[r-4];
   sw0 <- b[r-3];
   rho0 <- b[r-2];

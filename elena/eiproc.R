@@ -56,7 +56,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   Eselect <- matrix(1,nrow=x,1)* as.vector(Eselect);
   
   if(EselRnd<1){
-    vec <- runif(nrow(x),min=0,max=1)
+    vec <- runif(rows(x),min=0,max=1)
     vec <- matrix(vec)
     Eselect <- Eselect & (vec < EselRnd);
   }
@@ -75,7 +75,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   ### /* parametric estimation: */
   
   ###/* eta influence on Zb,Zw */
-  if(nrow(Eeta)!=4){
+  if(rows(Eeta)!=4){
   if(Eeta[1]==1 ||  Eeta[1]==4){
     Zb <- x;
     Zw <- 1;
@@ -92,7 +92,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 
   assign("Ez", 0, env=evbase)
  ### clearg _Ez;	@ n of covariates, incl. implied constant term for Zb|Zw @
-  Ez <- (ncol(Zb)+1-scalone(Zb))|(ncol(Zw)+1-scalone(Zw));
+  Ez <- (cols(Zb)+1-scalone(Zb))|(cols(Zw)+1-scalone(Zw));
 
 
 ###  /* likelihood estimation */
@@ -113,7 +113,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   
     MLpsi <- mlpsi <- EdoML.phi;
     MLvc <-  mlvc <- EdoML.vcphi;
-    if(nrow(mlvc)!= nrow(mlpsi))
+    if(rows(mlvc)!= rows(mlpsi))
       stop("ei: EdoML.phi or EdoML.vcphi input error");
     
   }
@@ -199,16 +199,16 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     stop("ei:EnonPar must be scalar")
   if(!EnonPar %in% 0:1)
     stop("ei: EnonPar must be 0 or 1")
-  r <- nrow(t)
+  r <- rows(t)
   if(!length(r)) r <- length(t)
  
-  if( r != nrow(x) || ( r != nrow(Zb) && !scalone(Zb)) || (r != nrow(Zw) && !scalone(Zw)))
+  if( r != rows(x) || ( r != rows(Zb) && !scalone(Zb)) || (r != rows(Zw) && !scalone(Zw)))
     stop("ei: inputs do not have the rigth dimension")
   if(EnonPar == 0){
     if(any(tvap <= 0))
       stop("ei:'n' input must be greater than zero");
     
-    if( r!=nrow(tvap))
+    if( r!=rows(tvap))
       stop("ei:'n' input does not have the right dimension");
   }
   if (any(is.na(x)) || any(is.na(t)) || any(is.na(tvap)) || any(is.na(zb)) || any(is.na(zw)))
@@ -232,18 +232,18 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
 
   Eeta <- as.matrix(Eeta)
 ### Eeta ony one column and possibly multiple rows
-  if(ncol(Eeta) != 1)
+  if(cols(Eeta) != 1)
     stop("ei: Eeta has the wrong dimensions");
 ### 4 rows
-  if(nrow(Eeta) == 4){
+  if(rows(Eeta) == 4){
     if(!all(Eeta[3:4,]>=0))
       stop("ei: Eeta[3:4,] must be >=0");
   }
 ### either 1 (scalar) or 3 rows
-  else if (!nrow(Eeta) %in% c(1,3)){
+  else if (!rows(Eeta) %in% c(1,3)){
     stop("ei: Eeta has the wrong dimensions");
 ###scalar, possible values are 0:3
-  }else if(nrow(Eeta) ==1){
+  }else if(rows(Eeta) ==1){
     if(!Eeta %in% 0:3)
       stop("ei: Eeta is wrong")
     if(Eeta !=0 && !scalone(Zb) && !scalone(Zw))
@@ -254,8 +254,8 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   else if(Eeta[1]==5 && !scalone(Zb))
     stop("ei: if Eeta[1]=5, Zb must be set to 1")
 
-  if (nrow(Eeta)==4 || all(Eeta==0)){
-    a <- 5+ncol(zb)+ncol(zw)-scalone(zb)-scalone(zw);
+  if (rows(Eeta)==4 || all(Eeta==0)){
+    a <- 5+cols(zb)+cols(zw)-scalone(zb)-scalone(zw);
   }else if(Eeta[1] %in% c(1,2, 4,5)){
     a <- 6;
   }else if(Eeta[1]==3){
@@ -268,13 +268,13 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   if(!scalmiss(EalphaB)){
     if(scalone(Zb) && all(Eeta ==0))
       stop("ei:EalphaB should be specified only when Zb is not 1")
-    if(ncol(EalphaB) !=2)
+    if(cols(EalphaB) !=2)
       stop("ei: EalphaB must be missing or have 2 columns")
    
     if(any(EalphaB[, 2] <=0))
       stop("ei: Elements in the second column of _EalphaB must be > 0");
     
-    if(nrow(EalphaB) != ncol(Zb) && all(Eetha ==0))
+    if(rows(EalphaB) != cols(Zb) && all(Eetha ==0))
       stop("ei: nrow(EalphaB) must equal ncol(Zb)");
     
   }else{
@@ -287,13 +287,13 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   if(!scalmiss(EalphaW)){
     if(scalone(Zw) && all(Eeta==0))
       stop("ei: EalphaW should be specified only when Zw is");
-    if(ncol(EalphaW) != 2)
+    if(cols(EalphaW) != 2)
       stop("ei: EalphaW must be missing or have 2 columns");
      
     if(any(EalphaW[,2] <= 0))
       stop("ei: Elements in the second column of EalphaW must be > 0");
     
-    if(nrow(EalphaW)!=ncol(Zw) && all(Eeta==0))
+    if(rows(EalphaW)!=cols(Zw) && all(Eeta==0))
       stop("ei: nrow(EalphaW) must equal ncol(Zw)");
   }else{
       if(!scalone(Zw))
@@ -308,7 +308,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     
 ###Ecdfbvn
     
-    if(any(Ecdfbvn > 6) || any(Ecdfbvn <1) || nrow(Ecdfbvn) != 1)
+    if(any(Ecdfbvn > 6) || any(Ecdfbvn <1) || rows(Ecdfbvn) != 1)
       stop("ei: problem with Ecdfbvn");
 ###Esigma
 
@@ -316,11 +316,11 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
       stop("ei: Esigma must be a scalar");
     if(Esigma > 0 && Esigma <0.000001)
       stop("ei: Esigma must be <= 0 (for no prior) or > 0.000001");
-    if( (Erho[1]==0 && nrow(Erho)!=2) || (Erho[1]!=0 && nrow(Erho)!=1))
+    if( (Erho[1]==0 && rows(Erho)!=2) || (Erho[1]!=0 && rows(Erho)!=1))
       stop("ei: problem with Erho");
     
 ###Estval  
-    if(ncol(Estval) !=1 )
+    if(cols(Estval) !=1 )
       stop("ei: Estval may have only one column");
     if(length(Estval)==1){
 ### Estval needs to check
@@ -328,7 +328,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
       if(Estval <0 || Estval == 2 || (Estval %%floor(Estval))> 0)
         stop("ei: Estval as a scalar must be 0 or an integer >=3");
 ###length(Estval) > 1
-    }else if(nrow(Estval) !=a)
+    }else if(rows(Estval) !=a)
       stop("ei: _Estval has wrong dimensions");
     
 ###Ebounds
@@ -336,9 +336,9 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
       if(!Ebounds %in% c(0, 1))
         stop("ei: Ebounds must be 0, 1, 1x2, or kx2")
     }else{
-      if(ncol(Ebounds) != 2)
+      if(cols(Ebounds) != 2)
         stop("ei: Ebounds must have 1 or two columns")
-      if(nrow(Ebounds) != 1 && nrow(Ebounds) != a)
+      if(rows(Ebounds) != 1 && rows(Ebounds) != a)
         stop("ei: Ebounds must have 1 row or one row for each parameter") 
     }
 ###EdirTol
@@ -359,7 +359,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     if(EvTol <= 0)
       stop("ei: EvTol must be >0")
 ###ei.vc
-    if(ncol(ei.vc) != 2)
+    if(cols(ei.vc) != 2)
       stop("ei: EI.vc must have 2 columns")
     if (min(ei.vc[,1]) < -1 || max(ei.vc[,1]) > 5 || abs(ei.vc %%floor(ei.vc)) >0)
       stop("ei: EI.vc may only have integers -1,1,...,5 in first column");
@@ -370,8 +370,8 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
       stop("ei: EdoML must be scalar zero or one");
     
     if(scalzero(EdoML)){
-      if( (nrow(EdoML.phi) != nrow(EdoML.vcphi)) ||
-         (nrow(EdoML.phi)!= ncol(EdoML.vcphi)) )
+      if( (rows(EdoML.phi) != rows(EdoML.vcphi)) ||
+         (rows(EdoML.phi)!= cols(EdoML.vcphi)) )
         stop("ei: EdoML, EdoML.phi, or EdoML.vcphi are incorrect")
     }
 ###Edosim
@@ -438,7 +438,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
       ## eiread not written yet but returns vread     
   betaB <- eiread(Eres, "truthB")
   betaW <- eiread(Eres, "truthW")
-  if(nrow(betaB) != nrow(x) || nrow(betaW) != nrow(x))
+  if(rows(betaB) != rows(x) || rows(betaW) != rows(x))
     stop("ei: stored 'truth' must have same dimensions as x & t")
   if (any(betaB >1)  || any(betaB <0))
     stop("ei: 'truthB' input must be between 0 and 1");

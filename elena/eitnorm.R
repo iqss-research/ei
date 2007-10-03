@@ -18,10 +18,10 @@
    lb <- as.matrix(bnds[,1]);
    ub <- as.matrix(bnds[,2]);
    if (nrow(lb)==1)
-     lb <- matrix(lb, nrow=nrow(m),ncol=1);
+     lb <- matrix(lb, nrow=rows(m),ncol=1);
  
    if(nrow(ub)==1)
-     ub <- matrix(ub, nrow=nrow(m),ncol=1);
+     ub <- matrix(ub, nrow=rows(m),ncol=1);
   
    if (any(v<0)){
      rndtni.v <- v;
@@ -39,14 +39,14 @@
    sigma <- t*sigma;
    m <- t *m +(1-t)*lb;
 
-   r <- m+matrix(rnorm(nrow(m), mean=0, sd=1), nrow=nrow(m), ncol=1)* sigma;
+   r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1)* sigma;
    t <- (r<lb)| (r>ub);
    i <- 1;
    while( i<5 | colSums(t)!=0){
 ###   /* sample rejection method */
      inds <- grep(1, t)
      if(length(inds)){
-       r[inds] <- m[inds]+ matrix(rnorm(nrow(inds), mean=0, sd=1), nrow=nrow(inds), ncol=1, byrow=T)*sigma[inds];
+       r[inds] <- m[inds]+ matrix(rnorm(rows(inds), mean=0, sd=1), nrow=rows(inds), ncol=1, byrow=T)*sigma[inds];
        t <- (r<lb)|(r>ub);
      }
      i <- i+1;

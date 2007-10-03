@@ -49,7 +49,7 @@ evlocal <- getEnvVar(evbase, environment())
   if(!scalmiss(c0)){	###		@ X=0 @
     epsilon <- y[c0]-bw[c0];
     llik[c0] <- -0.5*(log(sw2)+(epsilon^2)/sw2) ### @ ln N(T|Bw,sigmaW) @
-    bnds <- cbind(matrix(0,nrow =nrow(c0),ncol=1), matrix(1,nrow=nrow(c0),ncol=1));
+    bnds <- cbind(matrix(0,nrow =rows(c0),ncol=1), matrix(1,nrow=rows(c0),ncol=1));
     Ebb <- bb[c0]+rho *(sb/sw)*epsilon;
     Vbb <- sb2*(1-rho^2);
     res <- lcdfnormi(bnds,Ebb,Vbb);      ###     @ ln S'(Bu,Sigmau) @
@@ -60,7 +60,7 @@ evlocal <- getEnvVar(evbase, environment())
   if(!scalmiss(c1)){ ##			@ X=1 @
     epsilon <- y[c1]-bb[c1];
     llik[c1] <- -0.5*(log(sb2)+(epsilon^2)/sb2)### @ ln N(T|Bb,sigmaB) @
-    bnds <- cbind(matrix(0,nrow=nrow(as.matrix(c1)),ncol=1),matrix(1,nrow=nrow(as.matrix(c1)),ncol=1))
+    bnds <- cbind(matrix(0,nrow=rows(as.matrix(c1)),ncol=1),matrix(1,nrow=rows(as.matrix(c1)),ncol=1))
     Ebb <- bw[c1]+rho*(sw/sb)*epsilon
     Vbb <- sw2*(1-rho^2)
     res <- lcdfnormi(bnds,Ebb,Vbb) ##           @ ln S'(Bu,Sigmau) @
@@ -69,7 +69,7 @@ evlocal <- getEnvVar(evbase, environment())
   }
 
   if(!scalmiss(cT0)){###		@ T=0, 0<X<1 @
-    z <- matrix(0,nrow=nrow(as.matrix(cT0)),ncol=1)
+    z <- matrix(0,nrow=rows(as.matrix(cT0)),ncol=1)
     llik[cT0] <- lpdfbvn(z,z,bb[cT0],bw[cT0],sb,sw,rho) -lncdfbvnu(bb[cT0],bw[cT0],sb,sw,rho);
   }
 
@@ -136,7 +136,7 @@ homoindx<-function(x, EnumTol=0.0001){
         if(!length(EnumTol))
           EnumTol <- 0.0001
         x <- as.matrix(x)
-        indx <- seq(1,nrow(x), 1)
+        indx <- seq(1,rows(x), 1)
         
         res<-list()
        

@@ -108,7 +108,7 @@ bounds2 <- function(v,t,x,n,tol){
   c <- lst$c
   c0 <- lst$c0
   c1 <- lst$c1
-  p <- nrow(x);
+  p <- rows(x);
   
   LlambdaB <- matrix(0, nrow=p,ncol=1);
   UlambdaB <- matrix(0,nrow=p,ncol=1);

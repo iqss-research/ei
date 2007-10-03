@@ -18,7 +18,7 @@ packdta <- function(x,Zb,Zw,t, evbase=NULL){
   if (Ez[1]>1)
     dataset <- cbind(Zb,dataset)
  
-  if( nrow(Eselect)!=1)
+  if( rows(Eselect)!=1)
     dataset <- subset(dataset,subset=Eselect); ###selif is subset
   
   return(dataset)
@@ -39,8 +39,8 @@ pluckdta <- function(dta, evbase=NULL){
     Zw <- 1;
   
 
-  x <- dta[,ncol(dta)-1];
-  y <- dta[,ncol(dta)];
+  x <- dta[,cols(dta)-1];
+  y <- dta[,cols(dta)];
   lst <- c(list(Zb=Zb), list(Zw=Zw), list(x=x), list(y=y))
   return(lst);
 }

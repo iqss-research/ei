@@ -94,7 +94,7 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
   Ecdfbvn <- get("Ecdfbvn", env=evbase)
   o <- 1
   if (all(Bb==Bb[1]) && all(Bw==Bw[1])){
-    o <- matrix(1,nrow=nrow(Bb),ncol=1)
+    o <- matrix(1,nrow=rows(Bb),ncol=1)
     Bb <- Bb[1]
     Bw <- Bw[1]
   }
@@ -161,8 +161,8 @@ cdfbvnormig <- function(Bb,Bw,sigb,sigw,rho){
 cdfbvng <- function(dh,dk,r){
   dh <- as.matrix(dh)
   dk <- as.matrix(dk)
-  tmp <- matrix(0,nrow=nrow(dh),ncol=ncol(dh));
-  for (i in 1:nrow(dh)){
+  tmp <- matrix(0,nrow=rows(dh),ncol=ncol(dh));
+  for (i in 1:rows(dh)){
     for(j in 1:ncol(dh))
       tmp[i,j] <- bvnu(dh[i,j],dk[i,j],r)+bvnuphi(dh[i,j])+bvnuphi(dk[i,j])-1;
   }

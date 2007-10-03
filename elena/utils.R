@@ -78,7 +78,7 @@ trimr<-function(x,t,b){
 lag<-function(x){
        x <- as.matrix(x)
        x <- rbind(NA, x) 
-       x[-nrow(x),]
+       x[-rows(x),]
         
 }
 
@@ -364,7 +364,7 @@ recode1 <- function(x,e,v){
   if(dm[1] != nrow(x) || nrow(v) != dm[2] || !all(e %in% c(0,1)))
     stop("recode: check your inputs")
   
-  for(r in 1:nrow(e)){
+  for(r in 1:rows(e)){
   
    ev <- e[r, ]
    if(sum(ev) <=0) next;
@@ -667,11 +667,11 @@ infrv <- function(x,m,p){
   res <- x
   
   if(!scalmiss(pinf))
-    res[pinf] <- matrix(p,nrow=nrow(pinf),ncol=1);
+    res[pinf] <- matrix(p,nrow=rows(pinf),ncol=1);
   
   
   if(!scalmiss(minf))
-    res[minf] <- matrix(m,nrow=nrow(as.matrix(minf)),ncol=1)
+    res[minf] <- matrix(m,nrow=rows(as.matrix(minf)),ncol=1)
   
   return(res)
 }
@@ -719,11 +719,11 @@ substute <- function(x, e, v){
   ee <- e <- as.matrix(e)
   e <- as.logical(e)
   if(!is.matrix(e))
-    e <- matrix(e,nrow=nrow(ee),ncol=ncol(ee))
+    e <- matrix(e,nrow=rows(ee),ncol=cols(ee))
   v <- as.matrix(v)
   ix <- grep(TRUE, e)
   if(length(v)< length(x)){
-    mat <- matrix(FALSE, nrow=nrow(x), ncol=ncol(x))
+    mat <- matrix(FALSE, nrow=rows(x), ncol=cols(x))
     mat[e] <- v
   }else
   mat <- v
