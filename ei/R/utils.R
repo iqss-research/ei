@@ -57,17 +57,32 @@ stdc <- function(x){
 ## v = Px1 vector (sorted in asc order) containing the ranges within which counts are to be made
 
 counts<-function(x,v){
-       subx <- x[x >= v[1] & x <= v[length(v)]]
-       return(length(subx))
+  v <- sort(v)
+  vst <- v[1]
+  res <- v
+  if(length(v) <= 1)
+    return(length(x[x <= v[1]]))
+  res[1] <- length(x[x <= v[1]])
+  
+  for(n in 2:length(v)){     
+    subx <- x[x > vst & x <= v[n]]
+    res[n] <- length(subx)
+    vst <- v[n]
+  }
+  return(res)
        
 }
 
+counts.test <- function(x=1:9, v=c(4,5,8)){
+  res <- counts(x,v)
+}
 
 ## remove t first and b last rows from x
 
 trimr<-function(x,t,b){
+  x <- as.matrix(x)
         
-        return(x[(t+1):(nrow(x)-b),])
+  return(x[(t+1):(rows(x)-b),])
 }
 
 ###
@@ -77,7 +92,7 @@ trimr<-function(x,t,b){
 lag<-function(x){
        x <- as.matrix(x)
        x <- rbind(NA, x) 
-       x[-nrow(x),]
+       x[-rows(x),]
         
 }
 
@@ -111,6 +126,10 @@ scalone<-function(y){
 scalmiss <- function(y){
   length(y) ==1 && any(is.na(y))
 }
+sortind <- function(x){
+  x <- as.vector(x)
+  return(as.matrix(order(x)))
+}
 
 ###DESCRIPTION sort a matrix rows according to a column
 ###            as the corresponding Gauss
@@ -121,6 +140,18 @@ sortc <- function(mat, c=1, decreasing=FALSE){
   mat <- mat[ord,]
   return(mat)
 }
+meanwc<-meanWc <- function(x,wt){
+  x <- as.matrix(x)
+  if(length(wt) < length(x))
+    wt <- rep(wt,length(x))
+  if(length(wt) > length(x))
+    wt <- wt[1:length(x)]
+  wt <- as.matrix(wt)
+
+  return(weighted.mean(x,wt))
+}
+              
+    
 ###
 ##  y = meanWc(x,wt);
 ##
@@ -130,10 +161,10 @@ sortc <- function(mat, c=1, decreasing=FALSE){
 ##  works with missing values; packs rowwise.
 ## weighted.mean
 
-meanwc<-meanWc <- function(x,wt){
+meanwcF<-meanWcF <- function(x,wt){
      
      ###  lapply(as.data.frame(x), weighted.mean, wt)
-
+        x <- as.matrix(x)
         if(all(is.na(wt)) || wt==1)
           wt<-rep(1,nrow(x))
         wwt<-wt
@@ -160,17 +191,39 @@ ismissm<-function(x){
        is.na(x)
 }
 
-
+ismiss <- function(x){
+  any(is.na(x))
+}
 ###
 ##  create vector of PTS evenly spaced points between STRT and ENDD,
 ##  including the end points.
 
-seqase<-function(strt,endd,pts){
+seqaseF<-function(strt,endd,pts){
 
         t<-(endd-strt)/(pts-1)
         res<-seq(strt,endd,t)
         return (res)
 }
+##Additive sequance first point=st, increment =inc, number of points=n
+
+seqa <- function(st,inc,n){
+  return(seq(from=st, by=inc,length.out=n))
+}
+### same as seqase but not including the end-points
+seqas <- function(strt,endd,pts){
+  res <- (endd-strt)/pts
+  fst <- strt+0.5*res
+  inc <- res
+  n <- pts
+  res <- seq(from=fst, by=res, length.out=pts)  
+  
+  return(res)
+}
+seqase<-function(strt,endd,pts){
+  return(seq(from=strt,to=endd,length.out=pts))}
+
+
+
 
 ### dbuf is a named list 
 ### str is string.
@@ -178,8 +231,10 @@ seqase<-function(strt,endd,pts){
 ### names of dbuf independently of case.
 
 vin <- function(dbuf,str){
+  str <- tolower(str)
   str <- paste("^",str,"$",sep="")
   cv <- names(dbuf)
+  cv <- unlist(sapply(cv,tolower))
   res <- TRUE
   ix <- grep(str, cv, ignore.case=T)
   if(length(ix) <= 0)
@@ -191,13 +246,16 @@ vin <- function(dbuf,str){
 vread <- function(dbuf, str){
  
   cv <- names(dbuf)
+  cv <- unlist(sapply(cv,tolower))
+  str <- tolower(str)
   str <- paste("^",str,"$",sep="")
   ix <- grep(str, cv, ignore.case=T)
   if(length(ix) <=0){
      warning(paste("Variable", str, "is not in the data buffer"))
-     return(list())
+     return(NA)
    }
-  return(dbuf[[ix]]) 
+  res <- as.matrix(dbuff[[ix]])
+  return(res) 
   
 }
 ### similar to vread but returns also the list dbufnew without
@@ -208,9 +266,10 @@ vget <- function(dbuf, str){
   ix <- grep(str, cv, ignore.case=T)
   if(!is.list(dbuf) || length(ix) <=0){
      warning(paste("ei: vget. Variable", str, "is not in data buffer"))
-     return(list())
+     return(NA)
    }
-  var <- dbuf[[ix]]
+  var <- as.matrix(dbuff[[ix]])
+   
   dbufnew <- dbuf[-ix]
   lst <- c(list(var), dbufnew)
   return(lst)
@@ -219,34 +278,44 @@ vget <- function(dbuf, str){
 ### a new element in the list dbuf and
 ### return the new list
 
-vput <- function(dbuf=list(), x, xname=NULL){
+vput <- function(dbuf=list(), x, xname=""){
   if(!is.list(dbuf))
     stop("Ei: vput the input buffer needs to be a list")
   nm <- NULL
   nc <- length(dbuf)
   if(length(dbuf))
     nm <- names(dbuf)
+  
   dbuf[[nc+1]] <- x
   ### trying to figure out names
-  xname1 <- NULL
+  xname1 <- xname
   if(length(names(x)))
     xname1 <- names(x)
   else  if(length(colnames(x)))
     xname1 <- colnames(x)
   if(!length(xname))
-    xname <- xname1 
+    xname <- xname1
+  
   if(length(xname))
     names(dbuf) <- c(nm, xname)
   
   
 return(dbuf)
 }
-vnamecv <- function(dbuf){
-  return(names(dbuf))
+vnamecv <- function(dbuf, trim=T){
+  res <- names(dbuf)
+  if(trim)
+    res <- unlist(sapply(res, trim.blanks))
+  return(res)
 }
 ### DESCRIPTION the gauss code is case insensitive and that it was
 ###             inG is doing, which is a wrapper around %in% but ignoring case
-### flag =0, 1, 2 for character case sensitive, numeric , character case insensitive
+###             Note that "in" may return a vector of T and F but inG applies
+###             all to the results of in and it is only T if all vector elemnts
+###             are T.
+###
+### as in(y,cv,0)
+###
 "%inG%" <- function(y,vars){
   y <- unique.default(y)
   vars <- unique.default(vars)
@@ -296,7 +365,7 @@ recode1 <- function(x,e,v){
   if(dm[1] != nrow(x) || nrow(v) != dm[2] || !all(e %in% c(0,1)))
     stop("recode: check your inputs")
   
-  for(r in 1:nrow(e)){
+  for(r in 1:rows(e)){
   
    ev <- e[r, ]
    if(sum(ev) <=0) next;
@@ -388,7 +457,8 @@ miss <- function(x, v){
   for(n in 1:length(v)){
     if(n > length(xx)) break; 
     ind <- grep(v[[n]], xx[[n]])
-    x[ind, n] <- NA
+    if(length(ind))
+      x[ind, n] <- NA
   }
  
   return(x)
@@ -411,7 +481,7 @@ missrv <- function(x, v){
     if(n > length(xx)) break; 
     ind <- is.na(xx[[n]])
     if(any(ind))
-      x[ind, n] <- v[n]
+      x[ind, n] <- v[[n]]
   }
  
   return(x)
@@ -440,3 +510,381 @@ mkmissm <- function(x, m){
   return(y)
 
 }
+###DESCRIPTION the function diag in Gauss returns a 1 column vector
+###            with the diagonal values of mat, but diag in R builds
+###            a diagonal matrix.  To avoid confusion we call extract.diag
+###            to the R function that extracts the diagonal elemnts of a matrix
+###            and returns a matrix with one column.
+###
+extract.diag <- function(mat){
+  v <- mat[col(mat)==row(mat)]
+  return(as.matrix(v))
+}
+
+##  This archive is part of the program EI
+##  (C) Copyright 1995-2001 Gary King
+##  All Rights Reserved.
+##
+##  Utility procs
+##
+##   z = fisherzi(x);
+##   inverse of fisher's z transformation
+##
+fisherzi <- function(x){
+ 
+  t <- exp(2*x);
+  t <- (t-1)/(t+1);
+  return(t);
+}
+##
+##   z = fisherz(x);
+##   fisher's z transformation
+##
+fisherz <- function(x){
+  t=0.5*log((1+x)/(1-x));
+  return(t);
+}
+###DESCRIPTION x is a matrix compute variance covariance along cols
+vcx <- function(x){return(var(x))}
+cdfni <- function(x){qnorm(x)} ###inverse cumulative density  
+cdfn <- function(x){pnorm(x)} ### cumulative density
+cdfnc <- function(x) {1- pnorm(x)}
+corrx <- function(x){cor(x)} ###correlation matrix
+rndn <- function(r, c){
+  return(matrix(rnorm(r*c, mean=0, sd=1), nrow=r, ncol=c, byrow=T))}
+rndu <- function(r, c){
+  matrix(runif(r*c), nrow=r, ncol=c, byrow=TRUE)}
+pdf <- function(x){
+  return(dnorm(x))}
+                       
+###DESCRIPTION If v is scalar finds the indices of elements in x == v
+###            If v is length two find the indices of elements in x
+###            such that x > v[1] & x <= v[2]
+###            From Gaus utility 
+indexcat <- function(x, v){
+  if(length(v) <= 1)
+    return(grep(v, x))
+  v <- as.vector(sort(v))
+  x <- as.vector(x)
+  xx <- x[x> v[1] & x <= v[2]]
+  xx <- unique.default(xx)
+  ind <- unlist(sapply(xx, grep, x))
+  return(ind)
+}
+dotfeq <- function(x,y, tol=NULL){
+  x <- as.matrix(x)
+  y <- as.matrix(y)
+  if(!all(dim(x) == dim(y))){
+    message("x and y have different dimensions")
+    return(FALSE)
+  }
+  if(!length(tol))
+    return(x==y)
+  x <- floor(x/tol)
+  y <- floor(y/tol)
+  return(x==y)
+}
+  
+###DESCRIPTION Computes the cdf of the standardized bivariate normal
+###            with lower limits in -Inf, i.e. lower tail. 
+###            x and t are the upper limits for the two variables
+###            and rho is the correlation coefficients
+###            Wraps pmvnorm of of package mvtnorm
+###            
+cdfbvn <- function(x,t,rho, maxpts=25000, abseps=0.001, releps=0){
+  if(!require(mvtnorm))
+    stop("ei:To compute bivariate normal you need to install package mvtnorm")
+  v  <- c(as.vector(x), as.vector(t))
+  ln <- length(v)
+  low <- rep(-Inf, ln)
+  p00 <- pmvnorm(lower=low, upper=v,mean=rep(0, ln), sigma=rho, maxpts=maxpts,abseps=abseps, releps=releps);
+  return(p00)
+ }
+###DESCRIPTION As in the Gauss function based on cdfbvn or bivariate normal.
+###
+cdfbvn2 <- function(h,dh,k,dk,r){
+y <- cdfbvn(h+dh, k+dk,r)+cdfbvn(h,k,r) - cdfbvn(h,k+dk,r) - cdfbvn(h+dh, k, r)
+return(y)
+}
+ftos <-  function(x){
+  nc  <- nchar(as.character(floor(x))) 
+      fmt <- formatC(x,width=nc,digits=0, format="f")
+}
+
+loess <- function(depvar, indvars,data, loess.span, loess.wgtType){
+  y.loess <- loess(depvar~indvars, data, weights=loess.wgType, span=loess.span)
+  yhat <- y.loess$fitted
+  ys <- y.loess$y
+  xs <- y.loess$x
+  lst <- c(list(yhat=yhat), list(ys=ys), list(xs=xs))
+  return(lst)
+}
+strput <- function(substr, str,off){
+  if(off > 1) stp <- off-1
+  strp <- substr(str, 1, stp)
+  return(paste(strp,substr, sep=""))
+}
+
+
+rows <- function(mat){
+  mat <- as.matrix(mat)
+  return(nrow(mat))
+}
+ 
+
+cols <- function(mat){
+  mat <- as.matrix(mat)
+  return(ncol(mat))
+}
+
+vec <- function(mat){
+  v <- matrix(as.vector(mat), ncol=1)
+  return(v)
+}
+rndu <- function(r, c){
+  mat <- matrix(runif(r*c), nrow=r, ncol=c)
+  return(mat)
+}
+
+##/* reverse infinities
+##
+## y = infrv(x,minus,plus);
+## x = input vector
+## minus, plus = scalars
+## y = an ExE conformable matrix with -INF changed to minus and +INF changed
+##       to plus
+##
+infrv <- function(x,m,p){
+  x <- as.matrix(x)
+  plus <- Inf
+  minus <- -Inf;
+  s <- seq(from=1,by=1, length.out=nrow(x))
+ 
+
+  pinf <- subset(s,subset= !(x != plus))  ###=(.not(x ./= plus)));
+  minf <- subset(s,subset=!(x != minus));
+  pinf <- as.matrix(pinf)
+  minf <- as.matrix(minf)
+  res <- x
+  
+  if(!scalmiss(pinf))
+    res[pinf] <- matrix(p,nrow=rows(pinf),ncol=1);
+  
+  
+  if(!scalmiss(minf))
+    res[minf] <- matrix(m,nrow=rows(as.matrix(minf)),ncol=1)
+  
+  return(res)
+}
+
+  intquad1 <- function(f,v){
+    lst <- integrate(f, lower=v[2], upper=v[1])
+    return(lst$y)
+  }
+###DESCRIPTION : trims leading and trailing blanks for any string but not
+###              inter-words blanks.  For example, trim.blanks("   abc  ") = "abc";
+###              but trim.blanks("   abc    def ")= "abc    def".
+### AUTHOR: Elena Villalon
+##          evillalon@iq.harvard.edu
+###
+trim.blanks <- function(x) {
+### at the beginning of string"^" gets anny number (+) of white spaces
+  f <- x
+  if(length(x))
+    f <- na.omit(x)
+  
+  if(length(f) <= 0)
+    return(x)
+  if(length(f)>1)
+    print(f)
+  if(f=="" )
+    return(x)
+  x <- sub("^[[:space:]]*(.*)", "\\1",x) ###get \n\t
+  x <- sub('^ +', '', x) ###get white spaces
+  
+### at the ending of string"$" gets anny number (+) of white spaces
+  
+  x <- sub("(.*)[[:space:]]*$", "\\1", x)
+  x <- sub(' +$', '', x)
+  return(x)
+}
+
+##DESCRIPTION as in the Gauss function. Substitutes old values
+##            for new values in matrix x, according to  the
+##            outcome of the logical expression e and values in v.
+###
+## Elena Villalon (evillalon@iq.harvard.edu)
+###
+substute <- function(x, e, v){
+  x <- as.matrix(x)
+  ee <- e <- as.matrix(e)
+  e <- as.logical(e)
+  if(!is.matrix(e))
+    e <- matrix(e,nrow=rows(ee),ncol=cols(ee))
+  v <- as.matrix(v)
+  ix <- grep(TRUE, e)
+  if(length(v)< length(x)){
+    mat <- matrix(FALSE, nrow=rows(x), ncol=cols(x))
+    mat[e] <- v
+  }else
+  mat <- v
+ 
+    x[ix] <- mat[ix]
+  return(x)
+}
+substute.test <- function(){
+  x <- matrix(c("Y", "N", "Y", "N", "Y", "N", 1:12), nrow=6)
+  e <- as.matrix(c(1,0,0,0,1,0))
+  v <- c("R", "S")
+###  v <- rep("R", length(x))
+  return(substute(x,e,v))
+}
+cumsumc <- function(mat){
+  cumsum(as.data.frame(mat))}
+
+### DESCRIPTION this is the element division equivalent
+###             to the Gauss and Matlab operation "./"
+### INPUT v=vector and mat=matrix
+###       v may have only one element or length(v) = ncol(mat) or
+###       length(v) = nrow(mat)
+###
+### OUTPUT divide elemnt by element mat/v or t(t(mat)/v)
+###        depending if nrow(mat) or ncol(mat) = length(v)
+###
+###        Gauss mat./v -or- v./mat 
+###
+###AUTHOR Elena Villalon
+###       evillalon@iq.harvard.edu
+###
+"%dot/%" <- function(mat, v){
+
+  if(length(v) <= 1)
+    return(mat/v)
+  
+  mat <- as.matrix(mat)
+  
+  if(length(v)==length(mat)){
+    rmat <- rows(mat)
+    cmat <- cols(mat)
+    res <- as.vector(mat) /as.vector(v)
+    res <- matrix(res,nrow=rmat, ncol=cmat)
+    colnames(res) <- NULL
+    rownames(res) <- NULL
+    return(res)
+  }
+  mat0 <- mat
+  v0 <- v
+  invrt <- FALSE
+  trnps <- FALSE
+  if(length(v) > length(mat)){
+    v <- as.vector(mat0)
+    mat <- as.matrix(v0)
+    invrt <- T
+  }else
+  v <- as.vector(v)
+    
+  if(length(v) != ncol(mat) && length(v) != nrow(mat))
+    stop("Arrays are non-conformable")
+  if(length(v) == rows(mat)) {
+    mat <- t(mat)
+    trnps <- T
+  }
+  if(!is.data.frame(mat)){
+    mdf <- as.data.frame(mat)
+    res <- as.matrix(t(t(mdf)/v))
+    colnames(res) <- NULL
+    rownames(res) <- NULL
+    if(invrt)
+      res <- 1/res
+    if(trnps)
+      res <- t(res)
+    return(res)
+  }else{
+    if(!invrt)
+      res <- t(mat/v)
+    else
+      res <- 1/t(mat/v)
+  if(trnps)
+    res <- t(res)
+  return(res)
+  }
+}
+### DESCRIPTION this is the element multiplication equivalent
+###             to the Gauss and Matlab operation ".*"
+### INPUT v=vector and mat=matrix
+###       v may have only one element or length(v) = ncol(mat) or
+###       length(v) = nrow(mat)
+###
+### OUTPUT multiply elemnt by element mat*v or t(t(mat)*v)
+###        depending if nrow(mat) or ncol(mat) = length(v)
+###
+###        Gauss v.*mat -or- mat*.v 
+###
+###AUTHOR Elena Villalon
+###       evillalon@iq.harvard.edu
+###
+"%dot*%" <- function(v, mat){
+
+  if(length(v) <= 1 || length(mat) <=1)
+    return(mat*v) 
+  mat <- as.matrix(mat)
+  if(length(v)==length(mat)){
+    rmat <- rows(mat)
+    cmat <- cols(mat)
+    res <- as.vector(v) *as.vector(mat)
+    res <- matrix(res,nrow=rmat, ncol=cmat)
+    colnames(res) <- NULL
+    rownames(res) <- NULL
+    return(res)
+  }
+mat0 <- mat
+v0 <- v
+
+trnps <- FALSE
+if(length(v) > length(mat)){
+  v <- as.vector(mat0)
+  mat <- as.matrix(v0)
+}else
+v <- as.vector(v)
+     
+
+   if(length(v) != ncol(mat) && length(v) != nrow(mat))
+    stop("Arrays are non-conformable")
+
+  if(length(v) == rows(mat)) {
+    mat <- t(mat)
+    trnps <- T
+  }
+
+  if(!is.data.frame(mat)){
+    mdf <- as.data.frame(mat)
+    res <- as.matrix(t(t(mdf)*v))
+    colnames(res) <- NULL
+    rownames(res) <- NULL
+    if(trnps) res <- t(res)
+    return(res)
+  }else{
+    res <- (t(t(mat)*v))
+    if(trnps) res <- t(res)
+    return(res)
+  }
+}
+###DESCRIPTION difference two matrices
+### mat = Mx 1
+### v= Vx 1
+### res = M x V
+### Gauss (mat-m'), where mat and m are 1 column matrices and m'=t(m)
+## 
+
+ "%-%" <- function(mat, m){
+     res <- matrix(as.vector(mat),nrow=length(mat), ncol=length(m))
+     red <- t(as.data.frame(t(res))-m)
+     res <-  as.matrix(red)
+     colnames(res) <- rownames(res) <- NULL
+     return(res)
+   }
+     
+     
+         
+    
+    

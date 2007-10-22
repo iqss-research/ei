@@ -71,9 +71,15 @@ getEnvVar <- function(evfrom, evto, vecvar=NULL){
      ix <- unlist(ix)
      if(length(ix)) param <- param[ix]
    }
-   
+  evfrom <- as.environment(evfrom)
+  evto <- as.environment(evto)
+  
   ass <- lapply(param, function(att,evfrom,evto) {
-    val <- get(att, env=evfrom)
+  
+    val <- try(get(att, env=evfrom))
+  
+    if(class(val) == "try-error")
+      message("Error getting param")
     assign(att, val,env=evto)}, evfrom,evto)
   
 return(evto)
@@ -164,14 +170,17 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
       return(Eres)
     }
     if (round == 2){
-    ###   Eres <- vput(Eres,betaBs,"betabs");
+       Eres <- vput(Eres,betaBs,"betabs");
        Eres <- vput(Eres,NA,"retcode");
        Eres <- vput(Eres,NA,"phi");
        Eres <- vput(Eres,NA,"loglik");
        Eres <- vput(Eres,NA,"ghactual");
-       Eres <- vput(Eres,NA,"vcphi");  
-       Eres <- vput(Eres,Esims,"Esims");
-       Eres <- vput(Eres,ei.vc,"ei.vc");
+       Eres <- vput(Eres,NA,"vcphi");
+       if(!"Esims" %in% names(Eres)) 
+         Eres <- vput(Eres,Esims,"Esims")
+       if(!"ei.vc" %in% names(Eres)) 
+         Eres <- vput(Eres,ei.vc,"ei.vc");
+       
        assign("Eres",Eres, env=evbase)
       return(Eres)
      }
