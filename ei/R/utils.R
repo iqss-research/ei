@@ -758,18 +758,14 @@ cumsumc <- function(mat){
 ###
 "%dot/%" <- function(mat, v){
 
-  if(length(v) <= 1)
+  if(length(v) <= 1 || length(mat) <= 1)
     return(mat/v)
   
   mat <- as.matrix(mat)
   
   if(length(v)==length(mat)){
-    rmat <- rows(mat)
-    cmat <- cols(mat)
     res <- as.vector(mat) /as.vector(v)
-    res <- matrix(res,nrow=rmat, ncol=cmat)
-    colnames(res) <- NULL
-    rownames(res) <- NULL
+    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
     return(res)
   }
   mat0 <- mat
@@ -829,12 +825,8 @@ cumsumc <- function(mat){
     return(mat*v) 
   mat <- as.matrix(mat)
   if(length(v)==length(mat)){
-    rmat <- rows(mat)
-    cmat <- cols(mat)
     res <- as.vector(v) *as.vector(mat)
-    res <- matrix(res,nrow=rmat, ncol=cmat)
-    colnames(res) <- NULL
-    rownames(res) <- NULL
+    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
     return(res)
   }
 mat0 <- mat
