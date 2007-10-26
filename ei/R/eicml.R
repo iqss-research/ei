@@ -58,11 +58,11 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
     ###  fmtt;
       message("EselRnd: Modifying _Eselect with random selection = ", fmtt(EselRnd))
     }
-    tt <- colSums(1- Eselect);
+    tt <- colSums(as.matrix(1- Eselect))
     if (rows(Eselect)!= 1 && tt!=0){
   ###    fmtt;
       message("Eselect: deleting ", fmtt(tt) ," ", 
-              "observations from estimation stage;", colSums(Eselect),
+              "observations from estimation stage;", colSums(as.matrix(Eselect)),
               "observations remain")
     }
   }
@@ -78,7 +78,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
  
    stval <- Estval;
    if (scalone(Estval) || gridl !=0)
-     stval <- as.matrix(c(rep(0,colSums(Ez)), -1.2,-1.2,0)) 
+     stval <- as.matrix(c(rep(0,colSums(as.matrix(Ez))), -1.2,-1.2,0)) 
   
    if (rows(Eeta)==4)
     stval <- as.matrix(c(stval, Eeta[1:2]))

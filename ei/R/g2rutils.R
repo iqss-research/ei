@@ -313,7 +313,7 @@ test.selif <- function(){
 }
 
 
-sumc <- function(x){ return(colSums(x))}
+sumc <- function(x){ return(colSums(as.matrix(x)))}
 
 
 
