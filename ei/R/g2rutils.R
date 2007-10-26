@@ -1,8 +1,13 @@
 ###
 ##  Gauss functions and their corresponding R counterparts
+##  Contains: 
+##  zeros, ones, meanc, stdc, counts, trimr,lag, lag1, lagn
+##  scalmiss,sortind,sortc,sortr,ismiss,seqa,vread, vget
+##  vput, vnamecv, recode,selif, delif, sumc,minindc,miss,
+##  missrv, vcx, cdfni, cdfn, cdfnc, corrx, rndn, rndu, pdf, cdfbvn2, 
+##  indexcat,dotfeq,cdfbvn, cdfbvn2,ftos,loess,strput,
+##  rows, cols, vec, intquad1,substute,cumsumc    
 ##
-
-
 
 ###
 ##    m <- zeros(r,c)
@@ -38,9 +43,6 @@ meanc<-function(x, na.rm=F){
  
 
 }
-
-
-
 
 ###DESCRIPTION calculate standard deviations along the columns of
 ###            a matrix x, same as the Gauss function
@@ -89,39 +91,24 @@ trimr<-function(x,t,b){
 ## removes the last row of the original matrix AND add a
 ## row with "missing values" (as the first row of the original matrix)
 
-lag<-function(x){
+lag1 <- lag<-function(x){
        x <- as.matrix(x)
        x <- rbind(NA, x) 
        x[-rows(x),]
         
 }
-
-###
-##  t = scalzero(y);
-##
-##  y = matrix
-##  t = T if y is 0 and F otherwise
-##
-
-scalzero<-function(y){
-    y <- as.vector(y)
-    length(y) ==1  && !any(is.na(y)) && is.numeric(y) && all(y == 0)  
-      
+###Same as lag specifying the number of rows to lag
+lagn <- function(x, p){
+  x <- as.matrix(x)
+  r <- nrow(x)
+  if(p >= r)
+    return(x*NA)
+  vec <- c(rep(1, r-p), rep(NA, p))
+  res <- na.omit(x*vec)
+  res <- rbind(matrix(rep(NA,p)*ncol(x),ncol=ncol(x), nrow=p),res)
+  return(res)
 }
 
-###
-##    t = scalone(y);
-##
-##    y = matrix
-##    t = 1 if y is a scalar one and 0 otw
-##    as.numeric(TRUE) =1, as.numeric(FALSE) =0
-
-scalone<-function(y){
-  y <- as.vector(y)
-  
- length(y) ==1  && !any(is.na(y))&& is.numeric(y)  && all(y == 1)  
-       
-}
 ### test if y is scalar missing value
 scalmiss <- function(y){
   length(y) ==1 && any(is.na(y))
@@ -140,109 +127,31 @@ sortc <- function(mat, c=1, decreasing=FALSE){
   mat <- mat[ord,]
   return(mat)
 }
-meanwc<-meanWc <- function(x,wt){
-  x <- as.matrix(x)
-  if(length(wt) < length(x))
-    wt <- rep(wt,length(x))
-  if(length(wt) > length(x))
-    wt <- wt[1:length(x)]
-  wt <- as.matrix(wt)
+sortr <- function(mat, r=1, decreasing=FALSE){
+  return(t(sortc(t(mat),c=r,decreasing=decreasing)))
 
-  return(weighted.mean(x,wt))
-}
-              
-    
-###
-##  y = meanWc(x,wt);
-##
-##  x = NxM matrix to be avg'd
-##  wt = scalar 1 or Nx1 or NxM weight used in averaging
-##
-##  works with missing values; packs rowwise.
-## weighted.mean
-
-meanwcF<-meanWcF <- function(x,wt){
-     
-     ###  lapply(as.data.frame(x), weighted.mean, wt)
-        x <- as.matrix(x)
-        if(all(is.na(wt)) || wt==1)
-          wt<-rep(1,nrow(x))
-        wwt<-wt
-        wwt[is.na(wwt)]<-0
-        xtmp<-x
-        xtmp[is.na(xtmp)]<-0
-        if(is.matrix(x))
-          res<-(apply((xtmp*wwt),2,sum))/(apply((1-ismissm(x+wt))*wwt,2,sum))
-        else
-          res<-sum(xtmp*wwt)/(sum(1-ismissm(x+wt))*wwt)
-        return(res)
 }
 
-
-###
-##  y = ismissm(x)
-##
-##      x = an n x m matrix
-##
-##      y = an n x m matrix of 0's (indicating not missing) and 1's (missing)
-##
-
-ismissm<-function(x){
-       is.na(x)
-}
 
 ismiss <- function(x){
   any(is.na(x))
 }
-###
-##  create vector of PTS evenly spaced points between STRT and ENDD,
-##  including the end points.
 
-seqaseF<-function(strt,endd,pts){
 
-        t<-(endd-strt)/(pts-1)
-        res<-seq(strt,endd,t)
-        return (res)
-}
 ##Additive sequance first point=st, increment =inc, number of points=n
 
 seqa <- function(st,inc,n){
   return(seq(from=st, by=inc,length.out=n))
 }
-### same as seqase but not including the end-points
-seqas <- function(strt,endd,pts){
-  res <- (endd-strt)/pts
-  fst <- strt+0.5*res
-  inc <- res
-  n <- pts
-  res <- seq(from=fst, by=res, length.out=pts)  
-  
-  return(res)
-}
-seqase<-function(strt,endd,pts){
-  return(seq(from=strt,to=endd,length.out=pts))}
-
 
 
 
 ### dbuf is a named list 
 ### str is string.
-### Check if str is part of the
-### names of dbuf independently of case.
-
-vin <- function(dbuf,str){
-  str <- tolower(str)
-  str <- paste("^",str,"$",sep="")
-  cv <- names(dbuf)
-  cv <- unlist(sapply(cv,tolower))
-  res <- TRUE
-  ix <- grep(str, cv, ignore.case=T)
-  if(length(ix) <= 0)
-    res <- FALSE
-
-  return(res);
-}
-
+### Check if str is in dbuf 
+### If that is the case returns the list element
+### associated with names str.
+###
 vread <- function(dbuf, str){
  
   cv <- names(dbuf)
@@ -275,8 +184,8 @@ vget <- function(dbuf, str){
   return(lst)
 }  
 ### Similar to the Gauss vput: It inserts
-### a new element in the list dbuf and
-### return the new list
+### a new element, x,in the list dbuf with list name = xname
+### and return the new list with element inserted at end. 
 
 vput <- function(dbuf=list(), x, xname=""){
   if(!is.list(dbuf))
@@ -302,45 +211,46 @@ vput <- function(dbuf=list(), x, xname=""){
   
 return(dbuf)
 }
+###Similar to gauss returns the names of list dbuf
 vnamecv <- function(dbuf, trim=T){
   res <- names(dbuf)
   if(trim)
     res <- unlist(sapply(res, trim.blanks))
   return(res)
 }
-### DESCRIPTION the gauss code is case insensitive and that it was
-###             inG is doing, which is a wrapper around %in% but ignoring case
-###             Note that "in" may return a vector of T and F but inG applies
-###             all to the results of in and it is only T if all vector elemnts
-###             are T.
-###
-### as in(y,cv,0)
-###
-"%inG%" <- function(y,vars){
-  y <- unique.default(y)
-  vars <- unique.default(vars)
-  retp <- FALSE
-  ###make it case insensitive
-  if(!is.numeric(y)) 
-    y <- toupper(y)
-  if(!is.numeric(vars))
-    vars <- toupper(vars)
-    
-  ##  mat <- setdiff(y, vars)
-  ##  if(length(mat))
-  ##    retp <- TRUE
-  retp <- all(y %in% vars)
-  return(retp)                 
-    
+
+###DESCRIPTION same as the Gauss code returns the names of
+###            objects stored in list dbuf and a description of them
+vlist <- function(dbuf){
+  obj <- vnamecv(dbuf)
+  objdesc <- lapply(dbuf, mode)
+  objdim <- lapply(dbuf, function(m){
+    if(rows(m) > 1 || cols(m) >1)
+      return(v <- paste("rows=", rows(m)," cols=", cols(m)))
+    else
+      return("Scalar")
+  })
+                
+                               
+  lst <- lapply(1:length(obj), function(n){
+    nm <- obj[[n]]
+    desc <- objdesc[[n]]
+    dm <- objdim[[n]]
+    return(c(nm,desc,dm))})
+  names(lst) <- unlist(obj)
+
+  return(lst)
 }
-### DESCRIPTION similar to the recode func in Gauss
-###             x vector of N values
-###             e matrix NxK of 1's and 0's
-###             v vector of K elements
-### OUTPUT y is Nx1 matrix containing recoded values of x
-###        See recode.test() for an example
-### AUTHOR Elena Villalon
-### Date August 17th, 2007
+  
+### DESCRIPTION: Same as Gauss recode (see manual)
+### Changes the value of existing matrix x elements to the new values
+### that are stored in vector v
+### x Nx1 matrix to recode
+### e NxK matrix of 0 (FALSE) and 1 (TRUE)
+### v Kx 1 matrix with the new values
+### OUTPUT Nx1 vector with the recoded values of x
+###
+### AUTHOR: Elena Villalon (evillalon@iq.harvard.edu)
 ###
 recode <- function(x,e,v){
   x <- as.matrix(x)
@@ -376,7 +286,6 @@ recode1 <- function(x,e,v){
   return(x)
   } 
   
-
   
 
 recode.test <- function(){
@@ -390,6 +299,7 @@ recode.test <- function(){
    recode(x,e,v)
    
  }
+
 selif <- function(x, e){
   subset(x, subset=e)
 }
@@ -405,22 +315,8 @@ test.selif <- function(){
 
 sumc <- function(x){ return(colSums(x))}
 
-###DESCRIPTION Takes a matrix and sort all rows independently
-###            from each other or only the rows in index ix
-###
-sortbyRow <- function(mat, ix=NULL){
-  mad <- as.data.frame(t(mat))
-  mm <- mat
-  ind <- 1:length(mad)
-  if(length(ix))
-    ind <- ix
-  for( n in ind){
-    v <- sort(mad[[n]])
-    mm[n, ] <- v
-  }
-  
-  return(mm)
-}
+
+
 ### DESCRIPTION finds the index (row number) of the smallest element
 ###             in each column of a matrix as the Gauss function
 minindc <- function(mat){
@@ -487,63 +383,10 @@ missrv <- function(x, v){
   return(x)
 }
 
-##    y = mkmissm(x,m);
-##
-##  x = n x k data matrix
-##  m = n x k matrix of 0's and 1's
-##
-##  y[i,j] = missing if m[i,j]=1; else y[i,j]=x[i,j]
-##
-##  example:
-##
-##  m=ismissm(d);       /* remember which are missing */
-##  d2=missrv(d,-9)     /* change missing to -9's */
-##  /* do recodes to d2 as if no missing values were present */
-##  d3=mkmissm(data2,m)  /* after recodes, return to missing*/
-##
-## From Gary's code
 
-mkmissm <- function(x, m){
-  if( !all(as.vector(m) %in% 0:1))
-    warning("mkmissm: m must have only 0 or 1 or T, F entries")
-  y <- miss(m, 1) + x
-  return(y)
 
-}
-###DESCRIPTION the function diag in Gauss returns a 1 column vector
-###            with the diagonal values of mat, but diag in R builds
-###            a diagonal matrix.  To avoid confusion we call extract.diag
-###            to the R function that extracts the diagonal elemnts of a matrix
-###            and returns a matrix with one column.
-###
-extract.diag <- function(mat){
-  v <- mat[col(mat)==row(mat)]
-  return(as.matrix(v))
-}
 
-##  This archive is part of the program EI
-##  (C) Copyright 1995-2001 Gary King
-##  All Rights Reserved.
-##
-##  Utility procs
-##
-##   z = fisherzi(x);
-##   inverse of fisher's z transformation
-##
-fisherzi <- function(x){
- 
-  t <- exp(2*x);
-  t <- (t-1)/(t+1);
-  return(t);
-}
-##
-##   z = fisherz(x);
-##   fisher's z transformation
-##
-fisherz <- function(x){
-  t=0.5*log((1+x)/(1-x));
-  return(t);
-}
+
 ###DESCRIPTION x is a matrix compute variance covariance along cols
 vcx <- function(x){return(var(x))}
 cdfni <- function(x){qnorm(x)} ###inverse cumulative density  
@@ -556,6 +399,12 @@ rndu <- function(r, c){
   matrix(runif(r*c), nrow=r, ncol=c, byrow=TRUE)}
 pdf <- function(x){
   return(dnorm(x))}
+###DESCRIPTION As in the Gauss function based on cdfbvn or bivariate normal.
+###
+cdfbvn2 <- function(h,dh,k,dk,r){
+y <- cdfbvn(h+dh, k+dk,r)+cdfbvn(h,k,r) - cdfbvn(h,k+dk,r) - cdfbvn(h+dh, k, r)
+return(y)
+}
                        
 ###DESCRIPTION If v is scalar finds the indices of elements in x == v
 ###            If v is length two find the indices of elements in x
@@ -606,11 +455,23 @@ cdfbvn2 <- function(h,dh,k,dk,r){
 y <- cdfbvn(h+dh, k+dk,r)+cdfbvn(h,k,r) - cdfbvn(h,k+dk,r) - cdfbvn(h+dh, k, r)
 return(y)
 }
-ftos <-  function(x){
-  nc  <- nchar(as.character(floor(x))) 
-      fmt <- formatC(x,width=nc,digits=0, format="f")
-}
+### digits how many digits total including the left and rigth of decimal point
+### width= the total field width. If it is smaller than digits + decimal point
+### then it will default to width=digits+1 or width=digits (if not decimal point)
+### if width > 0 then right-justified otherwise left-justified.  
 
+ftos <-  function(x,fmat="f", digits=NULL, width=1){
+  nc  <- nchar(as.character(floor(x)))
+  nm <- nchar(x%%floor(x))
+  dc <- ifelse(nm > 5, 3, nm-2)
+   
+  if(!length(digits))
+      return(fmt <- formatC(x,digits=(nc+dc), format="f"))
+  return(fmt <- formatC(x,width=digits,digits=digits,format=fmat))
+}
+     
+
+                
 loess <- function(depvar, indvars,data, loess.span, loess.wgtType){
   y.loess <- loess(depvar~indvars, data, weights=loess.wgType, span=loess.span)
   yhat <- y.loess$fitted
@@ -641,73 +502,12 @@ vec <- function(mat){
   v <- matrix(as.vector(mat), ncol=1)
   return(v)
 }
-rndu <- function(r, c){
-  mat <- matrix(runif(r*c), nrow=r, ncol=c)
-  return(mat)
-}
 
-##/* reverse infinities
-##
-## y = infrv(x,minus,plus);
-## x = input vector
-## minus, plus = scalars
-## y = an ExE conformable matrix with -INF changed to minus and +INF changed
-##       to plus
-##
-infrv <- function(x,m,p){
-  x <- as.matrix(x)
-  plus <- Inf
-  minus <- -Inf;
-  s <- seq(from=1,by=1, length.out=nrow(x))
- 
-
-  pinf <- subset(s,subset= !(x != plus))  ###=(.not(x ./= plus)));
-  minf <- subset(s,subset=!(x != minus));
-  pinf <- as.matrix(pinf)
-  minf <- as.matrix(minf)
-  res <- x
-  
-  if(!scalmiss(pinf))
-    res[pinf] <- matrix(p,nrow=rows(pinf),ncol=1);
-  
-  
-  if(!scalmiss(minf))
-    res[minf] <- matrix(m,nrow=rows(as.matrix(minf)),ncol=1)
-  
-  return(res)
-}
 
   intquad1 <- function(f,v){
     lst <- integrate(f, lower=v[2], upper=v[1])
     return(lst$y)
   }
-###DESCRIPTION : trims leading and trailing blanks for any string but not
-###              inter-words blanks.  For example, trim.blanks("   abc  ") = "abc";
-###              but trim.blanks("   abc    def ")= "abc    def".
-### AUTHOR: Elena Villalon
-##          evillalon@iq.harvard.edu
-###
-trim.blanks <- function(x) {
-### at the beginning of string"^" gets anny number (+) of white spaces
-  f <- x
-  if(length(x))
-    f <- na.omit(x)
-  
-  if(length(f) <= 0)
-    return(x)
-  if(length(f)>1)
-    print(f)
-  if(f=="" )
-    return(x)
-  x <- sub("^[[:space:]]*(.*)", "\\1",x) ###get \n\t
-  x <- sub('^ +', '', x) ###get white spaces
-  
-### at the ending of string"$" gets anny number (+) of white spaces
-  
-  x <- sub("(.*)[[:space:]]*$", "\\1", x)
-  x <- sub(' +$', '', x)
-  return(x)
-}
 
 ##DESCRIPTION as in the Gauss function. Substitutes old values
 ##            for new values in matrix x, according to  the
@@ -742,141 +542,10 @@ substute.test <- function(){
 cumsumc <- function(mat){
   cumsum(as.data.frame(mat))}
 
-### DESCRIPTION this is the element division equivalent
-###             to the Gauss and Matlab operation "./"
-### INPUT v=vector and mat=matrix
-###       v may have only one element or length(v) = ncol(mat) or
-###       length(v) = nrow(mat)
-###
-### OUTPUT divide elemnt by element mat/v or t(t(mat)/v)
-###        depending if nrow(mat) or ncol(mat) = length(v)
-###
-###        Gauss mat./v -or- v./mat 
-###
-###AUTHOR Elena Villalon
-###       evillalon@iq.harvard.edu
-###
-"%dot/%" <- function(mat, v){
 
-  if(length(v) <= 1 || length(mat) <= 1)
-    return(mat/v)
-  
-  mat <- as.matrix(mat)
-  
-  if(length(v)==length(mat)){
-    res <- as.vector(mat) /as.vector(v)
-    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
-    return(res)
-  }
-  mat0 <- mat
-  v0 <- v
-  invrt <- FALSE
-  trnps <- FALSE
-  if(length(v) > length(mat)){
-    v <- as.vector(mat0)
-    mat <- as.matrix(v0)
-    invrt <- T
-  }else
-  v <- as.vector(v)
-    
-  if(length(v) != ncol(mat) && length(v) != nrow(mat))
-    stop("Arrays are non-conformable")
-  if(length(v) == rows(mat)) {
-    mat <- t(mat)
-    trnps <- T
-  }
-  if(!is.data.frame(mat)){
-    mdf <- as.data.frame(mat)
-    res <- as.matrix(t(t(mdf)/v))
-    colnames(res) <- NULL
-    rownames(res) <- NULL
-    if(invrt)
-      res <- 1/res
-    if(trnps)
-      res <- t(res)
-    return(res)
-  }else{
-    if(!invrt)
-      res <- t(mat/v)
-    else
-      res <- 1/t(mat/v)
-  if(trnps)
-    res <- t(res)
-  return(res)
-  }
-}
-### DESCRIPTION this is the element multiplication equivalent
-###             to the Gauss and Matlab operation ".*"
-### INPUT v=vector and mat=matrix
-###       v may have only one element or length(v) = ncol(mat) or
-###       length(v) = nrow(mat)
-###
-### OUTPUT multiply elemnt by element mat*v or t(t(mat)*v)
-###        depending if nrow(mat) or ncol(mat) = length(v)
-###
-###        Gauss v.*mat -or- mat*.v 
-###
-###AUTHOR Elena Villalon
-###       evillalon@iq.harvard.edu
-###
-"%dot*%" <- function(v, mat){
-
-  if(length(v) <= 1 || length(mat) <=1)
-    return(mat*v) 
-  mat <- as.matrix(mat)
-  if(length(v)==length(mat)){
-    res <- as.vector(v) *as.vector(mat)
-    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
-    return(res)
-  }
-mat0 <- mat
-v0 <- v
-
-trnps <- FALSE
-if(length(v) > length(mat)){
-  v <- as.vector(mat0)
-  mat <- as.matrix(v0)
-}else
-v <- as.vector(v)
-     
-
-   if(length(v) != ncol(mat) && length(v) != nrow(mat))
-    stop("Arrays are non-conformable")
-
-  if(length(v) == rows(mat)) {
-    mat <- t(mat)
-    trnps <- T
-  }
-
-  if(!is.data.frame(mat)){
-    mdf <- as.data.frame(mat)
-    res <- as.matrix(t(t(mdf)*v))
-    colnames(res) <- NULL
-    rownames(res) <- NULL
-    if(trnps) res <- t(res)
-    return(res)
-  }else{
-    res <- (t(t(mat)*v))
-    if(trnps) res <- t(res)
-    return(res)
-  }
-}
-###DESCRIPTION difference two matrices
-### mat = Mx 1
-### v= Vx 1
-### res = M x V
-### Gauss (mat-m'), where mat and m are 1 column matrices and m'=t(m)
-## 
-
- "%-%" <- function(mat, m){
-     res <- matrix(as.vector(mat),nrow=length(mat), ncol=length(m))
-     red <- t(as.data.frame(t(res))-m)
-     res <-  as.matrix(red)
-     colnames(res) <- rownames(res) <- NULL
-     return(res)
-   }
-     
      
          
     
     
+
+  

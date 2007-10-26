@@ -1,5 +1,5 @@
 
-ei <- function(t,x,tvap,Zb, Zw,debug=T,...)
+ei <- function(t,x,tvap,Zb, Zw,...)
 {
  ###  local res,et,MLpsi,MLvc,betaBs,betaWs,tst,Eselect,flat;
   evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment 
@@ -60,12 +60,12 @@ ei <- function(t,x,tvap,Zb, Zw,debug=T,...)
     vec <- matrix(vec)
     Eselect <- Eselect & (vec < EselRnd);
   }
-   
-
+ 
+ 
 ###  /* nonparametric estimation */
   ###if(EnonPar){ ### check remove
-   if(debug) evglobal <<- evbase 
-    if(T){
+  if(dbug==T) evglobal <<- evbase 
+  if(EnonPar>=1){
        
     betaBs <- einonp(t,x, evbase);
     assign("betaBs", betaBs, env=evbase); 
@@ -495,6 +495,8 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
 eiset <- function(t,x,tvap,Zb,Zw,...){
   ## general
   
+  ##use for debugging only
+  dbug <- FALSE
   
   Eversion="EI Version: 1.9, 2/8/2003";
 ##  Eres=vput("","Run time: "$+datestr(0)$+" "$+timestr(0)$+", "$+Eversion,
@@ -503,9 +505,8 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
   driver <- match.call()
   args <- names(driver)
     
-
   Eres <- c(Eres,list(eiversion=Eversion))
-    Echeck <- as.matrix(0);###Echeck <- as.matrix(1); check remove
+  Echeck <- as.matrix(0);### no checks but Echeck <- as.matrix(1) check 
   Esims <- as.matrix(100);
   Eprt <- as.matrix(2);
   Eselect <- as.matrix(1);
@@ -518,7 +519,7 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
   EnumTol<- as.matrix(0.0001);
   EnonEval<- as.matrix(11);
   EnonNumInt<- as.matrix(11);
-  EnonPar<-  as.matrix(0);
+  EnonPar<-  as.matrix(0); ### it does not call einonp; set it = 1 for non-parametric run
   Ei2.m<- as.matrix(-1);
   eimetar<- EIMetaR <- as.matrix(1);
   ei2.mta<- as.matrix(0);
