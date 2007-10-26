@@ -41,10 +41,10 @@ scalone<-function(y){
 
 meanwc<-meanWc <- function(x,wt,na.remove=TRUE){
   x <- as.matrix(x)
-  
+  wwt <- wt
   if(scalmiss(wt) || wt==1)
     wwt <- rep(1, rows(x))
-  wwt[is.na(wt)]<- 0
+  wwt[is.na(wwt)]<- 0
   ln <- -floor(-length(x)/length(wwt))
   
   if(ln >1) 

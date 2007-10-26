@@ -14,14 +14,18 @@ expanddots <- function(drvdot, drv, evbase){
  
   args <- names(drv)
   args <- args[-1]
+  
+  if(args[length(args)]=="...") ### counts for "..."
+    args <- args[-length(args)]
   argsdots <- names(drvdot)
   argsdots <- argsdots[-1]
- 
+
   if(length(argsdots) == length(args))
     return(evbase)  ##nothing in expand.dots
   ln <- length(args)
  
   expn  <- setdiff(argsdots, args)
+ 
   argsdots <- nm <- names(drvdot)
    
   ix <- sapply(expn, grep, argsdots)

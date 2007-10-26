@@ -5,10 +5,11 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment 
   drvdot <- match.call(expand.dots=TRUE)
   drv  <-  match.call(expand.dots=FALSE)
+
   n <- tvap
  
   evbase <- expanddots(drvdot,drv,evbase)
- 
+  
   ###	@ timing start @
   et   <- proc.time()
   param  <- ls(env=evbase)
@@ -17,7 +18,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
     Eversion <- get("Eversion", env=evbase)
     message(Eversion)
   }
- 
+##  print(EnonPar) 
   ### copy variables from evbase to local environment evei
   evei <- getEnvVar(evbase, environment())  ##environment 
  
