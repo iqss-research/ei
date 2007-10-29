@@ -1,3 +1,5 @@
+## run Runit tests found on inst/unitTests
+
 if(require("RUnit", quietly=TRUE)) {
          
         wd <- getwd()
