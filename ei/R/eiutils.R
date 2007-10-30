@@ -254,7 +254,7 @@ ftosm <- function(sym,num,num2){
 
 ###digits total digist displayed including the 
 fmtt <- function(x){
-reeturn(formatC(x, digits=7, width=3))
+return(formatC(x, digits=7, width=3))
 }
                  
 

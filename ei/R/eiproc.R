@@ -1,3 +1,47 @@
+##/*
+##**  This archive is part of the program EI
+##**  (C) Copyright 1995-2001 Gary King
+##**  All Rights Reserved.
+##*/
+##/*
+##    {b,vc}=quadcml(x,Zb,Zw,y);
+##**  Ecological Inference Likelihood Maximization via CML
+##**  With variance-covariance computed via global methods.
+##** 
+##**  MODEL:
+##**  mean function:  E(Y)=Bb*X + Bw*(1-x)
+##**  var  function:  V(Y)=vb*X^2 + c(b,w)*2*X*(1-X) + vw*(1-X)^2
+##**                  var params reparam'd: vars>0 and p.d.
+##**  distribution:   distribution implied on Y if Bb,Bw are bivariate
+##**                  truncated normal
+##**  INPUT:
+##**  x = explanatory variable 
+##**  Zb = 1 or covariates for Bb (constant term included automatically)
+##**  Zw = 1 or covariates for Bw (constant term included automatically)
+##**  y = dependent variable
+##**
+##**  OUTPUT:
+##**  b = {Bb, Bw, sb, sw, rho}, where Bb, Bw are vectors if Zb,Zw have vars
+##**  vc = estimation global var cov matrix of b
+##**
+##**  where params of interest are reparameterized as eirepar.g
+##**
+##**  GLOBALS
+##**  _Erho[1]=standard deviation of normal prior on phi_5 (default=0.5)
+##**        0 fix it to _Erho[2] and don't estimate
+##**       <0 estimate without prior
+##**  _Ebounds=1 set bounds automatically unless z's are included
+##**           0 don't use bounds
+##**           kx2 or 1x2 matrix to indicate upper~lower bounds 
+##**  _Eprt=0 print nothing
+##**        1 print only final output from each stage
+##**        2 print everything useful plus friendly iteration numbers etc
+##**        3 print everything useful, iterations, and all sorts of checks
+##**  _Estval = 1 use default starting values or set to vector
+##**  _Eselect = scalar 1 to use all observations
+##**             vector of 1's to select and 0's to discard observations during
+##**             likelihood estimation.
+##*/
 
 ei <- function(t,x,tvap,Zb, Zw,...)
 {
@@ -33,6 +77,8 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 ###    print(get(x, env=evbase))})
 ###    checkinputs(t,x,n,Zb,Zw);
 ###   return(evbase)
+
+  
 ###  /* verify inputs */
   if(as.logical(Echeck)){
  
@@ -53,9 +99,9 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   
  ###  /* augment _Eselect if _EselRnd<1 */
   assign("Eselect", Eselect, env=evbase);  ###$@ save existing value @
-
-  Eselect <- matrix(1,nrow=x,1)* as.vector(Eselect);
-  
+  Eselect0 <- Eselect
+  Eselect <- matrix(1,nrow=rows(x),ncol=1)* as.vector(Eselect);
+ 
   if(EselRnd<1){
     vec <- runif(rows(x),min=0,max=1)
     vec <- matrix(vec)
@@ -64,7 +110,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  
  
 ###  /* nonparametric estimation */
-  ###if(EnonPar){ ### check remove
+  
   if(dbug==T) evglobal <<- evbase 
   if(EnonPar>=1){
        
@@ -73,7 +119,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   
 
     Eres <- add.to.Eres(Eres, round=2, evbase)  
-    return(timing(et,Eprt,Eres))
+    return(timing(et,Eprt,Eres,Eselect0))
   }
   ### /* parametric estimation: */
   
@@ -93,19 +139,19 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 
   ### /* set internal global */
 
-  assign("Ez", 0, env=evbase)
- ### clearg _Ez;	@ n of covariates, incl. implied constant term for Zb|Zw @
-  Ez <- (cols(Zb)+1-scalone(Zb))|(cols(Zw)+1-scalone(Zw));
 
+ ### clearg _Ez;	@ n of covariates, incl. implied constant term for Zb|Zw @
+  Ez <- as.matrix(c((cols(Zb)+1-scalone(Zb)),(cols(Zw)+1-scalone(Zw))));
+  assign("Ez", Ez, env=evbase)
 
 ###  /* likelihood estimation */
   if(EdoML==1){
    
-     lst  <- quadcml(x,Zb,Zw,T);
+     lst  <- quadcml(x,Zb,Zw,t);
      MLpsi <- lst$Mlpsi
      MLvc <- lst$MLvc
      
-     if(is.na(MLvc)){
+     if(length(MLvc) <= 1 && is.na(MLvc)){
        Eres <- vput(Eres,MLpsi,"phi");
        Eres <- vput(Eres,MLvc,"vcphi");
       return(Eres);
@@ -124,21 +170,22 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  ###/* simulation */
   if(EdoSim==1){
   ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
-     lst <- psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
+     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc);
      betaBs <- lst$betaBs
      betaWs <- lst$betaWs
      Eres   <- vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @
+     assign("Eres", Eres,env=evbase)
    }
 
 
- return(timing(et,Eprt,Eres));
+ return(timing(et,Eprt,Eres,Eselect0));
  
 
 }
 
           
 ### timing:
-timing <- function(et, Eprt,Eres){
+timing <- function(et, Eprt,Eres,Eselect0){
   if (Eprt>0){
     et <- proc.time() -et;###@ timing end  @
     et <- na.omit(et)
@@ -156,8 +203,8 @@ tst <- paste("Run time: ", date(), "\nEversion", sep="")
   Eres <- vput(Eres,tst,"date");
   res <- Eres;
   Eres <- vput(list(),tst,"date");
-
-##  assign("Eselect", Eselect, env=evbase)
+  evbase <- get("evbase", env=parent.frame())
+  assign("Eselect", Eselect0, env=evbase)
  
   return(res)
 }

@@ -9,6 +9,9 @@ packdta <- function(x,Zb,Zw,t, evbase=NULL){
     evbase <- get("evbase", env=parent.frame())
   Ez <- get("Ez", env=evbase)
   Eselect <- get("Eselect", env=evbase)
+  x <- as.matrix(x)
+  t <- as.matrix(t)
+
   dataset <- cbind(x,t)
   
   if (length(Ez) > 1 && Ez[2]>1)

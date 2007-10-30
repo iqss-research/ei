@@ -50,7 +50,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
    if (Eprt>=2)
     message("Likelihood estimation...");
  
-
+  Edirtol <- EdirTol
   ###/* prepare data */
   dataset <- packdta(x,Zb,Zw,y);
   if(Eprt>=2){
@@ -69,10 +69,11 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
   
 ###  /* starting values OR grid search */
   
-   if (rows(Estval)==1 && !(scalone(Estval)))###  @ grid search @
+   if (rows(Estval)==1 && !(scalone(Estval))){###  @ grid search @
      gridl <- ifelse (Estval==0, 5, Estval)
-   else
+   }else{
      gridl <- 0 ###        @ no grid search @
+   }
 ###    gridl <- 5 @ default number of gridlines for grid search @   
    
  
@@ -91,10 +92,12 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
  
   
  ### /* cml globals */
-   title <- paste("EI Likelihood Maximization: ",eiread(Eres,"titl"))
+   title <- "EI Likelihood Maximization: "
+   if(vin(Eres,"titl"))
+     title <- paste(title,eiread(Eres,"titl"))
    cml.Active <- as.matrix(c(rep(1,rows(stval)-2),0,0))
    assign("cml.Active", cml.Active, env=evbase)
-   cml.MaxIters <- Emaxiter;
+   cml.MaxIters <- Emaxiter <- EmaxIter;
    assign("cml.MaxIters", cml.MaxIters, env=evbase)
    cml.DirTol <- EdirTol;
    assign("cml.DirTol", cml.DirTol, env=evbase)
@@ -102,6 +105,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
    assign("cml.CovPar", cml.CovPar, env=evbase);
    cml.ParNames <- matrix("", nrow=7)
    spacer <- "   "
+   
    cml.ParNames[1] <- paste(spacer,"Zb",ftosm(seq(from=0, by=1,length.out=Ez[1]),1,0),sep="")
    cml.ParNames[2] <- paste(spacer,"Zw", ftosm(seq(from=0,by=1,length.out=Ez[2]),1,1),sep="")
    cml.ParNames[3] <- paste(spacer,  "sigB", sep="")
@@ -112,24 +116,24 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
    assign("cml.ParNames",cml.ParNames, env=evbase)
 ###@ if change this code, change also eiread @
   if (scalzero(Ebounds))###     don't use bounds  
-    cml.Bounds <- matrix(c(-1e+256, 1e+256), nrow=1, ncol=2)
+    cml.bounds <- cml.Bounds <- matrix(c(-1e+256, 1e+256), nrow=1, ncol=2)
   else if (cols(Ebounds)==2)
-    cml.Bounds <- matrix(c(Ebounds,0,0.0001,0,0.0001), ncol=2,byrow=TRUE)
+    cml.bounds <- cml.Bounds <- matrix(c(Ebounds,0,0.0001,0,0.0001), ncol=2,byrow=TRUE)
   else if (scalone(Ebounds)) ###    automatic bounds calculation 
     {
       bnds <- matrix(c(-10,10),nrow=1)
       nbnds <- matrix(c(-20,20),nrow=1)
       if (Ez[1]==1)
-        cml.Bounds <- bnds
+        cml.bounds <- cml.Bounds <- bnds
       else
-        cml.Bounds <- nbnds %dot*% matrix(1,nrow=Ez[1],ncol=1)
+        cml.bounds <- cml.Bounds <- nbnds %dot*% matrix(1,nrow=Ez[1],ncol=1)
     
       if (Ez[2]==1)
-        cml.Bounds <- rbind(cml.Bounds,bnds)
+        cml.bounds <- cml.Bounds <- rbind(cml.Bounds,bnds)
       else
-        cml.Bounds <- rbind(cml.Bounds,(nbnds %dot*% matrix(1,nrow=Ez[2],ncol=1)))
+        cml.bounds <- cml.Bounds <- rbind(cml.Bounds,(nbnds %dot*% matrix(1,nrow=Ez[2],ncol=1)))
     
-      cml.Bounds <- matrix(c(cml.Bounds,-6, 3,-6,3,-2,2), ncol=2, byrow=TRUE)
+      cml.bounds <- cml.Bounds <- matrix(c(cml.Bounds,-6, 3,-6,3,-2,2), ncol=2, byrow=TRUE)
     }else{
     assign("cml.Bounds", cml.Bounds, env=evbase)
     stop(message="quadcml: problem with Ebounds")
@@ -207,17 +211,18 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
    if (gridl!=0){ ###/* run GRID search */
      if (Eprt>=2)
        message("Preliminary mean grid search (on 2 parameters)...")
-      
+     Edirtol <- EdirTol
      tt <- rows(cml.bounds)
      gr1 <- colMeans(t(cml.bounds[3:tt,]))
-     gr1 <- rbind(cml.bounds[1:2,], as.matrix(c(gr1,gr1)))
-     lst <- eigrid(dataset,gr1,53,Edirtol) ###COMPUTE 
+     
+     gr1 <- rbind(cml.bounds[1:2,], matrix(c(gr1,gr1),ncol=2))
+     lst <- eigrid(dataset,gr1,53,EdirTol) ###COMPUTE 
      b <- lst[[1]]
      logl <- lst[[2]]
      cml.bounds[1:2,] <- b[1:2]+matrix(c(-1,-1, 1,1),nrow=2, ncol=2)
     if (Eprt>=2)
       message("?; Main grid search (on all parameters)...")
-     lst <- eigrid(dataset,cml.bounds,gridl,Edirtol)
+     lst <- eigrid(dataset,cml.bounds,gridl,EdirTol)
      b <- lst[[1]]
      logl <- lst[[2]]
     

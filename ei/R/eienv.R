@@ -152,7 +152,8 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
       Eres <- vput(Eres,EdoML.vcphi,"doml.vc");   
       Eres <- vput(Eres,EdoSim,"EdoSim");
       Eres <- vput(Eres,Eeta,"Eeta");
-      Eres <- vput(Eres,Eigraph.bvsmth,   "eigraph.bvsmth"); 
+      Eres <- vput(Eres,Eigraph.bvsmth,   "eigraph.bvsmth");
+      Eres <- vput(Eres,Eigraph.bvsmth,  "bvsmth"); 
       Eres <- vput(Eres,EisChk,"EisChk");
       Eres <- vput(Eres,EiLliks,"EiLliks");
       Eres <- vput(Eres,EisFac,"EisFac");
