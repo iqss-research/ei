@@ -1,0 +1,10 @@
+Package: ei
+Version: 0.0-1
+Title: ei
+Author: Gary King <king@harvard.edu>,
+Maintainer: Olivia Lau <olau@fas.harvard.edu>
+Depends: R (>= 2.5.0)
+Description: ei description goes here 
+License: GPL version 2 or newer
+URL: http://gking.harvard.edu/zelig
+Packaged: Wed May 30 16:14:15 2007; falimadh
