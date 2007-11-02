@@ -110,10 +110,11 @@ einonp <- function(t,x, evbase=parent.frame()){
 ##** If memory is available, use vec(px) and vec(py) and reshape pz upon output
 ##** to make this proc run faster.
 ##*/
-nonbiv <- function(t,x,px,py, evbase=parent.frame()){
-
-  eigraph.bvsmth <- get("eigraph.bvsmth",env=evbase)
-  Enumtol <- as.vector(get("EnumTol", env=evbase))
+nonbiv <- function(t,x,px,py, evbase=parent.frame(),eigraph.bvsmth=NULL,Enumtol=NULL){
+  if(length(evbase)){
+    eigraph.bvsmth <- get("eigraph.bvsmth",env=evbase)
+    Enumtol <- as.vector(get("EnumTol", env=evbase))
+  }
   t <- as.matrix(t)
   x <- as.matrix(x)
   px <- as.matrix(px)
@@ -152,13 +153,12 @@ nonbiv <- function(t,x,px,py, evbase=parent.frame()){
 ##
 ## FUNCS:bounds1, maxr, perpdist, seqas 
 ##*/
-unitarea <- function(t,x, evbase=parent.frame()){
-
-  EnonNumInt <- get("EnonNumInt", env=evbase)
-
-  Enumtol <- as.vector(get("EnumTol", env=evbase))
-  eigraph.bvsmth <- get("eigraph.bvsmth", env=evbase)
-
+unitarea <- function(t,x, evbase=parent.frame(),EnonNumInt=NULL, Enumtol=NULL,eigraph.bvsmth=NULL ){
+  if(length(evbase)){
+    EnonNumInt <- get("EnonNumInt", env=evbase)
+    Enumtol <- as.vector(get("EnumTol", env=evbase))
+    eigraph.bvsmth <- get("eigraph.bvsmth", env=evbase)
+  }
   x <- recode(x,cbind(x<Enumtol,x>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)))
   lst <- bounds1(t,x,1,Enumtol);
  

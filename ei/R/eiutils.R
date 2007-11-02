@@ -290,34 +290,6 @@ infrv <- function(x,m,p){
 }
 
  
-###DESCRIPTION : trims leading and trailing blanks for any string but not
-###              inter-words blanks.  For example, trim.blanks("   abc  ") = "abc";
-###              but trim.blanks("   abc    def ")= "abc    def".
-### AUTHOR: Elena Villalon
-##          evillalon@iq.harvard.edu
-###
-trim.blanks <- function(x) {
-### at the beginning of string"^" gets anny number (+) of white spaces
-  f <- x
-  if(length(x))
-    f <- na.omit(x)
-  
-  if(length(f) <= 0)
-    return(x)
-  if(length(f)>1)
-    print(f)
-  if(f=="" )
-    return(x)
-  x <- sub("^[[:space:]]*(.*)", "\\1",x) ###get \n\t
-  x <- sub('^ +', '', x) ###get white spaces
-  
-### at the ending of string"$" gets anny number (+) of white spaces
-  
-  x <- sub("(.*)[[:space:]]*$", "\\1", x)
-  x <- sub(' +$', '', x)
-  return(x)
-}
-
 
 
 ### DESCRIPTION this is the element division equivalent

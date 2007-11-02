@@ -43,9 +43,9 @@
 
 #include ei.ext;
 quadcml <- function(x,Zb,Zw,y,evbase=parent.frame()) {
-   t <- matrix(t,ncol=1)
+   x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
-   
+  
    evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
    if (Eprt>=2)
     message("Likelihood estimation...");

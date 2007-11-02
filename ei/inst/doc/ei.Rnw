@@ -1,1 +1,26 @@
-### vignette here
+\SweaveOpts{results=hide, prefix.string=vigpics/ei}
+
+
+%\VignetteIndexEntry{Non-parametric estimatio of Ecological Inference}
+%\VignetteDepends{ei,mvtnorm}
+%\VignetteKeyWords{model,non-parametric, ecological}
+%\VignettePackage{ei}
+\begin{document}
+
+<<loadLibrary, echo=F,results=hide>>=
+library(ei)
+@ 
+
+
+\section{{\tt ei}: Non-parametric estimation 
+for a 2x2 cell}\label{ei}
+For a detailed description go to \url{http://gking.harvard.edu/ei}.
+<<BasicExample.data>>=
+ data(sample)
+## sample
+@ 
+<<BasicExample.einonpar>>=
+ dbuf <- ei(sample[,1], sample[,2],sample[,3],1,1, EnonPar=1)         
+@ 
+
+\end{document}
