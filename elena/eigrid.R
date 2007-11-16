@@ -36,76 +36,72 @@
 ##*/
 
 #include ei.ext;
-eigrid <- function(dataset,gridlohi,gridline,toler,evbase=parent.frame())
+eigrid <- function(dataset,gridlohi,gridline,toler,evbase=get("evbase", parent.frame()))
   {
-##  local vars,stval,stb,t,bb,bw,sb,sbw,sw,vc,bnds,nbnds,tdiag,logl,
-##  b,tt1,tt2,tt,vrs,Dvrs,r,rho,pb,grds,se,mask,fmt,eta,
-##  estvalmx,grid,gridopt,gridvar,ff,jj,k,best,likcol,loglk,grid1ln,
-##  gridplus,gridope,et1,et2,et3,et4,gridlo,gridhi,rr,
-##  grid1lo,grid1hi,rrrr,ffff,mm,g1opt,diffgrid,str;
 
-gridlo <- gridlohi[,1];
-gridhi <- gridlohi[,2];
-str <- "********************************************************************";
+    gridlo <- gridlohi[,1];
+    gridhi <- gridlohi[,2];
+    str <- "********************************************************************";
 
-gridvar <- gridhi - gridlo;
+    gridvar <- gridhi - gridlo;
 
-##/* number of zoom-ins to get to _Edirtol level of accuracy */
-k <- floor((log(toler/max(gridvar)))/(log(2/(gridline + 1))))+ 1;
+    ##/* number of zoom-ins to get to _Edirtol level of accuracy */
+    k <- floor((log(toler/max(gridvar)))/(log(2/(gridline + 1))))+ 1;
 
-grid <- t(makegrid(gridlo,gridhi,gridline)) ### /* get initial grid */
+    grid <- t(makegrid(gridlo,gridhi,gridline)) ### /* get initial grid */
 
-/* calculate the likelihood of each grid point */
-for j (1,k,1);               /* zoom-in number */
-  jj = j;
-  str;
-  format/ldn 4,0;
-  "Beginning zoom-in ";;jj;;" of ";;k;
-  rr=cols(grid);
-  loglk = zeros(rr,1);
-  et1 = hsec;
-  for f(1,rr,1);          /* regulates grid-line to be analyzed */
-    ff = f;
-    if ((jj==1) .and (ff==200));
-       et2 = hsec;
-       et3 = (et2 - et1)*rr*k/ff;
-       format/ldn 1,1;
-       "The grid search will end approximately";;
-       (et3-(et2-et1))/6000;;" minutes from now (" timestr(0) ")";;
-       printfl;
-     endif;
-    loglk[ff]=sumc(eiloglik(grid[.,ff],dataset));
+###/* calculate the likelihood of each grid point */
+    for (j in (1:k)){ ###               /* zoom-in number */
+      jj <- j
+      print(str)
+###  format/ldn 4,0;
+      print(paste("Beginning zoom-in ", jj))
+      print(paste(" of ", k))
+      rr <- cols(grid)
+      loglk <- matrix(0,nrow=rr,ncol=1)
+      et1 = hsec
+      for (f in 1:rr) { ###          /* regulates grid-line to be analyzed */
+        ff <- f
+        if ((jj==1) && (ff==200)){
+          et2 <- hsec
+          et3 <- (et2 - et1)*rr*k/ff
+###  format/ldn 1,1;
+          print("The grid search will end approximately")
+          print(paste((et3-(et2-et1))/6000," minutes from now (", proc.time()[1], ")"))
+        }
+        loglk[ff] <- colSums(as.matrix(eiloglik(grid[,ff],dataset)))
     
-  endfor;
+      }
 
-/* Find grid point with highest likelihood and zoom in */
-  best = maxindc(loglk);        /* max like row number */
-  format/ldn 7,2;
-  "Best grid point, loglik: ";;loglk[best];
-  gridopt = grid[.,best];
-  format/ldn 6,3;
-  "Coordinates:             ";;gridopt';
-  "Scale explored:          ";;gridvar';
-  if jj <= k-1;
-     gridvar = gridvar * 2 / (gridline + 1);
-     gridhi = gridopt + gridvar/2;
-     gridlo = gridopt - gridvar/2;
-     diffgrid = (gridvar.<toler);
-     for m(1,rows(diffgrid),1);
-	 mm = m;
-	 if scalone(diffgrid[mm]);
-	    gridlo[mm] = (gridlo[mm]+gridhi[mm])/2;
-	    gridhi[mm] = gridlo[mm];
-         endif;
-     endfor;
-     grid = makegrid(gridlo,gridhi,gridline)';
-  endif;
-endfor;
-str;
+###/* Find grid point with highest likelihood and zoom in */
+      best <- maxindc(loglk) ###        /* max like row number */
+### format/ldn 7,2;
+      print(paste("Best grid point, loglik: ", loglk[best]))
+      gridopt <- grid[,best]
+### format/ldn 6,3;
+      print(paste("Coordinates:             ", as.vector(gridopt)))
+      print(paste("Scale explored:          ", as.vector(gridvar)))
+      if (jj <= k-1){
+        gridvar <- gridvar * 2 / (gridline + 1)
+        gridhi <- gridopt + gridvar/2
+        gridlo <- gridopt - gridvar/2
+        diffgrid <- (gridvar <toler)
+        for (m in (1:rows(diffgrid))){
+          mm <- m
+          if (scalone(diffgrid[mm])){  
+            gridlo[mm] <- (gridlo[mm]+gridhi[mm])/2
+            gridhi[mm] <- gridlo[mm]
+          }
+        }
+        grid <- makegrid(gridlo,gridhi,gridline)
+        grid <- as.vector(grid)
+      }
+    }
+    print(str)
+    lst <- c(list(gridopt=gridopt),list(loglk=loglk[best]))
+    return(lst)
+  }
 
-retp(gridopt,loglk[best]);
-endp;
-'
 ##/**************************************************************************
 ##**   makegrid.src
 ##**   version of 9 June 1998
@@ -156,23 +152,22 @@ endp;
 ##**
 ##*************************************************************************/
 
-makegrid <- function(gridlo,gridhi,gridline)
+makegrid <- function(gridlo,gridhi,gridline, evbase=get("evbase", parent.frame()))
   {
-##local ii,j,kk,l,mm,nn,gridpts,griddiff,gridnums,griddum,gridpack,grid,glo,ghi,
-##   gridint,gridcut,gridsum,gridrows,trueup,truedown;
 
-glo <- gridlo;##      /* vector containing lower ranges in scale of estimn */
-ghi <- gridhi;##      /* vector containing upper ranges in scale of estimn */
-  j <- gridline;##    /* the number of gridlines per dimension */
-  l <- rows(ghi);##   /* the number of dimensions */
 
-griddiff <- ghi - glo; ##                /* difference vector: the range */
-griddum <- (griddiff !=  0); ###         /* 1 if ghi /= glo, else 0 */
-gridsum <- colSums(as.matrix(griddum)); ###            /* how many dim's will be varied */
-gridnums <- seq(from=1, by=1,length.out=rows(griddum))
+    glo <- gridlo;##      /* vector containing lower ranges in scale of estimn */
+    ghi <- gridhi;##      /* vector containing upper ranges in scale of estimn */
+    j <- gridline;##    /* the number of gridlines per dimension */
+    l <- rows(ghi);##   /* the number of dimensions */
+
+    griddiff <- ghi - glo; ##                /* difference vector: the range */
+    griddum <- (griddiff !=  0); ###         /* 1 if ghi /= glo, else 0 */
+    gridsum <- colSums(as.matrix(griddum)); ###            /* how many dim's will be varied */
+    gridnums <- seq(from=1, by=1,length.out=rows(griddum))
 ###/* convenient labelling device */
-trueup <- glo+(1/(1+j))*griddiff;  ### /* vector with highest gridpoint coords */
-truedown <- ghi-(1/(1+j))*griddiff; ###  /* vector with lowest gridpoint coords */
+    trueup <- glo+(1/(1+j))*griddiff;  ### /* vector with highest gridpoint coords */
+    truedown <- ghi-(1/(1+j))*griddiff; ###  /* vector with lowest gridpoint coords */
 
 ###/* The way the third (main) if-loop is written at present, it cannot handle 
 ###   gridum = 0 or gridsum = l because of the use of trimr.  I am sure there is
@@ -180,47 +175,48 @@ truedown <- ghi-(1/(1+j))*griddiff; ###  /* vector with lowest gridpoint coords 
 ###   work okay for right now.  There is probably also a better way of doing the
 ###   main loop in general, but this is the best I've tried up to now.  */
 
-if (gridsum == l){ ###       /* i.e., if we are to vary over ALL dimensions */
-  gridpts <- matrix(0,nrow=j,ncol=l)         
-  for (k in(1:l)){
-    kk <- k
-    gridpts[,kk] <- seq(from=truedown[kk],to=trueup[kk],length.out=j)
-  }
+    if (gridsum == l){ ###       /* i.e., if we are to vary over ALL dimensions */
+      gridpts <- matrix(0,nrow=j,ncol=l)         
+      for (k in(1:l)){
+        kk <- k
+  
+        gridpts[,kk] <- seq(from=truedown[kk],to=trueup[kk],length.out=j)
+      }
+      
+      grid <- makefacn(l,gridpts); 
+    }
 
-  grid <- makefacn(l,gridpts);  ###COMPUTE   /* make the grid, using our points matrix */
-}
+    if (gridsum == 0)###  /* to vary over NO dimensions: i.e., ghi = glo = grid' */
+      grid <- t(ghi);
 
-if gridsum == 0;  /* to vary over NO dimensions: i.e., ghi = glo = grid' */
-  grid = ghi';
-endif;
-
-if gridsum/=0 and gridsum/=l; /* the complicated case where only some vary */
-   gridpack = griddum ~ gridnums ~ glo ~ ghi ~ truedown ~ trueup;
-   gridpack = sortc(gridpack,1);
-   gridcut = gridpack[1:rows(gridpack)-gridsum,2:4];
-   gridpack = trimr(gridpack,rows(gridpack)-gridsum,0);
-   gridpack = sortc(gridpack,2);
-   gridrows = rows(gridpack);
-   gridpts = zeros(j,gridrows);
-   grid = zeros(j^(gridrows),l);
+    if (gridsum !=0 && gridsum!=l)
+      {### /* the complicated case where only some vary */
+        gridpack <- cbind(griddum,gridnums, glo, ghi, truedown, trueup)
+        gridpack <- sortc(gridpack,1)
+        gridcut <- gridpack[1:rows(gridpack)-gridsum,2:4]
+        gridpack <- trimr(gridpack,rows(gridpack)-gridsum,0)
+        gridpack <- sortc(gridpack,c=2)
+        gridrows <- rows(gridpack)
+        gridpts <- matrix(0,nrow=j,ncol=gridrows)
+        grid <- matrix(0, nrow=j^(gridrows),ncol=l)
    
-   for i (1,gridrows,1);
-      ii = i;
-      gridpts[.,ii] = seqase(gridpack[ii,5],gridpack[ii,6],j);
-   endfor;
+        for( i in (1:gridrows)){
+          ii <- i
+          gridpts[,ii] <- seqase(from=gridpack[ii,5],to=gridpack[ii,6],lenght.out=j)
+        }
 
-   gridint = makefacn(gridrows,gridpts);
+        gridint <- makefacn(gridrows,gridpts)
 
-   for m (1,rows(gridcut),1);
-      mm = m;
-      grid[.,gridcut[mm,1]] = gridcut[mm,2] * ones(rows(grid),1);
-   endfor;
+        for (m in (1:rows(gridcut))){
+          mm <- m
+          grid[,gridcut[mm,1]] <- gridcut[mm,2] * matrix(1,nrow=rows(grid),ncol=1)
+        }
 
-   for n (1,gridrows,1);
-      nn = n;
-      grid[.,gridpack[nn,2]] = gridint[.,nn];
-   endfor;
-endif;
+        for (n in (1:gridrows)){
+          nn <- n
+          grid[,gridpack[nn,2]] <- gridint[,nn]
+        }
+      }
 
-retp(grid);
-endp;
+    return(grid)
+  }
