@@ -139,7 +139,7 @@ homoindx<-function(x, EnumTol=0.0001){
         indx <- seq(1,rows(x), 1)
         
         res<-list()
-       
+        EnumTol <- as.vector(EnumTol)
         c0<- x< EnumTol
         c1<- x>(1- EnumTol)
         c<-(1-c0-c1)

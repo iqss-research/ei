@@ -14,14 +14,18 @@ expanddots <- function(drvdot, drv, evbase){
  
   args <- names(drv)
   args <- args[-1]
+  
+  if(args[length(args)]=="...") ### counts for "..."
+    args <- args[-length(args)]
   argsdots <- names(drvdot)
   argsdots <- argsdots[-1]
- 
+
   if(length(argsdots) == length(args))
     return(evbase)  ##nothing in expand.dots
   ln <- length(args)
  
   expn  <- setdiff(argsdots, args)
+ 
   argsdots <- nm <- names(drvdot)
    
   ix <- sapply(expn, grep, argsdots)
@@ -148,7 +152,8 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
       Eres <- vput(Eres,EdoML.vcphi,"doml.vc");   
       Eres <- vput(Eres,EdoSim,"EdoSim");
       Eres <- vput(Eres,Eeta,"Eeta");
-      Eres <- vput(Eres,Eigraph.bvsmth,   "eigraph.bvsmth"); 
+      Eres <- vput(Eres,Eigraph.bvsmth,   "eigraph.bvsmth");
+      Eres <- vput(Eres,Eigraph.bvsmth,  "bvsmth"); 
       Eres <- vput(Eres,EisChk,"EisChk");
       Eres <- vput(Eres,EiLliks,"EiLliks");
       Eres <- vput(Eres,EisFac,"EisFac");
@@ -170,14 +175,17 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL)
       return(Eres)
     }
     if (round == 2){
-    ###   Eres <- vput(Eres,betaBs,"betabs");
+       Eres <- vput(Eres,betaBs,"betabs");
        Eres <- vput(Eres,NA,"retcode");
        Eres <- vput(Eres,NA,"phi");
        Eres <- vput(Eres,NA,"loglik");
        Eres <- vput(Eres,NA,"ghactual");
-       Eres <- vput(Eres,NA,"vcphi");  
-       Eres <- vput(Eres,Esims,"Esims");
-       Eres <- vput(Eres,ei.vc,"ei.vc");
+       Eres <- vput(Eres,NA,"vcphi");
+       if(!"Esims" %in% names(Eres)) 
+         Eres <- vput(Eres,Esims,"Esims")
+       if(!"ei.vc" %in% names(Eres)) 
+         Eres <- vput(Eres,ei.vc,"ei.vc");
+       
        assign("Eres",Eres, env=evbase)
       return(Eres)
      }

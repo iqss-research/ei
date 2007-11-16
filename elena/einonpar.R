@@ -5,9 +5,12 @@
 ##**
 ##** OUTPUTS: betabs = (p x _Esims) simulations of beta^b, 
 ##**                   computed nonparametrically
+##
+## FUNCS: getEnvVar,bounds1, nonbiv 
 ##*/
 einonp <- function(t,x, evbase=parent.frame()){
-
+  t <- matrix(t,ncol=1)
+  x <- matrix(x,ncol=1)
   evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
   
   nobs <- rows(t);
@@ -28,7 +31,13 @@ einonp <- function(t,x, evbase=parent.frame()){
     betab[,i+0] <- seqase(bnds[i+0,1],bnds[i+0,2],EnonEval)
  
   x1 <- 1-x;
-  betaw <- as.vector((t/x1))-as.vector((x/x1))*betab;
+ 
+  betaw1 <- betaw <- betab
+  for(n in 1:cols(betab))
+    betaw1[,n] <- (x/x1)[n]* betab[,n]
+  for(n in 1:cols(betaw1))
+    betaw[,n] <- (t/x1)[n] - betaw1[,n]
+ 
   
   if (Eprt>=2)
     message("Computing conditional density for each line...");
@@ -39,11 +48,18 @@ einonp <- function(t,x, evbase=parent.frame()){
     message("Drawing simulations...");
   
   ###/* compute interpolated trapazoidal areas */
-  areas <- (betab[2,]-betab[1,])*(pz+0.5*abs(pz-lag(pz)));
-  nr <- rows(areas)
-  areas <- na.omit(areas)
-  dc <- nr - rows(areas)
-  areas <- cumsum(as.data.frame(areas/as.vector(colSums(areas))));
+  areas1 <- (betab[2,]-betab[1,])
+ 
+  areas2 <- na.omit(pz+0.5*abs(pz-lag(pz)))
+  
+  areas <- areas1 %dot*% areas2
+ 
+ 
+  colS <- colSums(areas)
+  areas <- areas %dot/% colS
+  
+  areas <- cumsum(as.data.frame(areas));
+  areas <- as.matrix(areas)
   
   betabs <- matrix(0,nrow=nobs,ncol=Esims);
   for (i in 1:nobs){
@@ -77,6 +93,7 @@ einonp <- function(t,x, evbase=parent.frame()){
   }
   if(dim(betabs)[[1]] != length(x) ||  dim(betabs)[[2]] != Esims)
     stop("Dimension betabs do not agree with spec")
+ 
   return(betabs);
 }
 ##/*
@@ -87,30 +104,37 @@ einonp <- function(t,x, evbase=parent.frame()){
 ##**
 ##** OUTPUT: pz = (MxQ) height of the nonparametric bivariate density at px,py,
 ##**               which is f(px,py), using a sheet-normal kernel.
+##
+###FUNCS: unitarea, perpdist
 ##*
 ##** If memory is available, use vec(px) and vec(py) and reshape pz upon output
 ##** to make this proc run faster.
 ##*/
-nonbiv <- function(t,x,px,py, evbase=parent.frame()){
-
-  eigraph.bvsmth <- get("eigraph.bvsmth",env=evbase)
-  Enumtol <- as.vector(get("EnumTol", env=evbase))
+nonbiv <- function(t,x,px,py, evbase=parent.frame(),eigraph.bvsmth=NULL,Enumtol=NULL){
+  if(length(evbase)){
+    eigraph.bvsmth <- get("eigraph.bvsmth",env=evbase)
+    Enumtol <- as.vector(get("EnumTol", env=evbase))
+  }
+  t <- as.matrix(t)
+  x <- as.matrix(x)
+  px <- as.matrix(px)
+  py <- as.matrix(py)
   col <- cols(px);
   pz <- matrix(0, nrow=rows(px),ncol=col)
-  c <- unitarea(t,x,evbase);###         @ scale factor to divide by @ 
+  c0 <- unitarea(t,x,evbase);###         @ scale factor to divide by @
+ 
   r <- rows(x);
  
   for (i in 1:col){
+   
     d <- perpdist(t,x,px[,i+0],py[,i+0],Enumtol) ### @ perpendicular distance to line @
-
   ###  /* sheet-normal kernel */
     z <- d / eigraph.bvsmth;
     ln <- cols(z)
-    mat <- matrix(0, nrow=rows(c), ncol=cols(z))
-    for(n in 1:length(c))
-      mat[n, ] <- exp(-0.5*(z*z))/c[n]
+    c <- matrix(c0, nrow=length(c0), ncol=ncol(z))
+    mat <- exp(-0.5*(z*z))/c
     csum <- colSums(mat)
-    pz[,i+0]  <- 1 / sqrt(2*pi) * csum/r
+    pz[,i+0]  <- csum/r/sqrt(2*pi)
   
   }
   
@@ -126,14 +150,15 @@ nonbiv <- function(t,x,px,py, evbase=parent.frame()){
 ##**
 ##**  area = (px1) area within unit square of truncated nonparametric 
 ##**         normal-sheet kernel for each tomography line
+##
+## FUNCS:bounds1, maxr, perpdist, seqas 
 ##*/
-unitarea <- function(t,x, evbase=parent.frame()){
-
-  EnonNumInt <- get("EnonNumInt", env=evbase)
-
-  Enumtol <- as.vector(get("EnumTol", env=evbase))
-  eigraph.bvsmth <- get("eigraph.bvsmth", env=evbase)
-
+unitarea <- function(t,x, evbase=parent.frame(),EnonNumInt=NULL, Enumtol=NULL,eigraph.bvsmth=NULL ){
+  if(length(evbase)){
+    EnonNumInt <- get("EnonNumInt", env=evbase)
+    Enumtol <- as.vector(get("EnumTol", env=evbase))
+    eigraph.bvsmth <- get("eigraph.bvsmth", env=evbase)
+  }
   x <- recode(x,cbind(x<Enumtol,x>(1-Enumtol)),rbind(Enumtol, (1-Enumtol)))
   lst <- bounds1(t,x,1,Enumtol);
  
@@ -152,23 +177,15 @@ unitarea <- function(t,x, evbase=parent.frame()){
  
   for (i in 1:nobs){
     
-    c <- maxr(cbind(1-uB[i+0],lW[i+0]),maxr(lB[i+0],1-uW[i+0]))
+    c <- cbind(maxr(1-uB[i+0],lW[i+0]),maxr(lB[i+0],1-uW[i+0]))
    
     c <- substute(c,c<0.00001,c*0+0.00001);
    
     d <- perpdist(t[i+0],x[i+0],c(1,0),c(0,1), Enumtol);
-    mx <- max(c(length(c), length(d)))
-    if(length(c) < mx)
-      c <- rep(c, mx/length(c))
-    if(length(d) < mx)
-      d <- rep(d, mx/length(d))
+ 
     a <- sqrt(c^2-d^2);
     k <- a*cos(asin(a/c));
-    mx <- max(c(length(a), length(k)))
-    if(length(a) < mx)
-      a <- rep(a, mx/length(a))
-    if(length(k) < mx)
-      k <- rep(k, mx/length(k))
+
     g <- sqrt(a^2-k^2);
     
   ###  /* coordinates of tomography line extended so that the end points
@@ -176,7 +193,7 @@ unitarea <- function(t,x, evbase=parent.frame()){
   ##  (uB+k[.,1])~(lW-g[.,1])~(lB-k[.,2])~(uW+g[.,2]);  */
     
   ###  /* points to evaluate on the tomography line */
-    betabS <- seqase(lb[i+0]-k[,2],ub[i+0]+k[,1],EnonNumInt);
+    betabS <- seqas(lb[i+0]-k[,2],ub[i+0]+k[,1],EnonNumInt);
     betawS <- (t[i+0]/x1[i+0])-(x[i+0]/x1[i+0])*betabS;
     z <- matrix(0,nrow=EnonNumInt,ncol=1);
     o <- matrix(1, nrow=EnonNumInt,ncol=1);
@@ -191,10 +208,7 @@ unitarea <- function(t,x, evbase=parent.frame()){
     S <- (betabS>=minbetab)&(betabS<=maxbetab);
     
    ### /* area within square for each perpendicular line */
-   ##  print(a)
-   ## print(b)
-   ## print(var)
-   ## print(S)
+   
     area[i+0] <- colMeans(cdfnorm(maxr(a,b),0,var)+((S-0.5)*2)*cdfnorm(minr(a,b)-S,0,var));
     
   }
@@ -212,47 +226,40 @@ unitarea <- function(t,x, evbase=parent.frame()){
 ##**
 ##** OUTPUT: dist = (PxM) perpendicular distance from each point in px,py
 ##**                 to the tomography line betaW=(t./(1-x))-(x./(1-x))*betaB
+##
+## FUNCS: bounds1
 ##**/
 perpdist <- function(t,x,px,py,tol){
  
-  t <- matrix(t, ncol=length(t))
-  x <- matrix(x, ncol=length(x))
-  px <- as.matrix(px)
-  py <- as.matrix(py)
+  t <- matrix(t, ncol=1)
+  x <- matrix(x,ncol=1)
+  px <- matrix(px,ncol=1)
+  py <- matrix(py,ncol=1)
 
   lst <- bounds1(t,x,1,tol);
   bnds <- lst[[1]]
  
   tt <- lst[[2]]
 
-  lB <- bnds[,1];
-  uB <- bnds[,2];
-  lW <- bnds[,3];
-  uW <- bnds[,4];
+  lB <- as.matrix(bnds[,1]);
+  uB <- as.matrix(bnds[,2]);
+  lW <- as.matrix(bnds[,3]);
+  uW <- as.matrix(bnds[,4]);
  
   A <- sqrt((uW-lW)^2+(uB-lB)^2);
  
   a <- A <- recode(A,A<=0.0001,0.0001);
- 
-  B <- sqrt((uW-t(py))^2+(lB-t(px))^2);
-  b <- B <- substute(B,B<0.00001,B*0+0.00001);
-  c <- C <- sqrt((lW-t(py))^2+(uB-t(px))^2);
-  mx <- max(c(length(a), length(b), length(c)))
 
-  if(length(a) < mx)
-    a <- A <- rep(a, mx/length(a))
-    
-   if(length(b) < mx)
-    b <- B <- rep(b, mx/length(b))
-  
-  if(length(c) < mx)
-    c <- C <- rep(c, mx/length(c))
-  
+  B <- sqrt((uW %-% py)^2+(lB %-% px)^2);
+  b <- B <- substute(B,B<0.00001,B*0+0.00001);
+  c <- C <- sqrt((lW %-% py)^2 + (uB %-% px)^2); 
+  a <- A <- matrix(A, nrow=rows(A), ncol=cols(B))
+
   acarg <- (a^2+b^2-c^2)/(2 *a *b);
   tst1 <- (acarg>1);
   tst2 <- (acarg < -1);
-  acarg <- substute(acarg,rbind(tst1,tst2),0*acarg+tst1-tst2);
-  acarg <- na.omit(acarg)
+  acarg <- substute(acarg,(tst1 |tst2),0*acarg+tst1-tst2);
+###  acarg <- na.omit(acarg)
  
    
   D <- B*sin(acos(acarg));
@@ -261,3 +268,4 @@ perpdist <- function(t,x,px,py,tol){
   
   return(D)
 }
+ 

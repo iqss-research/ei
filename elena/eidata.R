@@ -9,9 +9,13 @@ packdta <- function(x,Zb,Zw,t, evbase=NULL){
     evbase <- get("evbase", env=parent.frame())
   Ez <- get("Ez", env=evbase)
   Eselect <- get("Eselect", env=evbase)
+  x <- as.matrix(x)
+  t <- as.matrix(t)
+
   dataset <- cbind(x,t)
- 
-  if (Ez[2]>1)
+  
+  if (length(Ez) > 1 && Ez[2]>1)
+    
     dataset <- cbind(Zw,dataset)
   
 
@@ -20,7 +24,7 @@ packdta <- function(x,Zb,Zw,t, evbase=NULL){
  
   if( rows(Eselect)!=1)
     dataset <- subset(dataset,subset=Eselect); ###selif is subset
-  
+ 
   return(dataset)
 }
 
