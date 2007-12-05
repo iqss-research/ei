@@ -56,23 +56,25 @@ lcdfnormi <- function(bounds,mu,sig2){
  ### local res,a,b,res2,T,c1,c2,c3,c4,ba,c0,r,la,lb,lma,lmb,rs,s,bs,as,m,rb;
   rs <- nrow(as.matrix(mu));
   rb <- nrow(as.matrix(bounds))
+
   if(rb!=1 && rb!=rs)
     message("lcdfnormi: input error")
   else if( rb==1)
-    bounds <- matrix(bounds, nrow=rs, ncol=2);
- 
+    bounds <- matrix(1,nrow=rs, ncol=2) %dot*% bounds;
+
   a <- bounds[,1];
   b <- bounds[,2];
+
   if (any((b-a)<0))
     stop("lcdfnormi: bounds error");
     
   s <- sqrt(sig2);
-  bs <- (b-mu)/s;
-  as <- (a-mu)/s;
-
+  bs <- (b-mu)%dot/%s;
+  as <- (a-mu)%dot/%s;
+  
   m <- NA
   res <- infrv(lncdfn2(as,bs-as),m,m);
-  
+
   return(res);
 }
 lncdfn2 <- function(a, b, eps=1e-25){
@@ -99,24 +101,44 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
     Bw <- Bw[1]
   }
   
-  if(all(rho==0))
+  if(all(rho==0)){
+  
     R <- lcdfnormi(cbind(0,1),Bb,sb^2)+lcdfnormi(cbind(0,1),Bw,sw^2)
-  else{
-    if (all(Ecdfbvn==1))
+  
+  
+  }else{
+  
+    if (all(Ecdfbvn==1)){
+ 
       R <- log(abs(cdfbvnormi(Bb,Bw,sb,sw,rho)))
-    else if (all(Ecdfbvn==2))
+ 
+    }else if (all(Ecdfbvn==2)){
+ 
       R <- log(abs(cdfbvnorme(Bb,Bw,sb,sw,rho)))
-    else if(all(Ecdfbvn==3))
+ 
+    }else if(all(Ecdfbvn==3)){
+ 
       R <- lcdfbvnorma(Bb,Bw,sb,sw,rho)
-    else if(all(Ecdfbvn==4))
+ 
+    }else if(all(Ecdfbvn==4)){
+ 
       R <- log(abs(cdfbvnunit(Bb,Bw,sb,sw,rho)))
-    else if(all(Ecdfbvn==5))
+ 
+    }else if(all(Ecdfbvn==5)){
+ 
       R <- lncdfbvn2i(Bb,Bw,sb,sw,rho)
-    else if(all(Ecdfbvn==6))
+ 
+    }else if(all(Ecdfbvn==6)){
+ 
       R <- log(abs(cdfbvnormig(Bb,Bw,sb,sw,rho)))
+ 
+      }
      
   }
-  R <- R*o
+
+  R <- R%dot*%o
+
+
   return(R);
 }
 ##/* ----------------------------------------------------------------
@@ -918,8 +940,9 @@ lcdfbvnorma <- function(mu1,mu2,s1,s2,rho){
 lncdfbvn2i <- function(Bb,Bw,sigb,sigw,rho){
   evbase <- get("evbase", env=parent.frame())
   EcdfTol <- get("EcdfTol", env=evbase)
-  res <- cdfbvn2(-bB/sigb,1/sigb,-Bw/sigw,1/sigw,rho);
+  res <- cdfbvn2(-Bb/sigb,1/sigb,-Bw/sigw,1/sigw,rho);
   res <- recode(res,cbind((res<EcdfTol),(res>1)),rbind(EcdfTol,1));
+ 
   return(log(res))
 }
 
@@ -931,14 +954,16 @@ lncdfbvn2i <- function(Bb,Bw,sigb,sigw,rho){
 ##*/
 lpdfbvn <- function(betab,betaw,bb,bw,sb,sw,rho){
   evbase <- get("evbase", env=parent.frame())
-  EvTol <- get("EvTol", env=evbase)
+  Evtol <- EvTol <- get("EvTol", env=evbase)
+ 
   z1 <- (betab-bb)/sb;
   z2 <- (betaw-bw)/sw;
   omr2 <- (1-rho^2);
   omr2 <- recode(omr2,omr2<Evtol,Evtol);
   sb <- recode(sb,sb<Evtol,Evtol);
   sw <- recode(sw,sw<Evtol,Evtol);
-  w <- (z1^2+z2^2-2*rho*z1*z2)/omr2;
+ 
+  w <- (z1^2+z2^2-2*rho*z1%dot*%z2)/omr2;
   res <- -1.83787706640934548-0.5*(w+log(omr2))-log(sb)-log(sw);
   return(res)
 }

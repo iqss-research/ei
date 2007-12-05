@@ -147,7 +147,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 ###  /* likelihood estimation */
   if(EdoML==1){
    
-     lst  <- quadcml(x,Zb,Zw,t);
+     lst  <- quadcml(x,Zb,Zw,t,evbase);
      MLpsi <- lst$Mlpsi
      MLvc <- lst$MLvc
      
@@ -582,8 +582,8 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
   ## quadcml\
   ######check this procedure.......???????
  ### cmlset;
-###  Estval<- as.matrix(1);
-  Estval <- as.matrix(1)
+ Estval<- as.matrix(1); ###the default change because of cml 
+###  Estval <- as.matrix(0);
   Ebounds<- as.matrix(1);
   Eeta<- as.matrix(0);
   EdirTol<- as.matrix(0.0001);

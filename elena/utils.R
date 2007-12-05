@@ -54,6 +54,8 @@ extract.diag <- function(mat){
 ###       evillalon@iq.harvard.edu
 ###
 "%./%" <- "%dot/%" <- function(mat, v){
+  if(length(mat) <= 1 && length(v) <= 1)
+    return(as.vector(mat)/as.vector(v))
   if(length(v) <= 1 )
     return(mat*as.vector(v))
   if(length(mat) <=1)
@@ -123,7 +125,9 @@ extract.diag <- function(mat){
 ###       evillalon@iq.harvard.edu
 ###
 "%.*%" <- "%dot*%" <- function(v, mat){
-
+ if(length(mat) <= 1 && length(v) <= 1)
+   return(as.vector(mat)*as.vector(v))
+ 
   if(length(v) <= 1 )
     return(mat*as.vector(v))
   if(length(mat) <=1)
@@ -203,11 +207,14 @@ extract.diag <- function(mat){
   ncm <- ncol(mat)
   nrt <- nrow(tam)
   nct <- ncol(tam)
+  if(length(mat) <= 1 || length(tam) <=1){
+   if(length(mat) <= 1) mat <- as.vector(mat)
+   if(length(tam) <= 1) tam <- as.vector(tam)
+    return(res <- mat + tam)
+  }
   if(nrm==nrt && ncm==nct)
     return(res <- mat + tam)
-  
-  if(length(mat) <= 1 || length(tam) <=1)
-    return(res <- mat + tam)
+    
   if((ncm <=1 || nrm <= 1) && (length(mat)==nrt || length(mat) == nct)){
     vec <- as.vector(mat)
     return(res <- as.data.frame(tam) + vec)

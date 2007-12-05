@@ -309,11 +309,15 @@ recode.test <- function(){
  }
 
 selif <- function(x, e){
-  subset(x, subset=e)
+  res <- subset(x, subset=e)
+  if(!length(res)) res <- NA
+  return(res)
 }
 
 delif <- function(x, e){
-  subset(x, subset=!e)
+  res <- subset(x, subset=!e)
+  if(!length(res)) res <- NA
+  return(res)
 }
 test.selif <- function(){
   x <- matrix(c(0, 30, 60, 10, 40, 70, 20, 50, 80), nrow=3)
@@ -467,9 +471,12 @@ dotfeq <- function(x,y, tol=NULL){
 cdfbvn <- function(x,t,rho, maxpts=25000, abseps=0.001, releps=0){
   if(!require(mvtnorm))
     stop("ei:To compute bivariate normal you need to install package mvtnorm")
+
   v  <- c(as.vector(x), as.vector(t))
   ln <- length(v)
   low <- rep(-Inf, ln)
+ 
+  rho <- diag(ln)*rho
   p00 <- pmvnorm(lower=low, upper=v,mean=rep(0, ln), sigma=rho, maxpts=maxpts,abseps=abseps, releps=releps);
   return(p00)
  }

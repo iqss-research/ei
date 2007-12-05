@@ -38,7 +38,10 @@
 #include ei.ext;
 eigrid <- function(dataset,gridlohi,gridline,toler,evbase=get("evbase", parent.frame()))
   {
-
+    dta <<- dataset
+    logrid <<- gridlohi
+    hggrid <<- gridline
+    
     gridlo <- gridlohi[,1];
     gridhi <- gridlohi[,2];
     str <- "********************************************************************";
@@ -59,17 +62,17 @@ eigrid <- function(dataset,gridlohi,gridline,toler,evbase=get("evbase", parent.f
       print(paste(" of ", k))
       rr <- cols(grid)
       loglk <- matrix(0,nrow=rr,ncol=1)
-      et1 = hsec
+      et1 <- hsec <- proc.time()[3]
       for (f in 1:rr) { ###          /* regulates grid-line to be analyzed */
         ff <- f
         if ((jj==1) && (ff==200)){
-          et2 <- hsec
+          et2 <- hsec <- proc.time()[3]
           et3 <- (et2 - et1)*rr*k/ff
 ###  format/ldn 1,1;
           print("The grid search will end approximately")
-          print(paste((et3-(et2-et1))/6000," minutes from now (", proc.time()[1], ")"))
+          print(paste((et3-(et2-et1))/6000," minutes from now (", proc.time()[3], ")"))
         }
-        loglk[ff] <- colSums(as.matrix(eiloglik(grid[,ff],dataset)))
+        loglk[ff] <- colSums(as.matrix(eiloglik(grid[,ff],dataset,evbase)))
     
       }
 
@@ -179,7 +182,7 @@ makegrid <- function(gridlo,gridhi,gridline, evbase=get("evbase", parent.frame()
       gridpts <- matrix(0,nrow=j,ncol=l)         
       for (k in(1:l)){
         kk <- k
-  
+        
         gridpts[,kk] <- seq(from=truedown[kk],to=trueup[kk],length.out=j)
       }
       
@@ -188,21 +191,23 @@ makegrid <- function(gridlo,gridhi,gridline, evbase=get("evbase", parent.frame()
 
     if (gridsum == 0)###  /* to vary over NO dimensions: i.e., ghi = glo = grid' */
       grid <- t(ghi);
-
+  
     if (gridsum !=0 && gridsum!=l)
       {### /* the complicated case where only some vary */
+      
         gridpack <- cbind(griddum,gridnums, glo, ghi, truedown, trueup)
         gridpack <- sortc(gridpack,1)
-        gridcut <- gridpack[1:rows(gridpack)-gridsum,2:4]
+        gridcut <- gridpack[1:(rows(gridpack)-gridsum),2:4]
         gridpack <- trimr(gridpack,rows(gridpack)-gridsum,0)
         gridpack <- sortc(gridpack,c=2)
         gridrows <- rows(gridpack)
         gridpts <- matrix(0,nrow=j,ncol=gridrows)
         grid <- matrix(0, nrow=j^(gridrows),ncol=l)
-   
+  
         for( i in (1:gridrows)){
           ii <- i
-          gridpts[,ii] <- seqase(from=gridpack[ii,5],to=gridpack[ii,6],lenght.out=j)
+     
+          gridpts[,ii] <- seq(from=gridpack[ii,5],to= gridpack[ii,6],length.out=j)
         }
 
         gridint <- makefacn(gridrows,gridpts)
@@ -217,6 +222,6 @@ makegrid <- function(gridlo,gridhi,gridline, evbase=get("evbase", parent.frame()
           grid[,gridpack[nn,2]] <- gridint[,nn]
         }
       }
-
+   
     return(grid)
   }

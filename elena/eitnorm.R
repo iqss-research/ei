@@ -12,9 +12,10 @@
 ## r = nx1 vector of independent random numbers with means m and variances v
 ##
 
- rndtni <- function(m,v,bnds){
+ rndtni <- function(m,v,bnds,evbase=parent.frame()){
 ###  local r,t,sigma,i,lb,ub,inds;
-   evbase <- get("envbase", env=parent.frame()) 
+   if(!length(evbase))
+     evbase <- get("envbase", env=parent.frame()) 
    lb <- as.matrix(bnds[,1]);
    ub <- as.matrix(bnds[,2]);
    if (nrow(lb)==1)
@@ -35,7 +36,7 @@
  
    sigma <- sqrt(v);
    fcmptol <- 1e-12;
-   t <- 1-dofeq(lb,ub,tol=fcmptol); ###1 -(lb==ub)
+   t <- 1-dotfeq(lb,ub,tol=fcmptol); ###1 -(lb==ub)
    sigma <- t*sigma;
    m <- t *m +(1-t)*lb;
 
@@ -77,8 +78,9 @@
 ##              each row of a is one 1x2 simulation
 ##
 
-rndbtn <- function(bb,bw,sb,sw,rho,bounds,sims){
-  evbase <- get("envbase", env=parent.frame()) 
+rndbtn <- function(bb,bw,sb,sw,rho,bounds,sims, evbase=parent.frame()){
+  if(!length(evbase))
+    evbase <- get("envbase", env=parent.frame()) 
   o <- matrix(1, nrow=sims,ncol=1);
   sb2 <- sb^2;
   sw2 <- sw^2;

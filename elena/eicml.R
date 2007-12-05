@@ -42,14 +42,14 @@
 ##             likelihood estimation.
 
 #include ei.ext;
-quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
+quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16) {
    x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
   
-   evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
+  evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
    if (Eprt>=2)
-    message("Likelihood estimation...");
+     message("Likelihood estimation...");
  
   Edirtol <- EdirTol
   ###/* prepare data */
@@ -69,27 +69,27 @@ quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
   }
   
 ###  /* starting values OR grid search */
-  
+   
    if (rows(Estval)==1 && !(scalone(Estval))){###  @ grid search @
      gridl <- ifelse (Estval==0, 5, Estval)
    }else{
      gridl <- 0 ###        @ no grid search @
    }
 ###    gridl <- 5 @ default number of gridlines for grid search @   
-   
- 
-   stval <- Estval;
+
+  
    if (scalone(Estval) || gridl !=0)
      stval <- as.matrix(c(rep(0,colSums(as.matrix(Ez))), -1.2,-1.2,0)) 
-  
-   if (rows(Eeta)==4)
-    stval <- as.matrix(c(stval, Eeta[1:2]))
-   else if(Eeta[1]==4)
-    stval <- as.matrix(c(stval,c(0,Eeta[2])))
-   else if(Eeta[1]==5)
-    stval <- as.matrix(c(stval,c(Eeta[2],0)))
    else
-    stval <- as.matrix(c(stval, c(0,0)))
+      stval <- Estval;
+   if (rows(Eeta)==4)
+    stval <- rbind(stval, Eeta[1:2])
+   else if(Eeta[1]==4)
+    stval <- rbind(stval,0,Eeta[2])
+   else if(Eeta[1]==5)
+    stval <- rbind(stval,Eeta[2],0)
+   else
+    stval <- rbind(stval, 0,0)
  
   
  ### /* cml globals */
@@ -114,6 +114,8 @@ quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
    cml.ParNames[5] <- paste(spacer,"rho",sep="")
    cml.ParNames[6] <- paste(spacer,"etaB",sep="")
    cml.ParNames[7] <- paste(spacer, "etaW",sep="")
+   cml.ParNames <- sapply(cml.ParNames,trim.blanks)
+   print(cml.ParNames)
    assign("cml.ParNames",cml.ParNames, env=evbase)
 ###@ if change this code, change also eiread @
   if (scalzero(Ebounds))###     don't use bounds  
@@ -140,14 +142,15 @@ quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
     stop(message="quadcml: problem with Ebounds")
     
   }
+ 
   assign("cml.Bounds", cml.Bounds, env=evbase)
   if (gridl==0 && cols(Ebounds)!=2){##  @ sneak past CML checks on parameters @
     tt <- rows(stval)
     tt <- matrix(c(tt-1,tt), nrow=2)
-    cml.Bounds <- matrix(c(as.vector(cml.Bounds),stval[tt],stval[tt]), ncol=2,byrow=TRUE) 
+    cml.bounds <- cml.Bounds <- rbind(cml.Bounds,cbind(stval[tt],stval[tt])) 
     tt <- rows(cml.Bounds)
     tt <- matrix(c(tt-1,tt),nrow=2)
-    cml.Bounds[tt,2] <- cml.Bounds[tt,2]+ Edirtol
+    cml.bounds[tt,2] <- cml.Bounds[tt,2] <- cml.Bounds[tt,2]+ Edirtol
     assign("cml.Bounds", cml.Bounds, env=evbase)
   }
   
@@ -169,20 +172,60 @@ quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
     r <- rows(stval)-2
     stval[r] <- Erho[2]
     cml.Bounds[r,] <- cbind((Erho[2]-macheps),(Erho[2]+macheps))
+ ##   cml.bounds <- cml.Bounds
     assign("cml.Bounds", cml.Bounds, env=evbase)
     cml.Active[r] <- 0
     assign("cml.Active", cml.Active, env=evbase)
   }
-
+       
+  stop()   
   if (gridl==0){###         /* run CML */
    
  ###   lst <- cml(dataset,0,&eiloglik,stval)
  ###   {b,mlogl,grds,vc,ret}= cml(dataset,0,&eiloglik,stval)
- ###   b <- lst[[1]]
- ###   mlogl <- lst[[2]]
- ###   grds <- lst[[3]]
- ###   vc <- lst[[4]]
- ###   ret <- lst[[5]]
+ ###   theta --or-- par = stval
+ ###   f=&eiloglik
+ ###      constrOptim  
+   
+   ff <- function(x,y,ev=evbase){
+   ###  ev <- get("evbase", env=parent.frame())
+     res <- eiloglik(x,y,ev)
+     res <- colSums(as.matrix(res))
+     return(res)
+   }
+      
+   
+   stval <- as.matrix(stval)
+   ### method="L-BFGS-B"
+   sval <<- stval
+   cmlb <<- cml.bounds
+   ddta <<- dataset
+   ###defaults
+   par <- stval
+   con <- list(trace = 0, fnscale = 1, parscale = rep.int(1, 
+        length(par)), ndeps = rep.int(0.001, length(par)), maxit = 100, 
+        abstol = -Inf, reltol = sqrt(.Machine$double.eps), alpha = 1, 
+        beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
+        factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
+   ###changes
+    con$trace <- 1
+    con$fnscale <- -1
+    con$REPORT <- 1
+    con$maxit <- 5
+    ix <- match(c("reltol", "abstol"), names(con))
+    con <- con[-ix]
+    
+   
+   lst <- optim(stval,ff,gr=NULL,dataset,evbase,method="L-BFGS-B",
+                control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],hessian=TRUE)
+   print(names(lst))
+   b <-lst$par
+   mlogl <-lst$value
+   grds <- lst$counts$gr
+   hess <- lst$hessian ###------> vc <- lst$.... possibly vc <- (lst$hessian)^-1
+   vc <- inv(hess)
+   ret <- lst$convergence
+   
  ###  if (ret %inG% c(3,4,6,7,10,99)){
       message( "?")
       message("*********************************************")
@@ -208,39 +251,44 @@ quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
 ###    if (Eprt>=2)
 ###      message("CML converged; Computing variance-covariance matrix...?")
     }
-   
-   if (gridl!=0){ ###/* run GRID search */
+ 
+ ###  if (gridl!=0){ ###/* run GRID search */
      if (Eprt>=2)
        message("Preliminary mean grid search (on 2 parameters)...")
      Edirtol <- EdirTol
      tt <- rows(cml.bounds)
-     gr1 <- colMeans(t(as.matrix(t(cml.bounds[3:tt,]))))
+     gr1 <- colMeans(t(cml.bounds[3:tt,]))
      
      gr1 <- rbind(cml.bounds[1:2,], matrix(c(gr1,gr1),ncol=2))
-     lst <- eigrid(dataset,gr1,53,EdirTol) ###COMPUTE 
+   ###TESTING HERE
+     lst <- eigrid(dataset,gr1,53,EdirTol)
+    
      b <- lst[[1]]
      logl <- lst[[2]]
      cml.bounds[1:2,] <- b[1:2]%plus% matrix(c(-1,-1, 1,1),nrow=2, ncol=2)
+    
     if (Eprt>=2)
       message("?; Main grid search (on all parameters)...")
-     lst <- eigrid(dataset,cml.bounds,gridl,EdirTol)  ###COMPUTE
+     lst <- eigrid(dataset,cml.bounds,gridl,EdirTol) 
      b <- lst[[1]]
      logl <- lst[[2]]
-    
+     
     ret <- 3333
     Eres <- vput(Eres,ret,"retcode")
     Eres <- vput(Eres,logl,"loglik")
     grds <- b*0+Edirtol
-   }
+ ###  }
   
   ###/* compute var cov matrix */
   if (EdoSim !=-1){
-   
+ 
     GhFix <- as.matrix(c(rep(1,(rows(stval)-2)),0,0))
     if(Erho[1]==0)
       GhFix[r] <- 0
-    assign("GhFix",GhFix, env=evbase)  
-    vc <- gvc(eiloglik,b,dataset) 
+    assign("GhFix",GhFix, env=evbase)
+   
+    vc <- gvc(eiloglik,b,dataset)
+ 
     if (Erho[1]==0){
       vc <- cbind(vc, as.matrix(rep(0,rows(vc))))
       vc <- rbind(vc, matrix(rep(0,cols(vc)), nrow=1))
@@ -289,9 +337,11 @@ quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
     else
       se <- matrix(NA, nrow=rows(b),ncol=1)
     
-    printfm(c(cml.ParNames,b,se),mask,fmt) ###COMPUTE
+  ###  printfm(c(cml.ParNames,b,se),mask,fmt) ###COMPUTE
+    print(c(cml.ParNames,b,se))
     cat("?\n")
-    lst <- eirepar(b,Zb,Zw,x) ###COMPUTE
+    lst <- eirepar(b,Zb,Zw,x,evbase)
+   
     bb <- lst[[1]]
     bw <- lst[[2]]
     sb <- lst[[3]]
@@ -307,7 +357,7 @@ quadcml <- function(x,Zb,Zw,y,macheps=2.23e-16, evbase=parent.frame()) {
     if (Eprt>=3){
       cat("?\n")
       message("Reparameterization back to ultimate truncated scale")
-      pb <- eirepart(b,Zb,Zw,x)  ###COMPUTE
+      pb <- eirepart(b,Zb,Zw,x)  
       print(as.vector(vrs))
       print(as.vector(pb))
     }
@@ -387,6 +437,7 @@ gvc <- function(fn,b,dataset,evbase=parent.frame())
  ## local hessian,vc,m,i,q1,q2,mq,eigvals,not_pd,j;
   ##  clearg _gvc_dataset,_gvc_procname,_GhActual,_gvc_fixKeep,
   ## _GhFall,_GhQuad,GhDelta;
+ 
   evloc <- getEnvVar(evbase, environment())##
   gvc.dataset <- dataset;
   gvc.ProcName <- f <- fn;
@@ -394,13 +445,14 @@ gvc <- function(fn,b,dataset,evbase=parent.frame())
     stop("gvc: _GhFix error")
   if (scalone(Ghfix) || Ghfix==1){
     gvc.fixKeep <- NA
-  }else{ 
+  }else{
+    print(b)
     gvc.fixKeep <-  subset(b, subset=!GhFix)
     b <- subset(b,subset=Ghfix)
   }
   gvc.procedure <- function(b, gvc.FixKeep,gvc.dataset){
     return(gvc.func(b, gvc.FixKeep,gvc.dataset))}
-  
+      
   for (i in 1:rows(ei.vc))
     {
       if(ei.vc[i+0,1]==1)
