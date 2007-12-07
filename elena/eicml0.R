@@ -42,7 +42,7 @@
 ##             likelihood estimation.
 
 #include ei.ext;
-quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFGS",choptim=FALSE) {
+quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFGS") {
    x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
@@ -181,68 +181,70 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
  ###   {b,mlogl,grds,vc,ret}= cml(dataset,0,&eiloglik,stval)
  ###   theta --or-- par = stval
  ###   f=&eiloglik
- ###      constrOptim
-    rownames(stval) <- cml.ParNames
-     f0 <- function(x,y,sgn=1,ev=evbase){
-        res <- eiloglik(x,y,ev)
-        res <- sgn*colSums(as.matrix(res))
-        return(res)
-      }
-    sval <<- stval
-    cmlb <<- cml.bounds
-    ddta <<- dataset
-    if(choptim){
-          
-      optimlst <- cml.optim(stval,cml.bounds,dataset, fn=f0, evbase)
-      b <-optimlst$par
-      mlogl <-optimlst$value
-      grds <- NA
-      cntgrd <- optimlst$counts[[2]]
-      cntfn <- optimlst$counts[[1]]
-      optimnm <- names(optimlst)
-      hess <- if("hessian" %in% optimnm) optimlst$hessian
-    }else{
-      hess <- NULL
-      lstnlm <-  nlminb(sval,f0,dataset,-1,evbase,lower=cmlb[,1],upper=cmlb[,2])
-      b <- lstnlm$par
-      mlogl <- lstnlm$objective
-      cntgrd <- lstnlm$evaluations[[1]]
-      cntfn <- lstnlm$evaluations[[2]]
-      ret <-  lstnlm$convergence
-      mess <- paste(lstnlm$message," Iterations=  ", lstnlm$iterations)
-      assign(optimizationLst,lstnlm,env=evbase)
-       if(ret >=1 ){
-          message("nlminb did not converge or produce an error...",mess)
-          print(lstnlm)
-          stop("Change defaults")
-        }
-    }
-    message("Calculating hessian ...")
-    if(is.null(hess))
-      hess <- optimhess(par=b,fn=ff,gr=NULL,dataset,control=con,nm=cml.ParNames)
+ ###      constrOptim  
  
-   vc <- inv(hess)
-  
-
- ###  if (ret %inG% c(3,4,6,7,10,99)){
-      message( "?")
-      message("*********************************************")
-      message("CML return code: ");
-      message("CML (Constraint Maximum Likelihood) OPTION not avaliable")
-###      print(ret)
-      message("Restarting iterations with trust algorithm on")
-      message("*********************************************")
-###  cml.options <- matrix(trust)
-###  {b,mlogl,grds,vc,ret}=cml(dataset,0,&eiloglik,stval);
-###   lst <- cml(dataset,0,&eiloglik,stval)
-###   b <- lst[[1]]
-###   mlogl <- lst[[2]]
-###   grds <- lst[[3]]
-###   vc <- lst[[3]]
-###   ret <- lst[[4]]
-###   cml.options <- 0
-###   assign("cml.options", cml.options, env=evbase)
-###    }
+   ff <- function(x,y,ev=evbase){
+     res <- eiloglik(x,y,ev)
+     return(colSums(as.matrix(res)))
+   }
+     
+   
+   stval <- as.matrix(stval)
+   rownames(stval) <- cml.ParNames
+   sval <<- stval
+   cmlb <<- cml.bounds
+   ddta <<- dataset
+   ###defaults
+   par <- stval
+   con <- list(trace = 0, fnscale = 1, parscale = rep.int(1, 
+        length(par)), ndeps = rep.int(0.001, length(par)), maxit = 100, 
+        abstol = -Inf, reltol = sqrt(.Machine$double.eps), alpha = 1, 
+        beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
+        factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
+   ###changes
+   con$trace <- 1
+   con$fnscale <- -1 ##maximizes
+   con$REPORT <- 1
+   con$factr <- 1e+11
+   
+   message("Covergence acuracy is ", .Machine$double.eps*con$factr);
+  ###  delta.bounds <- cml.bounds[,2] - cml.bounds[,1]
+  ###  ix <- which(delta.bounds == max(delta.bounds),arr.ind=TRUE)
+  ###  con$parscale <-rep.int(1,length(par))
+  ##  con$parscale[ix] <- 0.1
+    ###faster convergence increase con$factr, i.e.  <- 1e+08
+    ###tolerance is defined as .Machine$double.eps*con$factr
+    ix <- match(c("reltol", "abstol"), names(con))
+    con <- con[-ix]
+    message("Optim in action....")
+   optimlst <- optim(stval,ff,gr=NULL,dataset,evbase,method="L-BFGS-B",
+               control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],hessian=FALSE)
+   assign("optimlst", optimlst, env=evbase)
+   optimnm <- names(optimlst)
+   b <-optimlst$par
+   mlogl <-optimlst$value
+   grds <- NA
+   cntgrd <- optimlst$counts[[2]]
+   cntfn <- optimlst$counts[[1]]
+   ret <- optimlst$convergence
+   hess <- if("hessian" %in% optimnm) optimlst$hessian 
+   if(ret >=1 ){
+     message("Optim did not converge or produce an error...")
+     print(optimlst)
+     message("con$factr= ", con$factr)
+     message("con$parscale= ", con$parscale)
+     message("con$fnscale= ", con$fnscale)
+     stop("Change defaults")
+   }
+   print(optimlst)
+   message("Calculating hessian ...")
+   if(is.null(hess)){
+     hess <- optimhess(par=b,fn=ff,gr=NULL,dataset,control=con,nm=cml.ParNames)
+     assign("hessian", hess,env=evbase)
+     vc <- inv(hess)
+   } 
+ }
+ 
 ###    Eres <- vput(Eres,ret,"retcode");
 ###    logl <- mlogl*cml.NumObs;
 ###    Eres <- vput(Eres,logl,"loglik");

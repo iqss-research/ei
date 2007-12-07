@@ -338,5 +338,68 @@ messout <- function(str, verbose=T, obj=NULL){
   if(length(obj) >0 && verbose)
     print(obj)
 }
- 
 
+ ###DESCRIPTION: uses optim with cml.bounds to estimater parameters with maximum liklehodd
+ ###INPUT        stval inital value for the paramneters (px1)
+##               lower and upper bounds (px2) for each in stval
+###              dataset input to function fn
+###              envarinment to stored and obtainbed results
+###OUTPUT        the list with the resul;ts of running optim
+###
+cml.optim <- function(stval,cml.bounds,dataset, fn,evbase)
+      { 
+        ff <- fn
+        stval <- as.matrix(stval)
+###defaults
+        par <- stval
+        con <- list(trace = 0, fnscale = 1, parscale = rep.int(1,length(par)),
+                    ndeps = rep.int(0.001, length(par)), maxit = 100, 
+                    abstol = -Inf, reltol = sqrt(.Machine$double.eps), alpha = 1, 
+                    beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
+                    factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
+###changes
+        con$trace <- 1
+        con$fnscale <- -1 ##maximizes
+        con$REPORT <- 1
+        con$factr <- 1e+11
+   
+        message("Covergence acuracy is ", .Machine$double.eps*con$factr);
+###  delta.bounds <- cml.bounds[,2] - cml.bounds[,1]
+###  ix <- which(delta.bounds == max(delta.bounds),arr.ind=TRUE)
+###  con$parscale <-rep.int(1,length(par))
+        ##  con$parscale[ix] <- 0.1
+###faster convergence increase con$factr, i.e.  <- 1e+08
+###tolerance is defined as .Machine$double.eps*con$factr
+        ix <- match(c("reltol", "abstol"), names(con))
+        con <- con[-ix]
+        message("Optim in action....")
+        optimlst <- optim(stval,ff,gr=NULL,dataset,evbase,method="L-BFGS-B",
+                          control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],hessian=FALSE)
+        assign("optimizationlst", optimlst, env=evbase)
+        optimnm <- names(optimlst)
+      
+        ret <- optimlst$convergence
+        hess <- if("hessian" %in% optimnm) optimlst$hessian 
+        if(ret >=1 ){
+          message("Optim did not converge or produce an error...")
+          print(optimlst)
+          message("con$factr= ", con$factr)
+          message("con$parscale= ", con$parscale)
+          message("con$fnscale= ", con$fnscale)
+          stop("Change defaults")
+        }
+        return(optimlst)
+      }
+    
+optimhess <- function(par,fn,gr,...,control,nm=NULL){
+  fn1 <- function(par) fn(par,...)
+  gr1 <- NULL
+   if(!is.null(gr))
+    gr1 <- function(par) gr(par,...)
+  hess <- .Internal(optimhess(par, fn1, gr1, control))
+  hess <- 0.5 * (hess + t(hess))
+  if (!is.null(nm)) 
+    dimnames(hess) <- list(nm, nm)
+  return(hess)
+}
+  
