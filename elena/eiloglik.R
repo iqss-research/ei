@@ -14,7 +14,7 @@ eiloglik <- function(b, dta,evbase=NULL,...){
 evlocal <- getEnvVar(evbase, environment())
 ##  local sb2,sw2,sbw,x,y,llik,s2,bb,bw,mu,sb,sw,c0,c,c1,cT0,cT1,Zb,Zw,
 ##     rho,tt,bnds,R,omega,epsilon,Ebb,Vbb,res,prior,rs,z,o;
- 
+
  lst <- pluckdta(dta,evbase);
 
  Zb <- lst$Zb
@@ -23,8 +23,7 @@ evlocal <- getEnvVar(evbase, environment())
  y <- lst$y
  rs <- nrow(as.matrix(y));
 
-###  /* reparameterize */
- 
+###  /* reparameterize */  
  lst <- eirepar(b,Zb,Zw,x,Ez,evbase=evbase);
 ### lst <- c(list(Bb=Bb), list(Bw=Bw), list(sb=sb), list(sw=sw), list(rho=rho))
  bb <- lst$Bb
@@ -54,7 +53,7 @@ evlocal <- getEnvVar(evbase, environment())
 
  ### /* compute likelihood for different categories */
   if(!scalmiss(c0)){	###		@ X=0 @
-   
+        
     epsilon <- y[c0]-bw[c0];
     llik[c0] <- -0.5*(log(sw2)+(epsilon^2)%dot/%sw2) ### @ ln N(T|Bw,sigmaW) @
     bnds <- cbind(matrix(0,nrow =rows(c0),ncol=1), matrix(1,nrow=rows(c0),ncol=1));
@@ -130,7 +129,8 @@ evlocal <- getEnvVar(evbase, environment())
   
   llik <- llik%plus%(prior/rs);
   
-  res <- missrv(llik,-999)
+  res <- missrv(llik,0)
+  
   return(res)
 
 }

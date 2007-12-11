@@ -47,15 +47,15 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
   
-  evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
+   evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
    if (Eprt>=2)
      message("Likelihood estimation...");
  
-  Edirtol <- EdirTol  ### = .Machine$double.eps * con$factr  
-  ###/* prepare data */
-  dataset <- packdta(x,Zb,Zw,y);
-  if(Eprt>=2){
-    if (EselRnd !=1){
+   Edirtol <- EdirTol  ### = .Machine$double.eps * con$factr  
+###/* prepare data */
+   dataset <- packdta(x,Zb,Zw,y);
+   if(Eprt>=2){
+     if (EselRnd !=1){
     ###  fmtt;
       message("EselRnd: Modifying _Eselect with random selection = ", fmtt(EselRnd))
     }
@@ -99,6 +99,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
  ###  cml.Active <- as.matrix(c(rep(1,rows(stval)-2),0,0))
    cml.MaxIters <- Emaxiter <- EmaxIter; ###=con$maxit
    cml.DirTol <- EdirTol;
+   cml.NumObs <- rows(dataset)
  ###  cml.CovPar <- 0
    cml.ParNames <- matrix("", nrow=7)
    spacer <- "   "
@@ -140,15 +141,17 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
   }
  
    
-  if (gridl==0 && cols(Ebounds)!=2){##  @ sneak past CML checks on parameters @
-    tt <- rows(stval)
-    tt <- matrix(c(tt-1,tt), nrow=2)
-    cml.bounds <- cml.Bounds <- rbind(cml.Bounds,cbind(stval[tt],stval[tt])) 
-    tt <- rows(cml.Bounds)
-    tt <- matrix(c(tt-1,tt),nrow=2)
-    cml.bounds[tt,2] <- cml.Bounds[tt,2] <- cml.Bounds[tt,2]+ Edirtol
-   
-  }
+  if (gridl==0 && cols(Ebounds)!=2)
+    {
+      ##  @ sneak past CML checks on parameters @
+      tt <- rows(stval)
+      tt <- matrix(c(tt-1,tt), nrow=2)
+      cml.bounds <- cml.Bounds <- rbind(cml.Bounds,cbind(stval[tt],stval[tt])) 
+      tt <- rows(cml.Bounds)
+      tt <- matrix(c(tt-1,tt),nrow=2)
+      cml.bounds[tt,2] <- cml.Bounds[tt,2] <- cml.Bounds[tt,2]+ Edirtol
+      
+    }
   
   if (Eprt==0)
     output <- 0
@@ -168,89 +171,73 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
     r <- rows(stval)-2
     stval[r] <- Erho[2]
     cml.Bounds[r,] <- cbind((Erho[2]-macheps),(Erho[2]+macheps))
-   cml.bounds <- cml.Bounds
+    cml.bounds <- cml.Bounds
     cml.Active[r] <- 0
    
   }
        
    assign("cml.Bounds", cml.Bounds, env=evbase)
    assign("cml.bounds", cml.Bounds, env=evbase)
-  if (gridl==0){###         /* run CML */
-   
- ###   lst <- cml(dataset,0,&eiloglik,stval)
- ###   {b,mlogl,grds,vc,ret}= cml(dataset,0,&eiloglik,stval)
- ###   theta --or-- par = stval
- ###   f=&eiloglik
- ###      constrOptim
-    rownames(stval) <- cml.ParNames
-     f0 <- function(x,y,sgn=1,ev=evbase){
+  if (gridl==0)
+    {
+###         /* run CML */
+
+      rownames(stval) <- cml.ParNames
+      f0 <- function(x,y=dataset,ev=evbase){
         res <- eiloglik(x,y,ev)
-        res <- sgn*colSums(as.matrix(res))
+        res <- -colSums(as.matrix(res))
         return(res)
       }
-    sval <<- stval
-    cmlb <<- cml.bounds
-    ddta <<- dataset
-    if(choptim){
-          
-      optimlst <- cml.optim(stval,cml.bounds,dataset, fn=f0, evbase)
-      b <-optimlst$par
-      mlogl <-optimlst$value
-      grds <- NA
-      cntgrd <- optimlst$counts[[2]]
-      cntfn <- optimlst$counts[[1]]
-      optimnm <- names(optimlst)
-      hess <- if("hessian" %in% optimnm) optimlst$hessian
-    }else{
-      hess <- NULL
-      lstnlm <-  nlminb(sval,f0,dataset,-1,evbase,lower=cmlb[,1],upper=cmlb[,2])
-      b <- lstnlm$par
-      mlogl <- lstnlm$objective
-      cntgrd <- lstnlm$evaluations[[1]]
-      cntfn <- lstnlm$evaluations[[2]]
-      ret <-  lstnlm$convergence
-      mess <- paste(lstnlm$message," Iterations=  ", lstnlm$iterations)
-      assign(optimizationLst,lstnlm,env=evbase)
-       if(ret >=1 ){
-          message("nlminb did not converge or produce an error...",mess)
-          print(lstnlm)
-          stop("Change defaults")
-        }
+      sval <<- stval
+      cmlb <<- cml.bounds
+      ddta <<- dataset
+      if(choptim){
+        ###optim takes forever and its very sensitive to the control parameters
+        lst <- cml.optim(stval,cml.bounds,dataset, fn=f0, evbase)
+        optimnm <- names(optimlst)
+        hess <- if("hessian" %in% optimnm) optimlst$hessian
+      }else{
+         ##favorite choice for its speed and accuracy 
+        hess <- NULL
+        lst <-  nlminb(stval,f0,y=dataset,ev=evbase,lower=cmlb[,1],upper=cmlb[,2])
+      }
+      assign("optimizationLst",lst,env=evbase)
+      b <- lst$par
+      mlogl <- lst$objective
+      cntgrd <- lst$evaluations[[1]]
+      cntfn <- lst$evaluations[[2]]
+      ret <-  lst$convergence
+      mess <- paste(lst$message," Iterations=  ", lst$iterations)
+      message(mess)
+      assign("optimizationLst",lst,env=evbase)
+      if(ret >=1 ){
+      str <- ifelse(choptim,"optim", "nlminb")
+      message(str," did not converge or produce an error...",mess)
+      print(lst)
+      stop("Change defaults")
     }
-    message("Calculating hessian ...")
-    if(is.null(hess))
-      hess <- optimhess(par=b,fn=ff,gr=NULL,dataset,control=con,nm=cml.ParNames)
+    
+ 
+   message("Calculating hessian ...")
+   if(is.null(hess)){
+     hess <- optimhess(par=b,fn=ff,gr=NULL,dataset,control=con,nm=cml.ParNames)
+     lst$hessian <- hess
+     assign("optimizationLst",lst,env=evbase)
+   }
+     
  
    vc <- inv(hess)
-  
-
- ###  if (ret %inG% c(3,4,6,7,10,99)){
-      message( "?")
-      message("*********************************************")
-      message("CML return code: ");
-      message("CML (Constraint Maximum Likelihood) OPTION not avaliable")
-###      print(ret)
-      message("Restarting iterations with trust algorithm on")
-      message("*********************************************")
-###  cml.options <- matrix(trust)
-###  {b,mlogl,grds,vc,ret}=cml(dataset,0,&eiloglik,stval);
-###   lst <- cml(dataset,0,&eiloglik,stval)
-###   b <- lst[[1]]
-###   mlogl <- lst[[2]]
-###   grds <- lst[[3]]
-###   vc <- lst[[3]]
-###   ret <- lst[[4]]
-###   cml.options <- 0
-###   assign("cml.options", cml.options, env=evbase)
-###    }
-###    Eres <- vput(Eres,ret,"retcode");
-###    logl <- mlogl*cml.NumObs;
-###    Eres <- vput(Eres,logl,"loglik");
-###    if (Eprt>=2)
-###      message("CML converged; Computing variance-covariance matrix...?")
-    }
  
- ###  if (gridl!=0){ ###/* run GRID search */
+###    
+       Eres <- vput(Eres,lst$message,"retcode");
+       logl <- mlogl*rows(dataset);
+       Eres <- vput(Eres,logl,"loglik");
+      if (Eprt>=2)
+          message("CML converged; Computing variance-covariance matrix...?")
+    }
+   
+ ###this part does not work:Not even in GAUSS code 
+  if (gridl!=0){ ###/* run GRID search */
      if (Eprt>=2)
        message("Preliminary mean grid search (on 2 parameters)...")
      Edirtol <- EdirTol
@@ -275,8 +262,8 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
     Eres <- vput(Eres,ret,"retcode")
     Eres <- vput(Eres,logl,"loglik")
     grds <- b*0+Edirtol
- ###  }
-  
+   } ### end of gridl != 0
+  ############################### gridl != 0###########
   ###/* compute var cov matrix */
   if (EdoSim !=-1){
  
@@ -285,8 +272,8 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
       GhFix[r] <- 0
     assign("GhFix",GhFix, env=evbase)
    
-    vc <- gvc(eiloglik,b,dataset)
  
+    vc <- gvc(eiloglik,b,dataset,GhFix=GhFix,ei.vc=ei.vc,Eprt=Eprt,evbase=evbase)
     if (Erho[1]==0){
       vc <- cbind(vc, as.matrix(rep(0,rows(vc))))
       vc <- rbind(vc, matrix(rep(0,cols(vc)), nrow=1))
@@ -315,7 +302,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
     message("CML Return code:          ", formatC(ret,digits=7, width=4))
     message("log-likelihood:           ", formatC(logl,digits=7, width=4))
     message("Number of observations:   ", formatC(cml.NumObs, digits=7, width=4))
-    message("Number of iterations:     ",formatC(cml.IterData[1],digist=7,width=4))
+ ###   message("Number of iterations:     ",formatC(cml.IterData[1],digits=7,width=4))
     if(ei.vc[Ghactual,1]!=-1)
       message("Variance computed from:   ", formatC(ei.vc[Ghactual,],digits=7,width=4))
     else{
@@ -430,35 +417,49 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
 ##**           _GhActual = row of _ei_vc at which pos.def. hessian was found
 ##**
 ##*/
-gvc <- function(fn,b,dataset,evbase=parent.frame())
-{ ##f is the pointer to a function
+gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase", env=parent.frame()))
+{
+     
+  ##f is the pointer to a function
  ## local hessian,vc,m,i,q1,q2,mq,eigvals,not_pd,j;
   ##  clearg _gvc_dataset,_gvc_procname,_GhActual,_gvc_fixKeep,
   ## _GhFall,_GhQuad,GhDelta;
- 
-  evloc <- getEnvVar(evbase, environment())##
+  
+###  evloc <- getEnvVar(evbase, environment())
   gvc.dataset <- dataset;
   gvc.ProcName <- f <- fn;
+
   if (rows(GhFix)!=rows(b) || cols(GhFix)!=1)
     stop("gvc: _GhFix error")
-  if (scalone(Ghfix) || Ghfix==1){
+  GhFix <- as.logical(GhFix)
+  Ghfix <- GhFix
+  
+  if (scalone(Ghfix)){
     gvc.fixKeep <- NA
   }else{
-    print(b)
-    gvc.fixKeep <-  subset(b, subset=!GhFix)
-    b <- subset(b,subset=Ghfix)
+    gvc.fixKeep <-  b[!GhFix]
+    b <- b[GhFix]
+    
   }
-  gvc.procedure <- function(b, gvc.FixKeep,gvc.dataset){
-    return(gvc.func(b, gvc.FixKeep,gvc.dataset))}
-      
+  gvc.FixKeep <- gvc.fixKeep
+
+  gvc.procedure <- function(b, gvcK=gvc.FixKeep,dat=gvc.dataset,ev=evbase){
+    b <- as.matrix(na.omit(c(b,gvcK)))
+    loglik <- gvc.ProcName ### pass with gvc, i.e. fn
+    res <- loglik(b,dat,ev)
+    res <- colSums(as.matrix(res))
+    return(res)}
+ 
   for (i in 1:rows(ei.vc))
     {
+    
       if(ei.vc[i+0,1]==1)
         {    ###              @ use hessp @
           if (Eprt>=2)
             message("gvc: trying numerical hessian")
-          
-          hessian <- optim(b,gvc.procedure,method="BFGS",hessian=TRUE)$hessian; ###gvc.procedure pointer to func 
+          con <- getControl(length(b))
+         
+          hessian <- optimhess(b,gvc.procedure,gr=NULL,gvcK=gvc.FixKeep,dat=dataset,ev=evbase,control=con) ###gvc.procedure pointer to func 
           GhDelta <- ei.vc[i+0,2]
           if (GhDelta>0)
             {
@@ -484,8 +485,8 @@ gvc <- function(fn,b,dataset,evbase=parent.frame())
             GhDelta <- 0
             assign("GhQuad", 0, env=evbase)
             assign("GhDelta", 0, env=evbase)
+            hessian <- optimhess(b,gvc.procedure,gr=NULL,gvcK=gvc.FixKeep,dat=dataset,ev=evbase,control=con) ###gvc.procedure pointer to func 
             
-            hessian <- optim(b,gvc.procedure,method="BFGS",hessian=TRUE)$hessian 
       
           }else if (ei.vc[i+0,1]==3)
             { ###		@ use quadratic approximation @
@@ -499,16 +500,19 @@ gvc <- function(fn,b,dataset,evbase=parent.frame())
               assign("GhDelta", 0, env=evbase)
               assign("GhFall", 0, env=evbase)
             
-            
-              hessian <- optim(b,gvc.procedure,method="BFGS",hessian=TRUE)$hessian 
+               hessian <- optimhess(b,gvc.procedure,gr=NULL,gvcK=gvc.FixKeep,dat=dataset,ev=evbase,control=con) ###gvc.procedure pointer to func 
+             
       
             }else if(ei.vc[i+0,1]==4)
               { ###           @ use generalized approach @
                 if (Eprt>=1)
                   message("gvc: trying generalized inverse of -hessian matrix")
-                hessian <- optim(b,gvc.procedure,method="BFGS",hessian=TRUE)$hessian
+                hessian <- optimhess(b,gvc.procedure,gr=NULL,gvcK=gvc.FixKeep,dat=dataset,ev=evbase,control=con) ###gvc.procedure pointer to func 
+                 hhhh <<- hessian
                 ##try using solve and if it does not work then svd.inv
-                vc <- inv(-hessian) 
+                vc <- inv(-hessian)
+            ###    vc <- 0.5*(vc + t(vc))
+                vch <- vc
                 if(Eprt>=3){
                   print("hessian:",hessian)
                   print("first vc:",vc)
@@ -522,9 +526,9 @@ gvc <- function(fn,b,dataset,evbase=parent.frame())
                 }
                 if(not.pd == 1 && Eprt>=1)
                   message("gvc:-hessian matrix not p.d.; trying generalized cholesky also")
-                vc <- try(chol(vc), silent=TRUE)
+                vc <- try(chol(vc,pivot=TRUE), silent=TRUE)
                 if(inherits(vc, "try-error"))
-                  vc <- sechol(vc) 
+                  vc <- sechol(vch) 
                 vc <- t(vc)%*%vc
                 if (Eprt>=3){
                   print("new vc:")
@@ -539,14 +543,16 @@ gvc <- function(fn,b,dataset,evbase=parent.frame())
                           " and likelihood falloff of ",ftos(GhFall,"*.*lf",1,2))
                 GhQuad <- 0
                 GhDelta <- 0
-                hessian <- optim(b, gvc.procedure,method="BFGS",hessian=TRUE)$hessian 
+                hessian <- optimhess(b,gvc.procedure,gr=NULL,gvcK=gvc.FixKeep,dat=dataset,ev=evbase,control=con) ###gvc.procedure pointer to func 
+                 
                 assign("GhDelta", 0, env=evbase)
                 assign("GhFall", GhFall, env=evbase)
                 assign("GhQuad", 0, env=evbase)
                 
               }else if (ei.vc[i+0,1] == -1)
                 { ###      @ do not compute the vc matrix @
-                  hessian <- optim(b,gvc.procedure,method="BFGS",hessian=TRUE)$hessian
+                  hessian <- optimhess(b,gvc.procedure,gr=NULL,gvcK=gvc.FixKeep,dat=dataset,ev=evbase,control=con) ###gvc.procedure pointer to func 
+                  
                   if (Eprt>=2)
                     message("gvc: avoided computing the variance covariance matrix.")
                   GhActual <- i+0
@@ -575,11 +581,12 @@ gvc <- function(fn,b,dataset,evbase=parent.frame())
 
 ###dummy procedure for input to ghessp */
 
-gvc.func <- function(b, gvc.FixKeep,gvc.dataset){
+gvc.func <- function(b, gvc.FixKeep,gvc.dataset,evbase=get("evbase", env=parent.frame())){
  
   b <- na.omit(rbind(b,gvc.FixKeep))
   loglik <- gvc.ProcName
-  res <- loglik(b,gvc.dataset)
+  
+  res <- loglik(b,gvc.dataset,evbase)
   res <- colSums(as.matrix(res))
   return(res)
 }
@@ -751,3 +758,17 @@ test.sechol <- function(){
     warning("sechol does not get right result")
   
 }
+getControl <- function(ln, trace=1,factr=1.e+6)
+{
+   con <- list(trace = 0, fnscale = 1, parscale = rep.int(1,ln),
+                    ndeps = rep.int(0.001, ln), maxit = 100, 
+                    abstol = -Inf, reltol = sqrt(.Machine$double.eps), alpha = 1, 
+                    beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
+                    factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
+###changes
+        con$trace <- trace
+        con$fnscale <- 1 ##default minimizes but it maximizes because function fn returns -res 
+        con$REPORT <- 1
+        con$factr <- factr
+   return(con)
+ }

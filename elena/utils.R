@@ -359,11 +359,13 @@ cml.optim <- function(stval,cml.bounds,dataset, fn,evbase)
                     factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
 ###changes
         con$trace <- 1
-        con$fnscale <- -1 ##maximizes
+        con$fnscale <- 1 ##maximizes because function fn returns -res 
         con$REPORT <- 1
         con$factr <- 1e+11
    
-        message("Covergence acuracy is ", .Machine$double.eps*con$factr);
+        message("Optim: Covergence acuracy is ", .Machine$double.eps*con$factr);
+        message("con$parscale= ", con$parscale)
+        message("con$fnscale= ", con$fnscale)
 ###  delta.bounds <- cml.bounds[,2] - cml.bounds[,1]
 ###  ix <- which(delta.bounds == max(delta.bounds),arr.ind=TRUE)
 ###  con$parscale <-rep.int(1,length(par))
@@ -374,24 +376,34 @@ cml.optim <- function(stval,cml.bounds,dataset, fn,evbase)
         con <- con[-ix]
         message("Optim in action....")
         optimlst <- optim(stval,ff,gr=NULL,dataset,evbase,method="L-BFGS-B",
-                          control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],hessian=FALSE)
-        assign("optimizationlst", optimlst, env=evbase)
+                          control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],
+                          hessian=FALSE)
+      
         optimnm <- names(optimlst)
       
         ret <- optimlst$convergence
         hess <- if("hessian" %in% optimnm) optimlst$hessian 
-        if(ret >=1 ){
-          message("Optim did not converge or produce an error...")
-          print(optimlst)
-          message("con$factr= ", con$factr)
-          message("con$parscale= ", con$parscale)
-          message("con$fnscale= ", con$fnscale)
-          stop("Change defaults")
-        }
-        return(optimlst)
+        
+        lst <- list()
+        lst$par <- optimlst$par
+        lst$objective <- optimlst$value
+        lst$evaluations[[1]] <-  optimlst$counts[[2]]
+        lst$evaluations[[2]] <-  optimlst$counts[[1]]
+        lst$convergence <- optimlst$convergence
+        lst$message <- optimlst$message
+        lst$iterations <- NA
+        lst$hessian <- hess
+        
+        return(lst)
       }
-    
+### DESCRIPTION: wrapper around  optim to calculate the hessian only
+###              It assumes that the parameters par are already optimized
+###              with either optim or nmlinb. Invokes .Internal optimhess
+###              Also prints out the time used for the computation
+###
+
 optimhess <- function(par,fn,gr,...,control,nm=NULL){
+  initime <- proc.time()
   fn1 <- function(par) fn(par,...)
   gr1 <- NULL
    if(!is.null(gr))
@@ -400,6 +412,23 @@ optimhess <- function(par,fn,gr,...,control,nm=NULL){
   hess <- 0.5 * (hess + t(hess))
   if (!is.null(nm)) 
     dimnames(hess) <- list(nm, nm)
+  dtime <- proc.time() - initime
+  message("Time consume ...", dtime)
   return(hess)
 }
-  
+### DESCRIPTION : wrapper around nlm to calculate the Hessian
+###               It assumes that the parameters p have already being
+###               optimized with either optim or nmlinb
+###               Returns an object of class nml with the gradient and the
+###               the hessian; it also prints out the time used for the computtation
+###               It hess=FALSE, it will return the gradient and will also 
+###               optimize the parameters p.
+
+nlmhess <- function(fn,p,hess=TRUE,...){
+  initime <- proc.time()
+ 
+  res <- nlm(fn,p,hessian=hess,gradtol=1.e-3,steptol=1.e-3,...)
+  dtime <- proc.time() - initime
+  message("Time consume ...", dtime)
+  return(res)
+}

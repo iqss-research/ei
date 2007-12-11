@@ -54,7 +54,7 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
   rho0 <- b[r-2];
   etaB <- b[r-1];
   etaW <- b[r];
- 
+   
   ###/* reparameterize */
   sb <- exp(sb0);
   sw <- exp(sw0);

@@ -179,16 +179,18 @@ mkmissm <- function(x, m){
 ##
 fisherzi <- function(x){
  
-  t <- exp(2*x);
-  t <- (t-1)/(t+1);
+  t <- exp(-2*x);
+  t <- (t-1)%dot/%(t+1);
+ 
   return(t);
 }
 ##
 ##   z = fisherz(x);
+
 ##   fisher's z transformation
 ##
 fisherz <- function(x){
-  t=0.5*log((1+x)/(1-x));
+  t=0.5*log((1+x)%dot/%(1-x));
   return(t);
 }
 
