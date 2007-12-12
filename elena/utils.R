@@ -413,6 +413,10 @@ optimhess <- function(par,fn,gr,...,control,nm=NULL){
   if (!is.null(nm)) 
     dimnames(hess) <- list(nm, nm)
   dtime <- proc.time() - initime
+  wd <- sapply(dtime,round)
+  wd <- sapply(as.character(wd),nchar)
+  dtime <- sapply(1:length(dtime), function(n){
+    return(formatC(dtime[[n]], digits=wd[[n]]+3))})
   message("Time consume ...", dtime)
   return(hess)
 }
@@ -432,3 +436,20 @@ nlmhess <- function(fn,p,hess=TRUE,...){
   message("Time consume ...", dtime)
   return(res)
 }
+relError <- function(x, y){
+  x <- as.matrix(x)
+  y <- as.matrix(y)
+  x[x==0] <- NA
+  y[y==0] <- NA
+  if(any(dim(x) != dim(y)))
+     stop("Inputs need to have same dimensions")
+  delx <- abs(x - y)/abs(x+.Machine$double.eps)
+  dely <- abs(x-y)/abs(y+.Machine$double.eps)
+  errx <- log10(delx+.Machine$double.eps)
+  erry <- log10(dely+.Machine$double.eps)
+  lst <- c(list(errx=errx), list(erry=erry), list(delx=delx), list(dely=dely))
+  return(lst)
+}
+     
+  
+  

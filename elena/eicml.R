@@ -42,7 +42,7 @@
 ##             likelihood estimation.
 
 #include ei.ext;
-quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFGS",choptim=FALSE) {
+quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TRUE) {
    x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
@@ -111,6 +111,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
    cml.ParNames[5] <- paste(spacer,"rho",sep="")
    cml.ParNames[6] <- paste(spacer,"etaB",sep="")
    cml.ParNames[7] <- paste(spacer, "etaW",sep="")
+   cml.ParNames0 <- cml.ParNames
    cml.ParNames <- sapply(cml.ParNames,trim.blanks)
 
 
@@ -188,19 +189,16 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
         res <- -colSums(as.matrix(res))
         return(res)
       }
-      sval <<- stval
-      cmlb <<- cml.bounds
-      ddta <<- dataset
-      if(choptim){
-        ###optim takes forever and its very sensitive to the control parameters
-        lst <- cml.optim(stval,cml.bounds,dataset, fn=f0, evbase)
-        optimnm <- names(optimlst)
-        hess <- if("hessian" %in% optimnm) optimlst$hessian
-      }else{
-         ##favorite choice for its speed and accuracy 
-        hess <- NULL
-        lst <-  nlminb(stval,f0,y=dataset,ev=evbase,lower=cmlb[,1],upper=cmlb[,2])
-      }
+    
+      if(savedat)
+        save(stval,cml.bounds,dataset,file="cml.Rdata")
+### optim takes forever estimating parameters
+### and its very sensitive to the control parameters
+### favorite choice for its speed and accuracy: only for parammeters estimation
+### because they default to minimization, we change the sign of eigloglik in f0
+      hess <- NULL
+      lst <-  nlminb(stval,f0,y=dataset,ev=evbase,lower=cmlb[,1],upper=cmlb[,2])
+
       assign("optimizationLst",lst,env=evbase)
       b <- lst$par
       mlogl <- lst$objective
@@ -209,29 +207,32 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
       ret <-  lst$convergence
       mess <- paste(lst$message," Iterations=  ", lst$iterations)
       message(mess)
-      assign("optimizationLst",lst,env=evbase)
+     
       if(ret >=1 ){
-      str <- ifelse(choptim,"optim", "nlminb")
-      message(str," did not converge or produce an error...",mess)
+     
+      message("nlminb did not converge or produce an error...")
+      message(mess)
       print(lst)
-      stop("Change defaults")
+      stop("Change defaults for control in nmlinb")
     }
     
  
    message("Calculating hessian ...")
    if(is.null(hess)){
+###best choice for hessian optim but does not returned the Jacobian
+###nlm returns both the gradient and the hessian but is slow compare to .Internal(optimhess) 
      hess <- optimhess(par=b,fn=ff,gr=NULL,dataset,control=con,nm=cml.ParNames)
      lst$hessian <- hess
-     assign("optimizationLst",lst,env=evbase)
+   
    }
      
- 
-   vc <- inv(hess)
+      assign("optimizationLst",lst,env=evbase)
+      vc <- inv(hess)
  
 ###    
-       Eres <- vput(Eres,lst$message,"retcode");
-       logl <- mlogl*rows(dataset);
-       Eres <- vput(Eres,logl,"loglik");
+      Eres <- vput(Eres,lst$message,"retcode");
+      logl <- -mlogl*rows(dataset);
+      Eres <- vput(Eres,logl,"loglik");
       if (Eprt>=2)
           message("CML converged; Computing variance-covariance matrix...?")
     }
@@ -293,16 +294,16 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
     if (ret!=0 && ret!=3333)
       message("Overriding no print instructions.  See CML return code")
    
-    if (ret==20)
-      ret <- 1
+  
   ###  formatC(x, digits=7, width=4)
   ###  format/ro 7,4;
     cat("?\n")
     message(title)
-    message("CML Return code:          ", formatC(ret,digits=7, width=4))
+    message("nlminb return code:          ", formatC(ret,digits=7, width=4))
     message("log-likelihood:           ", formatC(logl,digits=7, width=4))
     message("Number of observations:   ", formatC(cml.NumObs, digits=7, width=4))
- ###   message("Number of iterations:     ",formatC(cml.IterData[1],digits=7,width=4))
+ ###   message("Max number of iterations allowe:     ",formatC(cml.IterData[1],digits=7,width=4))
+    Ghactual <- GhActual
     if(ei.vc[Ghactual,1]!=-1)
       message("Variance computed from:   ", formatC(ei.vc[Ghactual,],digits=7,width=4))
     else{
@@ -323,32 +324,36 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, algor="BFG
       se <- matrix(NA, nrow=rows(b),ncol=1)
     
   ###  printfm(c(cml.ParNames,b,se),mask,fmt) ###COMPUTE
-    print(c(cml.ParNames,b,se))
+    print("se")
+    print(se)
+    print(c(cml.ParNames0,b,se))
     cat("?\n")
-    lst <- eirepar(b,Zb,Zw,x,evbase)
+    lst <- eirepar(b,Zb,Zw,x,Ez,evbase=evbase)
    
     bb <- lst[[1]]
     bw <- lst[[2]]
     sb <- lst[[3]]
     sw <- lst[[4]]
     rho <- lst[[5]]
+   
     vrs <- as.matrix(c(bb, bw, sb, sw, rho))
     message("Reparameterization back to the truncated scale, parameterized",
     "        according to the underlying untruncated distribution.")
-    print(as.vector(vrs))
+    print(unique.default(as.vector(vrs)))
     pb <- c(colMeans(as.matrix(bb)),colMeans(as.matrix(bw)),sb,sw,rho)
     print(pb)
     pb <- as.matrix(pb)
+   
     if (Eprt>=3){
       cat("?\n")
       message("Reparameterization back to ultimate truncated scale")
-      pb <- eirepart(b,Zb,Zw,x)  
-      print(as.vector(vrs))
+      pb <- eirepart(b,Zb,Zw,x, Ez,evbase)  
+      print(unique.default(as.vector(vrs)))
       print(as.vector(pb))
     }
   }  
 
-  Eres <- vput(Eres,cml.Parnames,"parnames")
+  Eres <- vput(Eres,cml.ParNames,"parnames")
   Eres <- vput(Eres,b,"phi")
   Eres <- vput(Eres,vc,"vcphi")
   lst <- c(list(b=b),list(vc=vc))

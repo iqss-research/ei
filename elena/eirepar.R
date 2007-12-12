@@ -90,12 +90,12 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
 ##**
 ##** uses 100*_Esims simulations for computations
 ##*/
- eirepart <- function(params,Zb,Zw,x, evbase=parent.frame())
+ eirepart <- function(params,Zb,Zw,x, Ez, evbase=get("evbase", env=parent.frame()))
 {
  ## local sims,bb,bw,sb,sw,sbw,rho,sb2,sw2,vrs,b,t,vc,mu,r,m,bbsims,bwsims,o,
  ## bounds,v;
   Esims <- get("Esims", env=evbase)
-  lst <- eirepar(params,Zb,Zw,x)
+  lst <- eirepar(params,Zb,Zw,x,Ez,evbase=evbase)
   bb <- lst[[1]]
   bw <- lst[[2]]
   sb <- lst[[3]]

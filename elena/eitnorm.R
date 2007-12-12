@@ -12,17 +12,18 @@
 ## r = nx1 vector of independent random numbers with means m and variances v
 ##
 
- rndtni <- function(m,v,bnds,evbase=parent.frame()){
+ rndtni <- function(m,v,bnds,evbase=get("evbase", env=parent.frame())){
 ###  local r,t,sigma,i,lb,ub,inds;
    if(!length(evbase))
-     evbase <- get("envbase", env=parent.frame()) 
+     evbase <- get("envbase", env=parent.frame())
+
    lb <- as.matrix(bnds[,1]);
    ub <- as.matrix(bnds[,2]);
    if (nrow(lb)==1)
-     lb <- matrix(lb, nrow=rows(m),ncol=1);
+     lb <- lb * matrix(1, nrow=rows(m),ncol=1);
  
    if(nrow(ub)==1)
-     ub <- matrix(ub, nrow=rows(m),ncol=1);
+     ub <- ub * matrix(1, nrow=rows(m),ncol=1);
   
    if (any(v<0)){
      rndtni.v <- v;
@@ -30,24 +31,24 @@
   ###  @v=recode(v,v.<0,1e-10);@
      stop("rndtni: negative variance; see rndtni.v")
    }
-   t <- lb>ub;
+   t <- (lb>ub);
    if(any(t))
      stop("rndtni: upper bound less than lower bound!")
  
    sigma <- sqrt(v);
    fcmptol <- 1e-12;
    t <- 1-dotfeq(lb,ub,tol=fcmptol); ###1 -(lb==ub)
-   sigma <- t*sigma;
-   m <- t *m +(1-t)*lb;
+   sigma <- t %dot*% sigma;
+   m <- t %dot*% m +(1-t) %dot*% lb;
 
-   r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1)* sigma;
+   r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% sigma;
    t <- (r<lb)| (r>ub);
    i <- 1;
    while( i<5 | colSums(t)!=0){
 ###   /* sample rejection method */
      inds <- grep(1, t)
      if(length(inds)){
-       r[inds] <- m[inds]+ matrix(rnorm(rows(inds), mean=0, sd=1), nrow=rows(inds), ncol=1, byrow=T)*sigma[inds];
+       r[inds] <- m[inds]+ matrix(rnorm(rows(inds), mean=0, sd=1), nrow=rows(inds), ncol=1, byrow=T) %dot*% sigma[inds];
        t <- (r<lb)|(r>ub);
      }
      i <- i+1;
