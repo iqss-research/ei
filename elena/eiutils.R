@@ -179,7 +179,7 @@ mkmissm <- function(x, m){
 ##
 fisherzi <- function(x){
  
-  t <- exp(-2*x);
+  t <- exp(2*x);
   t <- (t-1)%dot/%(t+1);
  
   return(t);
