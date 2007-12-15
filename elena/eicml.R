@@ -42,7 +42,7 @@
 ##             likelihood estimation.
 
 #include ei.ext;
-quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TRUE) {
+quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, optimTol=1.e+10, savedat=TRUE) {
    x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
@@ -50,7 +50,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TR
    evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
    if (Eprt>=2)
      message("Likelihood estimation...");
- 
+  
    Edirtol <- EdirTol  ### = .Machine$double.eps * con$factr  
 ###/* prepare data */
    dataset <- packdta(x,Zb,Zw,y);
@@ -90,7 +90,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TR
     stval <- rbind(stval,Eeta[2],0)
    else
     stval <- rbind(stval, 0,0)
- 
+  
   
  ### /* cml globals */
    title <- "EI Likelihood Maximization: "
@@ -186,7 +186,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TR
       rownames(stval) <- cml.ParNames
       f0 <- function(x,y=dataset,ev=evbase){
         res <- eiloglik(x,y,ev)
-        res <- -colSums(as.matrix(res))
+        res <- -colSums(as.matrix(res))  ###- sign needed to maximize
         return(res)
       }
     
@@ -197,6 +197,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TR
 ### favorite choice for its speed and accuracy: only for parammeters estimation
 ### because they default to minimization, we change the sign of eigloglik in f0
       hess <- NULL
+      message("nlminb in action:Obtainig estimates for stval")
       lst <-  nlminb(stval,f0,y=dataset,ev=evbase,lower=cmlb[,1],upper=cmlb[,2])
 
       assign("optimizationLst",lst,env=evbase)
@@ -217,13 +218,28 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TR
     }
     
  
-   message("Calculating hessian ...")
+   message("optim in action:Calculating hessian ...")
    if(is.null(hess)){
 ###best choice for hessian optim but does not returned the Jacobian
-###nlm returns both the gradient and the hessian but is slow compare to .Internal(optimhess) 
-     hess <- optimhess(par=b,fn=ff,gr=NULL,dataset,control=con,nm=cml.ParNames)
+###nlm returns both the gradient and the hessian but is slow compare to .Internal(optimhess)
+###hess <- optimhess(par=b,fn=ff,gr=NULL,dataset,control=con,nm=cml.ParNames)
+     opbounds <- find.bounds(b,Edirtol,perctg=0.2)
+     lstoptim <- cml.optim(par=b,opbounds,dataset=dataset, fn=f0,fctr=optimTol,hess=TRUE,evbase)
+     ret <-  lstoptim$convergence
+     mess <- paste(lstoptim$message," Iterations=  ", lstoptim$iterations)
+    
+     
+     if(ret >=1 ){
+     
+      message("optim did not converge or produce an error...")
+      message(mess)
+     
+      stop("Running nml...")
+    }
+     hess <- lstoptim$hessian
      lst$hessian <- hess
-   
+     b <- lstoptim$par
+     mlogl <- lstoptim$objective
    }
      
       assign("optimizationLst",lst,env=evbase)
@@ -336,10 +352,10 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, savedat=TR
     sw <- lst[[4]]
     rho <- lst[[5]]
    
-    vrs <- as.matrix(c(bb, bw, sb, sw, rho))
+    vrs <- as.matrix(c("bb","bw", "sb", "sw", "rho")) 
     message("Reparameterization back to the truncated scale, parameterized",
     "        according to the underlying untruncated distribution.")
-    print(unique.default(as.vector(vrs)))
+    print(as.vector(vrs))
     pb <- c(colMeans(as.matrix(bb)),colMeans(as.matrix(bw)),sb,sw,rho)
     print(pb)
     pb <- as.matrix(pb)

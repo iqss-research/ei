@@ -170,7 +170,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  ###/* simulation */
   if(EdoSim==1){
   ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
-     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc);
+     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc); ### eisims.src 
      betaBs <- lst$betaBs
      betaWs <- lst$betaWs
      Eres   <- vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @

@@ -63,7 +63,7 @@ extract.diag <- function(mat){
    
   mat <- as.matrix(mat)
   
-  if(all(dim(v)==dim(mat))){
+  if(all(dim(v)==dim(mat))&& length(dim(v)) && length(dim(mat))){
     res <- as.vector(mat) /as.vector(v)
     res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
     return(res)
@@ -78,9 +78,9 @@ extract.diag <- function(mat){
     invrt <- T
   }else
   v <- as.vector(v)
-  
+ 
   if((rows(mat0) <= 1 || cols(mat0) <= 1) && (rows(v0) <= 1 || cols(v0) <= 1))
-    return(res <- outer(as.vector(mat0),as.vector(v0), FUN="/"))   
+    return(res <- t(outer(as.vector(mat0),as.vector(v0), FUN="/")))   
  
   if(length(v) == rows(mat)) {
     mat <- t(mat)
@@ -125,15 +125,19 @@ extract.diag <- function(mat){
 ###       evillalon@iq.harvard.edu
 ###
 "%.*%" <- "%dot*%" <- function(v, mat){
+
  if(length(mat) <= 1 && length(v) <= 1)
    return(as.vector(mat)*as.vector(v))
  
   if(length(v) <= 1 )
     return(mat*as.vector(v))
+
   if(length(mat) <=1)
     return(as.vector(mat)*as.vector(v))
   mat <- as.matrix(mat)
-  if(all(dim(v)==dim(mat))){
+  
+  if(all(dim(v)==dim(mat))&& length(dim(v)) && length(dim(mat))){
+   
     res <- as.vector(v) *as.vector(mat)
     res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
     return(res)
@@ -146,10 +150,12 @@ extract.diag <- function(mat){
     mat <- as.matrix(v0)
   }else
   v <- as.vector(v)
-     
+ 
   if((rows(mat0) <= 1 || cols(mat0) <= 1) && (rows(v0) <= 1 || cols(v0) <= 1)){
    
-    return(res <- outer(as.vector(v0),as.vector(mat0), FUN="*")) 
+    res <- outer(as.vector(v0),as.vector(mat0), FUN="*")
+    res <- t(res)
+    return(res)
   }
 
   if(length(v) == rows(mat)) {
@@ -346,9 +352,10 @@ messout <- function(str, verbose=T, obj=NULL){
 ###              envarinment to stored and obtainbed results
 ###OUTPUT        the list with the resul;ts of running optim
 ###
-cml.optim <- function(stval,cml.bounds,dataset, fn,evbase)
+cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=get("evbase",env=evbase))
       { 
         ff <- fn
+        stval <- par
         stval <- as.matrix(stval)
 ###defaults
         par <- stval
@@ -361,15 +368,12 @@ cml.optim <- function(stval,cml.bounds,dataset, fn,evbase)
         con$trace <- 1
         con$fnscale <- 1 ##maximizes because function fn returns -res 
         con$REPORT <- 1
-        con$factr <- 1e+11
+        con$factr <- fctr
    
         message("Optim: Covergence acuracy is ", .Machine$double.eps*con$factr);
         message("con$parscale= ", con$parscale)
         message("con$fnscale= ", con$fnscale)
-###  delta.bounds <- cml.bounds[,2] - cml.bounds[,1]
-###  ix <- which(delta.bounds == max(delta.bounds),arr.ind=TRUE)
-###  con$parscale <-rep.int(1,length(par))
-        ##  con$parscale[ix] <- 0.1
+
 ###faster convergence increase con$factr, i.e.  <- 1e+08
 ###tolerance is defined as .Machine$double.eps*con$factr
         ix <- match(c("reltol", "abstol"), names(con))
@@ -377,8 +381,8 @@ cml.optim <- function(stval,cml.bounds,dataset, fn,evbase)
         message("Optim in action....")
         optimlst <- optim(stval,ff,gr=NULL,dataset,evbase,method="L-BFGS-B",
                           control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],
-                          hessian=FALSE)
-      
+                          hessian=hess)
+        hbool <- hess
         optimnm <- names(optimlst)
       
         ret <- optimlst$convergence
@@ -392,8 +396,33 @@ cml.optim <- function(stval,cml.bounds,dataset, fn,evbase)
         lst$convergence <- optimlst$convergence
         lst$message <- optimlst$message
         lst$iterations <- NA
+        lst$gradient <- NA
         lst$hessian <- hess
-        
+        ret <-  lst$convergence
+        mess <- paste(lst$message," ;with control$factr= ", fctr) 
+    
+     ### optim did not converge use nlm 
+     if(ret >=1 ){
+     
+      message("Error with optim...Change control$factr")
+      message(mess)
+     
+      message("Running nml...")
+    
+      lstnlm <- nlm(fn,par,gradtol=1.e-4, hessian=hess, dataset,evbase)
+      lst <- list()
+      lst$par <- lstnlm$estimate
+      lst$objective <- lstnlm$minimum
+      lst$gradient <- lstnlm$gradient
+      lst$iterations <- lstnlm$iterations
+      lst$hessian <- if(hbool) lstnlm$hessian
+      ret <- lstnlm$code
+      lst$convergence <- ret
+      if(ret >= 3){
+        message("code from nlm...", ret)
+        stop("Problem occur with nlm and optim change default tolerance")
+      }
+    }  
         return(lst)
       }
 ### DESCRIPTION: wrapper around  optim to calculate the hessian only
@@ -451,5 +480,38 @@ relError <- function(x, y){
   return(lst)
 }
      
+###DESCRIPTION : It calculates the lower and upper bounds to be used with
+###              optim and method="L-BGFS-B" after obtaining 
+###              estimates for param with nlminb
+###              we need the hessian using those values of param
+###              and the bounds are narrow limits around param
+###
+### INPUT: param vector of estimates from nmlinb: px1
+###        Edirtol scalar global smaller than 1, i.e 1.e-4
+###        perctg percentage of param (cml.bounds) to estimate the bounds
+###
+### OUPUT : estimated cml.bounds (p x2) around param, which comes from nlminb
+###
+find.bounds <- function(param,Edirtol=1.e-4,perctg=0.2){
+###  delta.bounds <- abs(cml.bounds[,2] - cml.bounds[,1])
+###  delta.bounds <- delta.bounds*perctg[1]
+###  delta.bounds[delta.bounds< Edirtol] <- Edirtol
+###  delta.bounds <- cbind(-abs(param)-delta.bounds,abs(param)+delta.bounds)
+  ###bounds
+
+  Edirtol <-  as.vector(Edirtol)
+  bounds <- matrix(0, nrow=length(param), ncol=2)
+  param <- as.vector(param)
+  for(n in 1:length(param)){
+  bounds[n,1] <- param[n] - abs(param[n])*perctg[1]
   
+ 
+  bounds[n,2] <- param[n] + abs(param[n])*perctg[1]
   
+}
+
+  bounds[bounds[,1] > -Edirtol & bounds[,1] <= 0, 1] <- -Edirtol
+  bounds[bounds[,2] < Edirtol & bounds[,2] >= 0, 2] <- Edirtol
+  
+  return(bounds)
+}

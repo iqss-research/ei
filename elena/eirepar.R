@@ -71,8 +71,8 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
   Zb <- Zb-t(colMeans(as.matrix(Zb)));
   Zw <- Zw-t(colMeans(as.matrix(Zw)));
   
-  Bb <- Bb0*(0.25+sb^2)+0.5+(Zb*Bb0v+etaB*m); ###matrix multp 
-  Bw <- Bw0*(0.25+sw^2)+0.5+(Zw*Bw0v+etaW*m); ###matrix multp
+  Bb <- Bb0%*%(0.25+sb^2)+0.5+(Zb%*%Bb0v+etaB*m); ###matrix multp 
+  Bw <- Bw0%*%(0.25+sw^2)+0.5+(Zw%*%Bw0v+etaW*m); ###matrix multp
   
   rho <- fisherzi(rho0);
   lst <- c(list(Bb=Bb), list(Bw=Bw), list(sb=sb), list(sw=sw), list(rho=rho))
@@ -104,7 +104,8 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
   bb <- colMeans(as.matrix(bb))
   bw <- colMeans(as.matrix(bw))
   sims <- Esims*100
-  bounds <- as.matrix(c(0,1,0,1))
+  bounds <- matrix(c(0,1,0,1),nrow=2, ncol=2,byrow=TRUE)
+  
   b <- rndbtn(bb,bw,sb,sw,rho,bounds,sims)
   t <- cor(b)
   b <- colMeans(as.matrix(b))
