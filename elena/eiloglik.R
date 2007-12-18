@@ -55,9 +55,9 @@ evlocal <- getEnvVar(evbase, environment())
   if(!scalmiss(c0)){	###		@ X=0 @
         
     epsilon <- y[c0]-bw[c0];
-    llik[c0] <- -0.5*(log(sw2)+(epsilon^2)%dot/%sw2) ### @ ln N(T|Bw,sigmaW) @
+    llik[c0] <- -0.5*(log(sw2)+(epsilon^2)/sw2) ### @ ln N(T|Bw,sigmaW) @
     bnds <- cbind(matrix(0,nrow =rows(c0),ncol=1), matrix(1,nrow=rows(c0),ncol=1));
-    Ebb <- bb[c0]+rho %dot*%(sb%dot/%sw)%dot*%epsilon;
+    Ebb <- bb[c0]+rho *(sb/sw)*epsilon;
     Vbb <- sb2*(1-rho^2);
     res <- lcdfnormi(bnds,Ebb,Vbb);      ###     @ ln S'(Bu,Sigmau) @
     R <- lncdfbvnu(bb[c0],bw[c0],sb,sw,rho)###  @ ln R(Bu,Sigmau) @
@@ -67,7 +67,7 @@ evlocal <- getEnvVar(evbase, environment())
   if(!scalmiss(c1)){ ##			@ X=1 @
   
     epsilon <- y[c1]-bb[c1];
-    llik[c1] <- -0.5*(log(sb2)+(epsilon^2)%dot/%sb2)### @ ln N(T|Bb,sigmaB) @
+    llik[c1] <- -0.5*(log(sb2)+(epsilon^2)/sb2)### @ ln N(T|Bb,sigmaB) @
     bnds <- cbind(matrix(0,nrow=rows(as.matrix(c1)),ncol=1),matrix(1,nrow=rows(as.matrix(c1)),ncol=1))
     Ebb <- bw[c1]+rho%dot*%(sw%dot/%sb)%dot*%epsilon
     Vbb <- sw2%*%(1-rho^2)
@@ -89,15 +89,22 @@ evlocal <- getEnvVar(evbase, environment())
   }
   
   if(!scalmiss(c)){ ###			@ 0<T<1, 0<X<1 @
-     
+    
     lst <- exvar(y[c],x[c],bb[c],bw[c],sb,sw,rho)
   ###  {mu,s2,epsilon,omega,Ebb,Vbb} = 
     mu <- lst$mu
+   
     s2 <- lst$s2
+   
     epsilon <- lst$epsilon
+   
     omega <- lst$omega
+   
     Ebb <- lst$Ebb
+   
     Vbb <- lst$Vbb
+###     llik[c] <- -0.5*(log(s2)+(epsilon^2)%dot/%s2) ###     @ ln N(T|mu,sigma) @
+   
     llik[c] <- -0.5*(log(s2)+(epsilon^2)%dot/%s2) ###     @ ln N(T|mu,sigma) @
     lst <- bounds1(y[c],x[c],matrix(1, nrow=nrow(as.matrix(c)),ncol=1),EnumTol)
     bnds <- lst$bs
@@ -199,13 +206,16 @@ exvar <- function(t,x,bbetaB,bbetaW,sigb,sigw,rho,evbase=NULL){
   EvTol <- get("EvTol", env=evbase)
   sigb2 <- sigb^2; ###scalar
   sigw2 <- sigw^2; ####scalar as it is rho
-  sigbw <- rho%*%sigb%*%sigw;
+  sigbw <- rho%*%sigb%*%sigw; ##scalar 
   
-  omx <- 1-x;
+  omx <- 1-x; ### 1 column and p rows
 
   mu <- bbetaB%dot*%x+bbetaW%dot*%omx;
   epsilon <- t-mu;
-  s2 <- (sigb2%dot*%(x^2))+(sigw2%dot*%(omx^2))+(2*sigbw%dot*%x%dot*%omx);
+  
+  ##here x*omx = px1 and is the same as x%dot*%omx
+  s2 <- as.matrix((sigb2*(x^2)))+as.matrix(sigw2*(omx^2))+(2*sigbw*(x*omx));
+  
   omega <- sigb2*x+sigbw%dot*%omx;
   
   Ebb <- bbetaB+((omega%dot/%s2)%dot*%epsilon);

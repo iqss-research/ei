@@ -54,20 +54,18 @@ extract.diag <- function(mat){
 ###       evillalon@iq.harvard.edu
 ###
 "%./%" <- "%dot/%" <- function(mat, v){
+  
   if(length(mat) <= 1 && length(v) <= 1)
     return(as.vector(mat)/as.vector(v))
   if(length(v) <= 1 )
-    return(mat*as.vector(v))
+    return(mat/as.vector(v))
   if(length(mat) <=1)
-    return(as.vector(mat)*as.vector(v))
-   
+    return(as.vector(mat)/as.vector(v))
+  if(all(dim(as.matrix(v)) == dim(as.matrix(mat))))
+    return(as.matrix(mat)/as.matrix(v))
   mat <- as.matrix(mat)
   
-  if(all(dim(v)==dim(mat))&& length(dim(v)) && length(dim(mat))){
-    res <- as.vector(mat) /as.vector(v)
-    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
-    return(res)
-  }
+  
   mat0 <- mat
   v0 <- v
   invrt <- FALSE
@@ -80,8 +78,8 @@ extract.diag <- function(mat){
   v <- as.vector(v)
  
   if((rows(mat0) <= 1 || cols(mat0) <= 1) && (rows(v0) <= 1 || cols(v0) <= 1))
-    return(res <- t(outer(as.vector(mat0),as.vector(v0), FUN="/")))   
- 
+    return(res <- as.matrix(outer(as.vector(mat0),as.vector(v0), FUN="/")))   
+  
   if(length(v) == rows(mat)) {
     mat <- t(mat)
     trnps <- T
@@ -134,14 +132,11 @@ extract.diag <- function(mat){
 
   if(length(mat) <=1)
     return(as.vector(mat)*as.vector(v))
+ if(all(dim(as.matrix(v)) == dim(as.matrix(mat))))
+    return(as.matrix(as.matrix(mat)*as.matrix(v)))
   mat <- as.matrix(mat)
   
-  if(all(dim(v)==dim(mat))&& length(dim(v)) && length(dim(mat))){
-   
-    res <- as.vector(v) *as.vector(mat)
-    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
-    return(res)
-  }
+  
   mat0 <- mat
   v0 <- v
   trnps <- FALSE
@@ -154,8 +149,8 @@ extract.diag <- function(mat){
   if((rows(mat0) <= 1 || cols(mat0) <= 1) && (rows(v0) <= 1 || cols(v0) <= 1)){
    
     res <- outer(as.vector(v0),as.vector(mat0), FUN="*")
-    res <- t(res)
-    return(res)
+  ###  res <- t(res)
+    return(as.matrix(res))
   }
 
   if(length(v) == rows(mat)) {
@@ -213,13 +208,16 @@ extract.diag <- function(mat){
   ncm <- ncol(mat)
   nrt <- nrow(tam)
   nct <- ncol(tam)
+ 
+  if(nrm==nrt && ncm==nct)
+    return(res <- as.matrix(mat) + as.matrix(tam))
   if(length(mat) <= 1 || length(tam) <=1){
    if(length(mat) <= 1) mat <- as.vector(mat)
    if(length(tam) <= 1) tam <- as.vector(tam)
     return(res <- mat + tam)
   }
-  if(nrm==nrt && ncm==nct)
-    return(res <- mat + tam)
+  if((length(mat) != length(tam)) && (ncm==1 || nrm==1) && (nrt==1 || nct==1))
+     stop("NON conformable arrays")
     
   if((ncm <=1 || nrm <= 1) && (length(mat)==nrt || length(mat) == nct)){
     vec <- as.vector(mat)
@@ -233,7 +231,7 @@ extract.diag <- function(mat){
   if((nrm <= 1 && (nrt <= 1 || nct <= 1)) ||
      (ncm <= 1 && (nrt <= 1 || nct <= 1))){
    
-    return(res <- outer(as.vector(mat0),as.vector(tam0),FUN="+"))
+    return(res <- as.matrix(outer(as.vector(mat0),as.vector(tam0),FUN="+")))
   }
   
    stop("NON conformable arrays")

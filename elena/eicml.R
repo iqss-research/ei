@@ -48,6 +48,8 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, optimTol=1
    if(!length(macheps)) macheps <- .Machine$double.eps
   
    evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
+  
+  
    if (Eprt>=2)
      message("Likelihood estimation...");
   
@@ -187,21 +189,32 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, optimTol=1
       f0 <- function(x,y=dataset,ev=evbase){
         res <- eiloglik(x,y,ev)
         res <- -colSums(as.matrix(res))  ###- sign needed to maximize
-        return(res)
+        as.vector(res)
+        
       }
     
       if(savedat)
         save(stval,cml.bounds,dataset,file="cml.Rdata")
 ### optim takes forever estimating parameters
 ### and its very sensitive to the control parameters
-### favorite choice for its speed and accuracy: only for parammeters estimation
-### because they default to minimization, we change the sign of eigloglik in f0
+### favorite choice for speed and accuracy: only parameters estimation
+### because defaults to minimization, we change sign of eigloglik in f0
       hess <- NULL
+      cmlb <- cml.bounds
+      
+###for better performance scale parameters with argument scale
+      cmlbintv <- cmlb[,2]- cmlb[,1]
+      scl <- rep(1,length(stval))
+      ind <- which(cmlbintv > 2*as.vector(EdirTol))
+      if(length(ind) > 0) scl[ind] <- 10 ##make it closer to Gauss
+      
       message("nlminb in action:Obtainig estimates for stval")
-      lst <-  nlminb(stval,f0,y=dataset,ev=evbase,lower=cmlb[,1],upper=cmlb[,2])
+      lst <-  nlminb(stval,f0,y=dataset,ev=evbase,scale=scl,lower=cmlb[,1],upper=cmlb[,2])
 
       assign("optimizationLst",lst,env=evbase)
       b <- lst$par
+      message("nlminb:Calculated params...")
+      print(as.vector(b))
       mlogl <- lst$objective
       cntgrd <- lst$evaluations[[1]]
       cntfn <- lst$evaluations[[2]]
@@ -230,15 +243,15 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, optimTol=1
     
      
      if(ret >=1 ){
-     
-      message("optim did not converge or produce an error...")
-      message(mess)
-     
-      stop("Running nml...")
-    }
+      message(mess)   
+      stop("optim did not converge or produce an error...")
+     }
      hess <- lstoptim$hessian
      lst$hessian <- hess
-     b <- lstoptim$par
+     bop <- lstoptim$par
+     message("optim:Calculated params...")
+     print(as.vector(bop))
+     bop[abs(bop) <= as.vector(EdirTol)] <- 0
      mlogl <- lstoptim$objective
    }
      
@@ -319,12 +332,14 @@ quadcml <- function(x,Zb,Zw,y,evbase=parent.frame(),macheps=2.23e-16, optimTol=1
     message("log-likelihood:           ", formatC(logl,digits=7, width=4))
     message("Number of observations:   ", formatC(cml.NumObs, digits=7, width=4))
  ###   message("Max number of iterations allowe:     ",formatC(cml.IterData[1],digits=7,width=4))
-    Ghactual <- GhActual
-    if(ei.vc[Ghactual,1]!=-1)
+    Ghactual <- GhActual <- get("GhActual", env=evbase)
+    ei.vc <- get("ei.vc", env=evbase)
+    
+    if(ei.vc[GhActual,1]!=-1)
       message("Variance computed from:   ", formatC(ei.vc[Ghactual,],digits=7,width=4))
     else{
       message("-Hessian computed from:   ")
-      pt <- sapply(ei.vc[Ghactual,], formatC, digits=7, width=4)
+      pt <- sapply(ei.vc[GhActual,], formatC, digits=7, width=4)
       print(pt)
     }
     cat("?\n")

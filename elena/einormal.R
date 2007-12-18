@@ -1,3 +1,87 @@
+##/*
+##**  This archive is part of the program EI
+##**  (C) Copyright 1995-2001 Gary King
+##**  All Rights Reserved.
+##**
+##**  various methods of computing areas (or logs of areas) or 
+##**  pdf's or cdf's of the univariate and bivariate normal distributions.
+##**  and some related distributions
+##*/
+#include ei.ext;
+##/*******************
+##** RANDOM NUMBERS **
+##********************
+##*/
+##/*
+##   y = rndmn(mu,vc,n);
+##**
+##** inputs: mu = kx1 means
+##**         vc = kxk variance matrix
+##**          n = number of simulations
+##**
+##** output:  y = nxk matrix of dependent Multivariate Normal Random Variables
+##**              each row of y is one 1xk simulation
+##**
+##** example:
+##**
+##**      c=rndn(30,5);
+##**      vc=c'c;                 @ some theoretical var-cov matrix,
+##**                                c'c for the example to assure vc ispos def @
+##**      mu=0|5|-10|130|3;
+##**      y=rndmn(mu,vc,500);
+##**      "the theoretical correlation matrix";;
+##**          d=1/sqrt(diag(vc));   d.*vc.*d';?;
+##**      "simulated correlation matrix";;  corrx(y);
+##**      "theoretical mean matrix: ";;     mu';
+##**      "simulated mean matrix:   ";;     meanc(y)';
+##**
+##**  History:  
+##**  12/6/94  Added capability to do cholsky decomposition on matrices 
+##**           that have symmetric columns and rows of all zeros -- e.g.,
+##**           the vc matrix returned from a restricted regression.  Also,
+##**           vectorized computation of result.  Curt Signorino 
+##*/
+rndmn <- function(mu,vc,n){
+ ###   local k,c,r,i,t,vcd,ad,a,res;
+  k <- rows(mu)
+  c <- cols(mu)
+  r <- rows(vc)
+  if ((r!=k || cols(vc)!= k) && (r!=1))
+    stop( "rndmn: mu must be kx1, and vc kxk or scalar") 
+      
+   
+  if (n<1) 
+    stop("rndmn: number of simulations must be >=1   ") 
+     
+   
+  if (c!=1 && c!=n)
+    stop( "rndmn: mu must be kxn or kx1")
+        
+    
+
+  if( scalzero(vc))
+    return(as.vector(mu)%dot*%as.matrix(rep(1,n))) 
+  tmp <- colSums(as.matrix(dotfeq(vc,0)))
+  i <- tmp == r           
+  ##  i=sumc(dotfeq(vc,0)).==r;##   @ which columns are all zeros?  @
+  if (all(i==FALSE)){##   @ no all-zero columns/rows      @
+             
+    a <- chol(vc,pivot=TRUE) 
+               ##   @ matrix square root function   @
+  }else{ ###                      @ all-zero columns/rows exist   @
+    t <- subset(diag(r), subset=!i)###  @ create transform matrix       @
+    vcd <- t%*%(vc%*%t(t)) ###  @ create nonsingular submatrix  @
+    ad <- chol(vcd,pivot=TRUE) ###  @ cholsky decomp of submatrix   @
+    a <- t(t)%*%(ad%*%t) ###              @ rebuild full square-root matrix @
+  }
+  mat <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
+  
+  
+  res <- t(mu%plus%(a%*%mat)) ###      @ dep ran normals with mean mu, var vc @
+   return(res)
+}
+
+
 ###/***********************
 ## UNIVARIATE NORMALS **
 ###************************

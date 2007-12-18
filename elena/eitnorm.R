@@ -36,19 +36,20 @@
      stop("rndtni: upper bound less than lower bound!")
  
    sigma <- sqrt(v);
+
    fcmptol <- 1e-12;
    t <- 1-dotfeq(lb,ub,tol=fcmptol); ###1 -(lb==ub)
   
-  
    sigma <- t %dot*% sigma;
+  
    m <- t %dot*% m +(1-t) %dot*% lb;
    
    r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% sigma;
    t <- (r<lb)| (r>ub);
 
 
-   bool <- i <5 | colSums(t) != 0
-   n <- 0
+  
+  
    for(i in 1:5){
 ###   /* sample rejection method */
     if(colSums(t) ==0) break; 
@@ -93,13 +94,14 @@ rndbtn <- function(bb,bw,sb,sw,rho,bounds,sims, evbase=parent.frame()){
   sb2 <- sb^2;
   sw2 <- sw^2;
   sbw <- rho*sb*sw;
-  mat <- bounds[2,]%dot*%o
-  
+  mat <- as.vector(o)%dot*%bounds[2,]  ##outer product in Gauss language
+
   bwsims <- rndtni(bw*o,sw2*o,mat)
 
   m <- bb+(sbw%dot/%sw2)%dot*%(bwsims-bw);
   v <- sb2-((sbw^2)%dot/%sw2);
-  bbsims <- rndtni(m,v%dot*%o,bounds[1,]%dot*%o);
+   mat <- as.vector(o)%dot*%bounds[1,] 
+  bbsims <- rndtni(m,v%dot*%o,mat);
   mat <- cbind(bbsims,bwsims)
   return(mat);
 }

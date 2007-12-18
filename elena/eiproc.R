@@ -111,7 +111,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  
 ###  /* nonparametric estimation */
   
-  if(dbug==T) evglobal <<- evbase 
+  if(dbug==TRUE) evglobal <<- evbase 
   if(EnonPar>=1){
        
     betaBs <- einonp(t,x, evbase);
