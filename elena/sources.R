@@ -1,5 +1,5 @@
 vec <- c("eibounds.R","eicml.R","eidata.R", "eienv.R","eigrid.R","eiloglik.R","einonpar.R","einormal.R",  
-"eiproc.R", "eiread.R", "eirepar.R", "eitnorm.R","eiutils.R","g2rutils.R", 
+"eiproc.R", "eiread.R", "eirepar.R", "eitnorm.R","eiutils.R","g2rutils.R", "probs.R","eisims.R", 
 "testcases.R","utils.R")
 print(getwd())
 message("You need to be in directory ~/GAUSSCODE/ei/R")

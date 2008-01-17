@@ -1,5 +1,203 @@
 library(mvtnorm)
 
+
+##/*
+##**  This archive is part of the program EI
+##**  (C) Copyright 1995-2001 Gary King
+##**  All Rights Reserved.
+##*/
+##/*
+##   v = eiread(dbuf,"name");
+##**
+##** Extracts, computes, or prints results from EI or EI2 output data buffers
+##**
+##** When used with an EI2 output data buffer (i.e., for 2xC tables), most
+##** eiread items use the mean posterior estimate for X; the
+##** multiply imputed values (x2) are used only for these options and their
+##** many derivatives: betaBs, betaWs, CI80bw, CI95bw, coverage, aggs.
+##**
+##** INPUTS:
+##** dbuf     a data buffer created by ei()
+##** name     a string with the name of the element to read or compute.
+##**          choose from this lists below (*=option prints output to screen
+##**          if _Eprt>0)
+##** OUTPUT
+##** v = chosen item, or missing value if item is not available
+##**
+##** GLOBAL
+##** _Eprt  = 0 don't print; 1 = do print selected items.
+##** _EIMetaR = If dbuf is a meta-data buffer (output from ei2, eimodels_run, or
+##**           eimodels_def), this global denotes which of the imputed data buffers 
+##**           stored in dbuf should be accessed when running this procedure (default=1)
+##**
+##** STORED (can also be retrieved with vread):
+##** _EalphaB  value of this global (prior on alphaB)
+##** _EalphaW  value of this global (prior on alphaW)
+##** _Ebeta    value of this global (priors on bb,bw)
+##** _Ebounds  value of this global (bounds)
+##** _Ecdfbvn  value of this global (method for CDF of bivariate normal calc)
+##** _EdirTol  value of this global (tolerance of CML convergence)
+##** _EdoML    value of this global (do maxlik)
+##** _EdoML_phi value of this global (input phi's)
+##** _EdoML_vcphi value of this global  (input vc of phi's)
+##** _Eeta     value of this global (slope coeff on X in betab|betaw eqns)
+##** _EIgraph_bvsmth value of this global (bivariate smoothing parameter)
+##** _EisChk   value of this global (check importance sampling)
+##** _EiLlikS  value of this global (log-likelihood at each simulation)
+##** _EisFac   value of this global (variance factor in importance sampling)
+##** _EisN     value of this global (extra sims factor for importance sampling)
+##** _Eist     value of this global (multivar t or normal for imptce samplng)
+##** _EmaxIter value of this global (maximum number of iterations for CML)
+##** _EnonEval value of this global (nonpar point evaluations)
+##** _EnonNumInt value of this global (nonpar numerical integration points)
+##** _EnonPar  value of this global (nonparametric estimation)
+##** _EnumTol  value of this global (numerical tolerance for homogeneous pcts)
+##** _Erho     value of this global (prior on rho)
+##** _Eselect  value of this global (observations to select)
+##** _EselRnd  value of this global (delete randomly selected obs)
+##** _Esigma   value of this global (priors on sb,sw)
+##** _Esims    value of this global (simulations)
+##** _Estval   value of this global (starting values or grid search)
+##** _EI_vc    value of this global (parameters for variance computation)
+##** date      a string containing the date and time execution completed,
+##**           and the EI version number and date
+##** t         p x 1: outcome var proportion (turnout) (this gives V if ei2)
+##** x         p x 1: explanatory var proportion (black vap)
+##** n         p x 1: number of individuals per observation (precinct)
+##** GhActual  value of output global _GhActual from gvc()
+##** retcode   CML return code or 3333 for grid search
+##** parnames  character vector of names for phi (=_cml_parnames)
+##** phi       MLE's from CML
+##** vcphi     global vc matrix of coeff's phi from gvc(). If _EI_vc={-1 0},
+##**           it returns the inverse of vc matrix.
+##** loglik    value of log-likelihood at the maximum (unnormalized)
+##** PhiSims   if _EisChk==1:  _Esims x rows(phi): sims of phi; 
+##**           else            meanc(phi)~stdc(phi)
+##** lnir      if _EisChk==1: ln(Importance Ratio)~(normal simulations of phi') 
+##**           [_Esims*_Eisn x rows(phi)+1], or scalar zero otherwise.
+##** lliksims   _Esims x 1: log-likelihood, or scalar mean if _EiLlikS=0
+##** resamp    scalar: number of resampling tries
+##** betaBs    p x _Esims: simulations of betaB
+##**
+##** CALCULATED OR CHANGED:
+##** Zb        matrix of covariates for betaB or 1 for none
+##** Zw        matrix of covariates for betaW or 1 for none
+##** meanIR    scalar: ln of mean importance ratio
+##** betaWs    p x _Esims: simulations of betaW
+##** RNbetaBs  p x _Esims: randomly horizontally permuted simulations of betaB
+##** RNbetaWs  p x _Esims: randomly horizontally permuted simulations of betaW
+##** STbetaBs  p x _Esims: SORTED simulations of betaB 
+##**           (e.g., 80% CI, lower bound is STbetaBs[int(0.1*_Esims)]);
+##** STbetaWs  p x _Esims: SORTED simulations of betaW
+##**           (e.g., 80% CI, upper bound is STbetaWs[int(0.9*_Esims)]);
+##** CI95b     p x 2: lower~upper 95% confidence intervals for betaB
+##** CI95w     p x 2: lower~upper 95% confidence intervals for betaW
+##** CI95bw    p x 4: lowerB~upperB~lowerW~upperW 95% conf ints for betaB betaW
+##** CI80b     p x 2: lower~upper 80% confidence intervals for betaB
+##** CI80w     p x 2: lower~upper 80% confidence intervals for betaW
+##** CI80bw    p x 4: lowerB~upperB~lowerW~upperW 80% conf ints for betaB betaW
+##** CI50b     p x 2: lower~upper 50% confidence intervals for betaB
+##** CI50w     p x 2: lower~upper 50% confidence intervals for betaW
+##** checkR    rows(phi)x2 precision of R (for +/- _Edirtol) is ok (1) or not (0)
+##** R         scalar: sum(ln(R)), where R=volume above the unit square
+##** Ri        p x 1: ln(R), where R=volume above the unit square
+##** dataset   Zb~Zw~x~t, used for input to eiloglik(); _EselRnd<1 is ignored
+##** loglikS   value of log-likelihood at the maximum for each i (unnormalized)
+##** Ebounds   params x 2: lower~upper constraints on maxlik searching routines
+##** Nb        p x 1: denominator of x and t; x.*n (blacks of voting age)
+##** Nw        p x 1: (1-x).*n = n-Nb (whites of voting age)
+##** Nt        p x 1: n.*t (number of people who Turnout)
+##** beta      p x 2 E(betaB)~E(betaW) for each precinct
+##** betaB     p x 1 E(betaB) for each precinct
+##** betaW     p x 1 E(betaW) for each precinct
+##** sbetaB    p x 1 stand deviation of betaB
+##** sbetaW    p x 1 stand deviation of betaW
+##** CsbetaB   p x 1 CI-based stand deviation of betaB
+##** CsbetaW   p x 1 CI-based stand deviation of betaW
+##** GEbw      p x 3 betaB~betaW~Nsims based on sims where betaB>=betaW
+##** GEbwa     2 x 1 aggregate B^b ~ B^w based on sims where betaB>=betaW
+##** GEwb      p x 3 betaB~betaW~Nsims based on sims where betaW>=betaB
+##** GEwba     2 x 1 aggregate B^w ~ B^b based on sims where betaW>=betaB
+##** bounds    p x 4: bounds on betaB & betaW, lowerB~upperB~lowerW~upperW
+##** bounds2   p x 4: same as bounds but for ei2 bounds on the lambdas
+##** abounds   2 x 2: aggregate bounds rows:lower,upper; cols:betab,betaw
+##** abounds2  2 x 2: aggregate bounds, ei2 rows:lower,upper;cols:lambdab,lambdaw
+##** Pphi      2 x 5 row 1: phi, row 2: stand errors
+##** psiu      reparameterized phi into untruncated scale (average for bb bw)
+##** mpPsiu    psiu from Mean Posterior rather than MLEs
+##** psi       reparameter'd phi into ultimate truncated scale (avg for bb bw)
+##** aggs      _Esims x 2: sims of district-level weighted avg of betaBs~betaWs
+##** Maggs     2 x 1: point est of 2 dist-level parameters: meanc(aggs);
+##** VCaggs    2 x 2: var-cov matrix of 2 dist-level params vcx(aggBs~aggWs)
+##** Paggs     2 x 2: row 1: ec inf coeff's; row 2: standard errors
+##** Goodman   2 x 2: row 1: Goodman's Regression coeff's, row 2: stan errors
+##** double    2 x 1: double Regression coefficients (takes ei2 dbuf as input)
+##** Thomsen   2 x 1: Thomsen's Ecological logit Estimates (bb|bw)
+##** Neighbor  2 x 1: Freedman et al.'s neighborhood model estimates (bb|bw)
+##** Palmquist scalar: Palmquist's Inflation factor
+##** Eaggbias  4 x 2:(b~se)|(b~se) for regs of est'd betaB,betaW on const. & X
+##** nobs      scalar: number of observations
+##** tsims     100 x _Esims+1:rows=seqase(0,1,100), cols=X~(sorted sims of T|X)
+##** tsims0    p x _Esims+1: cols=T~(sorted sims of T|X_obs,Z_obs)
+##** expvarci  100 x 4: X~20%CI~mean~80%CI of sims from p(T|X)
+##** expvarci0 p x 4: T~20%CI~mean~80%CI of sims from p(T|X_obs,Z_obs)
+##** expvarcis 100 x 4: X~20%CI~mean~80%CI of sims from p(T|X) LOESS Smoothed
+##** etaC      2x1 etaB|etaW to fix eta's at (derived from _Eeta)
+##** etaS      2x1 se(etaB|etaW) fixed se's for eta (derived from _Eeta)
+##** _Ez       2x1: n of covariates, including implied constant term for Zb|Zw
+##**                also sets this global
+##** sum       prints a summary of selected results
+##**
+##** OPTIONAL: if desired, must be vput these into data buffer before eiread()
+##** titl      string: descriptive info about run
+##** truth     p x 2: true precinct betaB~betaW
+##**
+##** CALCULATED FROM OPTIONAL:
+##** truthB    truth[.,1] truth for blacks
+##** truthW    truth[.,2] truth for whites
+##** NbT       px1 number of blacks who Turnout
+##** NbN       px1 number of blacks who don't Turnout
+##** NwT       px1 number of whites who Turnout
+##** NwN       px1 number of whites who don't Turnout
+##** aggtruth  2 x 1: true aggregate coeff for blacks|whites
+##** psitruth  5 x 1: true values of psi on truncated scale
+##** coverage  2 x 4: %w/in CI's: 50b~80b~50w~80w (1st row=means,2nd=wtd means)
+##** aggbias   4 x 2:(b~se)|(b~se) for regressions of betaB,betaW on const. & X
+##** truPtile  p x 2: true percentile at which true value falls, betaB~betaW
+##**
+##** ADDITIONAL OPTIONS IF DATA BUFFER WAS CREATED BY EI2:
+##** x2        p x _Esims: simulations of x from prior stage analysis
+##** x2rn      p x _Esims: x2 randomly horizontally permuted 
+##** x         p x 1: redefined as mean posterior
+##** Nb2       p x _Esims: denominator of x and t; x.*n (blacks of voting age)
+##** Nw2       p x _Esims: (1-x).*n = n-Nb (whites of voting age)
+##** _t        p x 1: the original variable T from the first stage
+##** _x        p x 1: the original variable X from the first stage
+##** _n        p x 1: the original variable N from the first stage
+##**
+##** ADDITIONAL OPTIONS IF DATA BUFFER WAD CREATED BY EIMODELS_AVG
+##** t = t used for the estimation; if models use different t's, only t 
+##**     from the first model is stored and used for eiread() calculation.
+##** x = x used for the estimation; if models use different x's, only x 
+##**     from the first model is stored and used for eiread() calculation.
+##** n = n used for the estimation; if models use different n's, only n 
+##**     from the first model is stored and used for eiread() calculation.     
+##** betabs = betab draws from its BMA posterior (p x _Esims)
+##** betaws = betaw draws from its BMA posterior (p x _Esims)
+##** mfreq  = first column contains the model number and the second 
+##**          column contains the frequency of sampling from each 
+##**          model (# of model x 2)
+##** postprob = first column contains the model number and the second 
+##**            column contains the posterior model probabilities 
+##**            (# of model x 2)
+##** prprob = first column contains the model number and the second 
+##**          column contains the prior model probability used for 
+##**          calculation (# of model x 2).
+##** margllik = first column contains the model number and the second 
+##**            column contains the marginal log-likelihood for each 
+##**            model (# of model x 2)
+##**
+##*/
 eiread <- function(dbuf, str, compute =FALSE){
 
   if(!compute)

@@ -42,45 +42,106 @@
 ##**           vectorized computation of result.  Curt Signorino 
 ##*/
 rndmn <- function(mu,vc,n){
- ###   local k,c,r,i,t,vcd,ad,a,res;
+
   k <- rows(mu)
   c <- cols(mu)
   r <- rows(vc)
   if ((r!=k || cols(vc)!= k) && (r!=1))
     stop( "rndmn: mu must be kx1, and vc kxk or scalar") 
       
-   
   if (n<1) 
     stop("rndmn: number of simulations must be >=1   ") 
-     
    
   if (c!=1 && c!=n)
     stop( "rndmn: mu must be kxn or kx1")
-        
-    
 
   if( scalzero(vc))
-    return(as.vector(mu)%dot*%as.matrix(rep(1,n))) 
+    return(t(mu)%dot*%as.matrix(rep(1,n))) 
   tmp <- colSums(as.matrix(dotfeq(vc,0)))
-  i <- tmp == r           
-  ##  i=sumc(dotfeq(vc,0)).==r;##   @ which columns are all zeros?  @
+  i <- tmp == r     ##   @ which columns are all zeros?  @      
+ 
   if (all(i==FALSE)){##   @ no all-zero columns/rows      @
              
-    a <- chol(vc,pivot=TRUE) 
+    a <- t(chol(vc,pivot=TRUE)) 
                ##   @ matrix square root function   @
   }else{ ###                      @ all-zero columns/rows exist   @
     t <- subset(diag(r), subset=!i)###  @ create transform matrix       @
-    vcd <- t%*%(vc%*%t(t)) ###  @ create nonsingular submatrix  @
+    vcd <- (t%*%vc)%*%t(t) ###  @ create nonsingular submatrix  @
     ad <- chol(vcd,pivot=TRUE) ###  @ cholsky decomp of submatrix   @
-    a <- t(t)%*%(ad%*%t) ###              @ rebuild full square-root matrix @
+    a <- (t(t)%*%ad)%*%t ###              @ rebuild full square-root matrix @
   }
   mat <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
-  
+
   
   res <- t(mu%plus%(a%*%mat)) ###      @ dep ran normals with mean mu, var vc @
    return(res)
 }
 
+rndnm.test <- function(n){
+   vcv <- c(28.6072, -2.1666, -6.9943,  8.3078, -0.3080, -2.1666, 36.0326, -8.1411,  8.3657,  1.0486, 
+            -6.9943, -8.1411, 37.5934,  5.8055, -3.8859,8.3078,  8.3657,  5.8055, 41.9698, -0.3851,
+             -0.3080,  1.0486, -3.8859, -0.3851, 19.6271)
+   vc <-  matrix(vcv,ncol=5,byrow=TRUE)
+   mu <- as.matrix(c(0,5,-10,130,3))
+   yv <- c(-4.5975, -3.4228, -7.1720, 130.2136, 10.1580,
+           1.6090,  0.9583, -1.2137, 137.6933, -0.1357, 
+           5.1135, -5.6087, -10.2555, 124.3189,  6.6084,
+           -0.7678,  3.8019, -7.2281, 133.4664, 10.1348, 
+           -4.0171, 12.3191, -8.4431, 128.2330,  5.4298,
+            7.2640, -2.3761, -16.1102, 130.8514,  7.3573,
+            2.9412,  0.7858, -3.4992, 132.9169, -0.7575,
+            0.8296, -2.0460, -9.9832, 125.0697,  7.6052,
+           -2.2463, 10.5770, -19.5932, 132.8424, -0.1762,
+           -2.8260,  4.8684, -17.2458, 120.3651, 12.7777)
+   ytest <- matrix(yv,ncol=5,byrow=TRUE)
+   y <- rndmn(mu,vc,n)
+   if(n ==10)
+     print(y - ytest )
+ }
+
+##/*
+##   y = rndmt(mu,vc,df,n);
+##**
+##** inputs: mu = kx1 means
+##**         vc = kxk variance matrix
+##**         df = scalar degrees of freedom
+##**          n = scalar number of simulations
+##**
+##** output:  y = nxk matrix of dependent Multivariate T Random Variables
+##**              each row of y is one 1xk simulation
+##**
+##*/
+rndmt <- function(mu,vc,df,n){
+###  local k,c,r,i,t,vcd,ad,a,res;
+  k <- rows(mu)
+  c <- cols(mu)
+  r <- rows(vc)
+  if (( r!=k || cols(vc)!=k) && (r!=1))
+    stop( "rndmt: mu must be kx1, and vc kxk or scalar")
+    
+  if( n<1) 
+    stop("rndmt: number of simulations must be >=1   ") 
+
+  if( !(c %in% c(1,n)))
+    stop("rndmt: mu must be kxn or kx1")
+ 
+  if( vc==0) 
+    return(t(as.matrix(mu))%dot*% matrix(1,nrow=n,ncol=1)) 
+  
+  i <- colSums(as.matrix(dotfeq(vc,0))) ==r ### @ which columns are all zeros?  @
+  if( all(!i))                              ###@ no all-zero columns/rows      @
+    a=t(chol(vc,pivot=TRUE))                ###@ matrix square root function   @
+  else{                     ###@ all-zero columns/rows exist   @
+    t <- subset(diag(r),subset=!i);      ###@ create transform matrix       @
+    if(!length(t)) t <- NA
+    vcd <- t%*%vc%*%t(t)            ###@ create nonsingular submatrix  @
+    ad <- chol(vcd,pivot=TRUE)           ###@ cholsky decomp of submatrix   @
+    a <- (t(t) %*% ad) %*% t               ####@ rebuild full square-root matrix @
+  }
+  rndn <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
+  res <- t(mu+a%*%(rndn %dot*%sqrt(df%dot/%rndchi(1,n,df))));
+  return(res)
+}
 
 ###/***********************
 ## UNIVARIATE NORMALS **
@@ -176,6 +237,7 @@ lncdfn2 <- function(a, b, eps=1e-25){
 lncdfbvnu <- function(bb,bw,sb,sw,rho){
   Bb <- bb
   Bw <- bw
+ 
   evbase <- get("evbase", env=parent.frame())
   Ecdfbvn <- get("Ecdfbvn", env=evbase)
   o <- 1
@@ -209,7 +271,8 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
       R <- log(abs(cdfbvnunit(Bb,Bw,sb,sw,rho)))
  
     }else if(all(Ecdfbvn==5)){
- 
+    
+          
       R <- lncdfbvn2i(Bb,Bw,sb,sw,rho)
  
     }else if(all(Ecdfbvn==6)){
@@ -225,6 +288,82 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
 
   return(R);
 }
+###/* ----------------------------------------------------------------
+##   y = lnpdfmn(y,mu,vc);
+##**
+##**  y = kx1
+##** mu = kx1 vector of means
+##** vc = kxk var covar matrix
+##**
+##** y = log of the Multivariate Normal Density (scalar)
+##**
+##** GLOBAL:  _Eivc = invpd(vc) to save computation time (kxk)
+##**                  or missing to compute 
+##**
+##** NOTE:  detl (system global) will be used, so do not call invpd() except
+##**        to define _Eivc before calling this proc.
+##*/
+lnpdfmn <- function(y,mu,vc,Eivc){
+###  local a,b,c,k,ivc,w,ymu,res;
+  if (any(is.na(Eivc)))
+    ivc <- invpd(vc)
+  else
+    ivc <- Eivc;
+  
+  ymu <- y-mu
+  res <- -(rows(mu)*1.83787706640934548+log(detl)+(t(ymu)%*%ivc)%*%ymu)/2
+  return(res)
+}
+
+###/* another version without scale factor for importance sampling */
+lnpdfmn2 <- function(y,mu,vc,Eivc){
+ ### local a,b,c,k,ivc,w,ymu,res;
+  if(any(is.na(Eivc)))
+    ivc <- invpd(vc)
+  else
+    ivc <- Eivc;
+  
+  ymu <- y-mu;
+  res <- -(t(ymu)%*%ivc)%*%ymu
+  res <- res/2
+  return(res)
+}
+
+
+###/* ---------------------------------------------------------------
+##   y = lnpdfmt(y,mu,vc,df);
+##**
+##**  y = kx1
+##** mu = kx1 vector of means
+##** vc = kxk var covar matrix
+##** df = degrees of freedom
+##**
+##** y = log of Multivariate T pdf without normalizing constant (scalar)
+##**
+##** GLOBAL:  _Eivc = invpd(vc) to save computation time or missing to compute
+##**          must be kxk.
+##**
+##** NOTE:  detl (system global) will be used, so do not call invpd() except
+##**        to define _Eivc before calling this proc.
+##*/
+lnpdfmt <- function(y,mu,vc,df,Eivc){
+###  local a,b,c,k,ivc,w,ymu;
+  k <- rows(mu);
+
+  ymu <- y-mu
+  if (any(is.na(Eivc)))
+    ivc <- invpd(vc)
+  else
+    ivc <- Eivc
+  
+  
+  w <- (t(ymu)%*%ivc)%*%ymu;
+  b <- -0.5*log(detl)
+  c <- -(df+k)%dot*%log(1+w%dot/%df)/2
+  return(b+c)
+}
+
+
 ##/* ----------------------------------------------------------------
 ## cdfbvnormig(Bb,Bw,sigb,sigw,rho)
 ## cdf of the bivariate truncated normal with bounds at 0,1, 0,1
@@ -1022,6 +1161,7 @@ lcdfbvnorma <- function(mu1,mu2,s1,s2,rho){
 ##** rho = correlation
 ##*/
 lncdfbvn2i <- function(Bb,Bw,sigb,sigw,rho){
+ 
   evbase <- get("evbase", env=parent.frame())
   EcdfTol <- get("EcdfTol", env=evbase)
   res <- cdfbvn2(-Bb/sigb,1/sigb,-Bw/sigw,1/sigw,rho);

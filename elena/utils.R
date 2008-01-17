@@ -342,8 +342,7 @@ messout <- function(str, verbose=T, obj=NULL){
   if(length(obj) >0 && verbose)
     print(obj)
 }
-
- ###DESCRIPTION: uses optim with cml.bounds to estimater parameters with maximum liklehodd
+###DESCRIPTION: uses optim with cml.bounds to estimater parameters with maximum liklehodd
  ###INPUT        stval inital value for the paramneters (px1)
 ##               lower and upper bounds (px2) for each in stval
 ###              dataset input to function fn
@@ -423,20 +422,26 @@ cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=ge
     }  
         return(lst)
       }
+
 ### DESCRIPTION: wrapper around  optim to calculate the hessian only
 ###              It assumes that the parameters par are already optimized
 ###              with either optim or nmlinb. Invokes .Internal optimhess
 ###              Also prints out the time used for the computation
-###
-
-optimhess <- function(par,fn,gr,...,control,nm=NULL){
+### 
+optimhess <- function(par,fn,gr,...,control,Etol=1.e-4,nm=NULL){
+ 
   initime <- proc.time()
+ 
+  con <- control
   fn1 <- function(par) fn(par,...)
   gr1 <- NULL
-   if(!is.null(gr))
-    gr1 <- function(par) gr(par,...)
-  hess <- .Internal(optimhess(par, fn1, gr1, control))
-  hess <- 0.5 * (hess + t(hess))
+  if(!is.null(gr))
+     gr1 <- function(par) gr(par,...)
+  cml.bounds <- find.bounds(par,Etol)
+   hess <- optim(par,fn,gr,...,method="L-BFGS-B",
+                 control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],hessian=TRUE)$hessian
+###  hess <- .Internal(optimhess(par, fn1, gr1, control))
+###  hess <- 0.5 * (hess + t(hess))
   if (!is.null(nm)) 
     dimnames(hess) <- list(nm, nm)
   dtime <- proc.time() - initime
@@ -447,6 +452,7 @@ optimhess <- function(par,fn,gr,...,control,nm=NULL){
   message("Time consume ...", dtime)
   return(hess)
 }
+    
 ### DESCRIPTION : wrapper around nlm to calculate the Hessian
 ###               It assumes that the parameters p have already being
 ###               optimized with either optim or nmlinb

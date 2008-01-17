@@ -79,6 +79,23 @@ meanwcFerdi<-meanWcFerdi <- function(x,wt){
         return(res)
 }
 
+##/*
+##** sims = rndchi(r,c,v);
+##**
+##** inputs: r = row
+##**         c = column
+##**         v = df
+##**
+##** output: sim = kxk matrix of independent chi-square simulations with v
+##**
+##** 4/13/99 KS
+##*/
+rndchi <- function(r,c,v){
+    return(2*rndgam(r,c,v/2))
+  }
+
+
+
 ###
 ##  y = ismissm(x)
 ##

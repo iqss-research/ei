@@ -148,10 +148,10 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   if(EdoML==1){
    
      lst  <- quadcml(x,Zb,Zw,t,evbase);
-     MLpsi <- lst$Mlpsi
-     MLvc <- lst$MLvc
+     MLpsi <- lst[[1]]
+     MLvc <- lst[[2]]
      
-     if(length(MLvc) <= 1 && is.na(MLvc)){
+     if(length(MLvc) <= 1 && any(is.na(MLvc))){
        Eres <- vput(Eres,MLpsi,"phi");
        Eres <- vput(Eres,MLvc,"vcphi");
       return(Eres);
@@ -170,7 +170,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  ###/* simulation */
   if(EdoSim==1){
   ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
-     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc); ### eisims.src 
+     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc,evbase); ### eisims.src 
      betaBs <- lst$betaBs
      betaWs <- lst$betaWs
      Eres   <- vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @
@@ -495,7 +495,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   if (any(betaW >1)  || any(betaW <0))
     stop("ei: 'truthW' input must be between 0 and 1");
 
-  res <- bounds1(t, x, tvap)
+  res <- bounds1(t, x, tvap,get("Enumtol",env=evbase) )
   bnd <- res$bs
   a <- res$aggs
   a <- na.omit(cbind(betaB, bnd[,1]))

@@ -20,10 +20,10 @@
    lb <- as.matrix(bnds[,1]);
    ub <- as.matrix(bnds[,2]);
    if (nrow(lb)==1)
-     lb <- lb * matrix(1, nrow=rows(m),ncol=1);
+     lb <- as.vector(lb) * matrix(1, nrow=rows(m),ncol=1);
  
    if(nrow(ub)==1)
-     ub <- ub * matrix(1, nrow=rows(m),ncol=1);
+     ub <- as.vector(ub) * matrix(1, nrow=rows(m),ncol=1);
   
    if (any(v<0)){
      rndtni.v <- v;
@@ -40,28 +40,25 @@
    fcmptol <- 1e-12;
    t <- 1-dotfeq(lb,ub,tol=fcmptol); ###1 -(lb==ub)
   
-   sigma <- t %dot*% sigma;
+   sigma <- as.matrix(t) %dot*% as.matrix(sigma);
   
-   m <- t %dot*% m +(1-t) %dot*% lb;
+   m <- as.matrix(t) %dot*% as.matrix(m) +as.matrix(1-t) %dot*% lb;
    
-   r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% sigma;
+   r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% as.matrix(sigma);
    t <- (r<lb)| (r>ub);
-
-
-  
   
    for(i in 1:5){
 ###   /* sample rejection method */
     if(colSums(t) ==0) break; 
      inds <- grep(1, t)
      if(length(inds)){
-       r[inds] <- m[inds]+ matrix(rnorm(rows(inds), mean=0, sd=1), nrow=rows(inds), ncol=1, byrow=T) %dot*% sigma[inds];
+       r[inds] <- m[inds]+ matrix(rnorm(rows(inds), mean=0, sd=1), nrow=rows(inds), ncol=1, byrow=T) %dot*% as.matrix(sigma[inds]);
        t <- (r<lb)|(r>ub);
      }
    
     
    }
-   if(colSums(t)!=0){
+   if(colSums(as.matrix(t))!=0){
 ###  /* sample rejection fails for some elements; try CDF method */
      inds <- grep(1, t)
      if(length(inds))
@@ -155,3 +152,80 @@ invcdftn <- function(p,mu,sigma2,lft,rgt){
   }
   return(res);
 }
+##/*
+##** Random draws from a truncated singular multivariate normal density
+##**
+##**  res = rndtsn(mean,negHess,sims,bounds,tol);
+##**
+##** INPUTS:
+##**   mean    = k x 1 vector of means
+##**   negHess = k x k matrix, the negative of the hessian
+##**   sims    = scalar, the number of simulations
+##**   bounds  = k x 2 matrix, upper bounds ~ lower bounds
+##**   tol     = scalar, the tolerance level for eigenvalues (e.g., 1e-12)
+##**
+##** OUTPUTS:
+##**   res = sims x k matrix of truncated multivariate singular normal random draws
+##**
+##*/
+rndtsn <- function(mean,invvc,sims,bounds,tol,Eprt=2){
+   
+   k <- rows(mean);
+  ### /* input checks */
+   
+   if (any(bounds[,2] <bounds[,1])){
+     message("error(rndmnsvd): Upper bounds must be greater than lower bounds.")
+     return(NA)
+   }
+   if( rows(invvc)!=cols(invvc)){
+     message("error(rndmnsvd): the -Hessian must be square.")
+     return(NA)
+   }
+   if( k!=rows(invvc)){
+     message("error(rndmnsvd): the dimensions of the -Hessian matrix and ", 
+             "mean vector must be the same.")
+     return(NA)
+   }
+    lst <- eigen(invvc,symmetric=TRUE,only.values=FALSE)
+   s <- lst[[1]]
+   u <- lst[[2]]
+   ### @ spectral decomposition: u*diag(s)*u'=invvc @
+   s[s<tol] <- tol
+ 
+   snum <- sims*10 ###          @ # of draws at a time @
+ 
+   ###/* shift to the middle of the bounds, create (k x snum) matrices */
+   midbounds <- colSums(t(as.matrix(bounds)))/2
+   tmpmean <- t(u)*(mean-midbounds) ###        @ transformed mean @
+   tmpmean <- as.matrix(as.vector((tmpmean %dot*% matrix(1,nrow=k,ncol=snum))))
+   v <- as.matrix(as.vector((1./s)%dot*% matrix(1,nrow=k,ncol=snum))) ###        @ transformed variance @
+   temp <- bounds-midbounds
+   temp <- maxc(t(abs(temp)));
+   dist <- sqrt(t(temp)%*%temp)
+   bnds <- cbind(-dist, dist) ###                 @ transformed bounds @
+
+   limsim <- 1              
+   res <- matrix(0,nrow=1,ncol=k) 
+   bnds1 <- bnds%dot*% matrix(1,nrow=rows(v),ncol=2)
+   while (rows(res)<=sims){
+     temp <- rndtni(tmpmean,v,bnds1)
+     temp <- t(matrix(as.vector(temp),nrow=rows(temp)/k,ncol=k,byrow=TRUE))
+     temp <- u%*%temp+midbounds;
+     t <- colSums(as.matrix((bounds[,1] >as.vector(temp))| (bounds[,2] <as.vector(temp))));
+     temp <- subset(t(temp), subset=(t==0))
+     if(!length(temp)) temp <- NA
+
+     if( !scalmiss(temp))
+       res <- rbind(res,temp)
+    
+     if( as.vector(Eprt) >=2)
+       message("rndtsn: trying ", limsim, "th time...")
+     
+     limsim <- limsim+1
+     if (limsim==100){
+       message("error(rndtsn): the sampling method failed. adjust the bounds.")
+       return(NA)
+     }
+   }
+   return(res[2:sims+1,])
+ }

@@ -23,8 +23,10 @@ evlocal <- getEnvVar(evbase, environment())
  y <- lst$y
  rs <- nrow(as.matrix(y));
 
-###  /* reparameterize */  
+###  /* reparameterize */
+
  lst <- eirepar(b,Zb,Zw,x,Ez,evbase=evbase);
+
 ### lst <- c(list(Bb=Bb), list(Bw=Bw), list(sb=sb), list(sw=sw), list(rho=rho))
  bb <- lst$Bb
  bw <- lst$Bw
@@ -89,9 +91,10 @@ evlocal <- getEnvVar(evbase, environment())
   }
   
   if(!scalmiss(c)){ ###			@ 0<T<1, 0<X<1 @
-    
+   
     lst <- exvar(y[c],x[c],bb[c],bw[c],sb,sw,rho)
-  ###  {mu,s2,epsilon,omega,Ebb,Vbb} = 
+  ###  {mu,s2,epsilon,omega,Ebb,Vbb} =
+    
     mu <- lst$mu
    
     s2 <- lst$s2
@@ -109,9 +112,11 @@ evlocal <- getEnvVar(evbase, environment())
     lst <- bounds1(y[c],x[c],matrix(1, nrow=nrow(as.matrix(c)),ncol=1),EnumTol)
     bnds <- lst$bs
     tt <- lst$aggs
+ 
     res <- lcdfnormi(bnds[,1:2],Ebb,Vbb) ##             @ ln S(Bu,Sigmau) @
-    
+   
     R <- lncdfbvnu(bb[c],bw[c],sb,sw,rho)##             @ ln R(Bu,Sigmau) @
+   
     llik[c] <- llik[c]+res-R
   }
 
@@ -210,11 +215,11 @@ exvar <- function(t,x,bbetaB,bbetaW,sigb,sigw,rho,evbase=NULL){
   
   omx <- 1-x; ### 1 column and p rows
 
-  mu <- bbetaB%dot*%x+bbetaW%dot*%omx;
+  mu <- as.matrix(bbetaB)%dot*%as.matrix(x)+as.matrix(bbetaW)%dot*%as.matrix(omx);
   epsilon <- t-mu;
   
   ##here x*omx = px1 and is the same as x%dot*%omx
-  s2 <- as.matrix((sigb2*(x^2)))+as.matrix(sigw2*(omx^2))+(2*sigbw*(x*omx));
+  s2 <- as.matrix((sigb2*(x^2)))+as.matrix(sigw2*(omx^2))+(2*as.vector(sigbw)*(as.matrix(x)%dot*%as.matrix(omx)));
   
   omega <- sigb2*x+sigbw%dot*%omx;
   

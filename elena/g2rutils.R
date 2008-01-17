@@ -4,10 +4,9 @@
 ##  zeros, ones, meanc, stdc, counts, trimr,lag, lag1, lagn
 ##  scalmiss,sortind,sortc,sortr,ismiss,seqa,vread, vget
 ##  vput, vnamecv, recode,selif, delif, sumc,minindc,miss,
-##  missrv, vcx, cdfni, cdfn, cdfnc, corrx, rndn, rndu, pdf, cdfbvn2, 
-##  indexcat,dotfeq,cdfbvn, cdfbvn2,ftos,loess,strput,
-##  rows, cols, vec, intquad1,substute,cumsumc    
-##
+##  missrv, vcx, corrx, indexcat,dotfeq,ftos,loess,strput,
+##  rows, cols, vec, intquad1,substute,cumsumc,     
+##  diagrv, eye, eig, inv, invpd, pinv, eig0, eighv, reshape
 
 ###
 ##    m <- zeros(r,c)
@@ -140,7 +139,6 @@ sortr <- function(mat, r=1, decreasing=FALSE){
 
 }
 
-
 ismiss <- function(x){
   any(is.na(x))
 }
@@ -151,7 +149,6 @@ ismiss <- function(x){
 seqa <- function(st,inc,n){
   return(seq(from=st, by=inc,length.out=n))
 }
-
 
 
 ### dbuf is a named list 
@@ -311,13 +308,13 @@ recode.test <- function(){
 selif <- function(x, e){
   res <- subset(x, subset=e)
   if(!length(res)) res <- NA
-  return(res)
+  return(as.matrix(res))
 }
 
 delif <- function(x, e){
   res <- subset(x, subset=!e)
   if(!length(res)) res <- NA
-  return(res)
+  return(as.matrix(res))
 }
 test.selif <- function(){
   x <- matrix(c(0, 30, 60, 10, 40, 70, 20, 50, 80), nrow=3)
@@ -412,28 +409,14 @@ missrv <- function(x, v){
 }
 
 
-
-
-
 ###DESCRIPTION x is a matrix compute variance covariance along cols
 vcx <- function(x){return(var(x))}
-cdfni <- function(x){qnorm(x)} ###inverse cumulative density  
-cdfn <- function(x){pnorm(x)} ### cumulative density
-cdfnc <- function(x) {1- pnorm(x)}
 corrx <- function(x){cor(x)} ###correlation matrix
-rndn <- function(r, c){
-  return(matrix(rnorm(r*c, mean=0, sd=1), nrow=r, ncol=c, byrow=T))}
-rndu <- function(r, c){
-  matrix(runif(r*c), nrow=r, ncol=c, byrow=TRUE)}
-pdf <- function(x){
-  return(dnorm(x))}
-###DESCRIPTION As in the Gauss function based on cdfbvn or bivariate normal.
-###
-cdfbvn2 <- function(h,dh,k,dk,r){
-y <- cdfbvn(h+dh, k+dk,r)+cdfbvn(h,k,r) - cdfbvn(h,k+dk,r) - cdfbvn(h+dh, k, r)
-return(y)
-}
-                       
+
+
+###DESCRIPTION: log(mat!) 
+   lnfact <- function(mat){ return(lfactorial(mat))}
+    
 ###DESCRIPTION If v is scalar finds the indices of elements in x == v
 ###            If v is length two find the indices of elements in x
 ###            such that x > v[1] & x <= v[2]
@@ -449,12 +432,16 @@ indexcat <- function(x, v){
   return(ind)
 }
 dotfeq <- function(x,y, tol=NULL){
+ 
   x <- as.matrix(x)
   y <- as.matrix(y)
-  if(!all(dim(x) == dim(y))){
-    message("x and y have different dimensions")
-    return(FALSE)
-  }
+  ln <- length(x)==1 || length(y)==1
+  if(!all(dim(x) == dim(y)) && !ln)
+    stop("x and y have different dimensions")
+  if(length(x) ==1) x <- as.vector(x)
+
+  if(length(y) ==1) y <- as.vector(y)
+  
   if(!length(tol))
     return(x==y)
   x <- floor(x/tol)
@@ -462,30 +449,7 @@ dotfeq <- function(x,y, tol=NULL){
   return(x==y)
 }
   
-###DESCRIPTION Computes the cdf of the standardized bivariate normal
-###            with lower limits in -Inf, i.e. lower tail. 
-###            x and t are the upper limits for the two variables
-###            and rho is the correlation coefficients
-###            Wraps pmvnorm of of package mvtnorm
-###            
-cdfbvn <- function(x,t,rho, maxpts=25000, abseps=0.001, releps=0){
-  if(!require(mvtnorm))
-    stop("ei:To compute bivariate normal you need to install package mvtnorm")
 
-  v  <- c(as.vector(x), as.vector(t))
-  ln <- length(v)
-  low <- rep(-Inf, ln)
- 
-  rho <- diag(ln)*rho
-  p00 <- pmvnorm(lower=low, upper=v,mean=rep(0, ln), sigma=rho, maxpts=maxpts,abseps=abseps, releps=releps);
-  return(p00)
- }
-###DESCRIPTION As in the Gauss function based on cdfbvn or bivariate normal.
-###
-cdfbvn2 <- function(h,dh,k,dk,r){
-y <- cdfbvn(h+dh, k+dk,r)+cdfbvn(h,k,r) - cdfbvn(h,k+dk,r) - cdfbvn(h+dh, k, r)
-return(y)
-}
 ### digits how many digits total including the left and rigth of decimal point
 ### width= the total field width. If it is smaller than digits + decimal point
 ### then it will default to width=digits+1 or width=digits (if not decimal point)
@@ -530,11 +494,13 @@ cols <- function(mat){
 }
 
 vec <- function(mat){
-  v <- matrix(as.vector(mat), ncol=1)
+  v <- as.matrix(as.vector(mat))
   return(v)
 }
 
+int <- function(x,y){return(x%/%y)}
 
+###DESCRIPTION: Integral of function f with limits in vector v
   intquad1 <- function(f,v){
     lst <- integrate(f, lower=v[2], upper=v[1])
     return(lst$y)
@@ -633,8 +599,6 @@ invpd <- function(mat){
 pinv <- function(x,svdtol=1e-10){
   return(svd.inv(x,svdtol=svdtol))}
 
-
-hessp <- function(fn,x0) {return(optim(x0,fn,hessian=TRUE))}
 ###DESCRIPTION another version the eig but using function eigen
 ###            instead of svd (see eig in this file)
 ###
@@ -643,3 +607,12 @@ eig0 <- function(mat){
 ### For hessian use optim, where fn=&f is pointer to a function
 hessp <- function(fn,b){
   return(res <- optim(b,fn, hessian=TRUE)$hessian)}
+
+###DESCRIPTION computes eigenvalues and eigenvectors of a symmetric(hermitian) matrix
+eighv <- function(x){ eigen(x,symmetric=TRUE,only.values=FALSE)}
+  
+reshape <- function(x,r,c){
+  x <- as.matrix(x)
+  x <- vector(x)
+  return(matrix(x,nrow=r,ncol=c,byrow=TRUE))
+}

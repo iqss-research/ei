@@ -23,8 +23,7 @@
 ##
 #include ei.ext;
 eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
- ## local bb0,bw0,sb0,sw0,rho0,sb,sw,bb,bw,rho,pb,m,o,Bb0v,Bw0v,
- ## etaB,etaW,r;
+ 
   
  ## /* pluck off params */
   if(!length(Ez))
@@ -92,8 +91,7 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
 ##*/
  eirepart <- function(params,Zb,Zw,x, Ez, evbase=get("evbase", env=parent.frame()))
 {
- ## local sims,bb,bw,sb,sw,sbw,rho,sb2,sw2,vrs,b,t,vc,mu,r,m,bbsims,bwsims,o,
- ## bounds,v;
+
   Esims <- get("Esims", env=evbase)
   lst <- eirepar(params,Zb,Zw,x,Ez,evbase=evbase)
   bb <- lst[[1]]
