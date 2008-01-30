@@ -168,7 +168,7 @@ vread <- function(dbuf, str){
      warning(paste("Variable", str, "is not in the data buffer"))
      return(NA)
    }
-  res <- as.matrix(dbuff[[ix]])
+  res <- as.matrix(dbuf[[ix]])
   return(res) 
   
 }
@@ -467,12 +467,12 @@ ftos <-  function(x,fmat="f", digits=NULL, width=1){
      
 
                 
-loess <- function(depvar, indvars,data, loess.span, loess.wgtType){
-  y.loess <- loess(depvar~indvars, data, weights=loess.wgType, span=loess.span)
+loess <- function(depvar, indvars,data, loess.span, loess.wgtType, deg){
+  y.loess <- loess(depvar~indvars, data, weights=loess.wgType, span=loess.span,degree=deg )
   yhat <- y.loess$fitted
   ys <- y.loess$y
   xs <- y.loess$x
-  lst <- c(list(yhat=yhat), list(ys=ys), list(xs=xs))
+  lst <- c(list(fitted=yhat), list(ys=ys), list(xs=xs))
   return(lst)
 }
 strput <- function(substr, str,off){
@@ -498,7 +498,10 @@ vec <- function(mat){
   return(v)
 }
 
-int <- function(x,y){return(x%/%y)}
+int <- function(x){ return(floor(x))}
+    
+  
+stof <- function(x){ return(as.matrix(as.numeric(strsplit(x, " ")[[1]])))}
 
 ###DESCRIPTION: Integral of function f with limits in vector v
   intquad1 <- function(f,v){

@@ -207,15 +207,22 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=evparent.frame()),macheps
       
 ###for better performance scale parameters with argument scale
       cmlbintv <- cmlb[,2]- cmlb[,1]
-      scl <- rep(1,length(stval))
-      ind <- which(cmlbintv > 2*as.vector(EdirTol))
-      if(length(ind) > 0) scl[ind] <- 10 ##make it closer to Gauss
+      scl <- rep(1,length(stval)) ##default
+      
+  ### to get closer results to Gauss code set:    
+  ###    ind <- which(cmlbintv > 2*as.vector(EdirTol))
+  ###    if(length(ind) > 0) scl[ind] <- 10 ##make it closer to Gauss
+  ### MASS book recommends to make scale[i] * paremetre[i] ~ 1    
+     ind <- which(cmlbintv <= 1)
+     if(length(ind) > 0) scl[ind] <- 10
       
       message("nlminb in action:Obtainig estimates for stval")
       lst <-  nlminb(stval,f0,y=dataset,ev=evbase,scale=scl,lower=cmlb[,1],upper=cmlb[,2])
+  
 
       assign("optimizationLst",lst,env=evbase)
       b <- lst$par
+      names(b) <- cml.ParNames
       message("nlminb:Calculated params...")
       print(as.vector(b))
       mlogl  <- lst$objective
@@ -831,10 +838,13 @@ test.sechol <- function(){
 getControl <- function(ln, trace=1,factr=1.e+6)
 {
    con <- list(trace = 0, fnscale = 1, parscale = rep.int(1,ln),
-                    ndeps = rep.int(0.001, ln), maxit = 100, 
-                    abstol = -Inf, reltol = sqrt(.Machine$double.eps), alpha = 1, 
-                    beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
-                    factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
+               ndeps = rep.int(0.001, ln), maxit = 100, 
+###               abstol = -Inf,
+###reltol = sqrt(.Machine$double.eps),
+               alpha = 1, 
+               beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
+               factr = 1e+07,
+               pgtol = 0, tmax = 10, temp = 10)
 ###changes
         con$trace <- trace
         con$fnscale <- 1 ##default minimizes but it maximizes because function fn returns -res 

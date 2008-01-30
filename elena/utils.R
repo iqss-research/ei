@@ -358,7 +358,9 @@ cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=ge
         par <- stval
         con <- list(trace = 0, fnscale = 1, parscale = rep.int(1,length(par)),
                     ndeps = rep.int(0.001, length(par)), maxit = 100, 
-                    abstol = -Inf, reltol = sqrt(.Machine$double.eps), alpha = 1, 
+                    ###abstol = -Inf,
+                    ###reltol = sqrt(.Machine$double.eps),
+                    alpha = 1, 
                     beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
                     factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
 ###changes
@@ -433,6 +435,8 @@ optimhess <- function(par,fn,gr,...,control,Etol=1.e-4,nm=NULL){
   initime <- proc.time()
  
   con <- control
+  ix <- match(c("reltol", "abstol"), names(con))
+  con <- con[-ix]
   fn1 <- function(par) fn(par,...)
   gr1 <- NULL
   if(!is.null(gr))

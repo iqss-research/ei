@@ -178,9 +178,11 @@ sortbyRow <- function(mat, ix=NULL){
 ## From Gary's code
 
 mkmissm <- function(x, m){
-  if( !all(as.vector(m) %in% 0:1))
+  mn <- as.numeric(m)
+  if( !all(as.vector(mn) %in% 0:1))
     warning("mkmissm: m must have only 0 or 1 or T, F entries")
-  y <- miss(m, 1) + x
+  m <- as.logical(m)
+  y[m] <- NA
   return(y)
 
 }

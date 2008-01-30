@@ -71,7 +71,7 @@ rndmn <- function(mu,vc,n){
     a <- (t(t)%*%ad)%*%t ###              @ rebuild full square-root matrix @
   }
   mat <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
-
+ 
   
   res <- t(mu%plus%(a%*%mat)) ###      @ dep ran normals with mean mu, var vc @
    return(res)
@@ -162,7 +162,7 @@ rndmt <- function(mu,vc,df,n){
 
  cdfnorm <- function(y,mu,sigma2,lower.tail=T,log.p=F){
  ### local sigma;
-  if (sigma2<=0){
+  if (any(sigma2<=0)){
     message("cdfnorm: variance must be positive")
     return(NULL)
   }
@@ -241,10 +241,14 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
   evbase <- get("evbase", env=parent.frame())
   Ecdfbvn <- get("Ecdfbvn", env=evbase)
   o <- 1
-  if (all(Bb==Bb[1]) && all(Bw==Bw[1])){
+  if (equalev(Bb,Bb[1]) && equalev(Bw, Bw[1])){
     o <- matrix(1,nrow=rows(Bb),ncol=1)
     Bb <- Bb[1]
     Bw <- Bw[1]
+  }else{
+    o <- matrix(1,nrow=rows(Bb),ncol=1)
+    Bb <- mean(Bb)
+    Bw <- mean(Bw)
   }
   
   if(all(rho==0)){
@@ -260,7 +264,7 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
  
     }else if (all(Ecdfbvn==2)){
  
-      R <- log(abs(cdfbvnorme(Bb,Bw,sb,sw,rho)))
+      R <- log(abs(cdfbvnorme(Bb,Bw,sb,sw,rho,evbase)))
  
     }else if(all(Ecdfbvn==3)){
  
@@ -268,7 +272,7 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
  
     }else if(all(Ecdfbvn==4)){
  
-      R <- log(abs(cdfbvnunit(Bb,Bw,sb,sw,rho)))
+      R <- log(abs(cdfbvnunit(Bb,Bw,sb,sw,rho,evbase)))
  
     }else if(all(Ecdfbvn==5)){
     
@@ -318,6 +322,7 @@ lnpdfmn <- function(y,mu,vc,Eivc){
 ###/* another version without scale factor for importance sampling */
 lnpdfmn2 <- function(y,mu,vc,Eivc){
  ### local a,b,c,k,ivc,w,ymu,res;
+ 
   if(any(is.na(Eivc)))
     ivc <- invpd(vc)
   else
@@ -378,7 +383,7 @@ lnpdfmt <- function(y,mu,vc,df,Eivc){
 
 cdfbvnormig <- function(Bb,Bw,sigb,sigw,rho){
   evbase <- get("evbase", env=parent.frame())
-  EcdfTol <- get("EcdfTol", env=evbase)
+  EcdfTol <- as.vector(get("EcdfTol", env=evbase))
   bL <- 0; ##					@ bounds  @
   bU <- 1;
   wL <- 0;
@@ -645,7 +650,7 @@ cdfbvnormi <- function(Bb,Bw,sigb,sigw,rho){
 ## sigw = stan dev of var 2
 ## rho = correlation
 ##
-cdfbvnorme <- function(Bb,Bw,sigb,sigw,rho){
+cdfbvnorme <- function(Bb,Bw,sigb,sigw,rho,evbase){
  
   bL <- 0;##					@ bounds  @
   bU <- 1;
@@ -655,11 +660,12 @@ cdfbvnorme <- function(Bb,Bw,sigb,sigw,rho){
   bU <- (bU-Bb)/sigb;
   wL <- (wL-Bw)/sigw;
   wU <- (wU-Bw)/sigw;
-  c1 <- bvn.mask(bU,wU,rho);
-  c2 <- bvn.mask(bL,wL,rho);
-  c3 <- bvn.mask(bL,wU,rho);
-  c4 <- bvn.mask(bU,wL,rho);
+  c1 <- bvn.mask(bU,wU,rho,evbase);
+  c2 <- bvn.mask(bL,wL,rho,evbase);
+  c3 <- bvn.mask(bL,wU,rho,evbase);
+  c4 <- bvn.mask(bU,wL,rho,evbase);
   res <- c1+c2-c3-c4;
+  EcdfTol <- as.vector(get("EcdfTol", env=evbase))
   res <- recode(res,cbind(res<EcdfTol,res>1),rbind(EcdfTol,1));
   return(res)
 }  
@@ -709,10 +715,10 @@ cdfbvnorme <- function(Bb,Bw,sigb,sigw,rho){
 ##** pi/2 (proc bvn_pi2) or pi/4 (proc bvn_pi4). By default, bvn_mask() 
 ##** uses 30 digits, 9 terms asymptotic expansion, and bvn_pi2.
 ##*/
-bvn.mask <- function(h,k,rho){
+bvn.mask <- function(h,k,rho,evbase){
 ##  /* calculates cdfbvn in a different way */
   
-  rho <- rho*(rho<1) + (1-1E-15)*(rh>=1);
+  rho <- rho*(rho<1) + (1-1E-15)*(rho>=1);
   rho <- rho*(rho>-1) - (1-1E-15)*(rho<=-1);
   rho2 <- sqrt(1-rho^2);
   h2 <- (h-rho*k)/rho2;##      /* Pr(x=h conditional on y=k)=Pr(h2) */
@@ -1059,21 +1065,20 @@ cdfnormdif <- function(mu,s2,l,u){
 ##** OUTPUT
 ##** y = probability of being in the unit square
 ##*/
-cdfbvnunit <- function(bb,bw,sb,sw,rho){
-  evbase <- get("evbase", env=parent.frame())
-   cdfbvnunit.paramsB <- get("cdfbvnunit.paramsB", env=evbase)
-   cdfbvnunit.paramsS <- get("cdfbvnunit.paramsS", env=evbase)
-   intord <- get("intord", env=evbase)
- 
+cdfbvnunit <- function(bb,bw,sb,sw,rho,evbase=NULL){
+  if(!length(evbase))
+    evbase <- get("evbase", env=parent.frame())
+  
    cdfbvnunit.paramsB <- cbind(bb,bw);
    cdfbvnunit.paramsS <- rbind(sb,sw,rho);
    intord <- 40;
    assign("cdfbvnunit.paramsB", cdfbvnunit.paramsB, env=evbase)
    assign("cdfbvnunit.paramsS", cdfbvnunit.paramsS, env=evbase)
    assign("intord",intord, env=evbase)
-  lst <- integrate(cdfbvnunit.proc,lower=0, upper=1, subdivisions=100)
+  lst <- integrate(cdfbvnunit.proc,lower=0, upper=1, subdivisions=100,evbase)
   res <- lst$value
-  res <- recode(res,(res<EcdfTol)~(res>1),rbind(EcdfTol,1));
+  EcdfTol <- as.vector(get("EcdfTol", env=evbase))
+  res <- recode(res,cbind((res<EcdfTol),(res>1)),rbind(EcdfTol,1));
   return(res);
 }
   
@@ -1090,8 +1095,8 @@ cdfbvnunit <- function(bb,bw,sb,sw,rho){
 ##** sb,sw       = standard deviations
 ##** rho         = correlation
 ##*/
-cdfbvnunit.proc <- function(betaw){
-  evbase <- get("evbase", env=parent.frame())
+cdfbvnunit.proc <- function(betaw,evbase){
+##  evbase <- get("evbase", env=parent.frame())
   cdfbvnunit.paramsB <- get("cdfbvnunit.paramsB", env=evbase)
   cdfbvnunit.paramsS <- get("cdfbvnunit.paramsS", env=evbase)
   bb <- cdfbvnunit.paramsB[,1];
@@ -1135,7 +1140,7 @@ lcdfbvnorma <- function(mu1,mu2,s1,s2,rho){
   r <- nrow(mu1);
   s1s <- s1^2;
   omr <- (1-rho^2)*s2^2;
-  aa <- lcdfnormi(rbind(l1,u1),mu1,s1s);
+  aa <- lcdfnormi(cbind(l1,u1),mu1,s1s);
   b <- a <- matrix(0,nrow=k,ncol=r);
  
   for (i in 1:k){
@@ -1204,3 +1209,18 @@ lpdfnorm <- function(y,mu,sig2){
   res <- -0.918938533204672741 - ( log(sig2) +  ( (x*x) / sig2 ) ) /2;
   return(res)
 }
+equalev <- function(vec,x,tol=1.e-4){
+  res <- sapply(vec,function(ll){
+    res <- TRUE
+    err  <- ll-x
+    err1 <- abs(err/ll)
+    err2 <- abs(err/x)
+    err <- ifelse(err1 > err2, err1, err2)
+    if(err > tol) res <- FALSE
+    return(res)
+  })
+  res <- unlist(res)
+  if(any(res == FALSE)) return(FALSE)
+  return(TRUE)
+}
+    

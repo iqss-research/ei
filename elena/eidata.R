@@ -1,14 +1,28 @@
-### DESCRIPTION corresponds to Gary's eidata.src
+##/* 
+##**  This archive is part of the program EI
+##**  (C) Copyright 1995-2001 Gary King
+##**  All Rights Reserved.
+##**
+##**  For pulling apart and putting together the data
+##**
+##*/
+##/*
+##  {Zb,Zw,x,t} = pluckdta(dataset);
+##**
+##*/
+### DESCRIPTION corresponds to Gary King's eidata.src
 ###             for pulling apart and putting together the data
 ###             Translation of Gary King Gauss code
 ###
 ### Elena Villalon (evillalon@iq.harvard.edu)
 
-packdta <- function(x,Zb,Zw,t, evbase=NULL){
+packdta <- function(x,Zb,Zw,t, evbase=NULL, Ez=matrix(1,nrow=2, ncol=1), Eselect=as.matrix(1)){
   if(!length(evbase))
-    evbase <- get("evbase", env=parent.frame())
-  Ez <- get("Ez", env=evbase)
-  Eselect <- get("Eselect", env=evbase)
+    evbase <- try(get("evbase", env=parent.frame()),silent=TRUE)
+  if(class(evbase)!="try-error"){
+    Ez <- get("Ez", env=evbase)
+    Eselect <- get("Eselect", env=evbase)
+  }
   x <- as.matrix(x)
   t <- as.matrix(t)
 
@@ -28,10 +42,12 @@ packdta <- function(x,Zb,Zw,t, evbase=NULL){
   return(dataset)
 }
 
-pluckdta <- function(dta, evbase=NULL){
-  if(!length(evbase))
-    evbase <- get("evbase", env=parent.frame())
-  Ez <- get("Ez", env=evbase)
+pluckdta <- function(dta, evbase=NULL,Ez=matrix(1,nrow=2, ncol=1)){
+  if(!length(evbase)){
+    evb <- try(get("evbase", env=parent.frame()))
+    if(class(evb) != "try-error") evbase <- evb
+    Ez <- get("Ez", env=evbase)
+  }
   if(Ez[1]>1)
     Zb <- dta[,1:(Ez[1]-1)]
   else

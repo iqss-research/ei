@@ -52,7 +52,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 
   n <- tvap
  
-  evbase <- expanddots(drvdot,drv,evbase)
+  entries <- expanddots(drvdot,drv,evbase)
   
   ###	@ timing start @
   et   <- proc.time()
@@ -64,7 +64,8 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   }
 ##  print(EnonPar) 
   ### copy variables from evbase to local environment evei
-  evei <- getEnvVar(evbase, environment())  ##environment 
+  getEnvVar(evbase, environment())  ##environment 
+   ### print(eval(as.symbol(entries)))
  
   if(!scalzero(Eres) && vin(Eres,"titl") && Eprt >0)
     message(vread(Eres,"titl"))
@@ -75,27 +76,30 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 ###  lapply(param, function(x){
 ###    print(x)
 ###    print(get(x, env=evbase))})
-###    checkinputs(t,x,n,Zb,Zw);
+###      checkinputs(t,x,n,Zb,Zw);
 ###   return(evbase)
 
   
 ###  /* verify inputs */
   if(as.logical(Echeck)){
- 
+    message("Consistency checks of globals")
     tst <- ""
     tst <- checkinputs(t,x,tvap,Zb, Zw,evbase)
-    if(tst != ""){
+    
+    if(length(tst)){
       print(tst)
   ###    "----- EI Aborted -----";
-      return(Eres)
-    }
-    if(Eprt>0){
-      if(EnonPar)
-        print("Inputs ok, beginning nonparametric estimation...")
-      else
-      print("Inputs ok, beginning preliminary estimation...")
+    return(res)
     }
   }
+    
+    if(Eprt>0){
+      if(EnonPar)
+        message("Inputs ok, beginning nonparametric estimation...")
+      else
+      message("Inputs ok, beginning preliminary estimation...")
+    }
+  
   
  ###  /* augment _Eselect if _EselRnd<1 */
   assign("Eselect", Eselect, env=evbase);  ###$@ save existing value @
@@ -111,7 +115,8 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  
 ###  /* nonparametric estimation */
   
-  if(dbug==TRUE) evglobal <<- evbase 
+  if(dbug==TRUE && identical(parent.frame(), .GlobalEnv))
+    assign("evbase", evbase, env=parent.frame()) 
   if(EnonPar>=1){
        
     betaBs <- einonp(t,x, evbase);
@@ -151,7 +156,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
      MLpsi <- lst[[1]]
      MLvc <- lst[[2]]
      
-     if(length(MLvc) <= 1 && any(is.na(MLvc))){
+     if(length(MLvc) <= 1 && is.na(MLvc)){
        Eres <- vput(Eres,MLpsi,"phi");
        Eres <- vput(Eres,MLvc,"vcphi");
       return(Eres);
@@ -170,7 +175,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  ###/* simulation */
   if(EdoSim==1){
   ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
-     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc,evbase); ### eisims.src 
+     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc); ### eisims.src 
      betaBs <- lst$betaBs
      betaWs <- lst$betaWs
      Eres   <- vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @
@@ -482,7 +487,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     
     if(!vin(Eres, "truth")){
     ###  message("No truth")
-      str <- " "
+      str <- NULL
       return(str)
     }
       ## eiread not written yet but returns vread     
@@ -495,7 +500,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   if (any(betaW >1)  || any(betaW <0))
     stop("ei: 'truthW' input must be between 0 and 1");
 
-  res <- bounds1(t, x, tvap,get("Enumtol",env=evbase) )
+  res <- bounds1(t, x, tvap)
   bnd <- res$bs
   a <- res$aggs
   a <- na.omit(cbind(betaB, bnd[,1]))
@@ -529,7 +534,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   }
 
                
-  str <- " "
+  str <- NULL
   return(str)
 }
 ### DESCRIPTION set the globals parameters and if something is passed with
@@ -540,7 +545,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
 ### OUTPUT the envoronment containing all globals parameters
 ###
 ###
-eiset <- function(t,x,tvap,Zb,Zw,...){
+eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   ## general
   
   ##use for debugging only
@@ -554,7 +559,7 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
   args <- names(driver)
     
   Eres <- c(Eres,list(eiversion=Eversion))
-  Echeck <- as.matrix(0);### no checks but Echeck <- as.matrix(1) check 
+  Echeck <- as.matrix(1);### no checks but Echeck <- as.matrix(1) check 
   Esims <- as.matrix(100);
   Eprt <- as.matrix(2);
   Eselect <- as.matrix(1);
@@ -688,7 +693,7 @@ eiset <- function(t,x,tvap,Zb,Zw,...){
   Rtheta  <-  as.matrix(0);
   Routput <-  as.matrix(1);
   Rconst  <-  as.matrix(1);
- 
+  formula <- NA
   ## token2 
   tokdel<- as.matrix(c(32,10,13,44,9))
   tokwds<- as.matrix(-1);

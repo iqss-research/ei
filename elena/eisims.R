@@ -64,6 +64,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
   if(Erho[1]==0){
     EisFix <- MLpsi[(rows(MLpsi)-2):rows(MLpsi)]
     assign("EisFix", EisFix, env=evbase)
+    
     yy1 <- rndisamp(eiloglik,trimr(MLpsi,0,3), MLvc[1:(rows(MLpsi)-3), 1:(rows(MLpsi)-3)],
                     dataset,Esims,EisFix, evbase) 
     yy2 <-  rndmn(Erho[2],0,Esims)  
@@ -73,7 +74,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
                     
                     
   }else{
-   
+ 
     EisFix <- MLpsi[(rows(MLpsi)-1):rows(MLpsi)]
     assign("EisFix", EisFix, env=evbase)
     yy1 <- rndisamp(eiloglik,trimr(MLpsi,0,2),
@@ -86,7 +87,9 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
                    
                    
   }
-  psisims <-  as.matrix(PSIsims)
+  psisims <-  as.matrix(PSIsims)  ###Gauss 100x5; here 100x7
+ 
+  
   if(EisChk)                          
     Eres <- vput(Eres,psisims,"PhiSims") ###  @ save name corresponds to book @ 
   else 
@@ -104,18 +107,19 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
   lst <- bounds1(t,x,tvap,get("EnumTol", env=evbase)) 
   Bbeta <- lst[[1]]
   aggs <- lst[[2]]
+  Ez <- get("Ez", env=evbase)
+  
+ 
   for( k in (1:Esims)){
-    y <- eirepar(PSIsims[k+0,],Zb,Zw,x,get("Ez", env=evbase),evbase)
+    y <- eirepar(PSIsims[k+0,],Zb,Zw,x,Ez,evbase)
+    
     lst <- exvar(T,x,y$Bb,y$Bw,y$sb,y$sw, y$rho,evbase)
-    tt <- lst[[1]]
-    tt <- lst[[2]]
-    tt <- lst[[3]]
-    tt <- lst[[4]]
     Ebb <- lst[[5]]
     Vbb <- lst[[6]]
+ 
     betaBs[,k+0] <- rndtni(Ebb,Vbb,Bbeta[,1:2],evbase=evbase) 
   }
-
+ 
  ### /* compute betaWs from betaBs deterministically */
   if (Ebetaws)
     betaWs <- betab2w(t,x,betaBs,evbase)
@@ -135,12 +139,13 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
 ## ncol(t) must equal 1
 ## ncol(x) must be 1 (for ei) or Esims (for ei2)
 ## ncol(betab) must be 1 (for mean posterior) or Esims (for betaBs)
+## evbase is not necessary
 ##/*
 
 betab2w <- function(t,x,betab, evbase=NULL){
 
   if(!length(evbase))
-    evbase <- get("evbase", env=parent.frame())
+    evbase <- try(get("evbase", env=parent.frame()),silent=TRUE)
   col <- cols(x);
   x1 <- 1-x;
   betaB <- betab <- as.matrix(betab)
@@ -153,16 +158,18 @@ betab2w <- function(t,x,betab, evbase=NULL){
      c0<-cs$c0
      c1<-cs$c1
     
-    if(!scalmiss(c))
-      betaW[c,] <- (as.matrix(t[c])%dot/%as.matrix(x1[c]))%plus%-
-        as.matrix(betaB[c,])%dot*% (as.matrix(x[c])%dot/%as.matrix(x1[c]));
-    
-    if(!scalmiss(c0))
+    if(!scalmiss(c)){
+      
+      betaW[c,] <- t[c]/x1[c]- betaB[c,]*x[c]/x1[c];
+    }
+    if(!scalmiss(c0)){
+     
       betaW[c0,] <- t[c0] %dot*% matrix(1,nrow=rows(c0),ncol=cols(betaB));
-    
-    if(!scalmiss(c1))
+    }
+    if(!scalmiss(c1)){
+      
       betaW[c1,] <- matrix(NA, nrow=rows(c1),ncol=cols(betaB));
-    
+    }
     
   }else{
     if (col!=cols(betaB))
@@ -174,15 +181,18 @@ betab2w <- function(t,x,betab, evbase=NULL){
       c0<-cs$c0
       c1<-cs$c1
      
-      if(!scalmiss(c))
-        betaW[c,i] <- (t[c]%dot/%x1[c,i])-((betaB[c,i]%dot*%x[c,i])%dot/%x1[c,i]);
-      
-      if(!scalmiss(c0))
+      if(!scalmiss(c)){
+        
+        betaW[c,i] <- (t[c]/x1[c,i])-((betaB[c,i]* x[c,i])/x1[c,i]);
+      }
+      if(!scalmiss(c0)){
+       
         betaW[c0,i] <- t[c0] %dot*% matrix(1,nrow=rows(c0),ncol=1);
-      
-      if(!scalmiss(c1))
+      }
+      if(!scalmiss(c1)){
+        
         betaW[c1,i] <- matrix(NA,nrow=rows(c1),ncol=1);
-      
+      }
     }
     
   }
@@ -247,12 +257,14 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
       vc <- vc*as.vector(EisFac) ###  @ "vc" is a variance matrix @
   
   }
+    
   k <- sims*Eisn;
   if (as.vector(Eist)==0){
     if (ei.vc[Ghactual,1]!=-1){
-      
-      psis <- rndmn(b,vc,k)
-      ###print(psis)
+     
+      psis <- rndmn(b,vc,k)  ###defaults
+    
+     
     }else{ ###                     @ use when _ei_vc={-1 0} @
       psis <- rndtsn(b,vc,k,cml.bounds[1:rows(b),],1e-3, Eprt) 
       if (any(is.na(psis)) && as.vector(Eprt)>=2)
@@ -269,7 +281,6 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   keepsi <- as.vector(0*b)
   keeplik <- 0
   if (ei.vc[Ghactual,1]!=-1){
-   
     Eivc <- invpd(vc)
   }else
     Eivc <- vc
@@ -278,14 +289,16 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   for (i in 1:k){
     if ((i%%100)==0 && Eprt>=2)
      print( i/10);
-       
-    bb <- as.matrix(c(as.vector(psis[i,]),EFix))
-    
-    lik[i] <- colSums(as.matrix(na.omit(f(bb,dataset))))
-      
-    
+ 
+    bb <- as.matrix(c(as.vector(psis[i,]),as.vector(EFix)))
+
+    lik[i] <- colSums(as.matrix(na.omit(f(bb,dataset,evbase))))
+
+ 
     if (as.vector(Eist)==0){
+  
       norm[i] <- lnpdfmn2(psis[i,],b,0,Eivc) ## var from _Eivc above @
+       
     }else{
     
       norm[i] <- lnpdfmt(psis[i,.],b,0,Eist,Eivc) 
@@ -312,8 +325,10 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   
   resamp <- 0;
   r <- 0;
+  
   while( (r-1)<sims){
     lnir <- lnir-maxc(lnir)
+   
     ir <- exp(lnir) ###	        @ imptce ratio  @
     rnd <- matrix(runif(rows(ir)), nrow=rows(ir), ncol=1, byrow=TRUE)
     tst <- rnd <=ir

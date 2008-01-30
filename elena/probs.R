@@ -1,6 +1,8 @@
 ###DESCRIPTION: Basic probabilities functions in Gauss
 ###             and their R counterparts; x is a matrix
 ###
+### AUTHOR: Elena Villalon (evillalon@iq.harvard.edu)
+###
 cdfni <- function(x){qnorm(x)} ###inverse cumulative density integrated   
 cdfn <- function(x){pnorm(x)} ### cumulative density integrated 
 cdfnc <- function(x) {1- pnorm(x)}

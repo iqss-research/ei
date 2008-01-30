@@ -41,30 +41,32 @@
    t <- 1-dotfeq(lb,ub,tol=fcmptol); ###1 -(lb==ub)
   
    sigma <- as.matrix(t) %dot*% as.matrix(sigma);
-  
+ 
    m <- as.matrix(t) %dot*% as.matrix(m) +as.matrix(1-t) %dot*% lb;
-   
+  
    r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% as.matrix(sigma);
+   
    t <- (r<lb)| (r>ub);
   
    for(i in 1:5){
 ###   /* sample rejection method */
-    if(colSums(t) ==0) break; 
-     inds <- grep(1, t)
-     if(length(inds)){
-       r[inds] <- m[inds]+ matrix(rnorm(rows(inds), mean=0, sd=1), nrow=rows(inds), ncol=1, byrow=T) %dot*% as.matrix(sigma[inds]);
+    if(colSums(as.matrix(t)) ==0) break; 
+     inds <- 1==t
+     if(any(inds)){
+       ln <- length(subset(inds, inds==TRUE))
+       r[inds] <- m[inds]+ matrix(rnorm(ln, mean=0, sd=1), nrow=ln, ncol=1, byrow=T) %dot*% as.matrix(sigma[inds]);
        t <- (r<lb)|(r>ub);
      }
-   
     
    }
    if(colSums(as.matrix(t))!=0){
 ###  /* sample rejection fails for some elements; try CDF method */
-     inds <- grep(1, t)
-     if(length(inds))
-     
-      r[inds]=invcdftn( as.matrix(runif(length(inds))),m[inds],v[inds],lb[inds],ub[inds]);
+     inds <- 1==t
+     if(any(inds))
+      ln <- length(grep(TRUE, inds))
+      r[inds]=invcdftn( as.matrix(runif(ln)),m[inds],v[inds],lb[inds],ub[inds]);
    }
+   
   return(r);
  }
 
@@ -88,16 +90,16 @@ rndbtn <- function(bb,bw,sb,sw,rho,bounds,sims, evbase=parent.frame()){
   if(!length(evbase))
     evbase <- get("envbase", env=parent.frame()) 
   o <- matrix(1, nrow=sims,ncol=1);
-  sb2 <- sb^2;
-  sw2 <- sw^2;
-  sbw <- rho*sb*sw;
-  mat <- as.vector(o)%dot*%bounds[2,]  ##outer product in Gauss language
+  sb2 <- sb^2;  ##scalar
+  sw2 <- sw^2;  ###scalar
+  sbw <- rho*sb*sw; ##scalar
+  mat <- o%dot*%as.matrix(bounds[2,])  ##outer product in Gauss language
 
   bwsims <- rndtni(bw*o,sw2*o,mat)
 
   m <- bb+(sbw%dot/%sw2)%dot*%(bwsims-bw);
   v <- sb2-((sbw^2)%dot/%sw2);
-   mat <- as.vector(o)%dot*%bounds[1,] 
+   mat <- o%dot*%bounds[1,] 
   bbsims <- rndtni(m,v%dot*%o,mat);
   mat <- cbind(bbsims,bwsims)
   return(mat);
@@ -121,13 +123,13 @@ rndbtn <- function(bb,bw,sb,sw,rho,bounds,sims, evbase=parent.frame()){
 
 invcdftn <- function(p,mu,sigma2,lft,rgt){
 ###  local t,res,ok,tL,tR,clft,crgt;
-  if( lft>=rgt)
+  if( any(lft>=rgt))
     stop("invcdftn: left must be < right")
 
 
   if(any(p>=1) ||  any(p<=0))
     stop("invcdftn: input must be (0,1)")
-  if(sigma2 <=0){
+  if(any(sigma2 <=0)){
     message("variance must be positive")
     return(NULL)
   }
@@ -229,3 +231,4 @@ rndtsn <- function(mean,invvc,sims,bounds,tol,Eprt=2){
    }
    return(res[2:sims+1,])
  }
+

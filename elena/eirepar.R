@@ -89,7 +89,7 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
 ##**
 ##** uses 100*_Esims simulations for computations
 ##*/
- eirepart <- function(params,Zb,Zw,x, Ez, evbase=get("evbase", env=parent.frame()))
+ eirepart <- function(params,Zb,Zw,x, Ez, evbase=try(get("evbase", env=parent.frame())))
 {
 
   Esims <- get("Esims", env=evbase)

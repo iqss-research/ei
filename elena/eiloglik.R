@@ -25,7 +25,7 @@ evlocal <- getEnvVar(evbase, environment())
 
 ###  /* reparameterize */
 
- lst <- eirepar(b,Zb,Zw,x,Ez,evbase=evbase);
+ lst <- eirepar(b,Zb,Zw,x,Ez,evbase=evbase);  ##tested 
 
 ### lst <- c(list(Bb=Bb), list(Bw=Bw), list(sb=sb), list(sw=sw), list(rho=rho))
  bb <- lst$Bb
@@ -38,7 +38,7 @@ evlocal <- getEnvVar(evbase, environment())
 
  ### /* divide up types of observations */
  llik <- matrix(0,nrow=rs,ncol=1);
- lst <- homoindx(x);
+ lst <- homoindx(x,get("EnumTol", env=evbase));
  c <- lst$c
  c0 <- lst$c0
  c1 <- lst$c1
@@ -92,19 +92,14 @@ evlocal <- getEnvVar(evbase, environment())
   
   if(!scalmiss(c)){ ###			@ 0<T<1, 0<X<1 @
    
-    lst <- exvar(y[c],x[c],bb[c],bw[c],sb,sw,rho)
+    lst <- exvar(y[c],x[c],bb[c],bw[c],sb,sw,rho)  ##tested
   ###  {mu,s2,epsilon,omega,Ebb,Vbb} =
     
     mu <- lst$mu
-   
     s2 <- lst$s2
-   
     epsilon <- lst$epsilon
-   
     omega <- lst$omega
-   
     Ebb <- lst$Ebb
-   
     Vbb <- lst$Vbb
 ###     llik[c] <- -0.5*(log(s2)+(epsilon^2)%dot/%s2) ###     @ ln N(T|mu,sigma) @
    
@@ -113,9 +108,9 @@ evlocal <- getEnvVar(evbase, environment())
     bnds <- lst$bs
     tt <- lst$aggs
  
-    res <- lcdfnormi(bnds[,1:2],Ebb,Vbb) ##             @ ln S(Bu,Sigmau) @
+    res <- lcdfnormi(bnds[,1:2],Ebb,Vbb) ##  einormal.R           @ ln S(Bu,Sigmau) @
    
-    R <- lncdfbvnu(bb[c],bw[c],sb,sw,rho)##             @ ln R(Bu,Sigmau) @
+    R <- lncdfbvnu(bb[c],bw[c],sb,sw,rho)## einormal.R             @ ln R(Bu,Sigmau) @
    
     llik[c] <- llik[c]+res-R
   }
@@ -126,7 +121,7 @@ evlocal <- getEnvVar(evbase, environment())
     prior <- prior-(1/(2*Esigma^2))*(sb2+sw2)	###      @ sb, sw @
   
   if(Erho[1]>0)
-    prior <- prior+lpdfnorm(b[nrow(as.matrix(b))- 2],0,Erho[1]^2) ##  @ rho @
+    prior <- prior+lpdfnorm(b[nrow(as.matrix(b))- 2],0,Erho[1]^2) ## einormal.R  @ rho @
   
   if(Ebeta>0){			       ### 	      @ bb, bw @
     prior <- prior+flatnorm(colMeans(as.matrix(bb)),Ebeta)
