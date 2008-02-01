@@ -10,7 +10,7 @@
 ###
 ### AUTHOR Elena Villalon (evillalon@iq.harvard.edu)
 
-expanddots <- function(drvdot, drv, evbase){
+expanddots <- function(drvdot, drv, evbase=.GlobalEnv){
  
   args <- names(drv)
   args <- args[-1]
@@ -21,7 +21,7 @@ expanddots <- function(drvdot, drv, evbase){
   argsdots <- argsdots[-1]
 
   if(length(argsdots) == length(args))
-    return(evbase)  ##nothing in expand.dots
+    return(NULL)  ##nothing in expand.dots
   ln <- length(args)
  
   expn  <- setdiff(argsdots, args)
@@ -48,12 +48,16 @@ expanddots <- function(drvdot, drv, evbase){
       val <- as.matrix(lst)
     }else
     val <- drvdot[[n]]
-    
-    assign(argsdots[n], val, env=evbase)
+    if(!identical(evbase,.GlobalEnv))
+      assign(argsdots[n], val, env=evbase)
         
   }
+    if(!identical(evbase,.GlobalEnv))
+      assign("evbase", evbase,env=parent.frame())  ##not necessary 
+ ### return(evbase)
   
-  return(evbase)
+  return(argsdots[ix])
+ 
 
 }
 ###DESCRIPTION It assigns enviromental variables of env=evbase

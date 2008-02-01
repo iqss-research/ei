@@ -5,9 +5,7 @@
 \description{
   Uses aggregate data to infer individual levels relations It uses
   non-parametric and bayesian model averaging procedures}
-\usage{
-ei(t,x,n,Zb,Zw,...)
-}
+\usage{ei(t,x,n,Zb,Zw,...)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{t}{Vector. Dependent variable, e.g. fraction of people who votes.}
@@ -20,11 +18,10 @@ ei(t,x,n,Zb,Zw,...)
     covariate. Default 1.}
   
   \item{Zb}{Optional covariate, which may be set equal to 1 for no covariate. Default 1.}
-  \item{...} {Additional inputs.}
+  \item{"..."} {Additional inputs.}
 }
 \details{
-  ~~ If necessary, more details than the description above ~~
-}
+  ~~ If necessary, more details than the description above ~~}
 \value{
   Returns a list containing the following components: 
 
@@ -34,37 +31,37 @@ ei(t,x,n,Zb,Zw,...)
   \item{"n"}{Vector of explanatory variable}             
   \item{"Zb"}{Optional Covariate or 1}
   \item{"Zw"}{Optional Covariate or 1}
-  \item{"EalphaB"}{\eqn{(ncol(Zb) \times 2}) matrix of means (in the
+  \item{"EalphaB"}{{\eqn{(ncol(Zb) \times 2)}} matrix of means (in the
     first column) and standard deviations (in the second) of an
     independent normal prior distribution on elements of
     \eqn{\alpha^b}. If you specify Zb, you should probably specify a
     prior, at least with mean zero and some variance (default=NA; which
     indicates no prior). (See Equation 9.2, page 170, to interpret
-    \eqn{\alpha^b$}.
-  }
-\item{"EalphaW"}{\eqn{(ncols(Zw) \times 2}) matrix of means (in the
+    \eqn{\alpha^b$}).}
+  
+\item{"EalphaW"}{\eqn{(ncols(Zw) \times 2)} matrix of means (in the
   first column) and standard deviations (in the second) of an
   independent normal prior distribution on elements of
   \eqn{\alpha^w}. If you specify Zw, you should probably specify a
   prior, at least with mean zero and some variance (default=NA; which
   indicates no prior). (See Equation 9.2, page 170, to interpret
-  \eqn{\alpha^w$}.
-}       
+  \eqn{\alpha^w$})}
+
 \item{"Ebeta"}{Standard deviation of the ``flat normal'' prior on 
   \eqn{\breve{\mathfrak{B}}^b} and \eqn{\breve{\mathfrak{B}}^w}. The flat normal
   prior is uniform within the unit square and dropping outside the
   square according to the normal distribution. Set to zero for no prior
   (default). Setting to positive values probabilistically keeps the
   estimated mode within the unit square. 0.25 is a reasonable value to
-  experiment with at first.
-}
+  experiment with at first.}
+
   \item{"Ebounds"}{If equal to 1 sets CML bounds on parameters
     automatically unless z's are included; if 0 don't use bounds; 
     \eqn{k\times 2} (where \eqn{k} is the number of starting values) or 
     \eqn{1\times 2} matrix to indicate upper \eqn{\sim} lower bounds. (Do not
     confuse the bounds referred to here with the bounds on the
-    quantities of interest.) Default=1.
-  }
+    quantities of interest.) Default=1.}
+  
   \item{"Ecdfbvn"}{Determines which procedure to use for computing the
     area of the bivariate normal distribution above the unit square:
     \item{1}{based on the Gauss function CDFBVN;}
@@ -84,7 +81,7 @@ ei(t,x,n,Zb,Zw,...)
     integral,'' Journal of Statist. Comput. Simul. 35: 101-107). See
     Appendix F.}
   
-
+  
     Option 5 (the default) appears to be the best tradeoff between speed
     and accuracy currently available (and so this global should not be
     changed to anything other than 6, which is more accurate but much
@@ -93,11 +90,11 @@ ei(t,x,n,Zb,Zw,...)
     the bivariate normal, as all currently available methods are
     innacurate and jump
   }
-  \item{"EdirTol"}{Direction tolerance for CML
+    \item{"EdirTol"}{Direction tolerance for CML
     convergence. Default=0.0001. Set to smaller values if most of your
     values of \eqn{T_i} or \eqn{X_i} are very small.
   }       
-  \item{"EcdfTol"}{{Tolerance for the lncdfbvn function (when Ecdfbvn=5,
+  \item{"EcdfTol"}{Tolerance for the lncdfbvn function (when Ecdfbvn=5,
     its default), with smaller calculated values truncated at the value
     of this global (DEFAULT=2.220446e-11). This can be any positive
     number, although lncdfbvn gets imprecise for small values. Only set
@@ -124,51 +121,52 @@ ei(t,x,n,Zb,Zw,...)
     if \eqn{-1} don't do simulations or compute the maxlik variance (use this
     option for computing conditional log-likelihood of eta's).
   }
-  \item{"Eeta"}{Automatically includes \eqn{X_i} in the inputs Zb  and/or
+
+    \item{"Eeta"}{Automatically includes \eqn{X_i} in the inputs Zb  and/or
     Zw. The actual inputs Zb and Zw  must be set to 1 if the default is
     changed. Using this global is better than explicitly including 
     \eqn{X_i} in the inputs, because eiread and eigraph will be ``aware'' of
     the contents of Zb and Zw. If you set this global, it is generally
     best to also set the priors EalphaB and EalphaW. See Chapter 9,
     and the parameterization in Equation 9.2 (page 170). Options
-    include:  
+    include:}  
 
-    \item{ }{Eeta=0 excludes \eqn{X_i}, which is equivalent to setting
+    \item{"Eeta=0"}{ excludes \eqn{X_i}, which is equivalent to setting
 	 \eqn{\alpha^b=\alpha^w=0} (default).}
     
-    \item{}{Eeta=1 sets zb=x, zw=1, which estimates \eqn{\alpha^b} and
+    \item{"Eeta=1"}{ sets zb=x, zw=1, which estimates \eqn{\alpha^b} and
 	 fixes \eqn{\alpha^w=0}.}
     
-    \item{}{Eeta=2 sets zb=1, zw=x, which estimates \eqn{\alpha^w} and
+    \item{"Eeta=2"}{ sets zb=1, zw=x, which estimates \eqn{\alpha^w} and
 	 fixes \eqn{\alpha^b=0}}
     
-    \item{}{Eeta=3 sets zb=zw=x, which estimates \eqn{\alpha^b} and
-	 \eqn{\alpha^w}.}
+    \item{"Eeta=3"}{sets zb=zw=x, which estimates \eqn{\alpha^b} and
+	 \eqn{\alpha^w}}
     
-    \item{}{Set to a \eqn{4\times 1} vector with elements Eeta =
+    \item{"?"}{Set to a \eqn{4\times 1} vector with elements Eeta =
 	 \eqn{\alpha^b\vert\alpha^w\vert} se \eqn{(\alpha^b)\vert} se
 	 \eqn{(\alpha^w)} to fix \eqn{\alpha^b} and \eqn{\alpha^w},
-	 and their standard deviations, during estimation.
-    }
-    \item{}{Finally, set to a \eqn{3\times 1} vector \eqn{4\vert a\vert b} to set
+	 and their standard deviations, during estimation.}
+    
+    \item{"?"}{Finally, set to a \eqn{3\times 1} vector \eqn{4\vert a\vert b} to set
 	 zb=x and zw=1, to estimate \eqn{\alpha^b}, and fix \eqn{\alpha^w=a} and
     its standard error to b. Set to a \eqn{3\times 1} vector \eqn{5\vert
 	 a\vert b} to set zb=1 and zw=x, to estimate \eqn{\alpha^w}, and fix 
-    \eqn{\alpha^b=a} and its standard error to b.
-  }
-  \item{"eigraph.bvsmth"}{Smoothing parameter for nonparametric
+    \eqn{\alpha^b=a} and its standard error to b.}
+
+   \item{"eigraph.bvsmth"}{Smoothing parameter for nonparametric
     estimation; used only if Enonpar=1. Default=0.08. (The same
     parameter controls the nonparametric bivariate density estimation
     for diagnostic purposes in eigraph.) See Section 9.3.2.
   }
   \item{"EisChk"}{If 0 to do nothing (default); if 1 change lnir from the
-    scalar mean importance ratio to a (\Esims\eqn{\star}Eisn)\eqn{\times}rows(
-    \eqn{\phi})+1) matrix containing the log of the importance ratio as the
+    scalar mean importance ratio to a (\Esims\eqn{\star}Eisn)
+    \eqn{\times rows(\eqn{\phi})+1} matrix containing the log of the importance ratio as the
     first column and normal simulations of \eqn{\tilde{\phi}} as the
     remaining columns. Also changes PhiSims from the mean and standard
     deviation of the posterior phi's to a \eqn{Esims \times}rows(\eqn{\phi})
-    matrix of normal simulations of phi.
-  }
+    matrix of normal simulations of phi.}
+  
   \item{"EiLliks"}{If 1 save (Esims\eqn{\times 1}) the log-likelihoods
     evaluated for each simulation; if 0 saves only the means of these
     likelihoods (default). These can be used for computing the marginal
@@ -240,15 +238,16 @@ ei(t,x,n,Zb,Zw,...)
     observations will still be included in the simulation stage,
     precinct-level estimates of all quantities of interest will still be
     available. (If used with EI2, each iteration of EI includes a
-    different randomly selected set of observations
-  }
+    different randomly selected set of observations)}
+  
   \item{"Esigma"}{Standard deviation of an underlying normal
     distribution, from which a half normal is constructed as a prior for
     both \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Note: the expected
     value under this prior is Esigma \eqn{\sqrt{2/\pi}\approx}
     Esigma0.8. Set to zero or negative for no prior. Default =0.5. See Section 7
   }
-  \item{"Esims"}{Number of simulations. Default is 100.}         
+  \item{"Esims"}{Number of simulations. Default is 100.}
+  
   \item{"Estval"}{For gradient methods: Scalar 1, use best guess
     starting values (default); or set to \eqn{k\times 1} vector of starting
     values. If Eeta[1]=0 (its default), \eqn{k=5} with elements guesses of
@@ -256,7 +255,7 @@ ei(t,x,n,Zb,Zw,...)
     values on the untruncated normal scale, 
     \eqn{\breve{\psi}=\{{\mathfrak{B}}^b,{\mathfrak{B}}^w,\sigma_b,\sigma_w,\rho\}},
     you can reparameterize as in this example:
-    Estval=eireparinv(c(.5,.5,.2,.2,-.1)).If Eeta[1]=1, 2, 4, or 5, \eqn{k=6); if Eeta=3, \eqn{k=7};
+    Estval=eireparinv(c(.5,.5,.2,.2,-.1)).If Eeta[1]=1, 2, 4, or 5, \eqn{k=6}; if Eeta=3, \eqn{k=7};
     and if covariates are used and nrow(Eeta)=4, then \eqn{k} is 5
     plus the number of covariates included, with Zb coming before Zw.
 
@@ -268,9 +267,8 @@ ei(t,x,n,Zb,Zw,...)
     on all the parameters, chooses the region of highest likelihood,
     zooms in and repeats the procedure on the narrower parameter
     region. This continues until differences in the parameters differ by
-    the global Edirtol.
-  }
-  \item{"ei.vc"}{\eqn{M\times 2} matrix (\eqn{M\geq 1}), each row of which
+    the global Edirtol.)}
+   \item{"ei.vc"}{\eqn{M\times 2} matrix (\eqn{M\geq 1}), each row of which
     represents instructions for one attempt to compute an estimated
     positive definite variance matrix of \eqn{\phi}. The procedure exits
     after the first positive definite hessian is found. Options to
@@ -312,7 +310,7 @@ ei(t,x,n,Zb,Zw,...)
     either input vectors, x,t, or n; number of columns equal to number of
     simulation \code{Esims}. The prescint estimates from the aggregate
     data.}
-  \item{"retcode"}{}
+  \item{"retcode"}{~~ If necessary, add description  ~~}
   
   \item{"phi"}{if EdoML =1, this should include a vector of values of
     \eqn{\phi} and will be used instead of the output of the likelihood
@@ -323,16 +321,18 @@ ei(t,x,n,Zb,Zw,...)
     likelihoods (default). These can be used for computing the marginal
     likelihood.
   }
-  \item{"ghactual"}{}
+  \item{"ghactual"}{~~ If necessary, add description  ~~}
   \item{"vcphi"}{EdoML=1, this should include a matrix of values of
     estimated variance matrix \eqn{V(\phi)} and will be used instead of the
     output of the likelihood maximization procedure. (This global is
     ignored unless EdoML=1.)
   }         
+  
+  }
   \item{"date"}{Current date}          
 
-  }
-\references{\url{http://gking.harvard.edu/ei} }
+  
+\references{\url{http://gking.harvard.edu/ei} }  
 
 \author{ 
 Gary King<\email{king@harvard.edu}}

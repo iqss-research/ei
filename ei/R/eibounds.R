@@ -1,18 +1,22 @@
+##/*
+##**  This archive is part of the program EI
+##**  (C) Copyright 1995-2001 Gary King
+##**  All Rights Reserved.
+##*/
+##/*
 ##    {Bs,aggs}=bounds1(t,x,n);
-##
-## computes bounds on parameters given aggregate data
-##
-## INPUTS: nx1 vectors, unit of analysis is precinct
-## see output of sumvar()
-##
-## OUTPUTS: bounds on precinct-level parameters
-## Bs   = cols: lower-black ~ upper-black ~ lower-white ~ upper-white
-## aggs =  bounds on district aggregates
-##         cols: lower ~ upper
-##         rows: beta-b, beta-w
-###
-### USES: recode
-###
+##**
+##** computes bounds on parameters given aggregate data
+##**
+##** INPUTS: nx1 vectors, unit of analysis is precinct
+##** see output of sumvar()
+##**
+##** OUTPUTS: bounds on precinct-level parameters
+##** Bs   = cols: lower-black ~ upper-black ~ lower-white ~ upper-white 
+##** aggs =  bounds on district aggregates
+##**         cols: lower ~ upper
+##**         rows: beta-b, beta-w
+##*/
 ### Translation of the Gauss code by Gary King
 ### AUTHOR: Ferdinand Alhimadi & Elena Villalon
 ###         evillalon@iq.harvard.edu

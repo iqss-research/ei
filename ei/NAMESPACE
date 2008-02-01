@@ -1,1 +1,4 @@
-export(ei,einonp)
+export(ei,
+       einonp,
+       eiread,
+       betab2w)

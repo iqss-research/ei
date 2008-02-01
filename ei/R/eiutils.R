@@ -3,11 +3,7 @@
 ## has some corresponding functions in Gauss
 ## Defined in original Gauss code are:
 ## scalzero,scalone, meanwc (meanWc), ismissm, seqas, seqase, vin,
-## sortbyRow, mkmissm, fisherzi,fisherz, ftosm, fmtt, infrv,  
-
-## Added to provide same functionality as in Gauss
-## %inG% (same as in Gauss), extract.diag (same as diag in Gauss)
-## trim.blanks, %dot/%, %dot*%, %-%
+## sortbyRow, mkmissm, fisherzi,fisherz, ftosm, fmtt, infrv  
 ## 
 ###
 ##  t = scalzero(y);
@@ -83,6 +79,23 @@ meanwcFerdi<-meanWcFerdi <- function(x,wt){
         return(res)
 }
 
+##/*
+##** sims = rndchi(r,c,v);
+##**
+##** inputs: r = row
+##**         c = column
+##**         v = df
+##**
+##** output: sim = kxk matrix of independent chi-square simulations with v
+##**
+##** 4/13/99 KS
+##*/
+rndchi <- function(r,c,v){
+    return(2*rndgam(r,c,v/2))
+  }
+
+
+
 ###
 ##  y = ismissm(x)
 ##
@@ -126,31 +139,7 @@ vin <- function(dbuf,str){
   return(res);
 }
 
-### DESCRIPTION the gauss code is case insensitive and that it was
-###             inG is doing, which is a wrapper around %in% but ignoring case
-###             Note that "in" may return a vector of T and F but inG applies
-###             all to the results of in and it is only T if all vector elemnts
-###             are T.
-###
-### as in(y,cv,0)
-###
-"%inG%" <- function(y,vars){
-  y <- unique.default(y)
-  vars <- unique.default(vars)
-  retp <- FALSE
-  ###make it case insensitive
-  if(!is.numeric(y)) 
-    y <- toupper(y)
-  if(!is.numeric(vars))
-    vars <- toupper(vars)
-    
-  ##  mat <- setdiff(y, vars)
-  ##  if(length(mat))
-  ##    retp <- TRUE
-  retp <- all(y %in% vars)
-  return(retp)                 
-    
-}
+
 
 
 ###DESCRIPTION Takes a matrix and sort all rows independently
@@ -189,21 +178,13 @@ sortbyRow <- function(mat, ix=NULL){
 ## From Gary's code
 
 mkmissm <- function(x, m){
-  if( !all(as.vector(m) %in% 0:1))
+  mn <- as.numeric(m)
+  if( !all(as.vector(mn) %in% 0:1))
     warning("mkmissm: m must have only 0 or 1 or T, F entries")
-  y <- miss(m, 1) + x
+  m <- as.logical(m)
+  y[m] <- NA
   return(y)
 
-}
-###DESCRIPTION the function diag in Gauss returns a 1 column vector
-###            with the diagonal values of mat, but diag in R builds
-###            a diagonal matrix.  To avoid confusion we call extract.diag
-###            to the R function that extracts the diagonal elemnts of a matrix
-###            and returns a matrix with one column.
-###
-extract.diag <- function(mat){
-  v <- mat[col(mat)==row(mat)]
-  return(as.matrix(v))
 }
 
 ##  This archive is part of the program EI
@@ -218,15 +199,17 @@ extract.diag <- function(mat){
 fisherzi <- function(x){
  
   t <- exp(2*x);
-  t <- (t-1)/(t+1);
+  t <- (t-1)%dot/%(t+1);
+ 
   return(t);
 }
 ##
 ##   z = fisherz(x);
+
 ##   fisher's z transformation
 ##
 fisherz <- function(x){
-  t=0.5*log((1+x)/(1-x));
+  t=0.5*log((1+x)%dot/%(1-x));
   return(t);
 }
 
@@ -292,143 +275,134 @@ infrv <- function(x,m,p){
  
 
 
-### DESCRIPTION this is the element division equivalent
-###             to the Gauss and Matlab operation "./"
-### INPUT v=vector and mat=matrix
-###       v may have only one element or length(v) = ncol(mat) or
-###       length(v) = nrow(mat)
-###
-### OUTPUT divide elemnt by element mat/v or t(t(mat)/v)
-###        depending if nrow(mat) or ncol(mat) = length(v)
-###
-###        Gauss mat./v -or- v./mat 
-###
-###AUTHOR Elena Villalon
-###       evillalon@iq.harvard.edu
-###
-"%dot/%" <- function(mat, v){
-
-  if(length(v) <= 1 || length(mat) <= 1)
-    return(mat/v)
+###/*
+##   y = makefacn(vars,nums);
+##**
+##**  vars  = number of columns to make in y
+##** nums   = (levels x 1) vector of numbers to use in place of 1,2,3... in
+##**          makefac().
+##**       OR (levels x vars) matrix
+##**
+##** example:
+##**
+##**  nums=(1~ 2 ~3)|
+##**       (9~10~11);
+##**  call makefacn(3,nums);
+##**   
+##**   1    2    3 
+##**   9    2    3 
+##**   1   10    3 
+##**   9   10    3 
+##**   1    2   11 
+##**   9    2   11 
+##**   1   10   11 
+##**   9   10   11 
+##**
+##*/
+makefacn <- function(vars,nums){
+###  local x,k,i,c;
+  c <- cols(nums);
+  k <- rows(nums);
   
-  mat <- as.matrix(mat)
+  if (c==1){
+    x <- makefac(vars,k)
+    for (i in (1:vars))
+      x[,i+0] <- nums[x[,i+0]];
   
-  if(length(v)==length(mat)){
-    res <- as.vector(mat) /as.vector(v)
-    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
-    return(res)
   }
-  mat0 <- mat
-  v0 <- v
-  invrt <- FALSE
-  trnps <- FALSE
-  if(length(v) > length(mat)){
-    v <- as.vector(mat0)
-    mat <- as.matrix(v0)
-    invrt <- T
+  else if( c==vars){
+    x <- makefac(vars,k)
+    for (i in (1:vars))
+      x[,i+0]=nums[x[,i+0],i+0];
+    
+  
   }else
-  v <- as.vector(v)
+    stop("makefacn: input error, cols(nums) must = 1 or vars")
     
-  if(length(v) != ncol(mat) && length(v) != nrow(mat))
-    stop("Arrays are non-conformable")
-  if(length(v) == rows(mat)) {
-    mat <- t(mat)
-    trnps <- T
-  }
-  if(!is.data.frame(mat)){
-    mdf <- as.data.frame(mat)
-    res <- as.matrix(t(t(mdf)/v))
-    colnames(res) <- NULL
-    rownames(res) <- NULL
-    if(invrt)
-      res <- 1/res
-    if(trnps)
-      res <- t(res)
-    return(res)
-  }else{
-    if(!invrt)
-      res <- t(mat/v)
-    else
-      res <- 1/t(mat/v)
-  if(trnps)
-    res <- t(res)
-  return(res)
-  }
+  return(x)
 }
-### DESCRIPTION this is the element multiplication equivalent
-###             to the Gauss and Matlab operation ".*"
-### INPUT v=vector and mat=matrix
-###       v may have only one element or length(v) = ncol(mat) or
-###       length(v) = nrow(mat)
-###
-### OUTPUT multiply elemnt by element mat*v or t(t(mat)*v)
-###        depending if nrow(mat) or ncol(mat) = length(v)
-###
-###        Gauss v.*mat -or- mat*.v 
-###
-###AUTHOR Elena Villalon
-###       evillalon@iq.harvard.edu
-###
-"%dot*%" <- function(v, mat){
 
-  if(length(v) <= 1 || length(mat) <=1)
-    return(mat*v) 
-  mat <- as.matrix(mat)
-  if(length(v)==length(mat)){
-    res <- as.vector(v) *as.vector(mat)
-    res <- matrix(res,nrow=rows(mat), ncol=cols(mat))
-    return(res)
-  }
-mat0 <- mat
-v0 <- v
 
-trnps <- FALSE
-if(length(v) > length(mat)){
-  v <- as.vector(mat0)
-  mat <- as.matrix(v0)
-}else
-v <- as.vector(v)
-     
+##/*
+##       y = makefac(vars,levels);
+##**
+##**  vars = number of columns to make in y
+##** levels= number of levels of y
+##**
+##** y = (levels^vars x vars).  first column is 1,2,3,...,vars,
+##**     second column is 1,1,1,1(vars times),2,2,2,, etc
+##**    third column...
+##**   
+##** example:
+##** y = makefac(2,4);
+##**   y;
+##**  1   1
+##**  2   1
+##**  3   1
+##**  4   1
+##**  1   2
+##**  2   2
+##**  3   2
+##**  4   2
+##**  1   3
+##**  2   3
+##**  3   3
+##**  4   3
+##**  1   4
+##**  2   4
+##**  3   4
+##**  4   4
+##**
+##** NOTE: round() corrects for numerical inaccuracies.
+##**       i+0 works around a Gauss bug
+##*/
 
-   if(length(v) != ncol(mat) && length(v) != nrow(mat))
-    stop("Arrays are non-conformable")
-
-  if(length(v) == rows(mat)) {
-    mat <- t(mat)
-    trnps <- T
-  }
-
-  if(!is.data.frame(mat)){
-    mdf <- as.data.frame(mat)
-    res <- as.matrix(t(t(mdf)*v))
-    colnames(res) <- NULL
-    rownames(res) <- NULL
-    if(trnps) res <- t(res)
-    return(res)
-  }else{
-    res <- (t(t(mat)*v))
-    if(trnps) res <- t(res)
-    return(res)
-  }
-}
-###DESCRIPTION difference two matrices
-### mat = Mx 1
-### v= Vx 1
-### res = M x V
-### Gauss (mat-m'), where mat and m are 1 column matrices and m'=t(m)
-## 
-
- "%-%" <- function(mat, m){
-     res <- matrix(as.vector(mat),nrow=length(mat), ncol=length(m))
-     red <- t(as.data.frame(t(res))-m)
-     res <-  as.matrix(red)
-     colnames(res) <- rownames(res) <- NULL
-     return(res)
-   }
-     
-     
-         
-    
-    
-
+makefac <- function(vars,levels)
+  {
+    ## local i,tmp;
+    if (length(vars) > 1 || length(levels) > 1)
+      stop("makefac: arguments must be scalars");
+   
+ 
+    tmp <- matrix(1:levels,nrow=round(levels^vars),ncol=1)
   
+    for (i in 1:vars){   
+      ff <- as.matrix(facvec(i+0,vars,levels))
+      tmp <- cbind(tmp,ff)
+      
+    }
+    return(tmp[,2:cols(tmp)]);
+  }
+    
+##/*  facvec: support proc for makefac
+##**  
+##   y = facvec(i,v,l);
+##**
+##** i = var number
+##** v = value
+##** l = level
+##**
+##** y = output column vector
+##**
+##** round() corrects for numerical inaccuracies.
+##*/
+##  v1 <- matrix(seq(from=1, by=1,length.out=l),nrow=1)
+##  v1 <- t(v1 %dot*% matrix(1,nrow=round(l^(i-1)),ncol=l))
+##  v1 <- v1 %dot*% matrix(1, nrow=1, ncol=round(l^(v-i)))
+
+facvec <- function(i,v,l){
+  if(i > v)
+    stop("Bad arguments in facvec")
+  mat <- matrix(0,nrow=l^v)
+  if(i <= 1)
+    return(vec <- as.matrix(rep(1:l,l^v/l)))
+  vec <- NULL
+  for(n in 1:l)
+    vec <- c(vec, rep(n,l^(i-1)))
+  
+  if(length(vec) < l^v)
+    vec <- rep(vec,l^v/length(vec))
+  
+  return(as.matrix(vec))
+  
+}
