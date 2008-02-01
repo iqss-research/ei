@@ -1170,6 +1170,7 @@ lncdfbvn2i <- function(Bb,Bw,sigb,sigw,rho){
   evbase <- get("evbase", env=parent.frame())
   EcdfTol <- get("EcdfTol", env=evbase)
   res <- cdfbvn2(-Bb/sigb,1/sigb,-Bw/sigw,1/sigw,rho);
+ 
   res <- recode(res,cbind((res<EcdfTol),(res>1)),rbind(EcdfTol,1));
  
   return(log(res))

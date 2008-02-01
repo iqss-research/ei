@@ -593,7 +593,7 @@ inv <- function(mat,svdtol=1e-10)
 ###DESCRIPTION inverting a symmetric, positive definite matrix from Choleski decomposition
 ###
 invpd <- function(mat){
-  x <- chol(mat,pivot=TRUE)
+  x <- suppressWarnings(chol(mat,pivot=TRUE))
   return(chol2inv(x))}
 
 ###DESCRIPTION pseudo-inverse in Gauss corresponds to

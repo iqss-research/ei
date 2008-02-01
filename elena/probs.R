@@ -27,9 +27,11 @@ cdfbvn <- function(x,t,rho, maxpts=25000, abseps=0.001, releps=0){
   v  <- c(as.vector(x), as.vector(t))
   ln <- length(v)
   low <- rep(-Inf, ln)
- 
+  
   rho <- diag(ln)*rho
-  p00 <- pmvnorm(lower=low, upper=v,mean=rep(0, ln), sigma=rho, maxpts=maxpts,abseps=abseps, releps=releps);
+
+   p00 <-suppressWarnings( pmvnorm(lower=low, upper=v,mean=rep(0, ln), sigma=rho, maxpts=maxpts,abseps=abseps, releps=releps));
+
   return(p00)
  }
 ###DESCRIPTION As in the Gauss function based on cdfbvn or bivariate normal.
@@ -37,6 +39,7 @@ cdfbvn <- function(x,t,rho, maxpts=25000, abseps=0.001, releps=0){
 cdfbvn2 <- function(h,dh,k,dk,r){
   
 y <- cdfbvn(h+dh, k+dk,r)+cdfbvn(h,k,r) - cdfbvn(h,k+dk,r) - cdfbvn(h+dh, k, r)
+
 return(y)
 }
 
