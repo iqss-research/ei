@@ -267,8 +267,8 @@ extract.diag <- function(mat){
 "%==%" <- function(x, y) {return(all(x == y))}
 "%.==%"  <- function(x, y) {return(x == y)}
 
-
-   
+cdfn <- function(x) { return(pnorm(x))}
+pdfn <- function(x){return(dnorm(x))}
   
 ###DESCRIPTION pseudo-inverse of matrix mat
 ###            using the singular value descomposition.
@@ -284,7 +284,7 @@ svd.inv <-  function(x,svdtol=1e-10){
   w.inv[w > svdtol] <- 1/w[w > svdtol];
   if(length(w.inv) <= 1)
     w.inv <- as.matrix(w.inv)
-  W.inv <- diag(w.inv);
+  W.inv <- diag(w.inv)
   return(V %*% W.inv %*% t(U)); 
 }
 
@@ -317,22 +317,15 @@ trim.blanks <- function(x) {
   return(x)
 }
 ###Request input from user 
-user.prompt <- function (verbose=TRUE){
-  verb <- T
- if(length(verbose) <= 0 || verbose){
-   silent <- readline("\nPress <return> to continue or Ctrl-c Ctrl-c to quit: ")
+user.prompt <- function (p=NULL){
+  verbose <- TRUE
+ if(length(p) <=0){
+   answer <- readline("\nPress <CR> to continue and Ctrl-c Ctrl-c to quit: ")
+ }else {
+    answer <- readline("\nPress <CR> to continue, or #<CR> for obs # number, Ctrl-c Ctrl-c to quit: ")
+  }
    
- }else{
-   
-   answer <- readline("\nPress 'Y' for verbose output or enter 'N' otherwise. \nPress Ctrl-c Ctrl-c to quit: " )
-   
-   if(substr(answer,1,1)=='N')
-     verb <- F
-   else if(substr(answer,1,1)=='Y')
-     verb <- T
-   
- }
-   return(verb)
+   return(answer)
      
 }
 ### Used instead of message to control verbose output
@@ -356,10 +349,11 @@ cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=ge
         stval <- as.matrix(stval)
 ###defaults
         par <- stval
+   
         con <- list(trace = 0, fnscale = 1, parscale = rep.int(1,length(par)),
                     ndeps = rep.int(0.001, length(par)), maxit = 100, 
-                    ###abstol = -Inf,
-                    ###reltol = sqrt(.Machine$double.eps),
+                   abstol = -Inf,
+                    reltol = sqrt(.Machine$double.eps),
                     alpha = 1, 
                     beta = 0.5, gamma = 2, REPORT = 10, type = 1, lmm = 5, 
                     factr = 1e+07, pgtol = 0, tmax = 10, temp = 10)
@@ -375,9 +369,11 @@ cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=ge
 
 ###faster convergence increase con$factr, i.e.  <- 1e+08
 ###tolerance is defined as .Machine$double.eps*con$factr
-        ix <- match(c("reltol", "abstol"), names(con))
-        con <- con[-ix]
-        message("Optim in action....")
+        ix <- na.omit(match(c("reltol", "abstol"), names(con)))
+        if(length(ix))
+          con <- con[-ix]
+        message("Optim in action...")
+     
         optimlst <- optim(stval,ff,gr=NULL,dataset,evbase,method="L-BFGS-B",
                           control=con, lower=cml.bounds[,1],upper=cml.bounds[,2],
                           hessian=hess)
@@ -436,7 +432,9 @@ optimhess <- function(par,fn,gr,...,control,Etol=1.e-4,nm=NULL){
  
   con <- control
   ix <- match(c("reltol", "abstol"), names(con))
-  con <- con[-ix]
+  ix <- na.omit(ix)
+  if(length(ix))
+    con <- con[-ix]
   fn1 <- function(par) fn(par,...)
   gr1 <- NULL
   if(!is.null(gr))
@@ -523,3 +521,19 @@ find.bounds <- function(param,Edirtol=1.e-4,perctg=0.2){
   
   return(bounds)
 }
+### DESCRIPTION given a string it checks if ony contain numbers
+### INPUT string of characters
+### OUTPUT boolean are all chars numbers
+####
+ chk.numeric <- function(answer){
+   vans <- strsplit(answer,NULL)[[1]]
+   ischar <- TRUE
+   for(ch in vans){
+     ln <- length(grep("[0-9]",ch))
+     if(ln <=0) {
+       ischar <- FALSE
+       break;
+     }
+   }
+      return(ischar)
+ }

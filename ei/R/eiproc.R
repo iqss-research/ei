@@ -1,3 +1,4 @@
+
 ##/*
 ##**  This archive is part of the program EI
 ##**  (C) Copyright 1995-2001 Gary King
@@ -46,7 +47,8 @@
 ei <- function(t,x,tvap,Zb, Zw,...)
 {
  ###  local res,et,MLpsi,MLvc,betaBs,betaWs,tst,Eselect,flat;
-  evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment 
+  evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment
+  
   drvdot <- match.call(expand.dots=TRUE)
   drv  <-  match.call(expand.dots=FALSE)
 
@@ -64,14 +66,16 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   }
 ##  print(EnonPar) 
   ### copy variables from evbase to local environment evei
-  getEnvVar(evbase, environment())  ##environment 
+  evei <- getEnvVar(evbase, environment())  ##environment 
    ### print(eval(as.symbol(entries)))
- 
+  if(get("dbug", env=environment()))
+    evbase <<- evbase
+  if(exists("Eprt")) Eprt <- get("Eprt", env=evei)
   if(!scalzero(Eres) && vin(Eres,"titl") && Eprt >0)
     message(vread(Eres,"titl"))
- 
-  Eres <- add.to.Eres(Eres, round=1, evbase)
- 
+  
+  Eres <- add.to.Eres(get("Eres",env=evbase), round=1, evbase)
+   assign("Eres", Eres, env=evbase)
 ###testing and debugging            
 ###  lapply(param, function(x){
 ###    print(x)
@@ -81,6 +85,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
 
   
 ###  /* verify inputs */
+  if(exists("Echeck")) Echeck <- get("Echeck", env=evei)
   if(as.logical(Echeck)){
     message("Consistency checks of globals")
     tst <- ""
@@ -89,10 +94,10 @@ ei <- function(t,x,tvap,Zb, Zw,...)
     if(length(tst)){
       print(tst)
   ###    "----- EI Aborted -----";
-    return(res)
+    return(tst)
     }
   }
-    
+  if(exists("EnonPar")) EnonPar <- get("EnonPar", env=evei)
     if(Eprt>0){
       if(EnonPar)
         message("Inputs ok, beginning nonparametric estimation...")
@@ -105,7 +110,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   assign("Eselect", Eselect, env=evbase);  ###$@ save existing value @
   Eselect0 <- Eselect
   Eselect <- matrix(1,nrow=rows(x),ncol=1)* as.vector(Eselect);
- 
+  if(exists("EselRnd")) EselRnd <- get("EselRnd", env=evei)
   if(EselRnd<1){
     vec <- runif(rows(x),min=0,max=1)
     vec <- matrix(vec)
@@ -114,7 +119,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
  
  
 ###  /* nonparametric estimation */
-  
+  if(exists("dbug")) dbug <- get("dbug", env=evei) 
   if(dbug==TRUE && identical(parent.frame(), .GlobalEnv))
     assign("evbase", evbase, env=parent.frame()) 
   if(EnonPar>=1){
@@ -122,13 +127,15 @@ ei <- function(t,x,tvap,Zb, Zw,...)
     betaBs <- einonp(t,x, evbase);
     assign("betaBs", betaBs, env=evbase); 
   
-
-    Eres <- add.to.Eres(Eres, round=2, evbase)  
+ Eres <- add.to.Eres(get("Eres",env=evbase), round=2, evbase)
+   assign("Eres", Eres, env=evbase)
+    
     return(timing(et,Eprt,Eres,Eselect0))
   }
   ### /* parametric estimation: */
   
   ###/* eta influence on Zb,Zw */
+  if(exists("Eeta")) Eeta <- get("Eeta", env=evei)
   if(rows(Eeta)!=4){
   if(Eeta[1]==1 ||  Eeta[1]==4){
     Zb <- x;
@@ -150,21 +157,30 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   assign("Ez", Ez, env=evbase)
 
 ###  /* likelihood estimation */
+  if(exists("EdoML")) EdoML <- get("EdoML", env=evei)
   if(EdoML==1){
    
      lst  <- quadcml(x,Zb,Zw,t,evbase);
      MLpsi <- lst[[1]]
      MLvc <- lst[[2]]
-     
+     assign("MLpsi", MLpsi, env=evbase)
+     assign("MLvc", MLvc, env=evbase)
+     Eres <- get("Eres", env=evbase)
+   ###  Eres <- vput(Eres, get("psiu", env=evbase),"psiu");
      if(length(MLvc) <= 1 && is.na(MLvc)){
        Eres <- vput(Eres,MLpsi,"phi");
        Eres <- vput(Eres,MLvc,"vcphi");
       return(Eres);
      }
+   
   }else{
     message("Skipping likelihood estimation..");
-     Eres <- add.to.Eres(Eres, round=3, evbase)  
-  
+ Eres <- add.to.Eres(get("Eres",env=evbase), round=3, evbase)
+   
+    
+   assign("Eres", Eres, env=evbase)
+    if(exists("EdoML.phi")) EdoML.phi <- get("EdoML.phi", env=evei)
+    if(exists("EdoML.vcphi")) EdoML.vcphi <- get("EdoML.vcphi", env=evei)
     MLpsi <- mlpsi <- EdoML.phi;
     MLvc <-  mlvc <- EdoML.vcphi;
     if(rows(mlvc)!= rows(mlpsi))
@@ -173,11 +189,14 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   }
 
  ###/* simulation */
+  if(exists("EdoSim")) EdoSim <- get("EdoSim", env=evei)
   if(EdoSim==1){
   ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
      lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc); ### eisims.src 
      betaBs <- lst$betaBs
      betaWs <- lst$betaWs
+      Eres <- get("Eres",env=evbase)
+   assign("Eres", Eres, env=evbase)
      Eres   <- vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @
      assign("Eres", Eres,env=evbase)
    }
@@ -223,6 +242,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   ### assign the globals to local environment 
   evei <- getEnvVar(evbase, environment())
 ###  t <- as.matrix(t)
+  Eres <- get("Eres", env=evei)
   t <- as.matrix(vread(Eres, "t"))
  
 ###  x <- as.matrix(x)
@@ -239,11 +259,15 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
 
   zb <- Zb
   zw <- Zw
-  ei.vc <- EI.vc 
+  if(exists("ei.vc")) ei.vc <- EI.vc <- get("ei.vc", env=evei)
+  else if(exists("EI.vc")) ei.vc <- EI.vc <- get("EI.vc", env=evei)
   
-  EIgraph.bvsmth <- eigraph.bvsmth
   
-  ei2.m <- Ei2.m 
+  if(exists("eigraph.bvsmth")) EIgraph.bvsmth <- eigraph.bvsmth <- get("eigraph.bvsmth", env=evei)
+  else if(exists("EIgraph.bvsmth")) EIgraph.bvsmth <- eigraph.bvsmth <- get("EIgraph.bvsmth", env=evei)
+  
+  if(exists("ei2.m")) ei2.m <- Ei2.m <- get("ei2.m", env=evei)
+  else  if(exists("Ei2.m")) ei2.m <- Ei2.m <- get("Ei2.m", env=evei)
   
 ####
   if(any(t <0) || any(t > 1))
@@ -252,6 +276,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     stop("ei:'=x' input must be between 0 and 1")
   if(length(EnonPar) > 1)
     stop("ei:EnonPar must be scalar")
+  if(exists("EnonPar")) EnonPar <- get("EnonPar", env=evei)
   if(!EnonPar %in% 0:1)
     stop("ei: EnonPar must be 0 or 1")
   r <- rows(t)
@@ -268,10 +293,10 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   }
   if (any(is.na(x)) || any(is.na(t)) || any(is.na(tvap)) || any(is.na(zb)) || any(is.na(zw)))
     stop("ei:missing data detected. Delete and rerun");
-  
+  if(exists("Esims")) Esims <- get("Esims", env=evei)
   if(length(Esims)>1 || Esims < 1)
     stop("ei: Esims must be a scalar integer larger than 1");
-  
+  if(exists("Eselect")) Eselect <- get("Eselect", env=evei)
   if(length(Eselect) > 1 ){
     
     if(!any(dim(Eselect)== c(r, 1)) || !all(as.vector(Eselect) %in% 0:1))
@@ -279,13 +304,15 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   }else if(!scalone(as.vector(Eselect)))
     stop("ei: Eselect must be px1 or scalar 1");
   
-  
+  if(exists("EselRnd")) EselRnd <- get("EselRnd", env=evei)
   if(length(EselRnd)>1)
     stop("ei: EselRnd must be a scalar");
   if (EselRnd> 1 || EselRnd <=0)
     stop("ei: EselRnd must in interval (0,1]");
-
+  
+  if(exists("Eeta")) Eeta <- get("Eeta", env=evei)
   Eeta <- as.matrix(Eeta)
+  
 ### Eeta ony one column and possibly multiple rows
   if(cols(Eeta) != 1)
     stop("ei: Eeta has the wrong dimensions");
@@ -319,7 +346,8 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   
 ### done with Eeta
 
-###EalphaB 
+###EalphaB
+  if(exists("EalphaB")) EalphaB <- get("EalphaB", env=evei)
   if(!scalmiss(EalphaB)){
     if(scalone(Zb) && all(Eeta ==0))
       stop("ei:EalphaB should be specified only when Zb is not 1")
@@ -329,7 +357,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     if(any(EalphaB[, 2] <=0))
       stop("ei: Elements in the second column of _EalphaB must be > 0");
     
-    if(rows(EalphaB) != cols(Zb) && all(Eetha ==0))
+    if(rows(EalphaB) != cols(Zb) && all(Eeta ==0))
       stop("ei: nrow(EalphaB) must equal ncol(Zb)");
     
   }else{
@@ -339,6 +367,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   
   
 ###EalphaW
+  if(exists("EalphaW")) EalphaW <- get("EalphaW", env=evei)
   if(!scalmiss(EalphaW)){
     if(scalone(Zw) && all(Eeta==0))
       stop("ei: EalphaW should be specified only when Zw is");
@@ -356,80 +385,94 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     }
 
 ###Ebeta
+    if(exists("Ebeta")) Ebeta <- get("Ebeta", env=evei)
     if(length(Ebeta) > 1)
       stop("ei: _Ebeta must be a scalar");
     if(Ebeta < 0)
       stop("ei: Ebeta cannot be negative");  
     
 ###Ecdfbvn
-    
-    if(any(Ecdfbvn > 6) || any(Ecdfbvn <1) || rows(Ecdfbvn) != 1)
+  if(exists("Ecdfbvn")) Ecdfbvn <- get("Ecdfbvn", env=evei)
+  if(any(Ecdfbvn > 6) || any(Ecdfbvn <1) || rows(Ecdfbvn) != 1)
       stop("ei: problem with Ecdfbvn");
 ###Esigma
-
+  if(exists("Esigma")) Esigma <- get("Esigma", env=evei)
     if(length(Esigma)>1)
       stop("ei: Esigma must be a scalar");
     if(Esigma > 0 && Esigma <0.000001)
       stop("ei: Esigma must be <= 0 (for no prior) or > 0.000001");
+  ##Erho
+    if(exists("Erho")) Erho <- get("Erho", env=evei)
     if( (Erho[1]==0 && rows(Erho)!=2) || (Erho[1]!=0 && rows(Erho)!=1))
       stop("ei: problem with Erho");
     
-###Estval  
-    if(cols(Estval) !=1 )
-      stop("ei: Estval may have only one column");
-    if(length(Estval)==1){
+###Estval
+  if(exists("Estval")) Estval <- get("Estval", env=evei)
+  if(cols(Estval) !=1 )
+    stop("ei: Estval may have only one column");
+  if(length(Estval)==1){
 ### Estval needs to check
 ###      if(Estval != 0 && (Estval<0 || (Estval%/% 3==0) || ((Estval %%floor(Estval) )> 0)))
-      if(Estval <0 || Estval == 2 || (Estval %%floor(Estval))> 0)
+    if(Estval <0 || Estval == 2 || (Estval %%floor(Estval))> 0)
         stop("ei: Estval as a scalar must be 0 or an integer >=3");
 ###length(Estval) > 1
-    }else if(rows(Estval) !=a)
-      stop("ei: _Estval has wrong dimensions");
+  }else if(rows(Estval) !=a)
+    stop("ei: _Estval has wrong dimensions");
     
 ###Ebounds
-    if(length(Ebounds) == 1){
-      if(!Ebounds %in% c(0, 1))
-        stop("ei: Ebounds must be 0, 1, 1x2, or kx2")
-    }else{
-      if(cols(Ebounds) != 2)
-        stop("ei: Ebounds must have 1 or two columns")
-      if(rows(Ebounds) != 1 && rows(Ebounds) != a)
-        stop("ei: Ebounds must have 1 row or one row for each parameter") 
-    }
+  if(exists("Ebounds")) Ebounds <- get("Ebounds", env=evei)
+  if(length(Ebounds) == 1){
+    if(!Ebounds %in% c(0, 1))
+      stop("ei: Ebounds must be 0, 1, 1x2, or kx2")
+  }else{
+    if(cols(Ebounds) != 2)
+      stop("ei: Ebounds must have 1 or two columns")
+    if(rows(Ebounds) != 1 && rows(Ebounds) != a)
+      stop("ei: Ebounds must have 1 row or one row for each parameter") 
+  }
 ###EdirTol
+  if(exists("EdirTol")) EdirTol <- get("EdirTol", env=evei)
     if(length(EdirTol) > 1)
       stop("ei: EdirTol must be a scalar")
     if(EdirTol <= 0 || EdirTol > 1)
       stop("ei: EdirTol must be >0 and <1")
 
 ###EcdfTol
+    if(exists("EcdfTol")) EcdfTol <- get("EcdfTol", env=evei)
     if(length(EcdfTol) > 1)
       stop("ei: EcdfTol must be a scalar")
     if(EcdfTol <= 0 || EcdfTol > 1)
       stop("ei: EcdfTol must be >0 and <1")
     
 ### EvTol
+    if(exists("EvTol")) EvTol <- get("EvTol", env=evei)
     if(length(EvTol) > 1)
       stop("ei: EvTol must be a scalar")
     if(EvTol <= 0)
       stop("ei: EvTol must be >0")
 ###ei.vc
+   
     if(cols(ei.vc) != 2)
       stop("ei: EI.vc must have 2 columns")
     if (min(ei.vc[,1]) < -1 || max(ei.vc[,1]) > 5 || abs(ei.vc %%floor(ei.vc)) >0)
       stop("ei: EI.vc may only have integers -1,1,...,5 in first column");
+    if(exists("Eist")) eist <- Eist <- get("Eist", env=evei)
+    else if(exists("eist")) eist <- Eist <- get("eist", env=evei)
     if (min(ei.vc[,1])==-1 &&  eist !=0)
       stop("ei: EI.vc={-1 0} option is allowed only when EIsT = 0"); 
 ###EdoML
-    if(!(as.vector(EdoML) %in% 0:1))
-      stop("ei: EdoML must be scalar zero or one");
-    
+  if(exists("EdoML")) EdoML <- get("EdoML", env=evei)
+  if(!(as.vector(EdoML) %in% 0:1))
+    stop("ei: EdoML must be scalar zero or one");
+  if(exists("EdoML.phi")) EdoML.phi <- get("EdoML.phi", env=evei)
+  if(exists("EdoML.vcphi")) EdoML.vcphi <- get("EdoML.vcphi", env=evei)
     if(scalzero(EdoML)){
       if( (rows(EdoML.phi) != rows(EdoML.vcphi)) ||
          (rows(EdoML.phi)!= cols(EdoML.vcphi)) )
         stop("ei: EdoML, EdoML.phi, or EdoML.vcphi are incorrect")
     }
 ###Edosim
+  if(exists("EdoSim")) EdoSim <- get("EdoSim", env=evei)
     if(!(EdoSim %in% -1:1))
       stop("ei: EdoSim must be scalar -1, 0, or 1");
     
@@ -439,49 +482,61 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     if (EIgraph.bvsmth<0.0000001)
       stop("ei: EIgraph.bvsmth must be greater than zero");
 ###Eisn
+  if(exists("Eisn")) Eisn <- get("Eisn", env=evei)
     if(length(Eisn) >1 || Eisn <1)
       stop("ei: Eisn must be a scalar or an integer >= 1");
 ###Eist
+     
     if(length(Eist) >1)
       stop("ei: Eist must be a scalar")
     if(Eist <= 2.00001 && Eist != 0)
       stop("ei: EisT must be 0 or greater than 2");
     
 ###EisFac
+
+    if(exists("EisFac")) eisfac <- EisFac <- get("EisFac", env=evei)
+
     if(length(EisFac) > 1)
       stop("ei: EisFac must be scalar")
     if ( EisFac<0 && !EisFac %in% c(-1,-2))
       stop("ei: EisFac must be -1, -2 or greater than zero");
 ###EisChk
-    if(length(EisChk) > 1 || !EisChk %in% c(0, 1))
-      stop("ei: EisChk must be scalar zero or one");
+  if(exists("EisChk")) eischk <- EisChk <- get("EisChk", env=evei)
+  if(length(EisChk) > 1 || !EisChk %in% c(0, 1))
+    stop("ei: EisChk must be scalar zero or one");
     
 ### EmaxIter
-    if (length(EmaxIter) >1 || EmaxIter <0)
-      stop("ei: EmaxIter must be a scalar > 0")
+  if(exists("EmaxIter")) emaxiter <- EmaxIter <- get("EmaxIter", env=evei)
+  if (length(EmaxIter) >1 || EmaxIter <0)
+    stop("ei: EmaxIter must be a scalar > 0")
 ###EnumTol
-    if(length(EnumTol) > 1 || EnumTol <0)
-      stop("ei: EnumTol must be a scalar >0");
+  if(exists("EnumTol")) enumtol <- EnumTol <- get("EnumTol", env=evei)
+  if(length(EnumTol) > 1 || EnumTol <0)
+    stop("ei: EnumTol must be a scalar >0");
 ###Eprt
-    if (length(Eprt) >1 )
-      stop("ei: Eprt must be a scalar");
-    if(!Eprt %in% c(0,1,2,3))
-      stop("ei: Eprt must be 0, 1, 2, or 3");
+  if(exists("Eprt")) eprt <- Eprt <- get("Eprt", env=evei)
+  if (length(Eprt) >1 )
+    stop("ei: Eprt must be a scalar");
+  if(!Eprt %in% c(0,1,2,3))
+    stop("ei: Eprt must be 0, 1, 2, or 3");
     
 ###EnonEval
-    if(length(EnonEval) >1 || EnonEval<1)
-      stop("ei: EnonEval must be a positive integer");
+  if(exists("EnonEval")) enoneval <- EnonEval <- get("EnonEval", env=evei)
+  if(length(EnonEval) >1 || EnonEval<1)
+    stop("ei: EnonEval must be a positive integer");
     
 ###EnonNumInt
-    if(length(EnonNumInt) >1 || EnonNumInt < 1)
-      stop("ei: EnonNumInt must be a positive integer");
-    if(length(Ei2.m) >1 )
+  if(exists("EnonNumInt")) enonnumint <- EnonNumInt <- get("EnonNumInt", env=evei)
+  if(length(EnonNumInt) >1 || EnonNumInt < 1)
+    stop("ei: EnonNumInt must be a positive integer");
+  if(length(Ei2.m) >1 )
       stop("ei: Ei2.m must be positive");
 
     if((Ei2.m <1 || Ei2.m %% floor(Ei2.m) > 0) &&   Ei2.m != -1)
       stop("ei: Ei2.m must be -1 or a positive integer");
     
 ###EIMetaR
+  if(exists("EIMetaR")) eimetar <- EIMetaR <- get("EIMetaR", env=evei)
     if(length(EIMetaR) >1 ||  EIMetaR %% floor(EIMetaR) > 0)
       stop("ei: EiMetaR must be a scalar integer");
     
@@ -499,13 +554,17 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     stop("ei: 'truthB' input must be between 0 and 1");
   if (any(betaW >1)  || any(betaW <0))
     stop("ei: 'truthW' input must be between 0 and 1");
-
-  res <- bounds1(t, x, tvap)
+  if(exists("EnumTol")) Enumtol <- enumtol <- EnumTol <- get("EumTol", env=evei)
+  else Enumtol <- EnumTol <- enumtol <- get("EnumTol", env=evbase)
+  tol <- enumtol
+  res <- bounds1(t, x, tvap,tol)
   bnd <- res$bs
   a <- res$aggs
   a <- na.omit(cbind(betaB, bnd[,1]))
-  tol <- Enumtol
-  
+  tol <- EnumTol
+  if(exists("truthB")) truthb <- truthB <- get("truthB", env=evei)
+  if(exists("truthW")) truthw <- truthW <- get("truthW", env=evei)
+  if(exists("bnds")) Bnds <- bnds <- get("bnds", env=evei)
   if(any((a[,1]+tol) < a[, 2])){
     evei <- settTruthBnds(betaB, betaW, bnd, truthB, truthW, bnds,  evei)
     str <- "ei: truthB < lower bound";
@@ -568,7 +627,8 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   EdoML <- as.matrix(1);
   EdoML.phi <- as.matrix(0);
   EdoML.vcphi <- as.matrix(0);
-  Ecdfbvn<- as.matrix(5);
+  message("Use Ecdfbvn=4,3,6 for best results")
+  Ecdfbvn<- as.matrix(4); ### EV: I have changed the default Ecdfbvn<- 5
   EnumTol<- as.matrix(0.0001);
   EnonEval<- as.matrix(11);
   EnonNumInt<- as.matrix(11);
@@ -645,6 +705,7 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   eigraph.t<- "T";
   eigraph.bb<- "betaB";
   eigraph.bw<- "betaW";
+  eigraph.tit <-  "tomograph with data only" 
   eigraph.loess<- 0;
   eigraph.eval<- 31;
   eigraph.bvsmth<- Eigraph.bvsmth <- 0.08;
@@ -653,7 +714,8 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   tomogPct<- matrix(c(.5, .95));
   tomogClr<-matrix(c( 12, 9, 10, 11, 13, 5)); 
   eigraph.pro<- matrix(NA);
-  
+  ### added by EV: the title for the graph
+  eigraph.tit <- ""
   ## eibias 
   Evc<- as.matrix(1);
   Etruth<- as.matrix(0);
@@ -672,7 +734,7 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   pts  <-  as.matrix(100);
   Tleft <-  as.matrix(0);
   Tright <-  as.matrix(0);
-  kern <-  as.matrix("E");
+  kern <-  "E"  #### Gary's code changes it to 'TN'
   whiskr <-  as.matrix(-1);
   jitter <-  as.matrix(0);
   output <-  as.matrix(1);

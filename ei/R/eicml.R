@@ -42,14 +42,26 @@
 ##             likelihood estimation.
 
 #include ei.ext;
-quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=evparent.frame()),macheps=2.23e-16, optimTol=1.e+10, savedat=FALSE) {
+quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()),macheps=2.23e-16, optimTol=1.e+10, savedat=FALSE) {
    x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
   ##putting all globals variable into the environment
-   evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
-  
-  
+   evei <- evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
+  ### R CMD check complains if the globals that are already in local
+  ### environment() are not explitly defined
+   if(exists("Eprt")) Eprt <- get("Eprt", env=evei)
+   if(exists("EdirTol")) EdirTol <- get("EdirTol", env=evei)
+   if(exists("EselRnd")) EselRnd <- get("EselRnd", env=evei)
+   if(exists("Eselect")) Eselect <- get("Eselect", env=evei)
+   if(exists("Estval")) Estval <- get("Estval", env=evei)
+   if(exists("Ez")) Ez <- get("Ez", env=evei)
+   if(exists("Eeta")) Eeta <- get("Eeta", env=evei)
+   if(exists("EmaxIter")) EmaxIter <- get("EmaxIter", env=evei)
+   if(exists("Ebounds")) Ebounds <- get("Ebounds", env=evei)
+   if(exists("Erho")) Erho <- get("Erho", env=evei)
+   if(exists("EdoSim")) EdoSim <- get("EdoSim", env=evei)
+    
    if (Eprt>=2)
      message("Likelihood estimation...");
   
@@ -137,6 +149,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=evparent.frame()),macheps
         cml.bounds <- cml.Bounds <- rbind(cml.Bounds,(nbnds %dot*% matrix(1,nrow=Ez[2],ncol=1)))
     
       cml.bounds <- cml.Bounds <- rbind(cml.Bounds,cbind(-6, 3),cbind(-6,3),cbind(-2,2))
+      print(cml.bounds)
     }else{
      
     stop(message="quadcml: problem with Ebounds")
@@ -323,7 +336,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=evparent.frame()),macheps
       vc <- rbind(vc, matrix(rep(0,cols(vc)), nrow=1))
       vc[rows(vc),cols(vc)]=0.00000000001
     }
-   Eres <- vput(Eres,GhActual,"GhActual");
+   Eres <- vput(Eres,get("GhActual", env=evbase),"GhActual");
     if (scalmiss(vc)){
       message("quadcml: couldn't compute positive definite variance matrix")
       return(c(NA,NA))
@@ -379,6 +392,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=evparent.frame()),macheps
     print.table(toprint)
    
     cat("?\n")
+    
     lst <- eirepar(b,Zb,Zw,x,Ez,evbase=evbase)
    
     bb <- lst[[1]]
@@ -395,18 +409,25 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=evparent.frame()),macheps
     names(pb) <- vrs
     print(pb)
     pb <- as.matrix(pb)
-   
+    ###added by EV
+    assign("psiu",pb,env=evbase)
+    Eres <- vput(Eres,pb,"psiu")
     if (Eprt>=3){
+      
       cat("?\n")
-      message("Reparameterization back to ultimate truncated scale")
-      pb <- eirepart(b,Zb,Zw,x, Ez,evbase)  
+      message("Reparameterization back to ultimate truncated scale...")
+      pb <- eirepart(b,Zb,Zw,x, Ez,evbase)
+     
       print(unique.default(as.vector(vrs)))
       print(as.vector(pb))
+     
     }
-  }  
-
+  }
+   
+  
   Eres <- vput(Eres,cml.ParNames,"parnames")
   Eres <- vput(Eres,b,"phi")
+  
   Eres <- vput(Eres,vc,"vcphi")
   assign("Eres", Eres, env=evbase)
   nm <- names(b)
@@ -482,7 +503,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
 {
     
   ##f is the pointer to a function
-
+ 
 ###  evloc <- getEnvVar(evbase, environment())
   gvc.dataset <- dataset;
   gvc.ProcName <- f <- fn;
@@ -508,6 +529,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
   gvc.procedure <- function(b, evbase=evbase,gvcK=gvc.FixKeep,dat=gvc.dataset,Etol=NULL){
     b <- as.matrix(na.omit(c(b,gvcK)))
     ev <- evbase
+    Eres <- try(get("Eres", env=evbase), silent=TRUE)
     loglik <- gvc.ProcName ### pass with gvc, i.e. fn
     res <- loglik(b,dat,ev)
     res <- colSums(as.matrix(res))
@@ -587,7 +609,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                   print("hessian:",hessian)
                   print("first vc:",vc)
                 }
-                eigvals <- svd(vc,nu=0,nv=0)$d
+                eigvals <- svd(vc,nu=0,nv=0,LINPACK=FALSE)$d
                 not.pd <- 0
                 for (j in 1:length(eigvals)){
                   if(Eprt>=3)
@@ -596,7 +618,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                 }
                 if(not.pd == 1 && Eprt>=1)
                   message("gvc:-hessian matrix not p.d.; trying generalized cholesky also")
-                vc <- try(chol(vc,pivot=TRUE), silent=TRUE)
+                vc <- try(chol(vc,pivot=FALSE), silent=TRUE)
                 if(inherits(vc, "try-error"))
                   vc <- sechol(vch) 
                 vc <- t(vc)%*%vc
@@ -637,7 +659,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                 }                
     
       if( ei.vc[i+0,1] != 4) ### @ did not use generalized approach @
-        vc <- try(invpd(-hessian), silent=T)
+        vc <- try(invpd(-hessian,tol=1.e-2,mess="gvc"), silent=T)
         
       if(!inherits(vc, "try-error")){
         GhActual <- i+0
@@ -656,17 +678,17 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
   
 }
 
-###dummy procedure for input to ghessp */
+###dummy procedure for input to ghessp. As is not being used  */
 
-gvc.func <- function(b, gvc.FixKeep,gvc.dataset,evbase=get("evbase", env=parent.frame())){
+###gvc.func <- function(b, gvc.FixKeep,gvc.dataset,evbase=get("evbase", env=parent.frame())){
  
-  b <- na.omit(rbind(b,gvc.FixKeep))
-  loglik <- gvc.ProcName
+###  b <- na.omit(rbind(b,gvc.FixKeep))
+ ### loglik <- gvc.ProcName
   
-  res <- loglik(b,gvc.dataset,evbase)
-  res <- colSums(as.matrix(res))
-  return(res)
-}
+###  res <- loglik(b,gvc.dataset,evbase)
+###  res <- colSums(as.matrix(res))
+###  return(res)
+###}
 
 ##/*
 ##**  y = sechol(A);
@@ -692,7 +714,7 @@ gvc.func <- function(b, gvc.FixKeep,gvc.dataset,evbase=get("evbase", env=parent.
 ##*/
 sechol <- function(A, macheps=2.23e-16)
   {
- 
+    message("******quadcml: Using sechol******")
     if(!length(macheps)) macheps <- .Machine$double.eps
     n <- rows(A);
     m <- cols(A);

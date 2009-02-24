@@ -11,8 +11,10 @@
 einonp <- function(t,x, evbase=parent.frame()){
   t <- matrix(t,ncol=1)
   x <- matrix(x,ncol=1)
-  evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
-  
+  evei <- evloc <- getEnvVar(evbase, environment())###, vecvar=c("eimetar"))
+  if(exists("Eprt")) Eprt <- get("Eprt", env=evei)
+  if(exists("EnonEval")) EnonEval <- get("EnonEval", env=evei)
+  if(exists("Esims")) Esims <- get("Esims", env=evei)
   nobs <- rows(t);
   
   if(Eprt>=2)

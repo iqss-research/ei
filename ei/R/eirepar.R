@@ -69,6 +69,8 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
   
   Zb <- Zb-t(colMeans(as.matrix(Zb)));
   Zw <- Zw-t(colMeans(as.matrix(Zw)));
+ 
+  
   
   Bb <- Bb0*(0.25+sb^2)+0.5+(Zb*Bb0v+etaB*m); ###matrix multp 
   Bw <- Bw0*(0.25+sw^2)+0.5+(Zw*Bw0v+etaW*m); ###matrix multp

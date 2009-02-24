@@ -38,9 +38,10 @@
 #include ei.ext;
 eigrid <- function(dataset,gridlohi,gridline,toler,evbase=get("evbase", parent.frame()))
   {
-    dta <<- dataset
-    logrid <<- gridlohi
-    hggrid <<- gridline
+### for testing 
+###   dta <<- dataset
+###   logrid <<- gridlohi
+###   hggrid <<- gridline
     
     gridlo <- gridlohi[,1];
     gridhi <- gridlohi[,2];

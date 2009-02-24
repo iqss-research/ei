@@ -182,7 +182,7 @@ vget <- function(dbuf, str){
      warning(paste("ei: vget. Variable", str, "is not in data buffer"))
      return(NA)
    }
-  var <- as.matrix(dbuff[[ix]])
+  var <- as.matrix(dbuf[[ix]])
    
   dbufnew <- dbuf[-ix]
   lst <- c(list(var), dbufnew)
@@ -467,8 +467,9 @@ ftos <-  function(x,fmat="f", digits=NULL, width=1){
      
 
                 
-loess <- function(depvar, indvars,data, loess.span, loess.wgtType, deg){
-  y.loess <- loess(depvar~indvars, data, weights=loess.wgType, span=loess.span,degree=deg )
+loess.mod <- function(depvar, indvars,data, loess.span,loess.wgtType, deg){
+
+  y.loess <- loess(depvar~indvars, as.data.frame(data), weights=loess.wgtType, span=loess.span,degree=deg )
   yhat <- y.loess$fitted
   ys <- y.loess$y
   xs <- y.loess$x
@@ -556,9 +557,14 @@ eye <- function(n){ return(diag(n))}
 ###DESCRIPTION obtaines the eigenvalues of a matrix or array of matrices
 ###
 eig <- function(arr){
+  
   dm <- dim(arr)
-  if(length(dm) <= 2)
-    return(svd(vc,nu=0,nv=0)$d)
+  if(length(dm) <= 2){
+    vc <- try(get("vc", env=parent.frame()))
+    if(class(vc)!="try-error")
+      return(svd(vc,nu=0,nv=0)$d)
+    else stop("Ei: Error in eig")
+  }
   varr <- array(,c(dm[1],dm[2],1))
   for(n in 1:dm[1]){
     mat <- arr[n,,]
@@ -578,7 +584,7 @@ inv <- function(mat,svdtol=1e-10)
 {
   S <- try(solve(mat),silent=T)
   if(inherits(S, "try-error"))
-    S <- try(solve(mat, LINPACK=TRUE),silent=T)
+    S <- try(solve(mat, LINPACK=FALSE),silent=T)
         
   if(!inherits(S, "try-error"))
     return(S)
@@ -589,12 +595,33 @@ inv <- function(mat,svdtol=1e-10)
   
   return(S)
 }
-
+### DESCRIPTION wrapper around chol with pivot=TRUE
+###             It checks the acuracy of the results at to tol
+### INPUT mat a matrix
+###       pivot boolean
+###       tol the tolerance approximating mat
+###       mess a message 
+eichol <- function(mat,pivot=TRUE,tol=1.e-5,mess="",linpck=TRUE){
+  if(!pivot)return(chol(mat,pivot=FALSE,LINPACK=linpck))
+  x <- suppressWarnings(chol(mat,pivot=pivot))
+  oo <- order(attr(x,"pivot"))
+  diff <- abs(((t(x[,oo]) %*% x[,oo]) - mat)/mat)
+  if(any(diff > tol))
+    warning(mess," & Q=chol(mat,pivot=TRUE) not positive definite; tol= ",tol)
+  return(x)
+}
+    
+  
 ###DESCRIPTION inverting a symmetric, positive definite matrix from Choleski decomposition
 ###
-invpd <- function(mat){
-  x <- suppressWarnings(chol(mat,pivot=TRUE))
-  return(chol2inv(x))}
+invpd <- function(mat,tol=1.e-4,mess=""){
+###  x <- suppressWarnings(chol(mat,pivot=TRUE))
+
+  x <- try(chol(mat,pivot=FALSE),silent=TRUE) ###uses LINPACK=FALSE
+  if(class(x) == "try-error") x <- eichol(mat,mess="invpd",tol=tol)
+  if(class(x)=="try-error") return(x)
+  return(mm <- chol2inv(x,LINPACK=FALSE))
+}
 
 ###DESCRIPTION pseudo-inverse in Gauss corresponds to
 ###            svd.inv in the YourCast software
@@ -616,6 +643,39 @@ eighv <- function(x){ eigen(x,symmetric=TRUE,only.values=FALSE)}
   
 reshape <- function(x,r,c){
   x <- as.matrix(x)
-  x <- vector(x)
+  x <- as.vector(t(x))
   return(matrix(x,nrow=r,ncol=c,byrow=TRUE))
 }
+#### DESCRIPTION code elements of a 1 column matrix (after the Gauss code)
+####             For every row in e, if 1 is in the first column fst element
+###              of v is used, if 1 is in the scnd column second elemnt is used,
+###              and so on. If there are only zeros the last elemnt ov v is used
+###
+###  INPUT e is NxK matrix of booleans or T (1) and 0 (F)
+###        v is (K+1)x1 vector to be asigned new values
+###  OUTPUT Nx1 vector with new values
+###
+code <- function(e,v){
+  dm <- dim(as.matrix(e))
+###  print(e)
+  e <- matrix(as.numeric(e),nrow=dm[1], ncol=dm[2],byrow=FALSE)
+###  print(e)
+  v <- as.matrix(v)
+  ln <- length(v)
+  vlast <- v[ln]
+  vm <-as.matrix( v[-ln])
+###  print(vm)
+  res <- e %*% vm
+  res[res<= 0] <- vlast
+  return(res)
+}
+ 
+test.code <- function(){
+  e <- matrix(c(0,1,0,0,0,0,0,1,1,1),nrow=5)
+  v <- matrix(1:3)
+  y <- matrix(c(3,1,2,2,2))
+  yres <- code(e,v)
+  print(yres)
+  return(any((yres-y) !=0))
+}
+packr <- function(x){return(na.omit(as.matrix(x)))}

@@ -71,7 +71,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
     yy3 <-  rndmn(etaB,etaBs,Esims)
     yy4 <- rndmn(etaW,etaBs,Esims)
     PSIsims <- cbind(yy1, yy2,yy3, yy4)
-                    
+    Eres <- get("Eres", env=evbase)
                     
   }else{
  
@@ -84,7 +84,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
     yy2 <- rndmn(etaB,etaBs,Esims)  
     yy3 <-   rndmn(etaW,etaBs,Esims)
     PSIsims <- cbind(yy1, yy2, yy3)
-                   
+    Eres <- get("Eres", env=evbase)               
                    
   }
   psisims <-  as.matrix(PSIsims)  ###Gauss 100x5; here 100x7
@@ -94,7 +94,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
     Eres <- vput(Eres,psisims,"PhiSims") ###  @ save name corresponds to book @ 
   else 
     Eres <- vput(Eres,cbind(colMeans(psisims),sd(as.data.frame(psisims))),"PhiSims")
-  
+  assign("Eres",Eres, env=evbase)
   
  ### /* FUNDAMENTAL VARIABILITY */
  ### /* Applies to all observations */
@@ -230,8 +230,16 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
 
   if (rows(vc)!=rows(b) || cols(vc)!=rows(b))
     stop("rndisamp: input error")
-   
-  getEnvVar(evbase, environment())
+  
+  evei <- getEnvVar(evbase, environment())
+  ### R CMD check complains if global variables are not explicitly retreived for each function
+  ### Globals are already copy in the local environment with getEnvVar
+  if(exists("Eprt")) Eprt <- get("Eprt", env=evei)
+  if(exists("Esims")) Esims <- get("Esims", env=evei)
+  if(exists("Eisn")) Eisn <- get("Eisn", env=evei)
+  if(exists("Eist")) Eist <- get("Eist", env=evei)
+  if(exists("EisChk")) EisChk <- get("EisChk", env=evei)
+  
   cml.bounds <- get("cml.bounds", env=evbase)
   EisFac <- get("EisFac", env=evbase)
   Ghactual <- GhActual <- get("GhActual", env=evbase)
@@ -281,7 +289,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   keepsi <- as.vector(0*b)
   keeplik <- 0
   if (ei.vc[Ghactual,1]!=-1){
-    Eivc <- invpd(vc)
+    Eivc <- invpd(vc,mess="rndisamp")
   }else
     Eivc <- vc
  
@@ -301,7 +309,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
        
     }else{
     
-      norm[i] <- lnpdfmt(psis[i,.],b,0,Eist,Eivc) 
+      norm[i] <- lnpdfmt(psis[i,],b,0,Eist,Eivc) 
     }
   }
   lnir <- lik-norm;	###@ ln(imptce ratio)  @ 
@@ -348,13 +356,13 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   }
   
   Eres <- vput(Eres,resamp,"resamp")
- 
+  
   keepsi <- keepsi[2:(sims+1),]
   keeplik <- keeplik[2:(sims+1),]
   if (as.vector(get("EiLliks", env=evbase))==1)
     Eres <- vput(Eres,keeplik,"lliksims")
   else
     Eres <- vput(Eres,colMeans(as.matrix(keeplik)),"lliksims")
- 
+  assign("Eres",Eres, env=evbase) 
   return(keepsi)
 }

@@ -12,8 +12,12 @@ return(dat0)
 getSample <- function(){
 
 mat <- readvars()
-t0 <<- mat[, 1]
-x0 <<- mat[,2]
-tvap <<- mat[,3]
+t0 <- mat[, 1]
+assign("t0",t0, env=.GlobalEnv)
+x0 <- mat[,2]
+assign("x0",x0, env=.GlobalEnv)
+
+tvap <- mat[,3]
+assign("tvap",tvap, env=.GlobalEnv)
 message("Names of variables are t0 for t, x0 for x, tvap for tvap and n")
 }

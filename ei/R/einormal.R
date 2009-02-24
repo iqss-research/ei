@@ -62,12 +62,16 @@ rndmn <- function(mu,vc,n){
  
   if (all(i==FALSE)){##   @ no all-zero columns/rows      @
              
-    a <- t(chol(vc,pivot=TRUE)) 
+    a <- try(chol(vc,pivot=FALSE),silent=TRUE)
+    if(class(a)=="try-error") a <- eichol(vc,pivot=TRUE,mess="rndmn")
+    a <- t(a)
                ##   @ matrix square root function   @
   }else{ ###                      @ all-zero columns/rows exist   @
     t <- subset(diag(r), subset=!i)###  @ create transform matrix       @
     vcd <- (t%*%vc)%*%t(t) ###  @ create nonsingular submatrix  @
-    ad <- chol(vcd,pivot=TRUE) ###  @ cholsky decomp of submatrix   @
+    ad <- try(chol(vcd,pivot=FALSE),silent=TRUE)
+    if(class(ad)=="try-error") ad <- eichol(vcd,pivot=TRUE,mess="rndmn")
+###  @ cholsky decomp of submatrix   @
     a <- (t(t)%*%ad)%*%t ###              @ rebuild full square-root matrix @
   }
   mat <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
@@ -129,13 +133,18 @@ rndmt <- function(mu,vc,df,n){
     return(t(as.matrix(mu))%dot*% matrix(1,nrow=n,ncol=1)) 
   
   i <- colSums(as.matrix(dotfeq(vc,0))) ==r ### @ which columns are all zeros?  @
-  if( all(!i))                              ###@ no all-zero columns/rows      @
-    a=t(chol(vc,pivot=TRUE))                ###@ matrix square root function   @
-  else{                     ###@ all-zero columns/rows exist   @
+  if( all(!i)){                              ###@ no all-zero columns/rows      @
+    a <- try(chol(vc,pivot=FALSE),silent=TRUE)
+    if(class(a) == "try-error") a <- eichol(vc,pivot=TRUE,mess="rndmt")
+    a <- t(a)
+###@ matrix square root function   @
+  }else{                     ###@ all-zero columns/rows exist   @
     t <- subset(diag(r),subset=!i);      ###@ create transform matrix       @
     if(!length(t)) t <- NA
     vcd <- t%*%vc%*%t(t)            ###@ create nonsingular submatrix  @
-    ad <- chol(vcd,pivot=TRUE)           ###@ cholsky decomp of submatrix   @
+    ad <- try(chol(vcd,pivot=FALSE), silent=TRUE)
+    if(class(ad)=="try-error")ad <- eichol(vcd,pivot=TRUE,mess="rndmt")
+###@ cholsky decomp of submatrix   @
     a <- (t(t) %*% ad) %*% t               ####@ rebuild full square-root matrix @
   }
   rndn <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
@@ -235,6 +244,7 @@ lncdfn2 <- function(a, b, eps=1e-25){
 ## for different procs to do the computations
 
 lncdfbvnu <- function(bb,bw,sb,sw,rho){
+ 
   Bb <- bb
   Bw <- bw
  
@@ -307,8 +317,9 @@ lncdfbvnu <- function(bb,bw,sb,sw,rho){
 ##** NOTE:  detl (system global) will be used, so do not call invpd() except
 ##**        to define _Eivc before calling this proc.
 ##*/
-lnpdfmn <- function(y,mu,vc,Eivc){
+lnpdfmn <- function(y,mu,vc,Eivc,detl=0){
 ###  local a,b,c,k,ivc,w,ymu,res;
+
   if (any(is.na(Eivc)))
     ivc <- invpd(vc)
   else
@@ -322,7 +333,7 @@ lnpdfmn <- function(y,mu,vc,Eivc){
 ###/* another version without scale factor for importance sampling */
 lnpdfmn2 <- function(y,mu,vc,Eivc){
  ### local a,b,c,k,ivc,w,ymu,res;
- 
+
   if(any(is.na(Eivc)))
     ivc <- invpd(vc)
   else
@@ -351,7 +362,7 @@ lnpdfmn2 <- function(y,mu,vc,Eivc){
 ##** NOTE:  detl (system global) will be used, so do not call invpd() except
 ##**        to define _Eivc before calling this proc.
 ##*/
-lnpdfmt <- function(y,mu,vc,df,Eivc){
+lnpdfmt <- function(y,mu,vc,df,Eivc,detl=0){
 ###  local a,b,c,k,ivc,w,ymu;
   k <- rows(mu);
 

@@ -37,6 +37,7 @@ scalone<-function(y){
 
 meanwc<-meanWc <- function(x,wt,na.remove=TRUE){
   x <- as.matrix(x)
+ 
   wwt <- wt
   if(scalmiss(wt) || wt==1)
     wwt <- rep(1, rows(x))
@@ -48,8 +49,11 @@ meanwc<-meanWc <- function(x,wt,na.remove=TRUE){
   if(length(wwt) > length(x))
     wwt <- wwt[1:length(x)]
   wt <- as.matrix(wwt)
-
-  return(weighted.mean(x,wt,na.rm=na.remove))
+  dm <- dim(x)
+ 
+  if(dm[2]==1)
+    return(weighted.mean(x,wt,na.rm=na.remove))
+  return(apply(x,2,weighted.mean,,na.rm=na.remove))
 }
               
     
@@ -406,3 +410,4 @@ facvec <- function(i,v,l){
   return(as.matrix(vec))
   
 }
+
