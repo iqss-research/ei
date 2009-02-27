@@ -1,10 +1,9 @@
 ##files are: sample.asc, sample2.asc
-readvars <- function(datapath="~/cvswork/ei/ei/data", file="sample.txt"){
+readvars <- function(datapath="~/cvswork/ei/ei/data", file="sample.txt",skp=1){
   
   datstring  <- paste(datapath,"/",file,sep="")
   message(paste("Reading file ", datstring, sep=""))
-          dat0 <- scan(file=datstring,
-                       na.strings="NA",
+          dat0 <- scan(file=datstring,na.strings="NA",skip=skp, 
                        multi.line=T,quiet=T)
           dat0 <- matrix(dat0,ncol=3,byrow=T)
 return(dat0)

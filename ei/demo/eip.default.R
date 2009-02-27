@@ -1,20 +1,119 @@
-
- 
-  message("Running parametric estimation:Ecdfbvn=5")
+message("Running parametric estimation:Ecdfbvn=5")
  
 ###  verb <- user.prompt()
-  message("Loading the data sample")
-  res <- data(sample)
- 
-  t <- sample[[1]]
-  x <- sample[[2]]
-  n <- sample[[3]]
+message("Loading the data sample")
+res <- data(sample)
+res <- get(res, env=environment())
+t <- res[[1]]
+x <- res[[2]]
+n <- res[[3]]
 ###    verb <- user.prompt()
-  message("Running default parametric estimation")
-  dbuf <- ei(t,x,n,1,1)
-  print(names(dbuf))
-  
-  message("Obtaining beta blacks")  
-  betab <- dbuf$betaBs
-  message("Calculating beta whites")
-  betaw <- betab2w(t,x,betab)
+message("Running default parametric estimation")
+dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=TRUE)
+print(names(dbuf))
+message("Obtaining beta blacks")  
+betab <- dbuf$betaBs
+message("Calculating beta whites")
+betaw <- betab2w(t,x,betab)
+message("Running graphics:") 
+eigraph(dbuf,"tomog")
+user.prompt()
+eigraph(dbuf,"tomogp")
+user.prompt()
+eigraph(dbuf,"tomoge")
+user.prompt()
+eigraph(dbuf,"tomogci")
+user.prompt()
+eigraph(dbuf,"tomogci95")
+user.prompt()
+eigraph(dbuf,"tomogs")
+user.prompt()
+eigraph(dbuf,"nonpar")
+user.prompt()
+eigraph(dbuf,"xtc")
+user.prompt()
+eigraph(dbuf,"xt")
+user.prompt()
+eigraph(dbuf,"xgraph")
+user.prompt()
+eigraph(dbuf,"xgraphc")
+user.prompt()
+eigraph(dbuf,"goodman")
+user.prompt()
+eigraph(dbuf,"xtfit")
+user.prompt()
+eigraph(dbuf,"xtfitg")
+user.prompt()
+eigraph(dbuf,"fit")
+user.prompt()
+eigraph(dbuf,"profile")
+user.prompt()
+eigraph(dbuf,"profileR")
+user.prompt()
+eigraph(dbuf,"postb")
+user.prompt()
+eigraph(dbuf,"postW")
+user.prompt()
+eigraph(dbuf,"post")
+user.prompt()
+message("Running beta with kern=E")
+eigraph(dbuf,"betaB")
+user.prompt()
+eigraph(dbuf,"betaW")
+user.prompt()
+eigraph(dbuf,"beta")
+user.prompt()
+message("Running beta with kern=TN")
+eigraph(dbuf,"beta",kern="TN")
+user.prompt()
+eigraph(dbuf,"results",kern="E")
+user.prompt()
+eigraph(dbuf,"movie")
+user.prompt()
+eigraph(dbuf,"movied")
+user.prompt()
+eigraph(dbuf,"lines")
+user.prompt()
+eigraph(dbuf,"bivar")
+user.prompt()
+eigraph(dbuf,"betabw")
+user.prompt()
+eigraph(dbuf,"estsims")
+user.prompt()
+eigraph(dbuf,"biasb")
+user.prompt()
+eigraph(dbuf,"biasw")
+user.prompt()
+eigraph(dbuf,"bias")
+user.prompt()
+eigraph(dbuf,"boundxb")
+user.prompt()
+eigraph(dbuf,"boundxw")
+user.prompt()
+eigraph(dbuf,"boundx")
+user.prompt()
+message("Addition: dependences of beta's vs X,T,N")
+eigraph(dbuf,"betast")
+user.prompt()
+eigraph(dbuf,"betasx")
+user.prompt()
+eigraph(dbuf,"betasn")
+user.prompt()
+message("Addition: three-dimensional dependences of beta's vs X,T,N")
+eigraph(dbuf,"betaxn")
+user.prompt()
+eigraph(dbuf,"betatn")
+user.prompt()
+
+
+
+
+
+
+
+
+
+
+
+
+

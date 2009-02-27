@@ -163,7 +163,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   str <- tolower(str)
   #### f=checkginputs(dbuf);
   if(identical(str,"tomogd")){###	@ tomograph with data only  @
-    
+   
     if(!exists("eigraph.psiu")|| !exists("psiu"))
       psiu <- eigraph.psiu <- get("eigraph.psiu", env=evbase)
 
@@ -175,8 +175,9 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     tst <- eiread(dbuf, "Eselect")
     if(length(tst) <= 0 || is.na(tst)) tst <- get("Eselect", env=ev)
     if(scalone(tst)) tst <- matrix(1,nrow=f,ncol=1)
-  
-    tomog(x[i],t[i],eigraph.psiu,tst[i],tol) 
+
+    tomog(x[i],t[i],eigraph.psiu,tst[i],tol)
+   
     return("tomogd")
   }
 
@@ -201,8 +202,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
        mppsiu <- eigraph.psiu <- dbuf[["mppsiu"]]
      else
        mppsiu <- eigraph.psiu <- eiread(dbuf,"mppsiu")
-    if(all(is.na(mppsiu))) message("ei: Graph 'tomogp' set for parametric estimations") 
-    eigraph(dbuf,"tomogd",psiu=mppsiu,eigraph.tit="Tomography with mean post contours",...)
+     if(all(is.na(mppsiu))) message("ei: Graph 'tomogp' set for parametric estimations") 
+     eigraph(dbuf,"tomogd",psiu=mppsiu,eigraph.tit="Tomography with mean post contours",...)
      return("tomogp")
    }
   if(identical(str,"tomoge")) { ### 	@ tomography w/ Estimated betab,betaw @
@@ -224,7 +225,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   if(identical(str,"tomogt")) { ### 	@ tomography w/ true betab,betaw @
     ### I do not know what is truth check with Gary
      if (!("truth" %in% nm)){
-       stop( "ei: 'truth' must be stored first")
+       warning( "ei: 'truth' must be stored first")
+       return(NA)
       
      }
        betab <- eiread(dbuf,"truthb")
@@ -239,6 +241,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
      b <- eiread(dbuf,"ci80bw")
      if(scalmiss(b)) {
        eigraph(dbuf,"tomogd",...)
+       warning("No confidence intervals")
        return(NULL) 
      }
      tit <- "Tomography with 80% CI's"
@@ -252,6 +255,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
      b95 <- eiread(dbuf,"ci95bw")
      if(scalmiss(b95)) {
        eigraph(dbuf,"tomogd",...)
+       warning("No confidence intervals 95")
        return(NULL) 
      }
      tit <- "Tomography with 95% CI's"
@@ -283,9 +287,11 @@ eigraph <- function(dbuf, str,psiu=NA,...){
    }
    
    par(op) ### reset to default values
+   assign("eigraph.tit","", env=evbase)
    return("tomogs")
     }
   if(identical(str,"nonpar")){ ###	@ tomogd & nonparametric contour & surface  @
+ op <- par(no.readonly=TRUE)    
     Enumtol <- as.vector(get("EnumTol", env=evbase))
     x <- eiread(dbuf,"x")
     t <- eiread(dbuf,"t")
@@ -346,7 +352,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     x <- eiread(dbuf,"x")
     t <- eiread(dbuf,"t")
     prop <- 1
-
+    eigraph.circ0 <- eigraph.circ
     if (eigraph.circ==0){
       tvap <- prop*eiread(dbuf,"n")
       if(all(is.na(tvap))) tvap <- eiread(dbuf,"tvap")
@@ -355,54 +361,69 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 	  eigraph.circ <- 0.5*eigraph.circ 
     }
     y <- t
-    tit <- ifelse(identical(eigraph.tit, ""),"Basic X by T",eigraph.tit)
-    
+    if(identical(eigraph.tit, "") )
+      eigraph.tit <- "Basic X by T with sized circles"
+   
+   
     xst <- ifelse(min(x) > 0, 0,min(x))
     yst <- ifelse(min(y) > 0, 0,min(y))
     xend <- ifelse(max(x) <1, 1,max(x))
     yend <- ifelse(max(y) <1, 1, max(y))
     plot(x,t,cex=eigraph.circ*eigraphC,xlab=eigraph.x, 
-         ylab=eigraph.t, main=tit,xlim=c(xst,xend), ylim=c(yst,yend))
+         ylab=eigraph.t, main=eigraph.tit,xlim=c(xst,xend), ylim=c(yst,yend))
+    assign("eigraph.tit","",env=evbase)
+    assign("eigraph.circ",eigraph.circ0,env=evbase)
    return("xtbubble")
   }
   if(identical(str,"xt")){
- 
-    eigraph(dbuf,"xtc",eigraph.circ=0.5,...)
+    eigraph.circ0 <- eigraph.circ
+    eigraph(dbuf,"xtc",eigraph.circ=0.5,eigraph.tit="Basic X by T",...)
  ###   mtext("Basic X by T", side=3)
+    assign("eigraph.tit","",env=evbase)
+    assign("eigraph.circ",eigraph.circ0,env=evbase)
+     
     return("xt")
   }
    if (identical(str,"xgraph")){###		@ X-graph  @
-    eigraph(dbuf,"xtc",eigraph.circ=0.5,...)
+    eigraph.circ0 <- eigraph.circ
+    eigraph(dbuf,"xtc",eigraph.circ=0.5,eigraph.tit="X-graph by T",...)
     abline(a=0.,b=1)   ###   pline(0,0,1,1);
     abline(a=1, b=-1)  ###   pline(0,1,1,0);
+    assign("eigraph.tit","",env=evbase)
+    assign("eigraph.circ",eigraph.circ0,env=evbase)
     return("xgraph")
   }
    if( identical(str,"xgraphc")||  identical(str,"xgraphbubble")){###		@ X-graph with sized circles  @
-     eigraph(dbuf,"xtc",...)
+     eigraph.circ0 <- eigraph.circ
+     eigraph(dbuf,"xtc",eigraph.tit="X-graph with sized circles",...)
      abline(a=0.,b=1) ### pline(0,0,1,1);
      abline(a=1.,b=-1) ###pline(0,1,1,0);
+     assign("eigraph.tit","",env=evbase)
+     assign("eigraph.circ",eigraph.circ0,env=evbase)
    return("xgraphbubble")
   }
   if(identical(str,"goodman")){	### @ x by t plot w/ goodman's line @
- ###  tit <- ifelse(identical(eigraph.tit, ""),"x by t plot w/ goodman's line", eigraph.tit) 
+    eigraph.circ0 <- eigraph.circ
     eigraph(dbuf,"xtc",eigraph.circ=0.5,eigraph.tit="X by T plot w/ Goodman's line",...)
     b <- eiread(dbuf,"goodman")
     pline(0,b[2,1],1,b[1,1], new =TRUE,color="red")
+    assign("eigraph.tit","",env=evbase)
+    assign("eigraph.circ",eigraph.circ0,env=evbase)
     return("goodman")
   }
   if(identical(str,"xtfit")){ ###			@ x by t with Exp and 80%CI's  @
     b <- eiread(dbuf,"expvarcis") 
     if(scalmiss(b)) {
-      message("ei: Graph 'xtfit' is not set for non-parametric estimations")
+      warning("ei: Graph 'xtfit' is not set for non-parametric estimations")
       return(NA)
     }
 ### @ CI's drawn only if no Z's are specified @
-    eigraph.tit <- eval(get("eigraph.tit", env=evbase))
     
-    if(identical(eigraph.tit,"")) 
-      eigraph(dbuf,"xtc",eigraph.tit= "X by T with Exp and 80%CI's",...)
+    if(identical(eigraph.tit,""))
+      eigraph(dbuf,"xtc",eigraph.tit="X by T with Exp and 80%CI's",...)
     else
-      eigraph(dbuf,"xtc",eigraph.tit=  "X by T with Exp & 80%CI's and Goodman",...)
+       eigraph(dbuf,"xtc")
+    
     plines(b[,1],b[,3])
     plines(b[,1],b[,2],color="blue")
     plines(b[,1],b[,4],color="blue")
@@ -414,40 +435,44 @@ eigraph <- function(dbuf, str,psiu=NA,...){
      plines(b[,1],b[,2],color="red")
 	plines(b[,1],b[,4],color="red")
    }
+    assign("eigraph.tit","",env=evbase)
     return("xtfit")
   }
   if (identical(str,"xtfitg")){###		@ xtfit with goodman's regression @
     b <- eiread(dbuf,"goodman")
-    assign("X by T with Exp & 80%CI's and Goodman",eigraph.tit,env=evbase)
+  ###  assign(eigraph.tit,"X by T with Exp & 80%CI's and Goodman",env=evbase)
     y <- eigraph(dbuf,"xtfit",eigraph.tit="X by T with Exp & 80%CI's and Goodman",...)
     if(is.na(y)){
-       message("ei: Graph 'xtfit' is not set for non-parametric estimations")
+       warning("ei: Graph 'xtfit' is not set for non-parametric estimations")
       return(NA)
     }
     pline(0,b[2,1],1,b[1,1],color="red")
+    assign("eigraph.tit","",env=evbase)
     return("xtfitg")
   }
   if(identical( str,"fit")){ ###		        @ tomogp and xtfit @
-    
+    op <-  par(no.readonly=TRUE)
+
     if(vin(dbuf,"truth")) par(mfrow=c(2,1))
      
     y <- eigraph(dbuf,"xtfit",...)
     if(is.na(y)) {
-      message("ei: Graph 'fit' is not set for non-parametric estimations")
+      warning("ei: Graph 'fit' is not set for non-parametric estimations")
       return(NA)
     }
     if(vin(dbuf,"truth") )eigraph(dbuf,"tomogp",...)
     else
-      stop("truth is not stored")
+      warning("truth is not stored")
+    par(op)
     return("fit")
   }
    if(identical(str,"fitt")){	###	        @ tomog and mlfit  @
-    
+     op <-  par(no.readonly=TRUE)
      if(vin(dbuf,"truth")) par(mfrow=c(2,1))
    
      y <- eigraph(dbuf,"xtfit",...)
      if(is.na(y)) {
-       message("ei: Graph 'fit' is not set for non-parametric estimations")
+       warning("ei: Graph 'fit' is not set for non-parametric estimations")
        return(NA)
      }
    
@@ -455,25 +480,28 @@ eigraph <- function(dbuf, str,psiu=NA,...){
    
       eigraph(dbuf,"tomogt",...)
      else
-       stop("truth is not stored")
+       warning("truth is not stored")
+    par(op)
     return("fitt")
   }
 
   if(identical(str,"profile")){ ###               @ profile plot of phi @
-    profileit(dbuf,0)###, eigraph.pro=c(list(c(rep(-1,5),0,0)*15), list(c(10,20,rep(10,3),0,0)))) 
+    op <-  par(no.readonly=TRUE)
+    profileit(dbuf,0)###, eigraph.pro=c(list(c(rep(-1,5),0,0)*15), list(c(10,20,rep(10,3),0,0))))
+    par(op)
     return("profile")
   }
  
   if(identical(str,"profiler")){ ###               @ profile plot of R (cdfbvn) @
-    
-    profileit(dbuf,1)###,eigraph.pro=c(list(c(rep(-1,5),0,0)*5), list(c(rep(1,2)*5,rep(1,3),0,0))))  
+    op <-  par(no.readonly=TRUE)
+    profileit(dbuf,1)###,eigraph.pro=c(list(c(rep(-1,5),0,0)*5), list(c(rep(1,2)*5,rep(1,3),0,0))))
+    par(op)
     return("profileR")
   }
  
  
    if( (postb <- identical(str,"postb")) ||(postw <- identical(str,"postw")) ){ ### @ posterior of dist agg B^b and B^w  @
-   
-    a <- eiread(dbuf,"abounds")
+     a <- eiread(dbuf,"abounds")
     strt <- ifelse(postb, a[1,1],a[1,2])
     endd <- ifelse(postb,a[2,1],a[2,2])
    
@@ -507,26 +535,30 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 ###   xlabel(_eigraph_bw);
     if(postb){
       eigraph.x <-get("eigraph.bb", env=evbase)
-      tit <- "Posterior of dist aggregate B^b"
+      tit <- paste("Posterior dist aggregate B^b; kern=",kern)
     }else{
       eigraph.x <- get("eigraph.bw", env=evbase)
-      tit <- "Posterior of dist aggregate B^w"
+      tit <- paste("Posterior dist aggregate B^w; kern=", kern)
     }
     if(output==1)  par(new=TRUE)
     lst <-listwis2(a,b) 
     plot(lst[[1]],lst[[2]],type="l",xlab=eigraph.x,ylab="Density",
          main=tit)
+ 
    if(postb) return("postb")
    else return("postw")
   }
   if(identical(str,"post")){ ### @ posterior of dist aggs B^b B^w @
+    op <-  par(no.readonly=TRUE)
     par(mfrow=c(1,2))
     eigraph(dbuf,"postb",...)
     eigraph(dbuf,"postw",...)
+    par(op)
     return("post")
   }
  if((identical( str,"betab")) ||
     (identical(str,"betaw"))){ ###		@ density est of beta^b  @
+ 
    betb <- identical( str,"betab")
    strt <- 0
    endd <- 1
@@ -554,8 +586,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 ##    xlabel(_eigraph_bb) 
     xlabel <- ifelse(betb, get("eigraph.bb", env=evbase),
                      get("eigraph.bw", env=evbase))
-    tit1 <- "Density est of beta^b"
-    tit2 <- "Density est of beta^w" 
+    tit1 <- paste("Density est of beta^b; kern=",kern)
+    tit2 <- paste("Density est of beta^w; kern=",kern) 
     tit <- ifelse(betb, tit1,tit2)
 
 ###    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
@@ -565,6 +597,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     lst <-listwis2(a,b) 
     plot(lst[[1]],lst[[2]],type="l",xlab=xlabel,ylab=ylabel,
          main=tit)
+ 
    if(betb)
      return("betab")
    else
@@ -572,23 +605,27 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
 }
   if(identical(str,"beta")){###	@ density est of betab and betaw @
-   par(mfrow=c(1,2))
-   eigraph(dbuf,"betab",...)
-   eigraph(dbuf,"betaw",...) 
-  return("beta")  
+    op <-  par(no.readonly=TRUE)
+    par(mfrow=c(1,2))
+    eigraph(dbuf,"betab",...)
+    eigraph(dbuf,"betaw",...)
+    par(op)
+    return("beta")  
 }
   if(identical(str,"results")){###   @ posterior of dist aggs B^b B^w, hist of beta's @
-
+    op <-  par(no.readonly=TRUE)
     par(mfrow=c(2,2))
     eigraph(dbuf,"postb",...)
     eigraph(dbuf,"postw",...)
     eigraph(dbuf,"betab",...)
     eigraph(dbuf,"betaw",...)
+    par(op)
     return("results")
   }
 
   if(identical( str,"movie")){ ###	     @ moving picture of betaB and betaW densities  @
-
+      op <-  par(no.readonly=TRUE)
+      
     Esims <- eiread(dbuf,"Esims")
     assign("strt", 0, env=evbase)
     strt <- 0
@@ -687,13 +724,14 @@ eigraph <- function(dbuf, str,psiu=NA,...){
       else  i <- i+1
 
     }
+      par(op)
    return("movie")
   }
     
 
   if(identical(str,"movied")){
     ###@ pick out individual lines on tomography plot @
-
+  op <-  par(no.readonly=TRUE)
     output <- 0
     assign("output", 0, env=evbase)
     x <- eiread(dbuf,"x") 
@@ -731,12 +769,14 @@ eigraph <- function(dbuf, str,psiu=NA,...){
       else  i <- i+1
 
     }
-    return("movied")
+  par(op)
+  return("movied")
   }
 
  if( prectb <- identical(str,"prectb")){ ###	@ est by true of betaB_i  @
     if(! vin(dbuf,"truth")){
-      stop("ei: 'truth' must be stored first")
+      warning("ei: 'truth' must be stored first")
+      return(NA)
     }
     
     b <- eiread(dbuf,"truthB")
@@ -761,7 +801,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   }
   if(identical(str,"prectw")){ ###	@ est by true of betaW_i  @
     if(! vin(dbuf,"truth")){
-      stop("ei: 'truth' must be stored first")
+      warning("ei: 'truth' must be stored first")
+      return(NA)
     }
     
     a <- eiread(dbuf,"betaW")
@@ -785,9 +826,10 @@ eigraph <- function(dbuf, str,psiu=NA,...){
    return("prectw")
   }
  if(identical(str,"truth")){ ###			@ compare truth to estimates @
-
+   op <-  par(no.readonly=TRUE)
     if( !(vin(dbuf,"truth"))){
-      stop("ei: 'truth' must be stored first")
+      warning("ei: 'truth' must be stored first")
+      return(NA)
     }
 
     par(mfrow=c(2,2))
@@ -795,6 +837,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     eigraph(dbuf,"postw")
     eigraph(dbuf,"prectb")
     eigraph(dbuf,"prectw")
+    par(op)
     return("truth")
   }
   if(identical(str,"lines")){ ###			@ xt with one EST'd per precinct  @
@@ -809,7 +852,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     o <- matrix(1,nrow=a,ncol=1)
     
     eigraph(dbuf,"xtc",eigraph.tit="XT with one EST'd per precinct",...)
-    pline(z,betab,o,betaw) 
+    pline(z,betab,o,betaw)
+    assign("eigraph.tit","",env=evbase)
     return("lines")
   }
 
@@ -817,8 +861,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   if(identical(str,"tlines")){###		@ xt with one TRUE line per precinct @
 
     if (!(vin(dbuf,"truth"))){
-      stop("ei: 'truth' must be stored first")
-     
+      warning("ei: 'truth' must be stored first")
+      return(NA)
     }
      
     betab <- eiread(dbuf,"truthb")
@@ -829,9 +873,13 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     a <- rows(betab) 
     z <- matrix(0,nrow=a,ncol=1)
     o <- matrix(1, nrow=a,ncol=1)
-    assign("eigraph.circ",1,env=evbase)
-    eigraph(dbuf,"xtc",eigraph.tit="XT with one TRUE line per precinct",...)
+    eigraph.circ0 <- eigraph.circ
+   
+    eigraph(dbuf,"xtc",eigraph.tit="XT with one TRUE line per precinct",
+            eigraph.circ=1,...)
     pline(z,betab,o,betaw)
+    assign("eigraph.tit","",env=evbase)
+    assign("eigraph.circ",eigraph.circ0,env=evbase)
     ###Gauss  pline(z,betaw,o,betab,negslope=FALSE)
     return("tlines")
   }
@@ -858,9 +906,10 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   
   if (identical(str,"tbivar")){ ###		@ TRUE betab by betaw @
 
-    if(!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
-
+    if(!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
     betaB <- eiread(dbuf,"truthb")
     betaW <- eiread(dbuf,"truthw")
     lst <- listwis2(betaB,betaW)
@@ -879,6 +928,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   }
 
  if(identical( str,"betabw")){###		@ lines,tlines,bivar,tbivar @
+      op <-  par(no.readonly=TRUE)
      if(!(vin(dbuf,"truth")))
        par(mfrow=c(1,2))
      else
@@ -895,13 +945,16 @@ eigraph <- function(dbuf, str,psiu=NA,...){
        eigraph(dbuf,"tbivar",...)
        if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)
    }
+      par(op)
      return("betabw")
    }
 
   if(identical(str,"ptileb")){	###	@ true percentile for betaB @
 
-    if (!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
+    if (!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
 
     xlabel <- get("eigraph.bb", env=evbase)
     ylabel <- "True Percentile"
@@ -921,9 +974,10 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
   if(identical(str,"ptilew")){###		@ true percentile for betaW @
 
-    if(!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
-
+    if(!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
     xlabel <- get("eigraph.bw", env=evbase)
     ylabel <- "True Percentile"
 
@@ -946,19 +1000,24 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
   if(identical(str,"ptile")){###			@ ptileb & ptilew @
 
-    if(!(vin(dbuf,"truth")))
+    if(!(vin(dbuf,"truth"))){
       stop("ei: 'truth' must be stored first")
-
+      return(NA)
+    }
+    op <-  par(no.readonly=TRUE)
     par(mfrow=c(1,2))
     eigraph(dbuf,"ptileb",...)
     eigraph(dbuf,"ptilew",...)
+    par(op)
     return("ptile")
   }
 
   if(simb <- identical(str,"simsb")){ ###			@ sims of betab by betab  @
 
-    if(!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
+    if(!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
 
     psymsiz <- 0.1*get("eigraphC", env=evbase)
     xlabel <- paste(get("eigraph.bb", env=evbase),"simulations")
@@ -986,8 +1045,10 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   
   if(simw <- identical(str,"simsw")){ ###			@ sims of betaw by betaw  @
 
-    if(!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
+    if(!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
 
     psymsiz <- 0.1*get("eigraphC", env=evbase)
     xlabel <- paste(get("eigraph.bw", env=evbase),"simulations")
@@ -1012,18 +1073,22 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
     if(identical(str,"sims")){ ###			@ simsB & simsW @
 
-    if (!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
-
+    if (!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
+    op <-  par(no.readonly=TRUE)
     par(mfrow=c(1,2))
     
     eigraph(dbuf,"simsb",...)
 
     eigraph(dbuf,"simsw",...)
+    par(op)
     return("sims")
   }
   if(identical(str,"estsims")){ ###	@ sim'd est betab by est betab  @
-      tit <- "sim\'d est betaw by est\'d betab"
+          
+      tit <- "Sim\'d est betaw by est\'d betab"
       betab <- eiread(dbuf,"betabs")
       betaw <- eiread(dbuf,"betaws")
       lst <- listwis2(betab,betaw)
@@ -1049,6 +1114,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
         psiu <- eigraph.psiu <- eiread(dbuf,"psiu")
       
       if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)
+     
       return("estsims")
     }
   
@@ -1092,8 +1158,10 @@ eigraph <- function(dbuf, str,psiu=NA,...){
    }
    if(identical(str,"tbiasb")){	###	@ x by true betaB @
 
-    if(!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
+    if(!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
 
     psymsiz <- 0.3*get("eigraphC", env=evbase)
 
@@ -1117,8 +1185,10 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
   if(identical(str,"tbiasw")){###		@ x by true betaW @
 
-    if(!(vin(dbuf,"truth")))
-      stop("ei: 'truth' must be stored first")
+    if(!(vin(dbuf,"truth"))){
+      warning("ei: 'truth' must be stored first")
+      return(NA)
+    }
 
     psymsiz <- 0.3*get("eigraphC", env=evbase)
     xlabel <- get("eigraph.x", env=evbase)
@@ -1138,6 +1208,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   }
 
    if(identical(str,"bias")){	###		@ biasB,biasW,TbiasB,TbiasW @
+
+     op <-  par(no.readonly=TRUE)
     if(!vin(dbuf,"truth"))
       par(mfrow=c(1,2))
     else
@@ -1149,7 +1221,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
       eigraph(dbuf,"TbiasB",...)
       eigraph(dbuf,"TbiasW",...)
     }else
-    message("ei: Truth is not stored")
+    warning("ei: Truth is not stored")
+     par(op) 
     return("bias")
   }
    if(identical(str,"boundxb")){###		@ x by bounds on betaB @
@@ -1209,7 +1282,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
    return("boundxw") 
   }  
  if(identical(str,"boundx")){###			@ boundXB boundXW @
- 
+    op <-  par(no.readonly=TRUE)
     if(!vin(dbuf,"truth")){
       par(mfrow=c(1,2))
       eigraph(dbuf,"boundXB",...)
@@ -1225,11 +1298,12 @@ eigraph <- function(dbuf, str,psiu=NA,...){
       assign("eigraphC", 7 , env=evbase)
       eigraph(dbuf,"TbiasW",...)
     }
+    par(op)
     return("boundx")
   }
   ### plots the betab and betaw for each precinct as functions of X and N(or tvap)
   if(identical(str,"betaxn")){
-   
+    op <-  par(no.readonly=TRUE)
     betab <- eiread(dbuf,"betab")
     betaw <- eiread(dbuf,"betaw")
   
@@ -1240,11 +1314,12 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     par(mfrow=c(1,2))
     eiscatterplot3d(betab,betaw,X,highlight.3d=TRUE,pch=20)
     eiscatterplot3d(betab,betaw,N,highlight.3d=TRUE,pch=20)
-     
+     par(op)
     return("betaxn")
   }
    ### plots the betab and betaw for each precinct as functions of T and N(or tvap)
   if(identical(str,"betatn")){
+    op <-  par(no.readonly=TRUE)
     betab <- eiread(dbuf,"betab")
     betaw <- eiread(dbuf,"betaw")
   
@@ -1255,42 +1330,48 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     par(mfrow=c(1,2))
     eiscatterplot3d(betab,betaw,T,highlight.3d=TRUE,pch=20)
     eiscatterplot3d(betab,betaw,N,highlight.3d=TRUE,pch=20)
-    
+    par(op)
  ###   scatterplot3d(betab,betaw,T,highlight.3d=TRUE,pch=20)
     return("betatn")
   }
   if(identical(str,"betast")){
-     betaB <- eiread(dbuf,"betab")
-     betaW <- eiread(dbuf,"betaw")
-     T <- eiread(dbuf,"t")
-     par(mfrow=c(1,2))
-     plot(betaB, T,main="Est'd betaB vs T")
-     plot(betaW,T,main="Est'd betaW vs T")
-     return("betast")
+    op <-  par(no.readonly=TRUE)
+    betaB <- eiread(dbuf,"betab")
+    betaW <- eiread(dbuf,"betaw")
+    T <- eiread(dbuf,"t")
+    par(mfrow=c(1,2))
+    plot(betaB, T,main="Est'd betaB vs T")
+    plot(betaW,T,main="Est'd betaW vs T")
+    par(op)
+    return("betast")
     
    }
    if(identical(str,"betasx")){
+     op <-  par(no.readonly=TRUE)
      betaB <- eiread(dbuf,"betab")
      betaW <- eiread(dbuf,"betaw")
      X <- eiread(dbuf,"x")
      par(mfrow=c(1,2))
      plot(betaB, X,main="Est'd betaB vs X")
      plot(betaW,X,main="Est'd betaW vs X")
+     par(op)
      return("betasx")
     
    }
    if(identical(str,"betasn")){
+     op <-  par(no.readonly=TRUE)
      betaB <- eiread(dbuf,"betab")
      betaW <- eiread(dbuf,"betaw")
      N <- eiread(dbuf,"tvap")
      par(mfrow=c(1,2))
      plot(betaB, N,main="Est'd betaB vs N")
      plot(betaW,N,main="Est'd betaW vs N")
+     par(op)
      return("betasn")
     
    }
    if(identical(str,"betastxn")){
-
+   op <-  par(no.readonly=TRUE)
      betaB <- eiread(dbuf,"betab")
      betaW <- eiread(dbuf,"betaw")
      X <- eiread(dbuf,"x")
@@ -1304,6 +1385,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
      plot(betaW,X,main="Est'd betaW vs X")
      plot(betaB, N,main="Est'd betaB vs N")
      plot(betaW,N,main="Est'd betaW vs N")
+   par(op)
      return("betastxn")
     
    }
@@ -1349,6 +1431,7 @@ tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
   if(class(evbase)=="try-error")
     evbase <- eiset()
   ev <- evbase
+  
   eigraph.bblo <- get("eigraph.bblo", env=evbase)
   eigraph.bbhi<- get("eigraph.bbhi", env=evbase)
   eigraph.bwlo<- get("eigraph.bwlo", env=evbase)
@@ -1359,7 +1442,11 @@ tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
   tomogPct <- get("tomogPct", env=evbase)
   tit <-get("eigraph.tit", env=evbase)
   
-  if(identical(tit, "")) tit <- "Tomography lines"
+  eigraph.psiu0 <- try(get("eigraph.psiu", env=evbase), silent=TRUE)
+  psiu0 <- try(get("psiu", env=evbase), silent=TRUE)
+  if(identical(tit, "")) 
+    tit <- "Tomography lines"
+     
   if(scalone(sel)) sel <- x*0+1
   plotsiz <- matrix(5,nrow=2, ncol=1)
   plctrl <- -1 
@@ -1383,11 +1470,21 @@ tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
       xlab= eigraph.bb, ,ylab= eigraph.bw, main=tit)
   if(any(sel>1)) {
      ch <- sel[sel>1]
-    ind <- sapply(as.character(ch), FUN=grep, sel)
-    matlines(matx[,ind], maty[,ind],col="black", lwd=4)
+     ind <- unlist(sapply(as.character(ch), FUN=grep, sel))
+     mx <- max(ind)
+     if(length(ind) && mx<= dim(matx)[2] && mx <= dim(maty)[2]) 
+       matlines(matx[,ind], maty[,ind],col="black", lwd=4)
   }
  ###  /* draw ellipses */
-   if(!scalzero(psiu) && !scalmiss(psiu)) MLKcontours(psiu,tomogPct) 
+   if(!scalzero(psiu) && !scalmiss(psiu)) 
+      MLKcontours(psiu,tomogPct)
+    assign("eigraph.tit","", env=evbase)
+ 
+  if(class(eigraph.psiu0)!="try-error")
+    assign("eigraph.psiu",eigraph.psiu0, env=evbase)
+  if(class(psiu0)!="try-error")
+    assign("psiu",psiu0, env=evbase)
+  
 }
 ### Helper function to tomog and eigraph to draw the MLK lines
 ### It assumes that plot.new has been called previously

@@ -1,4 +1,5 @@
-export(ei,
-       einonp,
-       eiread,
-       betab2w)
+importFrom(mvtnorm,pmvnorm)
+export(ei,einonp,betab2w,
+       user.prompt,
+       eiread,eigraph)
+

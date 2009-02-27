@@ -705,7 +705,7 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   eigraph.t<- "T";
   eigraph.bb<- "betaB";
   eigraph.bw<- "betaW";
-  eigraph.tit <-  "tomograph with data only" 
+  eigraph.tit <-  "" 
   eigraph.loess<- 0;
   eigraph.eval<- 31;
   eigraph.bvsmth<- Eigraph.bvsmth <- 0.08;

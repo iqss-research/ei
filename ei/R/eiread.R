@@ -196,15 +196,16 @@
 ##**            model (# of model x 2)
 ##**
 ##*/
-require(mvtnorm)
+
 eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
-    str0 <- str
-    str <- tolower(str)
-    nm <- names(dbuf)
-    nm <- sapply(nm, tolower)
-    names(dbuf) <- nm
-    if(vin(dbuf,str)&&!calculate)
-      return(vread(dbuf,str))
+  require(mvtnorm)
+  str0 <- str
+  str <- tolower(str)
+  nm <- names(dbuf)
+  nm <- sapply(nm, tolower)
+  names(dbuf) <- nm
+  if(vin(dbuf,str)&&!calculate)
+    return(vread(dbuf,str))
     
  
 ###setting global variables
@@ -216,8 +217,10 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
   }
   drvdot <- match.call(expand.dots=TRUE)
   drv  <-  match.call(expand.dots=FALSE)
-
-  n <- tvap
+  if(exists("n"))
+    tvap <- n
+  else if(exists("tvap"))  
+    n <- tvap
 ###extra parameters supplied with the function call:...
   entries <- expanddots(drvdot,drv,evbase)
  
@@ -503,8 +506,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
 ###  @ n of covariates, incl. implied constant for Zb|Zw @
   }else if(identical(tolower(str), "ez")){
   
-    zb <- eiread(dbuf, "zb")
-    zw <- eiread(dbuf,"zw")
+    zb <- Zb <- eiread(dbuf, "zb")
+    zw <- Zw <- eiread(dbuf,"zw")
     Ez <- as.matrix(c(cols(Zb) + 1 - as.numeric(Zb == 1), cols(Zw) + 1 - as.numeric(Zw == 1)))
     if(exists("evbase"))
       assign("Ez", Ez, env=evbase)
