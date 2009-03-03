@@ -1348,18 +1348,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     return("betast")
     
    }
-   if(identical(str,"betasx")){
-     op <-  par(no.readonly=TRUE)
-     betaB <- eiread(dbuf,"betab")
-     betaW <- eiread(dbuf,"betaw")
-     X <- eiread(dbuf,"x")
-     par(mfrow=c(1,2))
-     plot(betaB, X,main="Est'd betaB vs X")
-     plot(betaW,X,main="Est'd betaW vs X")
-     par(op)
-     return("betasx")
-    
-   }
+  
    if(identical(str,"betasn")){
      op <-  par(no.readonly=TRUE)
      betaB <- eiread(dbuf,"betab")
