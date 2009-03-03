@@ -361,12 +361,13 @@ cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=ge
         con$trace <- 1
         con$fnscale <- 1 ##maximizes because function fn returns -res 
         con$REPORT <- 1
-        con$factr <- fctr
+        con$factr <- fctrxd
+        
    
         message("Optim: Covergence acuracy is ", .Machine$double.eps*con$factr);
         message("con$parscale= ", con$parscale)
         message("con$fnscale= ", con$fnscale)
-
+        message("Direction tolerance for optim convergence",get("EdirTol", env=evbase)) 
 ###faster convergence increase con$factr, i.e.  <- 1e+08
 ###tolerance is defined as .Machine$double.eps*con$factr
         ix <- na.omit(match(c("reltol", "abstol"), names(con)))
@@ -399,7 +400,7 @@ cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=ge
      ### optim did not converge use nlm 
      if(ret >=1 ){
      
-      message("Error with optim...Change control$factr")
+      message("Error with optim...Change control$factr or EdirTol")
       message(mess)
      
       message("Running nml...")

@@ -75,7 +75,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
     message(vread(Eres,"titl"))
   
   Eres <- add.to.Eres(get("Eres",env=evbase), round=1, evbase)
-   assign("Eres", Eres, env=evbase)
+  assign("Eres", Eres, env=evbase)
 ###testing and debugging            
 ###  lapply(param, function(x){
 ###    print(x)
@@ -127,8 +127,8 @@ ei <- function(t,x,tvap,Zb, Zw,...)
     betaBs <- einonp(t,x, evbase);
     assign("betaBs", betaBs, env=evbase); 
   
- Eres <- add.to.Eres(get("Eres",env=evbase), round=2, evbase)
-   assign("Eres", Eres, env=evbase)
+    Eres <- add.to.Eres(get("Eres",env=evbase), round=2, evbase)
+    assign("Eres", Eres, env=evbase)
     
     return(timing(et,Eprt,Eres,Eselect0))
   }
@@ -160,7 +160,7 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   if(exists("EdoML")) EdoML <- get("EdoML", env=evei)
   if(EdoML==1){
    
-     lst  <- quadcml(x,Zb,Zw,t,evbase);
+     lst  <- quadcml(x,Zb,Zw,t,evbase,optimTol=get("opTimTol", env=evbase));
      MLpsi <- lst[[1]]
      MLvc <- lst[[2]]
      assign("MLpsi", MLpsi, env=evbase)
@@ -635,7 +635,7 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   EdoML.phi <- as.matrix(0);
   EdoML.vcphi <- as.matrix(0);
   message("Use Ecdfbvn=4,3,6 for best results")
-  Ecdfbvn<- as.matrix(4); ### EV: I have changed the default Ecdfbvn<- 5
+  Ecdfbvn<- as.matrix(6); ### EV: I have changed the default Ecdfbvn<- 5
   EnumTol<- as.matrix(0.0001);
   EnonEval<- as.matrix(11);
   EnonNumInt<- as.matrix(11);
@@ -658,6 +658,7 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
 ###  Estval <- as.matrix(0);
   Ebounds<- as.matrix(1);
   Eeta<- as.matrix(0);
+#### change to larger values if optim does not converge
   EdirTol<- as.matrix(0.0001);
   EcdfTol<- as.matrix(3e-15);
   EvTol<- as.matrix(5e-307);
@@ -771,7 +772,10 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   EImodels.save<- ""; 
   EI.bma.prior<- as.matrix(0);
   EI.bma.est<- as.matrix(1);
-
+### added for optim convergence: optimTol =control$factr
+###faster convergence increase control$factr, i.e.  <- 1e+08
+###tolerance is defined as .Machine$double.eps*con$factr
+   optimTol <- 1.e+10
   ### gauss is case independent
   param <- ls(env=environment())
   paramlower <- sapply(param,tolower)

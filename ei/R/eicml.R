@@ -42,7 +42,7 @@
 ##             likelihood estimation.
 
 #include ei.ext;
-quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()),macheps=2.23e-16, optimTol=1.e+10, savedat=FALSE) {
+quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol=1.e+10, macheps=2.23e-16,savedat=FALSE) {
    x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
