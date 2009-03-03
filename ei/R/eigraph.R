@@ -185,8 +185,10 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     if(identical(str,"tomog")){	### @ tomography with ML contours  @
       if(exists("EnonPar")) EnonPar <- get("EnonPar", env=evei)
      
-      if(as.logical(EnonPar)|| EnonPar >= 1)
-        stop("ei: Graph 'tomog' set for parametric estimations only")     
+      if(as.logical(EnonPar)|| EnonPar >= 1){
+        warning("ei: Graph 'tomog' set for parametric estimations only")
+        return(NA)
+      }
       if ("psiu" %in% nm) 
         psiu <- eigraph.psiu <- dbuf[["psiu"]]
       else
@@ -1001,7 +1003,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   if(identical(str,"ptile")){###			@ ptileb & ptilew @
 
     if(!(vin(dbuf,"truth"))){
-      stop("ei: 'truth' must be stored first")
+      warning("ei: 'truth' must be stored first")
       return(NA)
     }
     op <-  par(no.readonly=TRUE)
@@ -1900,7 +1902,8 @@ profileit <- function(dbuf,r,npts=100,eigraph.pro=NA,...){
   
 }
 
-
+eigraphrecall <- function(dbuf,str,psiu=NA,...){
+  return (eigraph(dbuf,str,psiu,...))}
 
 chkPackages <- function(pkgName){
   res <- search()

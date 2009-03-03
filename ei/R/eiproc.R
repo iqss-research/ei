@@ -227,9 +227,16 @@ tst <- paste("Run time: ", date(), "\nEversion", sep="")
   Eres <- vput(Eres,tst,"date");
   res <- Eres;
   Eres <- vput(list(),tst,"date");
+
   evbase <- get("evbase", env=parent.frame())
   assign("Eselect", Eselect0, env=evbase)
- 
+  ind <- grep("^Eres$",ls(env=evbase),ignore.case=TRUE)
+  nm <- ls(env=evbase)
+  if(length(ind) && all(!is.na(ind))) {
+    rm("Eres", envir=evbase)
+    rm("eres", envir=evbase)
+  }
+  res <- c(res, evbase=list(evbase))
   return(res)
 }
              

@@ -9,7 +9,7 @@ x <- res[[2]]
 n <- res[[3]]
 ###    verb <- user.prompt()
 message("Running default parametric estimation")
-dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=TRUE)
+dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=FALSE)
 print(names(dbuf))
 message("Obtaining beta blacks")  
 betab <- dbuf$betaBs

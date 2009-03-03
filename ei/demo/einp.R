@@ -10,7 +10,7 @@
   n <- sample[[3]]
 ###    verb <- user.prompt()
   message("Running non-parametric estimation")
-  dbuf <- ei(t,x,n,1,1,EnonPar=1)
+  dbuf <- ei(t,x,n,1,1,EnonPar=1,dbug=FALSE)
   print(names(dbuf))
   message("Obtaining beta blacks")  
   betab <- dbuf$betabs
