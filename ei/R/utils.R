@@ -361,7 +361,7 @@ cml.optim <- function(par,cml.bounds,dataset, fn,fctr=1.e+11,hess=TRUE,evbase=ge
         con$trace <- 1
         con$fnscale <- 1 ##maximizes because function fn returns -res 
         con$REPORT <- 1
-        con$factr <- fctrxd
+        con$factr <- fctr
         
    
         message("Optim: Covergence acuracy is ", .Machine$double.eps*con$factr);
