@@ -1,4 +1,4 @@
-message("Running parametric estimation:Ecdfbvn=5")
+message("Running parametric estimation:Ecdfbvn=6")
  
 ###  verb <- user.prompt()
 message("Loading the data sample")
