@@ -506,7 +506,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
 {
     
   ##f is the pointer to a function
- 
+  eps <- mget("cholTol", envir=evbase,ifnotfound=list(1.e-5))[[1]] 
 ###  evloc <- getEnvVar(evbase, environment())
   gvc.dataset <- dataset;
   gvc.ProcName <- f <- fn;
@@ -624,7 +624,8 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                 vc <- try(chol(vc,pivot=FALSE), silent=TRUE)
                 if(inherits(vc, "try-error")){
                   message("gvc-procedure: chol with pivot=FALSE fails trying eichol & sechol")
-                 
+                 if(!exists("eps"))
+                    eps <- mget("cholTol", envir=evbase,ifnotfound=list(1.e-5))[[1]] 
                   vc <- eichol(vch,tol=eps,sechol=TRUE)
                 }
                 vc <- t(vc)%*%vc
