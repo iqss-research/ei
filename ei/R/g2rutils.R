@@ -601,13 +601,15 @@ inv <- function(mat,svdtol=1e-10)
 ###       pivot boolean
 ###       tol the tolerance approximating mat
 ###       mess a message 
-eichol <- function(mat,pivot=TRUE,tol=1.e-5,mess="",linpck=TRUE){
+eichol <- function(mat,pivot=TRUE,tol=0.00001,mess="",linpck=TRUE,sechol=FALSE){
   if(!pivot)return(chol(mat,pivot=FALSE,LINPACK=linpck))
   x <- suppressWarnings(chol(mat,pivot=pivot))
   oo <- order(attr(x,"pivot"))
   diff <- abs(((t(x[,oo]) %*% x[,oo]) - mat)/mat)
-  if(any(diff > tol))
-    warning(mess," & Q=chol(mat,pivot=TRUE) not positive definite; tol= ",tol)
+  if(any(diff > tol)){
+    warning(mess," & Q=chol(mat,pivot=T) not positive definite; tol= ",tol)
+    if(sechol)  x <- sechol(mat)
+  }
   return(x)
 }
     

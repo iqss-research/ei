@@ -41,7 +41,7 @@
 ##**           the vc matrix returned from a restricted regression.  Also,
 ##**           vectorized computation of result.  Curt Signorino 
 ##*/
-rndmn <- function(mu,vc,n){
+rndmn <- function(mu,vc,n,eps=1.e-5){
 
   k <- rows(mu)
   c <- cols(mu)
@@ -63,14 +63,20 @@ rndmn <- function(mu,vc,n){
   if (all(i==FALSE)){##   @ no all-zero columns/rows      @
              
     a <- try(chol(vc,pivot=FALSE),silent=TRUE)
-    if(class(a)=="try-error") a <- eichol(vc,pivot=TRUE,mess="rndmn")
+    if(class(a)=="try-error"){
+      message("rndmn: chol with pivot=F fails trying pivot=T and eichol")
+      a <- eichol(vc,pivot=TRUE,mess="rndmn",tol=eps)
+    }
     a <- t(a)
                ##   @ matrix square root function   @
   }else{ ###                      @ all-zero columns/rows exist   @
     t <- subset(diag(r), subset=!i)###  @ create transform matrix       @
     vcd <- (t%*%vc)%*%t(t) ###  @ create nonsingular submatrix  @
     ad <- try(chol(vcd,pivot=FALSE),silent=TRUE)
-    if(class(ad)=="try-error") ad <- eichol(vcd,pivot=TRUE,mess="rndmn")
+    if(class(ad)=="try-error") {
+      message("rndmn: chol with pivot=F fails trying pivot=T and eichol")
+      ad <- eichol(vcd,pivot=TRUE,mess="rndmn",tol=eps)
+    }
 ###  @ cholsky decomp of submatrix   @
     a <- (t(t)%*%ad)%*%t ###              @ rebuild full square-root matrix @
   }
@@ -115,7 +121,7 @@ rndnm.test <- function(n){
 ##**              each row of y is one 1xk simulation
 ##**
 ##*/
-rndmt <- function(mu,vc,df,n){
+rndmt <- function(mu,vc,df,n,eps=1.e-5){
 ###  local k,c,r,i,t,vcd,ad,a,res;
   k <- rows(mu)
   c <- cols(mu)
@@ -135,7 +141,10 @@ rndmt <- function(mu,vc,df,n){
   i <- colSums(as.matrix(dotfeq(vc,0))) ==r ### @ which columns are all zeros?  @
   if( all(!i)){                              ###@ no all-zero columns/rows      @
     a <- try(chol(vc,pivot=FALSE),silent=TRUE)
-    if(class(a) == "try-error") a <- eichol(vc,pivot=TRUE,mess="rndmt")
+    if(class(a) == "try-error"){
+      message("rndmt: chol with pivot=F fails trying pivot=T and eichol")
+      a <- eichol(vc,pivot=TRUE,mess="rndmt",tol=eps)
+    }
     a <- t(a)
 ###@ matrix square root function   @
   }else{                     ###@ all-zero columns/rows exist   @
@@ -143,7 +152,10 @@ rndmt <- function(mu,vc,df,n){
     if(!length(t)) t <- NA
     vcd <- t%*%vc%*%t(t)            ###@ create nonsingular submatrix  @
     ad <- try(chol(vcd,pivot=FALSE), silent=TRUE)
-    if(class(ad)=="try-error")ad <- eichol(vcd,pivot=TRUE,mess="rndmt")
+    if(class(ad)=="try-error"){
+      message("rndmt: chol with pivot=F fails trying pivot=T and eichol")
+      ad <- eichol(vcd,pivot=TRUE,mess="rndmt",tol=eps)
+    }
 ###@ cholsky decomp of submatrix   @
     a <- (t(t) %*% ad) %*% t               ####@ rebuild full square-root matrix @
   }

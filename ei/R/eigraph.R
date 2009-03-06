@@ -153,6 +153,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
   if(exists("eigraph.bb")) eigraph.bb <- get("eigraph.bb", env=evei)
   if(exists("eigraph.bw")) eigraph.bw <- get("eigraph.bw", env=evei)
   if(exists("eigraph.tit")) eigraph.tit <- get("eigraph.tit", env=evei)
+  eps <- ifelse(exists("cholTol"),get("cholTol",env=evei),1.e-5)
 ####end of R CMD complaints
   if(any(!is.na(psiu))) eigraph.psiu <- psiu
  
@@ -175,7 +176,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     tst <- eiread(dbuf, "Eselect")
     if(length(tst) <= 0 || is.na(tst)) tst <- get("Eselect", env=ev)
     if(scalone(tst)) tst <- matrix(1,nrow=f,ncol=1)
-
+###tomog does not draw the ellipses
     tomog(x[i],t[i],eigraph.psiu,tst[i],tol)
    
     return("tomogd")
@@ -195,7 +196,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
         psiu <- eigraph.psiu <- eiread(dbuf,"psiu")
       
       eigraph(dbuf,"tomogd",psiu=psiu,eigraph.tit="Tomography with ML contours",...)
-           
+      if(!scalzero(psiu) && !scalmiss(psiu))  MLKcontours(psiu,tomogPct,tol=eps)     
       return("tomog")
     }
    if(identical(str,"tomogp")) { ###		@ tomography with mean post contours @
@@ -206,6 +207,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
        mppsiu <- eigraph.psiu <- eiread(dbuf,"mppsiu")
      if(all(is.na(mppsiu))) message("ei: Graph 'tomogp' set for parametric estimations") 
      eigraph(dbuf,"tomogd",psiu=mppsiu,eigraph.tit="Tomography with mean post contours",...)
+     if(!scalzero(mppsiu) && !scalmiss(mppsiu))  MLKcontours(psiu,tomogPct,tol=eps)
      return("tomogp")
    }
   if(identical(str,"tomoge")) { ### 	@ tomography w/ Estimated betab,betaw @
@@ -220,7 +222,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
        
      eigraph(dbuf,"tomogd",eigraph.tit="Tomography with data and estimated betab, betaw",...)
      points(as.vector(betab), as.vector(betaw),pch=21)
-       if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct) 
+     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps) 
      return("tomoge")
    }
 
@@ -236,7 +238,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
            
      eigraph(dbuf,"tomogd",eigraph.tit="Tomography with data and estimated betab, betaw",...)
      points(as.vector(betab), as.vector(betaw),pch=21)
-     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)
+     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps)
      return("tomogt")
    }
    if(identical(str,"tomogci")) {    ###	@ tomography with 80% conf intervals @
@@ -250,7 +252,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 ###the confidence interval lines
      conf.intv(b,tit,npts=500,dbuf)
     
-     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)  
+     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps)  
      return("tomogci")
    }
     if(identical(str,"tomogci95")) {    ###	@ tomography with 95% conf intervals @
@@ -263,7 +265,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
      tit <- "Tomography with 95% CI's"
 ###the confidence interval lines
      conf.intv(b95,tit,npts=500,dbuf)
-     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)
+     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps)
      return("tomogci95")
    }
  if(identical(str,"tomogs")){ ####  @ tomog,tomogp,tomogCI,tomog(or tomogE)@
@@ -293,7 +295,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
    return("tomogs")
     }
   if(identical(str,"nonpar")){ ###	@ tomogd & nonparametric contour & surface  @
- op <- par(no.readonly=TRUE)    
+    op <- par(no.readonly=TRUE)    
     Enumtol <- as.vector(get("EnumTol", env=evbase))
     x <- eiread(dbuf,"x")
     t <- eiread(dbuf,"t")
@@ -316,7 +318,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     kb = kronecker(o,tt)
     a <-t(reshape(ka,eigraph.eval,eigraph.eval))  ###   @ px @
     b <- t(reshape(kb,eigraph.eval,eigraph.eval))  ### @ py @
-   
+    
     z <- nonbiv(t,x,a,b,evbase=evbase,
                 eigraph.bvsmth=eigraph.bvsmth,Enumtol=Enumtol)  ###                              @ pz @
     op <- par(no.readonly=TRUE)
@@ -715,7 +717,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
       cat("Observation = ",i,"\nX = ", x[i],"\nT = ",t[i],"\nN = ", n[i])
       
-      answer <- user.prompt(1) 
+      answer <- user.prompt(p) 
       answer <- trim.blanks(answer)
       bool <- FALSE
       if(!identical(answer,""))
@@ -760,7 +762,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
      
       tomog(x[f],t[f],eigraph.psiu,tst[f]) 
       mtext(paste("Observation:", i,"; X=",x[i],"; T=",t[i],"; N=", n[i]), side=3)
-      answer <- user.prompt(1) 
+      answer <- user.prompt(p) 
       answer <- trim.blanks(answer)
       bool <- FALSE
       if(!identical(answer,""))
@@ -901,7 +903,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
          main="EST'd betab by betaw", type="p", cex=psymsiz)
  
     pline(0,0,1,1,negslope=FALSE)
-    if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct) 
+    if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps) 
 
     return("bivar")
 }
@@ -925,7 +927,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
          main="TRUE betab by betaw", type="p", cex=psymsiz)
  
     pline(0,0,1,1,negslope=FALSE) 
-    if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)  
+    if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps)  
     return("tbivar")
   }
 
@@ -938,14 +940,14 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
       eigraph(dbuf,"lines",...)
       eigraph(dbuf,"bivar",...)
-     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)  
+     if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps)  
 
      if(vin(dbuf,"truth")){
 
        eigraph(dbuf,"tlines",...)
        
        eigraph(dbuf,"tbivar",...)
-       if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)
+       if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps)
    }
       par(op)
      return("betabw")
@@ -1115,7 +1117,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
       else
         psiu <- eigraph.psiu <- eiread(dbuf,"psiu")
       
-      if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct)
+      if(!is.na(psiu)&& length(psiu) >1) MLKcontours(psiu,tomogPct,tol=eps)
      
       return("estsims")
     }
@@ -1417,7 +1419,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 ##** OUTPUT GLOBAL:
 ##** _tomogVals = values of parameter that gives 50% and 95% contours
 ##*/
-tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
+tomog <- function(x,t,psiu=NULL,sel,choice=1,tol=0.0001,npts=100){
   evbase <- parent.frame()
   if(class(evbase)=="try-error")
     evbase <- eiset()
@@ -1433,8 +1435,7 @@ tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
   tomogPct <- get("tomogPct", env=evbase)
   tit <-get("eigraph.tit", env=evbase)
   
-  eigraph.psiu0 <- try(get("eigraph.psiu", env=evbase), silent=TRUE)
-  psiu0 <- try(get("psiu", env=evbase), silent=TRUE)
+
   if(identical(tit, "")) 
     tit <- "Tomography lines"
      
@@ -1466,15 +1467,10 @@ tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
      if(length(ind) && mx<= dim(matx)[2] && mx <= dim(maty)[2]) 
        matlines(matx[,ind], maty[,ind],col="black", lwd=4)
   }
- ###  /* draw ellipses */
-   if(!scalzero(psiu) && !scalmiss(psiu)) 
-      MLKcontours(psiu,tomogPct)
+
+
     assign("eigraph.tit","", env=evbase)
  
-  if(class(eigraph.psiu0)!="try-error")
-    assign("eigraph.psiu",eigraph.psiu0, env=evbase)
-  if(class(psiu0)!="try-error")
-    assign("psiu",psiu0, env=evbase)
   
 }
 ### Helper function to tomog and eigraph to draw the MLK lines
@@ -1482,18 +1478,18 @@ tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
 ### INPUT: psiu is a vector of 5 rows with the results of MLK estimates
 ###        tomogPCt how many nested contours and which values to draw
 
- MLKcontours <- function(psiu, tomogPct,sms=1000)
+ MLKcontours <- function(psiu, tomogPct,sms=1000,tol=1.e-5)
  {
     r <- rows(psiu)
     p <-(r-3)/2
-    if((p*2+3)!=r){
+   if((p*2+3)!=r){
       message("tomog: problem with psiu"); return(NULL)} 
     Bb <- colMeans(as.matrix(psiu[1:p]))
     Bw <- colMeans(as.matrix(psiu[(p+1):(2*p)])) 
     bb <- Bb
     bw <- Bw
   ###  psym <- matrix(c(Bb,Bw,tomogClr[1],5,13,1,0),ncol=1)
-    sb <- psiu[r-2] 
+    sb <- psiu[r-2]
     sw <- psiu[r-1] 
     rho <- psiu[r] 
     sb2 <- sb*sb 
@@ -1503,8 +1499,10 @@ tomog <- function(x,t,psiu,sel,choice=1,tol=0.0001,npts=100){
     tt <- matrix(seqas(0,2*3.1415927,1000),ncol=1)
     tt <- cbind(sin(tt),cos(tt))
     ch <-  try(chol(vc,pivot=FALSE), silent=TRUE)
-    if(class(ch)=="try-error") 
-      ch <- eichol(vc,pivot=TRUE,mess="MLKcontours..eigraph")
+    if(class(ch)=="try-error"){
+      message("eigraph: chol with pivot=FALSE fails trying pivot=TRUE and eichol")
+      ch <- eichol(vc,pivot=TRUE,mess="MLKcontours..eigraph",tol=tol)
+    }
     v <- tt %*% ch
     
     ###   /* decide on how far out to draw elipses */

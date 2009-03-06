@@ -39,12 +39,16 @@ expanddots <- function(drvdot, drv, evbase=.GlobalEnv){
       
     if(length(as.list(drvdot[[n]])) > 1){
       vec <- as.character(drvdot[[n]])
-  
+      sign <- 1
+      vsgn <- trim.blanks(vec[1])
+      if(length(vec) ==2 && identical(vsgn,"-")) sign <- -1
+     
       lst <- NULL
  
-      for(m in 2:length(vec))
-        lst <- c(lst,as.list(drvdot[[n]])[[m]])
-  
+      for(m in 2:length(vec)){
+     
+        lst <- c(lst,sign*(as.list(drvdot[[n]])[[m]]))
+      }
       val <- as.matrix(lst)
     }else
     val <- drvdot[[n]]

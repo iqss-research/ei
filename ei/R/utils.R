@@ -317,12 +317,15 @@ trim.blanks <- function(x) {
   return(x)
 }
 ###Request input from user 
-user.prompt <- function (p=NULL){
+user.prompt <- function (p=NA){
   verbose <- TRUE
- if(length(p) <=0){
+ if(is.na(p)){
    answer <- readline("\nPress <CR> to continue and Ctrl-c Ctrl-c to quit: ")
  }else {
-    answer <- readline("\nPress <CR> to continue, or #<CR> for obs # number, Ctrl-c Ctrl-c to quit: ")
+    str <- paste("\nPress <CR> for next obs; #<CR> for obs #-number; ",p,"<CR> for last obs; and Ctrl-c Ctrl-c to quit:",sep="")  
+                 
+    answer <- readline(str)
+                       
   }
    
    return(answer)

@@ -37,6 +37,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
   EisChk <- get("EisChk", env=evbase)
   Ebetaws <- EbetaWs <- get("EbetaWs", env=evbase)
   Eres <- get("Eres", env=evbase)
+  eps <- mget("cholTol",envir=evbase,ifnotfound=list(1.e-5))[[1]]
   ##  /* ESTIMATION VARIABILITY */
   if(Eprt>=2)
     message("Simulating estimation variation...");
@@ -67,9 +68,9 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
     
     yy1 <- rndisamp(eiloglik,trimr(MLpsi,0,3), MLvc[1:(rows(MLpsi)-3), 1:(rows(MLpsi)-3)],
                     dataset,Esims,EisFix, evbase) 
-    yy2 <-  rndmn(Erho[2],0,Esims)  
-    yy3 <-  rndmn(etaB,etaBs,Esims)
-    yy4 <- rndmn(etaW,etaBs,Esims)
+    yy2 <-  rndmn(Erho[2],0,Esims,eps=eps)  
+    yy3 <-  rndmn(etaB,etaBs,Esims,eps=eps)
+    yy4 <- rndmn(etaW,etaBs,Esims,eps=eps)
     PSIsims <- cbind(yy1, yy2,yy3, yy4)
     Eres <- get("Eres", env=evbase)
                     
@@ -81,8 +82,8 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
                     MLvc[1:(rows(MLpsi)-2),1:(rows(MLpsi)-2)],
                     dataset,Esims,EisFix,evbase)
      
-    yy2 <- rndmn(etaB,etaBs,Esims)  
-    yy3 <-   rndmn(etaW,etaBs,Esims)
+    yy2 <- rndmn(etaB,etaBs,Esims,eps=eps)  
+    yy3 <-   rndmn(etaW,etaBs,Esims,eps=eps)
     PSIsims <- cbind(yy1, yy2, yy3)
     Eres <- get("Eres", env=evbase)               
                    
@@ -239,7 +240,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   if(exists("Eisn")) Eisn <- get("Eisn", env=evei)
   if(exists("Eist")) Eist <- get("Eist", env=evei)
   if(exists("EisChk")) EisChk <- get("EisChk", env=evei)
-  
+  eps <- mget("cholTol",envir=evei,ifnotfound=list(1.e-5))[[1]]
   cml.bounds <- get("cml.bounds", env=evbase)
   EisFac <- get("EisFac", env=evbase)
   Ghactual <- GhActual <- get("GhActual", env=evbase)
@@ -250,7 +251,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
     Eres <- vput(Eres,NA,"resamp")
     ei.vc <- get("ei.vc", env=evbase)
     if(ei.vc[Ghactual,1]!=-1)
-      return(rndmn(b,vc,sims))
+      return(rndmn(b,vc,sims,eps=eps))
     else{
  
       return(rndtsn(b,vc,sims,cml.bounds[1:rows(b),],1e-3, Eprt))
@@ -270,7 +271,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   if (as.vector(Eist)==0){
     if (ei.vc[Ghactual,1]!=-1){
      
-      psis <- rndmn(b,vc,k)  ###defaults
+      psis <- rndmn(b,vc,k,eps=eps)  ###defaults
     
      
     }else{ ###                     @ use when _ei_vc={-1 0} @
@@ -281,7 +282,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
    
   }else{
     vc <- vc*as.vector((Eist-2)/Eist)
-    psis <- rndmt(b,vc,Eist,k) 
+    psis <- rndmt(b,vc,Eist,k,eps=eps) 
   }
   
   lik <- as.matrix(0,nrow=k)

@@ -66,14 +66,15 @@ ei <- function(t,x,tvap,Zb, Zw,...)
   }
 ##  print(EnonPar) 
   ### copy variables from evbase to local environment evei
-  evei <- getEnvVar(evbase, environment())  ##environment 
+  evei <- getEnvVar(evbase, environment())  ##environment evei= current environment
+ 
    ### print(eval(as.symbol(entries)))
   if(get("dbug", env=environment()))
     evbase <<- evbase
   if(exists("Eprt")) Eprt <- get("Eprt", env=evei)
   if(!scalzero(Eres) && vin(Eres,"titl") && Eprt >0)
     message(vread(Eres,"titl"))
-  
+ 
   Eres <- add.to.Eres(get("Eres",env=evbase), round=1, evbase)
   assign("Eres", Eres, env=evbase)
 ###testing and debugging            
@@ -427,10 +428,25 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
     stop("ei: _Estval has wrong dimensions");
     
 ###Ebounds
-  if(exists("Ebounds")) Ebounds <- get("Ebounds", env=evei)
+
+  Eb <- c("Ebounds", "EBounds")
+  sz <- length(Eb)
+  Ebounds <- mget(Eb,envir= evei,ifnotfound=as.list(rep(NA,sz)))
+  if(length(Ebounds) >= 2 && is.na(Ebounds[[2]])) Ebounds <- Ebounds[-2]
+  if(is.na(Ebounds[[1]])) Ebounds <- Ebounds[-1]
+  if(length(Ebounds)) Ebounds <- EBounds <- Ebounds[[1]]
+ ### for no bounds in nmlinb 
+  if(exists("upbound")) upbound <- get("upbound", env=evei)
+  if(exists("lowbound")) lowbound <- get("lowbound", env=evei)
+ 
+  if(exists("upbound") && exists("lowbound") && 
+  (upbound <0 || lowbound >0) )stop("Ei: upbound >0 and lowbound <0",upbound,"....",lowbound)
+
   if(length(Ebounds) == 1){
-    if(!Ebounds %in% c(0, 1))
-      stop("ei: Ebounds must be 0, 1, 1x2, or kx2")
+    if(!Ebounds %in% c(0, 1)){
+     stop("ei: Ebounds must be 0, 1, 1x2, or kx2")
+   
+    }
   }else{
     if(cols(Ebounds) != 2)
       stop("ei: Ebounds must have 1 or two columns")
@@ -657,6 +673,7 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
  Estval<- as.matrix(1); ###the default change because of cml 
 ###  Estval <- as.matrix(0);
   Ebounds<- as.matrix(1);
+ 
   Eeta<- as.matrix(0);
 #### change to larger values if optim does not converge
   EdirTol<- as.matrix(0.0001);
@@ -776,6 +793,11 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
 ###faster convergence increase control$factr, i.e.  <- 1e+08
 ###tolerance is defined as .Machine$double.eps*con$factr
    optimTol <- 1.e+10
+### added for convenience for no bounds in nlminb 
+  upbound  <- 1e+256
+  lowbound <- -1e+256
+### tolerance associated with the choleski decomposition (eichol)
+  cholTol <- 1.e-5
   ### gauss is case independent
   param <- ls(env=environment())
   paramlower <- sapply(param,tolower)

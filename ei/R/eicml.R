@@ -130,8 +130,11 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
 
 
 ###@ if change this code, change also eiread @
+   upbound <- ifelse(exists("upbound"),get("upbound", env=evei), 1e+256)
+   lowbound <- ifelse(exists("lowbound"),get("lowbound", env=evei), -1e+256)
+
   if (scalzero(Ebounds))###     don't use bounds  
-    cml.bounds <- cml.Bounds <- matrix(c(-1e+256, 1e+256), nrow=1, ncol=2)
+    cml.bounds <- cml.Bounds <- matrix(c(lowbound, upbound), nrow=1, ncol=2)
   else if (cols(Ebounds)==2)
     cml.bounds <- cml.Bounds <- rbind(Ebounds,cbind(0,0.0001),cbind(0,0.0001))
   else if (scalone(Ebounds)) ###    automatic bounds calculation 
@@ -247,10 +250,10 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
      
       if(ret >=1 ){
      
-      message("nlminb did not converge or produce an error...")
+      message("nlminb did not converge or produce an error...Ebounds=", Ebounds)
       message(mess)
       print(lst)
-      stop("Change defaults control arguments in nmlinb")
+      stop("Change defaults control arguments in nmlinb...,no bounds Ebounds=0")
     }
     
  
@@ -530,6 +533,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
     b <- as.matrix(na.omit(c(b,gvcK)))
     ev <- evbase
     Eres <- try(get("Eres", env=evbase), silent=TRUE)
+    eps <- mget("cholTol", envir=evbase,ifnotfound=list(1.e-5))[[1]] 
     loglik <- gvc.ProcName ### pass with gvc, i.e. fn
     res <- loglik(b,dat,ev)
     res <- colSums(as.matrix(res))
@@ -597,8 +601,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                 if (Eprt>=1)
                   message("gvc: trying generalized inverse of -hessian matrix")
                 hessian <- optimhess(b,gvc.procedure,gr=NULL,evbase=evbase,gvcK=gvc.FixKeep,dat=dataset,control=con,get("EdirTol", env=evbase)) 
-                 
-             
+                              
 ###gvc.procedure pointer to func 
                
                 ##try using solve and if it does not work then svd.inv
@@ -619,8 +622,11 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                 if(not.pd == 1 && Eprt>=1)
                   message("gvc:-hessian matrix not p.d.; trying generalized cholesky also")
                 vc <- try(chol(vc,pivot=FALSE), silent=TRUE)
-                if(inherits(vc, "try-error"))
-                  vc <- sechol(vch) 
+                if(inherits(vc, "try-error")){
+                  message("gvc-procedure: chol with pivot=FALSE fails trying eichol & sechol")
+                 
+                  vc <- eichol(vch,tol=eps,sechol=TRUE)
+                }
                 vc <- t(vc)%*%vc
                 if (Eprt>=3){
                   print("new vc:")
@@ -648,7 +654,6 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                 { ###      @ do not compute the vc matrix @
            hessian <- optimhess(b,gvc.procedure,gr=NULL,evbase=evbase,gvcK=gvc.FixKeep,dat=dataset,control=con,get("EdirTol", env=evbase))            
                  
-
 ###gvc.procedure pointer to func 
                   
                   if (Eprt>=2)
@@ -659,7 +664,7 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
                 }                
     
       if( ei.vc[i+0,1] != 4) ### @ did not use generalized approach @
-        vc <- try(invpd(-hessian,tol=1.e-2,mess="gvc"), silent=T)
+        vc <- try(invpd(-hessian,tol=eps,mess="gvc"), silent=T)
         
       if(!inherits(vc, "try-error")){
         GhActual <- i+0
