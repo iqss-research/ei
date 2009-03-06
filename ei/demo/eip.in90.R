@@ -1,21 +1,28 @@
-message("Running parametric estimation:Ecdfbvn=6 and data sample")
+message("Running parametric estimation:Ecdfbvn=6 and data in90")
  
 ###  verb <- user.prompt()
 message("Loading the data sample")
-res <- data(sample)
-###eidemopar(res,tind=1,xind=2,nind=3,invn=FALSE)
+res <- data(in90)
+###eidemopar(dat,tind=3,xind=1,nind=5,invn=TRUE)
 res <- get(res, env=environment())
-t <- res[[1]]
-x <- res[[2]]
-n <- res[[3]]
-###    verb <- user.prompt()
+t <- res[[3]]
+x <- res[[1]]
+invtvap <- res[[5]]
+tvap <- 1/(invtvap +.Machine$double.eps)
+xind <- which(x <= 0 | x >= 1)
+tind <- which(t <= 0 | t >= 1)
+nind <- which(tvap<=0)
+ind <- unique.default(c(xind,tind,nind))
+if(length(ind)) {
+  x <- x[-ind]
+  t <- t[-ind]
+  tvap <- tvap[-ind]
+}
+n <- round(tvap)
 message("Running default parametric estimation")
+###user.prompt()
 dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=FALSE)
 print(names(dbuf))
-message("Obtaining beta blacks")  
-betab <- dbuf$betaBs
-message("Calculating beta whites")
-betaw <- betab2w(t,x,betab)
 message("Running graphics:") 
 eigraph(dbuf,"tomog")
 user.prompt()
@@ -102,7 +109,7 @@ message("Addition: three-dimensional dependences of beta's vs X,T,N")
 eigraph(dbuf,"betaxn")
 user.prompt()
 eigraph(dbuf,"betatn")
-
+user.prompt()
 
 
 

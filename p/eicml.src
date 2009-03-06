@@ -351,6 +351,9 @@ proc gvc(&f,b,dataset);
   if scalone(_Ghfix) or _Ghfix==1;
     _gvc_fixKeep=miss(1,1);
   elseif rows(_GhFix)/=rows(b) or cols(_GhFix)/=1;
+    print rows(_GhFix);
+    print rows(b);
+    print cols(_GhFix);
     "gvc: _GhFix error";
     stop;
   else;
@@ -782,9 +785,11 @@ proc sechol(A);
   
    if n > 2; 
       for k (1,(n-2),1);
-         trap 1,1; 
+        trap 1,1; 
+     
          if (minc((diag(A[(k+1):n,(k+1):n])' - A[k,(k+1):n]^2/A[k,k])') < tau*gamm
-		and minc(eig(A[(k+1):n,(k+1):n])) < 0) or (A[1,1] < 0); 
+		and minc(eig(A[(k+1):n,(k+1):n])) < 0) or (A[1,1] < 0);
+           
             dmax = maxindc(diag(A[k:n,k:n]));
             if (A[(k+dmax-1),(k+dmax-1)] > A[k,k]);
 	       /* print("pivot using dmax:"); print(dmax); */

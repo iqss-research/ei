@@ -1,19 +1,20 @@
-message("Running parametric estimation:Ecdfbvn=6 and data sample")
+ 
+message("Running non-parametric estimation data=sample")
  
 ###  verb <- user.prompt()
 message("Loading the data sample")
 res <- data(sample)
-###eidemopar(res,tind=1,xind=2,nind=3,invn=FALSE)
-res <- get(res, env=environment())
-t <- res[[1]]
-x <- res[[2]]
-n <- res[[3]]
+###eidemononpar(res,tind=1,xind=2,nind=3,invn=FALSE)
+###res <- get(res, env=environment()) 
+t <- sample[[1]]
+x <- sample[[2]]
+n <- sample[[3]]
 ###    verb <- user.prompt()
-message("Running default parametric estimation")
-dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=FALSE)
+message("Running non-parametric estimation")
+dbuf <- ei(t,x,n,1,1,EnonPar=1,dbug=FALSE)
 print(names(dbuf))
 message("Obtaining beta blacks")  
-betab <- dbuf$betaBs
+betab <- dbuf$betabs
 message("Calculating beta whites")
 betaw <- betab2w(t,x,betab)
 message("Running graphics:") 
@@ -43,12 +44,6 @@ eigraph(dbuf,"xgraphc")
 user.prompt()
 eigraph(dbuf,"goodman")
 user.prompt()
-eigraph(dbuf,"xtfit")
-user.prompt()
-eigraph(dbuf,"xtfitg")
-user.prompt()
-eigraph(dbuf,"fit")
-user.prompt()
 eigraph(dbuf,"profile")
 user.prompt()
 eigraph(dbuf,"profileR")
@@ -69,7 +64,7 @@ user.prompt()
 message("Running beta with kern=TN")
 eigraph(dbuf,"beta",kern="TN")
 user.prompt()
-eigraph(dbuf,"results",kern="E")
+eigraph(dbuf,"results", kern="E")
 user.prompt()
 eigraph(dbuf,"lines")
 user.prompt()
@@ -102,16 +97,6 @@ message("Addition: three-dimensional dependences of beta's vs X,T,N")
 eigraph(dbuf,"betaxn")
 user.prompt()
 eigraph(dbuf,"betatn")
-
-
-
-
-
-
-
-
-
-
 
 
 

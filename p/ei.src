@@ -615,7 +615,7 @@ proc checkinputs;
   
   if rows(_Eprt)/=1 or cols(_Eprt)/=1;
     retp("ei: _Eprt must be a scalar");
-  endif;
+  endif; 
   if sumc(_Eprt.==(0|1|2|3))/=1;
     retp("ei: _Eprt must be 0, 1, 2, or 3");
   endif;
@@ -881,7 +881,7 @@ proc eirepl(dbufin);
   else;
     tst="Prior to 5/20/96";
   endif;
-  "EI when dbuf was created: ";;tst;
+  "EI when dbuf was created: ";
   t=vread(dbufin,"t");
   x=vread(dbufin,"x");
   n=eiread(dbufin,"n");
