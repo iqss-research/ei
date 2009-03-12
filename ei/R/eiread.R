@@ -655,9 +655,9 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     if(length(evbase)){
       tol <- try(get("EnumTol", env=evbase),silent=TRUE)
       if(!inherits(tol,"try-error"))
-        EnumTol <- tol
+        EnumTol <- as.vector(tol)
     }
-          
+       
     res[,1] <- recode(res[,1],stdc(t(stbetabs)) <= EnumTol,0.5)  ###@ homog prects @
     res[,2] <- recode(res[,2],stdc(t(stbetaws))<= EnumTol,0.5) 
           
@@ -1175,7 +1175,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     nw <- eiread(dbuf,"nw")
     res <- nw%dot*%(1-b)
   } else if(identical(tolower(str),"aggtruth")){###		@ aggregate truths  @
-    if(!("truth   " %inG% cv)){
+    if(!("truth" %inG% cv)){
       message("eiread: truth needs to be stored first")
       return(NA)
     }

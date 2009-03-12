@@ -9,19 +9,25 @@ t <- pa90[[3]]
 x <- pa90[[1]]
 invtvap <- pa90[[5]]
 tvap <- 1/(invtvap +.Machine$double.eps)
-ind <- which(x <= 0 | x >= 1 |t <= 0 | t >= 1 |tvap<=0)
+ind <- which(x<0 | x >1| t <= 0 | t >= 1 |tvap<=0)
 if(length(ind)){
   ind <- unique.default(ind)
   x <- x[-ind]
   t <- t[-ind]
   tvap <- tvap[-ind]
 }
+x[x<=0] <- .Machine$double.eps
+x[x>=1] <- 1-.Machine$double.eps
 n <- round(tvap)
 message("Running default parametric estimation")
 ###user.prompt()
 dbuf <- ei(t,x,n,1,1,EnonPar=1,dbug=FALSE)
 print(names(dbuf))
-message("Running graphics:") 
+message("Obtaining overall beta's and std errors")
+berr <- eiread(dbuf,"paggs")
+print(berr)   
+message("Running graphics:")
+user.prompt()
 eigraph(dbuf,"tomog")
 user.prompt()
 eigraph(dbuf,"tomogp")

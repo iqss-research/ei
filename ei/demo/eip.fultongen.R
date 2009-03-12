@@ -1,13 +1,13 @@
-message("Running parametric estimation:Ecdfbvn=6 data pa90")
+message("Running parametric estimation:Ecdfbvn=6 data fultongen")
  
 ###  verb <- user.prompt()
 message("Loading the data sample")
-res <- data(pa90)
+res <- data(fultongen)
 ###eidemopar(res,tind=3,xind=1,nind=5,invn=TRUE)
-t <- pa90[[3]]
-x <- pa90[[1]]
-invtvap <- pa90[[5]]
-tvap <- 1/(invtvap +.Machine$double.eps)
+t <- fultongen[[1]]
+x <- fultongen[[2]]
+tvap <- fultongen[[3]]
+
 xind <- which(x < 0 | x > 1)
 tind <- which(t <= 0 | t >= 1)
 nind <- which(tvap<=0)
@@ -75,6 +75,7 @@ message("Running beta with kern=E")
 eigraph(dbuf,"betaB")
 user.prompt()
 eigraph(dbuf,"betaW")
+message("Running beta with kern=E")
 user.prompt()
 eigraph(dbuf,"beta")
 user.prompt()

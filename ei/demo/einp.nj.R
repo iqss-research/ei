@@ -1,13 +1,12 @@
-message("Running parametric estimation:Ecdfbvn=6 data pa90")
+message("Running parametric estimation:Ecdfbvn=6 data nj")
  
 ###  verb <- user.prompt()
 message("Loading the data sample")
-res <- data(pa90)
+res <- data(nj)
 ###eidemopar(res,tind=3,xind=1,nind=5,invn=TRUE)
-t <- pa90[[3]]
-x <- pa90[[1]]
-invtvap <- pa90[[5]]
-tvap <- 1/(invtvap +.Machine$double.eps)
+t <- nj[[1]]
+x <- nj[[2]]
+tvap <- nj[[3]]
 xind <- which(x < 0 | x > 1)
 tind <- which(t <= 0 | t >= 1)
 nind <- which(tvap<=0)
@@ -22,7 +21,7 @@ x[x>=1] <- 1-.Machine$double.eps
 n <- round(tvap)
 message("Running default parametric estimation")
 ###user.prompt()
-dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=FALSE)
+dbuf <- ei(t,x,n,1,1,EnonPar=1,dbug=FALSE)
 print(names(dbuf))
 message("Obtaining overall beta's and std errors")
 berr <- eiread(dbuf,"paggs")

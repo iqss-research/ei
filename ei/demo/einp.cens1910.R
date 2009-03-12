@@ -1,18 +1,19 @@
-message("Running parametric estimation:Ecdfbvn=6 data pa90")
  
+message("Running non-parametric estimation data cens1910")
+
 ###  verb <- user.prompt()
 message("Loading the data sample")
-res <- data(pa90)
-###eidemopar(res,tind=3,xind=1,nind=5,invn=TRUE)
-t <- pa90[[3]]
-x <- pa90[[1]]
-invtvap <- pa90[[5]]
-tvap <- 1/(invtvap +.Machine$double.eps)
-xind <- which(x < 0 | x > 1)
-tind <- which(t <= 0 | t >= 1)
-nind <- which(tvap<=0)
-ind <- unique.default(c(xind,tind,nind))
-if(length(ind)) {
+res <- data(cens1910)
+###eidemopar(in90,tind=3,xind=1,nind=5,invn=TRUE)
+###res <- get(res, env=environment())
+t <- cens1910[[1]]
+x <- cens1910[[2]]
+tvap <- cens1910[[3]]
+
+###ind <- which(x <= 0 | x >= 1 |t <= 0 | t >= 1 |tvap<=0)
+ind <- which(x<0 | x>1 | t <= 0 | t >= 1 |tvap<=0)
+if(length(ind)){
+  ind <- unique.default(ind)
   x <- x[-ind]
   t <- t[-ind]
   tvap <- tvap[-ind]
@@ -20,15 +21,16 @@ if(length(ind)) {
 x[x<=0] <- .Machine$double.eps
 x[x>=1] <- 1-.Machine$double.eps
 n <- round(tvap)
-message("Running default parametric estimation")
-###user.prompt()
-dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=FALSE)
+
+message("Running non-parametric estimation")
+dbuf <- ei(t,x,n,1,1,EnonPar=1,dbug=FALSE)
 print(names(dbuf))
 message("Obtaining overall beta's and std errors")
 berr <- eiread(dbuf,"paggs")
-print(berr)
+print(berr)               
 message("Running graphics:")
 user.prompt()
+message("Running graphics:") 
 eigraph(dbuf,"tomog")
 user.prompt()
 eigraph(dbuf,"tomogp")
@@ -55,12 +57,6 @@ eigraph(dbuf,"xgraphc")
 user.prompt()
 eigraph(dbuf,"goodman")
 user.prompt()
-eigraph(dbuf,"xtfit")
-user.prompt()
-eigraph(dbuf,"xtfitg")
-user.prompt()
-eigraph(dbuf,"fit")
-user.prompt()
 eigraph(dbuf,"profile")
 user.prompt()
 eigraph(dbuf,"profileR")
@@ -81,7 +77,7 @@ user.prompt()
 message("Running beta with kern=TN")
 eigraph(dbuf,"beta",kern="TN")
 user.prompt()
-eigraph(dbuf,"results",kern="E")
+eigraph(dbuf,"results", kern="E")
 user.prompt()
 eigraph(dbuf,"lines")
 user.prompt()
@@ -114,16 +110,6 @@ message("Addition: three-dimensional dependences of beta's vs X,T,N")
 eigraph(dbuf,"betaxn")
 user.prompt()
 eigraph(dbuf,"betatn")
-
-
-
-
-
-
-
-
-
-
 
 
 

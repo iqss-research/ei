@@ -31,8 +31,10 @@
   ###  @v=recode(v,v.<0,1e-10);@
      stop("rndtni: negative variance; see rndtni.v")
    }
+   lb[is.na(lb)] <- 0
+   ub[is.na(ub)] <- 1
    t <- (lb>ub);
-   if(any(t))
+   if(any(t) && all(!is.na(t)))
      stop("rndtni: upper bound less than lower bound!")
  
    sigma <- sqrt(v);

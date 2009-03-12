@@ -44,7 +44,7 @@
 ##**             likelihood estimation.
 ##*/
 
-ei <- function(t,x,tvap,Zb, Zw,...)
+ei <- function(t,x,tvap,Zb=1, Zw=1,...)
 {
  ###  local res,et,MLpsi,MLvc,betaBs,betaWs,tst,Eselect,flat;
   evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment

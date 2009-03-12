@@ -126,8 +126,8 @@ nonbiv <- function(t,x,px,py, evbase=parent.frame(),eigraph.bvsmth=NULL,Enumtol=
   c0 <- unitarea(t,x,evbase);###         @ scale factor to divide by @
  
   r <- rows(x);
- 
-  for (i in 1:col){
+  pz <- sapply(as.list(1:col), function(i,t,x,px,py,Enumtol, eigraph.bvsmth,c0,r){
+  
    
     d <- perpdist(t,x,px[,i+0],py[,i+0],Enumtol) ### @ perpendicular distance to line @
   ###  /* sheet-normal kernel */
@@ -136,11 +136,10 @@ nonbiv <- function(t,x,px,py, evbase=parent.frame(),eigraph.bvsmth=NULL,Enumtol=
     c <- matrix(c0, nrow=length(c0), ncol=ncol(z))
     mat <- exp(-0.5*(z*z))/c
     csum <- colSums(mat)
-    pz[,i+0]  <- csum/r/sqrt(2*pi)
+    return(pz  <- csum/r/sqrt(2*pi))},t,x,px,py,Enumtol, eigraph.bvsmth,c0,r)
   
-  }
+  pz <- unlist(pz)
   
-
   pz <- pz/eigraph.bvsmth^2;
   if(any(dim(pz)!= dim(px)) ||any(dim(pz)!= dim(py)))
     stop("Wrong dimensions for pz <- nonbiv()")
@@ -177,8 +176,10 @@ unitarea <- function(t,x, evbase=parent.frame(),EnonNumInt=NULL, Enumtol=NULL,ei
   area <- matrix(0, nrow=nobs,ncol=1);
   var <- eigraph.bvsmth^2;
  
-  for (i in 1:nobs){
     
+   area <- lapply(as.list(1:nobs), function(i,uB,lW,lB,uW,t,x,x1,x1x,xx1,var,Enumtol,EnonNumInt ){
+     lb <- lB
+     ub <- uB
     c <- cbind(maxr(1-uB[i+0],lW[i+0]),maxr(lB[i+0],1-uW[i+0]))
    
     c <- substute(c,c<0.00001,c*0+0.00001);
@@ -211,9 +212,10 @@ unitarea <- function(t,x, evbase=parent.frame(),EnonNumInt=NULL, Enumtol=NULL,ei
     
    ### /* area within square for each perpendicular line */
    
-    area[i+0] <- colMeans(cdfnorm(maxr(a,b),0,var)+((S-0.5)*2)*cdfnorm(minr(a,b)-S,0,var));
+    return(area <- colMeans(cdfnorm(maxr(a,b),0,var)+((S-0.5)*2)*cdfnorm(minr(a,b)-S,0,var)))},uB,lW,lB,uW,t,x,x1,x1x,xx1,var,Enumtol,EnonNumInt )
+     
     
-  }
+  area <- unlist(area)
    if(any(dim(area)!= dim(t)))
       stop("area dimension do not agrre with x and t")
    

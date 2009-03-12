@@ -64,16 +64,20 @@ triple <- function(x,y,z, xlabel="", ylabel="",
                    title="",pxscale=0,pyscale=0,pzscale=1,evbase=NULL){
  
   z <- as.matrix(z)
- 
-   z <- as.matrix(z)*pzscale
+  x <- as.matrix(x)
+  y <- as.matrix(y)
+  z <- as.matrix(z)*pzscale
   if( rows(z)==1){  ###plots circles
     os <- matrix(1, nrow=rows(x),ncol=1)
     z <- os%*%z
   }
+ 
     lst <- listwis3(x,y,z)
+ 
     x <- lst[[1]]
     y <- lst[[2]]
     z <- lst[[3]]
+ 
     os <- matrix(1, nrow=rows(x),ncol=1)
     minx <- miny <- 0
     maxx <- maxy <- 1

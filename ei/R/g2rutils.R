@@ -260,14 +260,22 @@ vlist <- function(dbuf){
 recode <- function(x,e,v){
   x <- as.matrix(x)
   e <- as.matrix(e)
+  e[is.na(e)] <-  FALSE
   dm <- dim(e)
- 
+
   if(length(v) <= 1 && dm[[2]]> 1)
     v <- rep(v,dm[[2]])
   v <- as.matrix(v)
-  if(dm[1] != nrow(x) || nrow(v) != dm[2] || !all(e %in% c(0,1)))
+  if(dm[1] != nrow(x) || nrow(v) != dm[2] || !all(e %in% c(0,1))){
+     print(dm)
+     print(nrow(x))
+     print(nrow(v))
+     print(e)
+     print(!all(e %in% c(0,1)))
     stop("recode: check your inputs")
+  }
   y <- e %*% v
+  
   ix <-  y != 0
   x[ix, ] <- y[ix, ]
   return(x)

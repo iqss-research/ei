@@ -506,22 +506,15 @@ eigraph <- function(dbuf, str,psiu=NA,...){
  
    if( (postb <- identical(str,"postb")) ||(postw <- identical(str,"postw")) ){ ### @ posterior of dist agg B^b and B^w  @
      a <- eiread(dbuf,"abounds")
-    strt <- ifelse(postb, a[1,1],a[1,2])
-    endd <- ifelse(postb,a[2,1],a[2,2])
+     strt <- ifelse(postb, a[1,1],a[1,2])
+     endd <- ifelse(postb,a[2,1],a[2,2])
    
-    assign("strt",strt,env=evbase)
-    assign("endd",endd,env=evbase)
-    kern <- get("kern",env=evbase) 
-    kern <- as.vector(kern)
-    whiskr <- 0
-    if (vin(dbuf,"truth")){
-      b <- eiread(dbuf,"aggtruth")
-      if(postb)
-        pline(b[1],0,b[1],3)
-      else
-        pline(b[2],0,b[2],3) 
-
-    }
+     assign("strt",strt,env=evbase)
+     assign("endd",endd,env=evbase)
+     kern <- get("kern",env=evbase) 
+     kern <- as.vector(kern)
+     whiskr <- 0
+    
 
     output <- 0
     assign("output", output,env=evbase)
@@ -548,7 +541,14 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     lst <-listwis2(a,b) 
     plot(lst[[1]],lst[[2]],type="l",xlab=eigraph.x,ylab="Density",
          main=tit)
- 
+  if (vin(dbuf,"truth")){
+       b <- eiread(dbuf,"aggtruth")
+       if(postb)
+         pline(b[1],0,b[1],3)
+       else
+         pline(b[2],0,b[2],3) 
+       
+     }
    if(postb) return("postb")
    else return("postw")
   }
@@ -826,7 +826,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
 
     pline(bwlo,bwlo,bwhi,bwhi,negslope=FALSE,col="red")
     pline(bwlo,bwlo+e[1],bwhi,bwhi+e[1],col="blue", negslope=FALSE)
-    pline(bblo,bblo-e[2],bbhi,bbhi-e[2], negslope=FALSE,col="blue")
+    pline(bwlo,bwlo-e[2],bwhi,bwhi-e[2], negslope=FALSE,col="blue")
    return("prectw")
   }
  if(identical(str,"truth")){ ###			@ compare truth to estimates @
@@ -997,7 +997,7 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     pline(0,0.25,1,0.25,negslope=FALSE)
     pline(0,0.5,1,0.5,negslope=FALSE)
     pline(0,0.75,1,0.75,negslope=FALSE)
-    return(,"ptilew")
+    return("ptilew")
   }
 
   
@@ -1028,11 +1028,12 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     ylabel <- paste("True", get("eigraph.bb",env=evbase))
 
     betab <- eiread(dbuf,"betabs")
-    a <- eiread(dbuf,"truthb") 
+    a <- eiread(dbuf,"truthb")
+   
     lst <- listwis2(betab,a)
-    betab <- lst[[1]]
+    betab <- as.matrix(lst[[1]])
     dm <- dim(betab)
-    a <- lst[[2]]
+    a <- as.matrix(lst[[2]])
   ###  aa <- matrix(a,nrow=dm[1],ncol=dm[2])
     mxb <- max(betab)
     mnb <- min(betab)
@@ -1061,18 +1062,18 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     betaw <- eiread(dbuf,"betaws")
     a <- eiread(dbuf,"truthw") 
     lst <- listwis2(betaw,a)
-    betaw <- lst[[1]]
-    a <- lst[[2]]
+    betaw <- as.matrix(lst[[1]])
+    a <- as.matrix(lst[[2]])
   ###  aa <- matrix(a,nrow=dm[1],ncol=dm[2])
     phcev <- 0:18
-    cl <- ifelse(dim(a)[2]>=dim(betaw)[2],dim(a)[2], dim(betab)[2])
+    cl <- ifelse(dim(a)[2]>=dim(betaw)[2],dim(a)[2], dim(betaw)[2])
     phcev <- rep(phcev, floor(cl/length(phcev))+1)
       
     matplot(betaw, a, xlab=xlabel, ylab=ylabel,pch=phcev,
          main="Sims of betaw by betaw true", type="p", cex=psymsiz)
  
     pline(0,0,1,1, negslope=FALSE)
-    return(,"simsw")
+    return("simsw")
   }
 
     if(identical(str,"sims")){ ###			@ simsB & simsW @

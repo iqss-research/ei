@@ -256,10 +256,8 @@ lncdfn2 <- function(a, b, eps=1e-25){
 ## for different procs to do the computations
 
 lncdfbvnu <- function(bb,bw,sb,sw,rho){
- 
   Bb <- bb
   Bw <- bw
- 
   evbase <- get("evbase", env=parent.frame())
   Ecdfbvn <- get("Ecdfbvn", env=evbase)
   o <- 1
@@ -650,14 +648,15 @@ cdfbvnormi <- function(Bb,Bw,sigb,sigw,rho){
   bU <- 1;
   wL <- 0;
   wU <- 1;
-  bL <- (bL-Bb)/sigb;
-  bU <- (bU-Bb)/sigb;
-  wL <- (wL-Bw)/sigw;
-  wU <- (wU-Bw)/sigw;
-  c1 <- cdfbvn(bU,wU,rho);
-  c2 <- cdfbvn(bL,wL,rho);
-  c3 <- cdfbvn(bL,wU,rho);
-  c4 <- cdfbvn(bU,wL,rho);
+  
+  bL <- (bL-Bb)/as.vector(sigb)
+  bU <- (bU-Bb)/as.vector(sigb)
+  wL <- (wL-Bw)/as.vector(sigw)
+  wU <- (wU-Bw)/as.vector(sigw)
+  c1 <- cdfbvn(bU,wU,as.vector(rho))
+  c2 <- cdfbvn(bL,wL,as.vector(rho))
+  c3 <- cdfbvn(bL,wU,as.vector(rho))
+  c4 <- cdfbvn(bU,wL,as.vector(rho))
   res <- c1+c2-c3-c4;
   res <- recode(res,cbind(res<EcdfTol,res>1),rbind(EcdfTol, 1));
   return(res);
@@ -679,7 +678,10 @@ cdfbvnorme <- function(Bb,Bw,sigb,sigw,rho,evbase){
   bU <- 1;
   wL <- 0;
   wU <- 1;
-  bL <- (bL-Bb)/sigb;
+  sigb <- as.vector(sigb)
+  sigw <- as.vector(sigw)
+  rho <- as.vector(rho)
+  bL <- (bL-Bb)/sigb
   bU <- (bU-Bb)/sigb;
   wL <- (wL-Bw)/sigw;
   wU <- (wU-Bw)/sigw;
@@ -740,7 +742,7 @@ cdfbvnorme <- function(Bb,Bw,sigb,sigw,rho,evbase){
 ##*/
 bvn.mask <- function(h,k,rho,evbase){
 ##  /* calculates cdfbvn in a different way */
-  
+  rho <- as.vector(rho)
   rho <- rho*(rho<1) + (1-1E-15)*(rho>=1);
   rho <- rho*(rho>-1) - (1-1E-15)*(rho<=-1);
   rho2 <- sqrt(1-rho^2);
@@ -1020,7 +1022,10 @@ cdfbvnorma <- function(mu1,mu2,s1,s2,rho){
   u1 <- 1;
   l2 <- 0;
   u2 <- 1;
-
+  s1 <- as.vector(s1)
+  s2 <- as.vector(s2)
+  rho <- as.vector(rho)
+  
   k <- 40;##					@ num of numerical intervals @
   r <- nrow(as.matrix(mu1));
   x <- seqase(l1,u1,k);
@@ -1209,14 +1214,16 @@ lpdfbvn <- function(betab,betaw,bb,bw,sb,sw,rho){
   evbase <- get("evbase", env=parent.frame())
   Evtol <- EvTol <- get("EvTol", env=evbase)
  
-  z1 <- (betab-bb)/sb;
-  z2 <- (betaw-bw)/sw;
-  omr2 <- (1-rho^2);
-  omr2 <- recode(omr2,omr2<Evtol,Evtol);
-  sb <- recode(sb,sb<Evtol,Evtol);
-  sw <- recode(sw,sw<Evtol,Evtol);
+  z1 <- as.vector((betab-bb)/as.vector(sb))
+  
+  z2 <- as.vector((betaw-bw)/as.vector(sw))
+  omr2 <- as.vector((1-rho^2))
+  omr2 <- as.vector(recode(omr2,omr2<Evtol,Evtol))
+  sb <- as.vector(recode(sb,sb<Evtol,Evtol))
+  sw <- as.vector(recode(sw,sw<Evtol,Evtol))
+   w <- (z1^2+z2^2-2*rho*z1%dot*%z2)
  
-  w <- (z1^2+z2^2-2*rho*z1%dot*%z2)/omr2;
+  w <- w %dot/%omr2
   res <- -1.83787706640934548-0.5*(w+log(omr2))-log(sb)-log(sw);
   return(res)
 }

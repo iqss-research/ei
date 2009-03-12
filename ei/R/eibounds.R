@@ -22,9 +22,11 @@
 ###         evillalon@iq.harvard.edu
 ###
 #include ei.ext;
-bounds1<-function(t,x,n,tol){
+bounds1<-function(t,x,n,tol,eps=.Machine$double.eps){
         ## local LbetaB,UbetaB,LbetaW,UbetaW,aggs,omx,Nb,Nw,c,c0,c1,p,tx,tomx,z,o,m;
-        omx<-1-x;
+        x[x<=0] <- eps
+        x[x>=1] <- 1-eps
+        omx<-1-x;c
         Nb<-x*n;                       #nr of black people
         Nw<-omx*n;                     #nr of white people
         ##  {c,c0,c1} = homoindx(x);       # proc in eiloglik.src
@@ -44,11 +46,11 @@ bounds1<-function(t,x,n,tol){
         
         c <- na.omit(c)
         if (length(c)){
-                tx<-t[c]/x[c]
-                tomx<-t[c]/omx[c]
-                LbetaB[c]<-maxr(z[c],tx-(omx[c]/x[c]))
+                tx<-t[c]/(x[c])
+                tomx<-t[c]/(omx[c])
+                LbetaB[c]<-maxr(z[c],tx-(omx[c]/(x[c])))
                 UbetaB[c]<-minr(tx,o[c])
-                LbetaW[c]<-maxr(z[c],tomx-(x[c]/(1-x[c])))
+                LbetaW[c]<-maxr(z[c],tomx-(x[c]/(1+eps-x[c])))
                 UbetaW[c]<-minr(tomx,o[c])
         }
         c0 <- na.omit(c0)
@@ -69,10 +71,12 @@ bounds1<-function(t,x,n,tol){
 ### fix rounding errors due to machine precision */
 ### basically change any negative value to 0 and any value >1 to 1
         vu <- as.matrix(c(0,1))
-        LbetaBa <- recode(LbetaB,cbind((LbetaB<0),(LbetaB>1)),vu)
-        UbetaB  <- recode(UbetaB,cbind((UbetaB<0),(UbetaB>1)),vu)
-        LbetaW  <- recode(LbetaW,cbind((LbetaW<0),(LbetaW>1)),vu)
-        UbetaW  <- recode(UbetaW,cbind((UbetaW<0),(UbetaW>1)),vu)
+        
+        LbetaBa <- recode(LbetaB,cbind((LbetaB<=0),(LbetaB>=1)),vu)
+    ###      LbetaBa <- recode(LbetaB,cbind((LbetaB<0),(LbetaB>1)),vu)
+        UbetaB  <- recode(UbetaB,cbind((UbetaB<=0),(UbetaB>=1)),vu)
+        LbetaW  <- recode(LbetaW,cbind((LbetaW<=0),(LbetaW>=1)),vu)
+        UbetaW  <- recode(UbetaW,cbind((UbetaW<=0),(UbetaW>=1)),vu)
         
         
         bs<-list(bs=cbind(LbetaB,UbetaB,LbetaW,UbetaW))
