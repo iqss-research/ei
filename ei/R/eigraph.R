@@ -1027,9 +1027,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     xlabel <- paste(get("eigraph.bb", env=evbase),"simulations")
     ylabel <- paste("True", get("eigraph.bb",env=evbase))
 
-    betab <- eiread(dbuf,"betabs")
-    a <- eiread(dbuf,"truthb")
-   
+    betab <- as.matrix(eiread(dbuf,"betabs"))
+    a <- as.matrix(eiread(dbuf,"truthb")) 
     lst <- listwis2(betab,a)
     betab <- as.matrix(lst[[1]])
     dm <- dim(betab)
@@ -1059,8 +1058,8 @@ eigraph <- function(dbuf, str,psiu=NA,...){
     xlabel <- paste(get("eigraph.bw", env=evbase),"simulations")
     ylabel <- paste("True", get("eigraph.bw",env=evbase))
 
-    betaw <- eiread(dbuf,"betaws")
-    a <- eiread(dbuf,"truthw") 
+    betaw <- as.matrix(eiread(dbuf,"betaws"))
+    a <- as.matrix(eiread(dbuf,"truthw")) 
     lst <- listwis2(betaw,a)
     betaw <- as.matrix(lst[[1]])
     a <- as.matrix(lst[[2]])
@@ -1627,6 +1626,12 @@ pline <- function(xst,yst,xend,yend,negslope=TRUE,
                          xlim=c(0,1), ylim=c(0,1),new=TRUE,
                          color=NULL,npts=100,
                          xylabels=c("",""),title=""){
+   xst[is.na(xst)] <- 0
+   yst[is.na(yst)] <- 0
+   xend[is.na(xend)]<- 1
+   yend[is.na(yend)] <- 1
+  
+   
    num <- as.vector(yend - yst)
    den <- as.vector(xend - xst)
    vert <- horz <- FALSE
@@ -1634,14 +1639,19 @@ pline <- function(xst,yst,xend,yend,negslope=TRUE,
    if(all(num<=1.e-5)) horz <- TRUE
    if(!vert && !horz) stop("Use the pline method instead")
    if(length(color)<=0) color <- rainbow(length(xst))
+
    max.x <- round(max(c(xend,xst)))
-   if(max.x>1) max.x <- 1
+   if(is.na(max.x) || max.x>1||max.x<=0) max.x <- 1
+   
    min.x <- round(min(c(xst,xend)))
-   if(min.x <0) min.x <- 0
+   if(is.na(min.x) || min.x <0||min.x>=1) min.x <- 0
+   
    max.y <- round(max(c(yend,yst)))
-   if(max.y>1) max.y <- 1
+   if(is.na(max.y)||max.y>1||max.y<=0) max.y <- 1
+   
    min.y <- round(min(c(yst,yend)))
-   if(min.y < 0) min.y <- 0
+   if(is.na(min.y) || min.y < 0||min.y >=1) min.y <- 0
+   
    lns <- length(xst)
    lnc <- length(color)
    if(lnc > 1 && lnc < lns)
@@ -1649,27 +1659,16 @@ pline <- function(xst,yst,xend,yend,negslope=TRUE,
    if(vert){  
    lstx <- lapply(xst,rep,npts)
    mat <- cbind(yst,yend)
+
    lsty <- lapply(as.list(1:length(yst)),function(n,mat){
-        seq(from=mat[n,1],to=mat[n,2], by=(abs(mat[n,1]-mat[n,2]))/(npts-1))},mat)
-   matx <- matrix(unlist(lstx), nrow=length(xst), byrow=TRUE)
-   maty <- matrix(unlist(lsty),  nrow=length(xst), byrow=TRUE)
-   dm <- dim(matx)
-   phcev <- 0:18
-   ln <- length(phcev)
-   cl <- dm[1]
-   phcev <- rep(phcev,floor(cl/ln)+1)
-   matplot(t(matx),t(maty),type="l",xlim=c(min.x,max.x),ylim=c(min.y,max.y),
-           xlab=xylabels[1], ylab=xylabels[2],main=title,pch=phcev)
-  matpoints(t(matx)[c(1,npts),],t(maty)[c(1,npts),],col="black",pch=19)
-   return("vertical bounds")
- }
-   if(horz){  
-   lsty <- lapply(yst,rep,npts)
-   mat <- cbind(xst,xend)
-   lstx <- lapply(as.list(1:length(xst)),function(n,mat){
-        seq(from=mat[n,1],to=mat[n,2], by=(abs(mat[n,1]-mat[n,2]))/(npts-1))},mat)
-   matx <- matrix(unlist(lstx), nrow=length(yst), byrow=TRUE)
-   maty <- matrix(unlist(lsty),  nrow=length(yst), byrow=TRUE)
+     ret <- seq(from=mat[n,1],to=mat[n,2], by=(abs(mat[n,1]-mat[n,2]))/(npts-1))
+     if(length(ret) < npts) 
+       ret <- seq(from=0,to=1,by=1/(npts-1))
+     return(ret)},mat)
+   
+   
+   matx <- matrix(unlist(lstx), nrow=length(lstx), byrow=TRUE)
+   maty <- matrix(unlist(lsty),  nrow=length(lsty), byrow=TRUE)
    dm <- dim(matx)
    phcev <- 0:18
    ln <- length(phcev)
@@ -1678,8 +1677,28 @@ pline <- function(xst,yst,xend,yend,negslope=TRUE,
    matplot(t(matx),t(maty),type="l",xlim=c(min.x,max.x),ylim=c(min.y,max.y),
            xlab=xylabels[1], ylab=xylabels[2],main=title,pch=phcev)
    matpoints(t(matx)[c(1,npts),],t(maty)[c(1,npts),],col="black",pch=19)
-  
-   return("bounds horizontal")
+   return("vertical bounds")
+ }
+   if(horz){  
+     lsty <- lapply(yst,rep,npts)
+     mat <- cbind(xst,xend)
+     lstx <- lapply(as.list(1:length(xst)),function(n,mat){
+       ret <- seq(from=mat[n,1],to=mat[n,2], by=(abs(mat[n,1]-mat[n,2]))/(npts-1))
+       if(length(ret) < npts) 
+         ret <- seq(from=0,to=1,by=1/(npts-1))
+       return(ret)},mat)
+     matx <- matrix(unlist(lstx), nrow=length(xst), byrow=TRUE)
+     maty <- matrix(unlist(lsty),  nrow=length(yst), byrow=TRUE)
+     dm <- dim(matx)
+     phcev <- 0:18
+     ln <- length(phcev)
+     cl <- dm[1]
+     phcev <- rep(phcev,floor(cl/ln)+1)
+     matplot(t(matx),t(maty),type="l",xlim=c(min.x,max.x),ylim=c(min.y,max.y),
+             xlab=xylabels[1], ylab=xylabels[2],main=title,pch=phcev)
+     matpoints(t(matx)[c(1,npts),],t(maty)[c(1,npts),],col="black",pch=19)
+     
+     return("bounds horizontal")
  }
  }
 ### Helper to tomog plots to draw multiple lines but instead
@@ -1708,7 +1727,9 @@ drawlines <- function(b1,b2,b3,b4,npts=150){
 ###  print(slope)
   clst <- as.list(1:length(b1))
   xvec <- lapply(clst, function(n,b1,b2){
-    return( seq(from=b1[n],to=b2[n],by=(b2[n]-b1[n])/(npts-1)))},b1,b2)
+    ret <- seq(from=b1[n],to=b2[n],by=(b2[n]-b1[n])/(npts-1))
+    if(length(ret) <npts) ret <- seq(from=0,to=1, by=1/(npts-1))
+    return(ret)},b1,b2)
 
   yvec <- lapply(clst, function(n,xvec,slope,b3){
     return((xvec[[n]]-b2[n])*slope[n]+b3[n])},xvec,slope,b3)

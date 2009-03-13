@@ -34,9 +34,10 @@
    lb[is.na(lb)] <- 0
    ub[is.na(ub)] <- 1
    t <- (lb>ub);
-   if(any(t) && all(!is.na(t)))
+   if(any(t) && all(!is.na(t))){
+    
      stop("rndtni: upper bound less than lower bound!")
- 
+   }
    sigma <- sqrt(v);
 
    fcmptol <- 1e-12;

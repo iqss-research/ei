@@ -27,7 +27,7 @@ dbuf <- ei(t,x,n,1,1,EnonPar=1,dbug=FALSE)
 print(names(dbuf))
 message("Obtaining overall beta's and std errors")
 berr <- eiread(dbuf,"paggs")
-print(berr)               
+print(berr)
 message("Running graphics:")
 user.prompt()
 message("Running graphics:") 
@@ -110,6 +110,8 @@ message("Addition: three-dimensional dependences of beta's vs X,T,N")
 eigraph(dbuf,"betaxn")
 user.prompt()
 eigraph(dbuf,"betatn")
+
+
 
 
 

@@ -22,7 +22,7 @@ x[x>=1] <- 1-.Machine$double.eps
 n <- round(tvap)
 message("Running default parametric estimation")
 ###user.prompt()
-dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=FALSE)
+dbuf <- ei(t,x,n,1,1,EdoML=1,Ebounds=0,dbug=FALSE)
 print(names(dbuf))
 message("Obtaining overall beta's and std errors")
 berr <- eiread(dbuf,"paggs")

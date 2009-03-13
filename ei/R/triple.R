@@ -28,7 +28,9 @@ listwis2 <- function(a,b){
 listwis3 <- function(a,b,c){
  if(rows(a) != rows(b) || rows(a) != rows(c) || rows(b) != rows(c)) {
     message("listwis3: applies only to matrices same number of rows")
-    return(NULL)
+    lst <- c(list(a), list(b), list(c))
+    names(lst) <- c("a", "b","c")
+    return(lst)
   }
   ###vector indicating if rows contain NA's 
   ind <- rowSums(is.na(cbind(a,b,c))) >=1
