@@ -18,6 +18,8 @@ tind <- which(t <= 0 | t >= 1)
 nind <- which(tvap<=0)
 ind <- unique.default(c(xind,tind,nind))
 if(length(ind)) {
+  message("Deleting the following precint indexes...")
+  print(ind)
   x <- x[-ind]
   t <- t[-ind]
   tvap <- tvap[-ind]

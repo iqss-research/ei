@@ -623,7 +623,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     if(!scalmiss(betabs)){
       a <- rows(betabs)
       for(n in 1:a)
-        betabs[n,] <- sort(betabs[n,])
+        if(all(!is.na(betabs[n,])))
+          betabs[n,] <- sort(betabs[n,])
       betaBs <- betabs
 ###same as  betabs[n,] <- betaBs[n,] <- sortc(as.matrix(betabs[n,]))
       res <- betabs
@@ -634,7 +635,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
 
     if(!scalmiss(betaws)){
       for(n in 1:rows(betaws))
-        betaws[n,] <- sort(betaws[n,])
+        if(all(!is.na(betaws[n,])))
+          betaws[n,] <- sort(betaws[n,])
       res <- betaWs <- betaws 
     }
     

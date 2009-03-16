@@ -14,6 +14,8 @@ tvap <- cens1910[[3]]
 ind <- which(x<0 | x>1 | t <= 0 | t >= 1 |tvap<=0)
 if(length(ind)){
   ind <- unique.default(ind)
+  message("Deleting the following precint indexes...")
+  print(ind)
   x <- x[-ind]
   t <- t[-ind]
   tvap <- tvap[-ind]

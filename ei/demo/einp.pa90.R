@@ -11,6 +11,8 @@ invtvap <- pa90[[5]]
 tvap <- 1/(invtvap +.Machine$double.eps)
 ind <- which(x<0 | x >1| t <= 0 | t >= 1 |tvap<=0)
 if(length(ind)){
+  message("Deleting the following precint indexes...")
+  print(ind)
   ind <- unique.default(ind)
   x <- x[-ind]
   t <- t[-ind]

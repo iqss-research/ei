@@ -608,13 +608,14 @@ bvnu <- function( dh, dk, r ){
   q6 <- 1.755667163182642; q7 <- .08838834764831844;
   rootpi <- 2.506628274631001; cutoff <- 7.071067811865475;
   zabs <- abs(z);
-  if ( zabs > 37 )
+  if ( !is.na(zabs) && zabs > 37 )
     p <- 0
   else{
     expntl <- exp(-zabs^2/2);
    ## /*   |z| < cutoff = 10/sqrt(2);
       
-  if ( zabs < cutoff ) {
+  
+  if (!is.na(zabs) &&  zabs < cutoff ) {
       pt <- ((((((p6*zabs+p5)*zabs+p4)*zabs+p3)*zabs+p2)*zabs+p1)*zabs+p0)
       qt <- ((((((q7*zabs+q6)*zabs+q5)*zabs+q4)*zabs+q3)*zabs+q2)*zabs+q1)
       p <- expntl*pt/( qt*zabs + q0 )
@@ -624,7 +625,7 @@ bvnu <- function( dh, dk, r ){
     }
   }
   
-  if (z > 0)
+  if (!is.na(z) && z > 0)
     p <- 1 - p; 
   
   return(p)
@@ -1247,7 +1248,7 @@ equalev <- function(vec,x,tol=1.e-4){
     err1 <- abs(err/ll)
     err2 <- abs(err/x)
     err <- ifelse(err1 > err2, err1, err2)
-    if(err > tol) res <- FALSE
+    if(!is.na(err) && err > tol) res <- FALSE
     return(res)
   })
   res <- unlist(res)

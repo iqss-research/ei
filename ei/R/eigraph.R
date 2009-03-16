@@ -1876,7 +1876,10 @@ profileit <- function(dbuf,r,npts=100,eigraph.pro=NA,...){
     par(mfrow=c(cl,3))
 
     for( i in rs:re){ ###each subplot in the page
-       
+      if(all(is.na(i))||is.na(min[i])||is.na(max[i])) {
+        message("Escaping this subplot because data contains NA's")
+        next;  
+      }
       vect <- seqas(min[i],max[i],npts)
       size <- rows(vect)
       lik <- matrix(1,nrow=size,ncol=1)
@@ -1897,8 +1900,10 @@ profileit <- function(dbuf,r,npts=100,eigraph.pro=NA,...){
                       return(res)
                     } )
       lik <- unlist(lik)
+     
       ylabel <- "Log-posterior"
       xlabel <- pnames[i]
+      
       plot(vect,lik,xlab=xlabel,ylab=ylabel,type="p", col="blue",lwd=1.3)
       
       pline(phi[i],-1e10,phi[i],maxc(lik),negslope=FALSE)
