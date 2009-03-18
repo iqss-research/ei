@@ -35,27 +35,22 @@ scalone<-function(y){
 
 ### Wrapper around the R code weighted.mean 
 
+
 meanwc<-meanWc <- function(x,wt,na.remove=TRUE){
   x <- as.matrix(x)
- 
-  wwt <- wt
-  if(scalmiss(wt) || wt==1)
-    wwt <- rep(1, rows(x))
-  wwt[is.na(wwt)]<- 0
-  ln <- -floor(-length(x)/length(wwt))
-  
-  if(ln >1) 
-    wwt <- rep(wwt, ln)
-  if(length(wwt) > length(x))
-    wwt <- wwt[1:length(x)]
-  wt <- as.matrix(wwt)
   dm <- dim(x)
- 
+  wwt <- wt
+  if(length(na.omit(wt)) <=0){ 
+    wwt <- rep(1, rows(x))
+  }else if(length(as.vector(wt))<=1){
+    wwt <- rep(wt, rows(x))
+  }
+  wwt[is.na(wwt)]<- 0
+
   if(dm[2]==1)
-    return(weighted.mean(x,wt,na.rm=na.remove))
-  return(apply(x,2,weighted.mean,,na.rm=na.remove))
+    return(weighted.mean(x,as.vector(wwt),na.rm=na.remove))
+  return(apply(x,2,weighted.mean,as.vector(wwt),na.rm=na.remove))
 }
-              
     
 ###
 ##  y = meanWc(x,wt);
@@ -76,8 +71,12 @@ meanwcFerdi<-meanWcFerdi <- function(x,wt){
         wwt[is.na(wwt)]<-0
         xtmp<-x
         xtmp[is.na(xtmp)]<-0
+        nc <- ncol(x)
+        wt <- matrix(rep(wt, nc),ncol=nc)
+        
+     
         if(is.matrix(x))
-          res<-(apply((xtmp*wwt),2,sum))/(apply((1-ismissm(x+wt))*wwt,2,sum))
+          res<-(apply((xtmp%dot*%wwt),2,sum))%dot/%(apply((1-ismissm(x+wt))%dot*%wwt,2,sum))
         else
           res<-sum(xtmp*wwt)/(sum(1-ismissm(x+wt))*wwt)
         return(res)

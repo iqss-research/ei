@@ -233,14 +233,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
      if(length(ind) > 0) scl[ind] <- 10
       
       message("nlminb in action:Obtainig estimates for stval")
- ###     if(length(stval) != dim(cmlb)[1]){
- ###       dm <- dim(cmlb)
- ###       lnst <- length(stval)
- ###       v1 <- cmlb[1, ]
- ###       vlast <- cmlb[2:dm[1],]
- ###       n <- lnst - length(2:dm[1])
- ###       cmlb <- rbind(matrix(rep(v1, n), ncol=2,byrow=TRUE),vlast)
- ###     }
+
       lst <-  nlminb(stval,f0,y=dataset,ev=evbase,scale=scl,lower=cmlb[,1],upper=cmlb[,2])
   
 
