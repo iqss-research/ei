@@ -36,7 +36,7 @@ dbuf <- ei(t,x,n,1,1,EdoML=1,dbug=FALSE)
 dbuf$truth <- truth
 print(names(dbuf))
 message("Obtaining overall beta's and std errors")
-berr <- eiread(dbuf,"paggs")
+berr <- summary(dbuf,"paggs")
 print(berr)
 message("Running graphics:")
 user.prompt()

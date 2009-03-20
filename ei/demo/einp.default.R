@@ -18,7 +18,7 @@ betab <- dbuf$betabs
 message("Calculating beta whites")
 betaw <- betab2w(t,x,betab)
 message("Obtaining overall beta's and std errors")
-berr <- eiread(dbuf,"paggs")
+berr <- summary(dbuf,"paggs")
 print(berr)               
 message("Running graphics:")
 user.prompt()

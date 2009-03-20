@@ -1915,9 +1915,16 @@ profileit <- function(dbuf,r,npts=100,eigraph.pro=NA,...){
   }###ends for(k in1:numpgs)
   
 }
-
-eigraphrecall <- function(dbuf,str,psiu=NA,...){
-  return (eigraph(dbuf,str,psiu,...))}
+###DESCRIPTION S3 method that calls eigraph
+####           if only one argument, then calls "tomogs"
+###            if two arguments then calls eigraph(x,str)
+plot.ei <- function(x,...){
+  
+  drvdot <- match.call(expand.dots=TRUE)
+  if(length(drvdot)>2) str <- drvdot[[3]]
+  else str <- "tomogs"
+  return (eigraph(x,str))
+}
 
 chkPackages <- function(pkgName){
   res <- search()

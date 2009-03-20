@@ -206,7 +206,6 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
   names(dbuf) <- nm
   if(vin(dbuf,str)&&!calculate)
     return(vread(dbuf,str))
-    
  
 ###setting global variables
   evbase <- dbuf[["evbase"]]
@@ -321,8 +320,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
                ,"psi", "psitruth", "psiu", "r",  "ri", "retcode", "tsims","vcphi") 
       vrs <- as.matrix(tolower(vrs))
      if(identical(str, "esims")){
-      
-       res <- ncol(as.matrix(eiread(dbuf,"betabs")))
+     
+       res <- ncol(as.matrix(eiread(dbuf,"betabs",formula,calculate=FALSE,...)))
        return(res)
      }
      if((str %inG% vrs) && !identical(str, "expvarci0")){
@@ -373,12 +372,13 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     else if(rows(res)==2)
       res <- rbind(res, matrix(0, nrow=2, ncol=1))
   }else if(identical(str, "zb")){ ###@ Zb supplemented with _Eeta @
-    e <- eiread(dbuf, "eeta")
+
+    e <- eiread(dbuf, "eeta",formula,calculate=FALSE,...)
     if(any(e %in% c(1,3,4)))
       res <- vread(dbuf, "x")
          
   }else if(identical(str, "zw")){
-    e <- eiread(dbuf, "eeta")
+    e <- eiread(dbuf, "eeta",formula,calculate=FALSE,...)
  
     if(any(e %in% c(5,2,3)))
       res <- vread(dbuf,"x")
@@ -446,10 +446,12 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
    
     if(vin(dbuf, "emeanIR") || vin(dbuf, "emeanir"))
       res <- vread(dbuf, "emeanir")
-    else if(vin(dbuf, "lnir") && length(na.omit(eiread(dbuf, "eischk"))) && (eiread(dbuf,"eischk") == 0))
+    else if(vin(dbuf, "lnir") &&
+            length(na.omit(eiread(dbuf, "eischk", formula,calculate=FALSE,...)))
+            && (eiread(dbuf,"eischk",formula,calculate=FALSE,...) == 0))
       res <- vread(dbuf, "lnir")
-    else if(vin(dbuf, "lnir") && length(na.omit(eiread(dbuf, "eischk"))) && eiread(dbuf,"eischk") == 1){
-      a <- eiread(dbuf, "lnir")
+    else if(vin(dbuf, "lnir") && length(na.omit(eiread(dbuf, "eischk", formula,calculate=FALSE,...))) && eiread(dbuf,"eischk",formula,calculate=FALSE,...) == 1){
+      a <- eiread(dbuf, "lnir",formula,calculate=FALSE,...)
       a <-  a[,1]
       max <- max(a)
       res <- max + log(colMeans(as.matrix(exp(a-max)))) ###  @ = ln(meanc(exp(lnir)) @
@@ -458,8 +460,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
          
   }else if (identical(str, "logliks")){ ##@ loglik for each i @
 
-    a <- eiread(dbuf, "phi")
-    b <- eiread(dbuf, "dataset")
+    a <- eiread(dbuf, "phi",formula,calculate=FALSE,...)
+    b <- eiread(dbuf, "dataset",formula,calculate=FALSE,...)
     if(exists("evbase"))
       res <- eiloglik(a,b, evbase)
     else
@@ -479,7 +481,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       res <- vread(dbuf, "enonpar")
                 
   }else if (identical(tolower(str),"etac")){ ###	@ 2x1 vect to fix coeff's at @
-    res <- eiread(dbuf, "eeta")
+    res <- eiread(dbuf, "eeta",formula,calculate=FALSE,...)
     if(all(is.na(res))) return(res)  
     if(rows(res) == 1)
       res <- matrix(0, nrow=2, ncol=1)
@@ -492,7 +494,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
          
                        
   }else if(identical(tolower(str),"etas")){ ###	@ 2x1 vect to fix se's of eta at @
-    res <- eiread(dbuf, "eeta")
+    res <- eiread(dbuf, "eeta",formula,calculate=FALSE,...)
     if(all(is.na(res))) return(res)  
     if(rows(res) == 1)
       res <- matrix(0, nrow=2, ncol=1)
@@ -506,16 +508,16 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
 ###  @ n of covariates, incl. implied constant for Zb|Zw @
   }else if(identical(tolower(str), "ez")){
   
-    zb <- Zb <- eiread(dbuf, "zb")
-    zw <- Zw <- eiread(dbuf,"zw")
+    zb <- Zb <- eiread(dbuf, "zb",formula,calculate=FALSE,...)
+    zw <- Zw <- eiread(dbuf,"zw", formula,calculate=FALSE,...)
     Ez <- as.matrix(c(cols(Zb) + 1 - as.numeric(Zb == 1), cols(Zw) + 1 - as.numeric(Zw == 1)))
     if(exists("evbase"))
       assign("Ez", Ez, env=evbase)
     res <- Ez
  ###@ _cml_bounds (repeated code from eicml.src @
   }else if(identical(tolower(str),"ebounds")){ ###  @ _cml_bounds (repeated code from eicml.src @
-    dummy <- eiread(dbuf, "ez")
-    b <- eiread(dbuf,"ebounds")
+    dummy <- eiread(dbuf, "ez",formula,calculate=FALSE,...)
+    b <- eiread(dbuf,"ebounds",formula,calculate=FALSE,...)
        
     if(scalzero(b)) ####@ don't use bounds  @
       res <- matrix(c(-20, 20), nrow=1, ncol=2)
@@ -550,34 +552,34 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
 
   }else if(identical(tolower(str), "bvap") || identical(tolower(str), "nb")){ ###	@ black vap  @{
     x <- vread(dbuf, "x")
-    n <- eiread(dbuf, "n")
+    n <- eiread(dbuf, "n",formula,calculate=FALSE,...)
     res <- x%dot*% n
   }else if(identical(tolower(str), "nb2")){
 ###	@ number of blacks turning out to vote: sims from ei2 @
-    x <- eiread(dbuf, "x2")
-    n <- eiread(dbuf, "n")
+    x <- eiread(dbuf, "x2",formula,calculate=FALSE,...)
+    n <- eiread(dbuf, "n",formula,calculate=FALSE,...)
     res <- x%dot*% n
   }else if( identical(tolower(str),"wvap") || identical(tolower(str),"nw")) {###@ white vap  @
     x <- vread(dbuf, "x")
-    n <- eiread(dbuf, "n")
+    n <- eiread(dbuf, "n",formula,calculate=FALSE,...)
     res <- (1-x)%dot*% n
   } else if(identical(tolower(str),"nw2")){	###@ white vap  @
-    x <- eiread(dbuf,"x2")
-    n <- eiread(dbuf,"n")
+    x <- eiread(dbuf,"x2",formula,calculate=FALSE,...)
+    n <- eiread(dbuf,"n",formula,calculate=FALSE,...)
     res <- (1-x)%dot*%n
 
   } else if(identical(tolower(str),"nt")){		###	@ number of people who Turnout @
-    t <- eiread(dbuf,"t")
-    n <- eiread(dbuf,"n")
+    t <- eiread(dbuf,"t",formula,calculate=FALSE,...)
+    n <- eiread(dbuf,"n",formula,calculate=FALSE,...)
     res <- t%dot*%n
 
   } else if(identical(str,"dataset")){	###	@ dataset for input to eiloglik() @
     x <- vread(dbuf,"x")                  ### @ ignore _EselRnd @
     t <- vread(dbuf,"t")
-    Zb <- eiread(dbuf,"zb")
-    Zw <- eiread(dbuf,"zw")
-    Ez <- eiread(dbuf,"ez")
-    Eselect <- eiread(dbuf,"eselect")
+    Zb <- eiread(dbuf,"zb",formula,calculate=FALSE,...)
+    Zw <- eiread(dbuf,"zw",formula,calculate=FALSE,...)
+    Ez <- eiread(dbuf,"ez",formula,calculate=FALSE,...)
+    Eselect <- eiread(dbuf,"eselect",formula,calculate=FALSE,...)
     if(length(evbase))
       assign("Eselect",Eselect, env=evbase) 
     res <- packdta(x,Zb,Zw,t,evbase=evbase,Ez,Eselect) 
@@ -588,36 +590,36 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     else
       x <- vread(dbuf,"x")
     
-    betaBs <- betabs <- eiread(dbuf,"betabs")
+    betaBs <- betabs <- eiread(dbuf,"betabs",formula,calculate=FALSE,...)
     res <- NA
     if(!scalmiss(betabs))
       res <- betab2w(t,x,betaBs) 
   } else if(identical(tolower(str),"beta")){ ###   @ E(betab)~E(betaw) by precinct @
-    res <- cbind(eiread(dbuf,"betab"),eiread(dbuf,"betaw"))
+    res <- cbind(eiread(dbuf,"betab",formula,calculate=FALSE,...),eiread(dbuf,"betaw", formula,calculate=FALSE,...))
   } else if(identical(tolower(str),"betab")){	###		@ E(betab) for each precinct @
-    res <- colMeans(t(eiread(dbuf,"betabs")))
+    res <- colMeans(t(eiread(dbuf,"betabs",formula,calculate=FALSE,...)))
   } else if(identical(tolower(str),"betaw")){ ###			@ E(betaW) for each precinct @
     
-    res <- colMeans(t(eiread(dbuf,"betaws")))
+    res <- colMeans(t(eiread(dbuf,"betaws",formula,calculate=FALSE,...)))
   }  else if (identical(tolower(str), "sbetab")){###		@ sd(betab) for each precinct @
-    res <- sd(as.data.frame(t(eiread(dbuf,"betabs"))))
+    res <- sd(as.data.frame(t(eiread(dbuf,"betabs",formula,calculate=FALSE,...))))
   } else if( identical(tolower(str), "sbetaw")){ ###		@ sd(betaW) for each precinct @
-    res <- sd(as.data.frame(t(eiread(dbuf,"betaws"))))
+    res <- sd(as.data.frame(t(eiread(dbuf,"betaws",formula,calculate=FALSE,...))))
   } else if(identical(tolower(str), "rnbetabs")){###		@ randomly permuted betabs sims @
-    res <- eiread(dbuf,"betabs")
+    res <- eiread(dbuf,"betabs",formula,calculate=FALSE,...)
     a <- rows(res)
     c <- cols(res)
     for( i in 1:a)
       res[i,] <- res[i,order(runif(c))]   
    
   } else if(identical(tolower(str), "rnbetaws")){ ###		@ randomly permuted betabs sims @
-    res <- eiread(dbuf,"betaws")
+    res <- eiread(dbuf,"betaws",formula,calculate=FALSE,...)
     a <- rows(res)
     c <- cols(res)
     for( i in 1:a)
       res[i,] <- res[i,order(runif(c))]
   } else if( identical(tolower(str), "stbetabs")){ ###		@ sorted betaB simulations  @
-    betabs <- betaBs <- eiread(dbuf,"betaBs") 
+    betabs <- betaBs <- eiread(dbuf,"betaBs",formula,calculate=FALSE,...) 
     res <- NA
 
     if(!scalmiss(betabs)){
@@ -630,7 +632,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       res <- betabs
     }
   } else if(identical(tolower(str), "stbetaws")){ ###		@ sorted betaW simulations  @
-    betaWs <- betaws <- eiread(dbuf,"betaws") 
+    betaWs <- betaws <- eiread(dbuf,"betaws",formula,calculate=FALSE,...) 
     res <- NA
 
     if(!scalmiss(betaws)){
@@ -646,9 +648,9 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       return(NA)
     }
           
-    stbetabs <- eiread(dbuf,"stbetabs")
-    stbetaws <- eiread(dbuf,"stbetaws")
-    truth <- eiread(dbuf,"truth")
+    stbetabs <- eiread(dbuf,"stbetabs",formula,calculate=FALSE,...)
+    stbetaws <- eiread(dbuf,"stbetaws",formula,calculate=FALSE,...)
+    truth <- eiread(dbuf,"truth",formula,calculate=FALSE,...)
     b <- cols(stbetabs)
        
     res <- minindc(t(abs(stbetabs-truth[,1])))/b     
@@ -664,65 +666,65 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     res[,2] <- recode(res[,2],stdc(t(stbetaws))<= EnumTol,0.5) 
           
   }else if(identical(tolower(str),"ci50b")){### @ 50% confidence intervals for betab @
-    stbetabs <- eiread(dbuf,"stbetabs") 
+    stbetabs <- eiread(dbuf,"stbetabs",formula,calculate=FALSE,...) 
     e <- cols(stbetabs) 
     res <- cbind(stbetabs[,floor(0.25*e)], stbetabs[,floor(0.75*e)])
   }else if(identical(tolower(str),"ci80b"))	{ ###@ 80% confidence intervals for betab @
-    stbetabs <- eiread(dbuf,"stbetabs") 
+    stbetabs <- eiread(dbuf,"stbetabs",formula,calculate=FALSE,...) 
     e <- cols(stbetabs) 
     res <- cbind(stbetabs[,floor(0.1*e)], stbetabs[,floor(0.9*e)]) 
     
   } else if(identical(tolower(str), "ci95b")){ ###@ 95% confidence intervals for betab @
-    stbetabs <- eiread(dbuf,"stbetabs") 
+    stbetabs <- eiread(dbuf,"stbetabs",formula,calculate=FALSE,...) 
     e <- cols(stbetabs) 
     res <- cbind(stbetabs[,floor(0.05*e)],stbetabs[,floor(0.95*e)]) 
   } else if(identical(tolower(str),"ci50w")){###	@ 50% confidence intervals for betaw @
-    stbetaws <- eiread(dbuf,"stbetaws") 
+    stbetaws <- eiread(dbuf,"stbetaws",formula,calculate=FALSE,...) 
     e <- cols(stbetaws) 
     res <- cbind(stbetaws[,floor(0.25*e)], stbetaws[,floor(0.75*e)]) 
   } else if(identical(tolower(str),"ci80w")){###		@ 80% confidence intervals for betaw @
-    stbetaws <- eiread(dbuf,"stbetaws") 
+    stbetaws <- eiread(dbuf,"stbetaws",formula,calculate=FALSE,...) 
     e <- cols(stbetaws) 
     res <- cbind(stbetaws[,floor(0.1*e)],stbetaws[,floor(0.9*e)]) 
   } else if(identical(tolower(str),"ci95w")){ ###	@ 95% confidence intervals for betaw @
-    stbetaws <- eiread(dbuf,"stbetaws")
+    stbetaws <- eiread(dbuf,"stbetaws",formula,calculate=FALSE,...)
     e <- cols(stbetaws) 
     res <- cbind(stbetaws[,floor(0.05*e)],stbetaws[,floor(0.95*e)]) 
   }  else if(identical(tolower(str),"ci80bw")){ ###		@ 80% conf intervals for betab betaw  @
-    res <- cbind(eiread(dbuf,"ci80b"), eiread(dbuf,"ci80w")) 
+    res <- cbind(eiread(dbuf,"ci80b",formula,calculate=FALSE,...), eiread(dbuf,"ci80w",formula,calculate=FALSE,...)) 
   } else if(identical(tolower(str),"ci95bw")){###		@ 95% conf intervals for betab betaw  @
-    res <- cbind(eiread(dbuf,"ci95b"),eiread(dbuf,"ci95w")) 
+    res <- cbind(eiread(dbuf,"ci95b",formula,calculate=FALSE,...),eiread(dbuf,"ci95w",formula,calculate=FALSE,...)) 
 
   } else if(identical(tolower(str),"coverage")){ ###		@ CI coverage @
-    truth <- eiread(dbuf,"truth") 
+    truth <- eiread(dbuf,"truth",formula,calculate=FALSE,...)
     res <- NA
     if(!scalmiss(truth)){
       if(vin(dbuf,"x2")){
-        nb <- eiread(dbuf,"nb2") 
-        nw <- eiread(dbuf,"nw2") 
+        nb <- eiread(dbuf,"nb2",formula,calculate=FALSE,...) 
+        nw <- eiread(dbuf,"nw2",formula,calculate=FALSE,...) 
       }else{
-        nb <- eiread(dbuf,"nb") 
-        nw <- eiread(dbuf,"nw") 
+        nb <- eiread(dbuf,"nb",formula,calculate=FALSE,...) 
+        nw <- eiread(dbuf,"nw",formula,calculate=FALSE,...)  
       }
-      a <- eiread(dbuf,"ci50b") 
+      a <- eiread(dbuf,"ci50b",formula,calculate=FALSE,...)   
       bb <- is.na(colSums(t(cbind(a,truth)))) 
       a <- subset(a,subset=!bb) 
       e <- subset(truth,subset=!bb) 
       f <- as.numeric((e[,1]>=a[,1]) & (e[,1] <=a[,2])) 
       res <- rbind(colMeans(as.matrix(f)),t(colMeans(as.matrix(meanwc(f,delif(nb,bb)))))) 
-      a <- eiread(dbuf,"ci80b") 
+      a <- eiread(dbuf,"ci80b",formula,calculate=FALSE,...)   
       bb <- is.na(colSums(t(cbind(a,truth)))) 
       a <- delif(a,bb) 
       e <- delif(truth,bb) 
       f <- as.numeric((e[,1]>=a[,1]) & (e[,1]<=a[,2])) 
       res <- cbind(res, rbind(colMeans(as.matrix(f)), t(colMeans(as.matrix(meanwc(f,delif(nb,bb)))))))  
-      a <- eiread(dbuf,"ci50w")
+      a <- eiread(dbuf,"ci50w",formula,calculate=FALSE,...)  
       bb <- is.na(colSums(t(cbind(a,truth)))) 
       a <- delif(a,bb) 
       e <- delif(truth,bb) 
       f <- as.numeric((e[,2]>=a[,1]) & (e[,2] <=a[,2]))
       res <- cbind(res, rbind(colMeans(as.matrix(f)), t(colMeans(as.matrix(meanwc(f,delif(nw,bb))))))) 
-      a <- eiread(dbuf,"ci80w") 
+      a <- eiread(dbuf,"ci80w",formula,calculate=FALSE,...)   
       bb <- is.na(colSums(t(cbind(a,truth)))) 
       a <- delif(a,bb) 
       e <- delif(truth,bb) 
@@ -740,18 +742,18 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       }
     }
   }  else if(identical(tolower(str),"checkr")){###    @ check R function precision @
-      Edirtol <- eiread(dbuf,"Edirtol")
+      Edirtol <- eiread(dbuf,"Edirtol",formula,calculate=FALSE,...)  
       if(class(try(Ez,silent=T))!="try-error")
         res <- checkr(dbuf,as.vector(Edirtol),Ez)
       else
          res <- checkr(dbuf,as.vector(Edirtol),Ez=matrix(1,nrow=2, ncol=1))
     } else if(identical(tolower(str),"ri")) { ###                    @ ln(R) @    
-      a <- eiread(dbuf,"phi")
+      a <- eiread(dbuf,"phi",formula,calculate=FALSE,...)  
        if(class(try(Ez,silent=T))!="try-error")
-         lst <- pluckdta(eiread(dbuf,"dataset"),Ez)
+         lst <- pluckdta(eiread(dbuf,"dataset",formula,calculate=FALSE,...),Ez)
       else{
         Ez <- matrix(1,nrow=2, ncol=1)
-        lst <- pluckdta(eiread(dbuf,"dataset"),Ez)
+        lst <- pluckdta(eiread(dbuf,"dataset",formula,calculate=FALSE,...),Ez)
       }
       Zb <- zb <- lst$Zb
       Zw <- zw <- lst$Zw
@@ -766,9 +768,9 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
    
       res <- na.omit(lncdfbvnu(bb,bw,sb,sw,rho)) 
     } else if(identical(tolower(str),"r")){ ###                    @ sum(ln(R)) @    
-      res <- colSums(eiread(dbuf,"ri")) ###EV I have changed it from colSums(eiread(dbuf,"r")) 
+      res <- colSums(eiread(dbuf,"ri",formula,calculate=FALSE,...)  ) ###EV I have changed it from colSums(eiread(dbuf,"r",formula,calculate=FALSE,...)  ) 
     } else if(identical(tolower(str),"aggbias")){ ###		@ aggregation bias regressions @
-      truth <- eiread(dbuf,"truth")
+      truth <- eiread(dbuf,"truth",formula,calculate=FALSE,...)  
     
       res <- NA
     if(!scalmiss(truth)){
@@ -808,11 +810,11 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       }
     }
     }else if(identical(tolower(str),"eaggbias")){###	@ estimated aggregation bias regressions @
-      betab <- eiread(dbuf,"betab") 
-      betaw <- eiread(dbuf,"betaw") 
+      betab <- eiread(dbuf,"betab",formula,calculate=FALSE,...)   
+      betaw <- eiread(dbuf,"betaw",formula,calculate=FALSE,...)  
       res <- NA
     if(!scalmiss(betaw)){
-      x <- eiread(dbuf,"x") 
+      x <- eiread(dbuf,"x",formula,calculate=FALSE,...)  
       assign("Routput",0, env=evbase)
       assign("Rconst",1, env=evbase)
       Rconst <- 1 
@@ -847,18 +849,18 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       }
     }
     } else if(identical(tolower(str),"csbetab")){###		@ CI-based sd(betaB)  @
-      stbetabs <- stbetaBs <- eiread(dbuf,"stbetabs") 
+      stbetabs <- stbetaBs <- eiread(dbuf,"stbetabs",formula,calculate=FALSE,...)   
       a <- stbetaBs[,floor(cols(stbetabs)*0.3413)] ### @ 34th percentile @
       b <- stbetaBs[,floor(cols(stbetabs)*0.6827)]### @ 68th percentile @
       res <- (b-a)/2 
     } else if(identical(tolower(str),"csbetaw")){ ###		@ CI-based sd(betaW)  @
-      stbetaws <- stbetaWs <- eiread(dbuf,"stbetaws") 
+      stbetaws <- stbetaWs <- eiread(dbuf,"stbetaws",formula,calculate=FALSE,...)   
       a <- stbetaWs[,floor(cols(stbetaws)*0.3413)] ### @ 34th percentile @
       b <- stbetaWs[,floor(cols(stbetaws)*0.6827)] ### @ 68th percentile @
       res <- (b-a)/2 
     } else if(identical(tolower(str),"gebw")){ ###                 @ betaB~betaB for sims betab>=betaw @
-      betaBs <- eiread(dbuf,"betabs")
-      betaWs <- eiread(dbuf,"betaws")
+      betaBs <- eiread(dbuf,"betabs",formula,calculate=FALSE,...)  
+      betaWs <- eiread(dbuf,"betaws",formula,calculate=FALSE,...)  
       a <- betaBs < betaWs
    
       betaBs[as.logical(a)] <- NA
@@ -867,23 +869,23 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
    ###   betaWs <- mkmissm(betaWs,a);
       res <- cbind(meanwc(t(as.matrix(betaBs)),1),meanwc(t(as.matrix(betaWs)),1), colSums(as.matrix(1-t(a))))
     }  else if(identical(tolower(str),"gebwa")){ ###                @ B^b ~ B^w for sims betaB >= betaW @
-      a <- eiread(dbuf,"gebw")
+      a <- eiread(dbuf,"gebw",formula,calculate=FALSE,...)  
       res <- cbind(meanwc(a[,1],a[,3]),meanwc(a[,2],a[,3]))
     } else if(identical(tolower(str),"gewb")){ ###  @ betaB~betaW for sims betaW>=betaB @
-      betaBs <- eiread(dbuf,"betabs")
-      betaWs <- eiread(dbuf,"betaws")
+      betaBs <- eiread(dbuf,"betabs",formula,calculate=FALSE,...)  
+      betaWs <- eiread(dbuf,"betaws",formula,calculate=FALSE,...)  
       a <- betaBs> betaWs
       a <- as.logical(a)
       betaBs[a] <- NA
       betaWs[a] <- NA
       res <- cbind(meanwc(t(as.matrix(betaBs)),1), meanwc(t(as.matrix(betaWs)),1), colSums(as.matrix(1-t(a))))
     } else if(identical(tolower(str),"gewba")){###                 @ B^b ~ B^w for sims betaW >= betaB @
-      a <- eiread(dbuf,"gewb")
+      a <- eiread(dbuf,"gewb",formula,calculate=FALSE,...)  
       res <- cbind(meanwc(a[,1],a[,3]), meanwc(a[,2],a[,3]))
     } else if (identical(tolower(str),"bounds")){ ###		@ compute precinct bounds  @
       t <- vread(dbuf,"t")
       x <- vread(dbuf,"x")
-      n <- eiread(dbuf,"n")
+      n <- eiread(dbuf,"n",formula,calculate=FALSE,...)  
       if(exists("evbase")) EnumTol <- get("EnumTol", env=evbase)
       else  EnumTol <- 1.e-4
         
@@ -896,8 +898,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       if(vin(dbuf,"undert")){
          v <- vread(dbuf,"t")
          x <- vread(dbuf,"underx")
-         n <- eiread(dbuf,"undern")
-         t <- eiread(dbuf,"undert")
+         n <- eiread(dbuf,"undern",formula,calculate=FALSE,...)  
+         t <- eiread(dbuf,"undert",formula,calculate=FALSE,...)  
          if(exists("evbase")) EnumTol <- get("EnumTol", env=evbase)
          else  EnumTol <- 1.e-4
          lst <- bounds2(v,t,x,n,EnumTol)
@@ -907,7 +909,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     } else if(identical(tolower(str),"abounds")) { ###		@ compute aggregate bounds  @
       t <- vread(dbuf,"t")
       x <- vread(dbuf,"x")
-      n <- eiread(dbuf,"n")
+      n <- eiread(dbuf,"n",formula,calculate=FALSE,...)  
       if(exists("evbase")) EnumTol <- get("EnumTol", env=evbase)
       else  EnumTol <- 1.e-4
       lst <- bounds1(t,x,n,EnumTol)
@@ -928,8 +930,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     if(vin(dbuf,"undert")){
       v <- vread(dbuf,"t")
       x <- vread(dbuf,"underx")
-      n <- eiread(dbuf,"undern")
-      t <- eiread(dbuf,"undert")
+      n <- eiread(dbuf,"undern",formula,calculate=FALSE,...)  
+      t <- eiread(dbuf,"undert",formula,calculate=FALSE,...)  
       if(exists("evbase")) EnumTol <- get("EnumTol", env=evbase)
       else  EnumTol <- 1.e-4
       lst <- bounds2(v,t,x,n,EnumTol)
@@ -946,12 +948,12 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     }
     res <- t(res);
     } else if(identical(tolower(str), "pphi")){ ###			@ prints phi and se's  @
-      b <- eiread(dbuf,"phi")
+      b <- eiread(dbuf,"phi",formula,calculate=FALSE,...)  
       res <- NA
      if(!scalmiss(b)){
-       e <- eiread(dbuf,"etas")
-       ei.vc <- eiread(dbuf,"ei.vc")
-       ind <- as.vector(eiread(dbuf, "ghactual"))
+       e <- eiread(dbuf,"etas",formula,calculate=FALSE,...)  
+       ei.vc <- eiread(dbuf,"ei.vc",formula,calculate=FALSE,...)  
+       ind <- as.vector(eiread(dbuf, "ghactual",formula,calculate=FALSE,...)  )
        if(ind <= 0) stop("eiread: ghactual not found")
       if (ei.vc[ind,1]!=-1)
         a <- rbind(sqrt(extract.diag(vread(dbuf,"vcphi"))),e)
@@ -974,14 +976,14 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     }else if(identical(tolower(str),"psiu")){ ###			@ untruncated psi  @
       if(!vin(dbuf,"phi"))
         return(NA)
-      b <- eiread(dbuf,"phi")
+      b <- eiread(dbuf,"phi",formula,calculate=FALSE,...)  
       if(all(is.na(b))) return(NA)
       res <- read.par(dbuf,b, par="psiu",mess="Untruncated psi's", evbase)
       
       
           
     } else if(identical(tolower(str), "mppsiu")){###		@ Mean Posterior untruncated psi  @
-      b <- as.matrix(eiread(dbuf,"phisims"))
+      b <- as.matrix(eiread(dbuf,"phisims",formula,calculate=FALSE,...)  )
       res <- NA
     if(!scalmiss(b)){
       if (cols(b)==2)##  @ i.e., if _EisChk @
@@ -991,22 +993,22 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
      res <- read.par(dbuf,b,"mppsiu", "Mean Posterior Untruncated psi's", evbase)
     } 
     }else if(identical(tolower(str), "psi")){###			@ ultimate truncated psi  @
-      b <- as.matrix(eiread(dbuf,"phi"))
+      b <- as.matrix(eiread(dbuf,"phi",formula,calculate=FALSE,...)  )
       res <- NA
       if(!scalmiss(b)){
       ###     clearg _Erho;
-      Erho <- eiread(dbuf,"Erho")
+      Erho <- eiread(dbuf,"Erho",formula,calculate=FALSE,...)  
       assign("Erho", Erho, env=evbase)
       if(Erho[1]==0){
-        c <- eiread(dbuf,"parnames")
+        c <- eiread(dbuf,"parnames",formula,calculate=FALSE,...)  
         cl <- sapply(c,tolower)
         e <- unlist(sapply(cl, identical, "rho"))
         b <- subset(b, subset=!e)
       }else b <- as.vector(b)
-      Zb <- as.vector(eiread(dbuf,"Zb"))
-      Zw <- as.vector(eiread(dbuf,"Zw"))
+      Zb <- as.vector(eiread(dbuf,"Zb",formula,calculate=FALSE,...)  )
+      Zw <- as.vector(eiread(dbuf,"Zw",formula,calculate=FALSE,...)  )
       x <- vread(dbuf,"x")
-      Ez <- eiread(dbuf,"Ez")
+      Ez <- eiread(dbuf,"Ez",formula,calculate=FALSE,...)  
       assign("Ez", Ez, env=evbase)
       res <- eirepart(b,Zb,Zw,as.vector(x),Ez)
     
@@ -1019,23 +1021,23 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     }
     }else if(identical(tolower(str), "aggs")){###			@ sims x 2 of wtd mean of (betaB&W)  @
       if(vin(dbuf,"x2")){
-        nb <- eiread(dbuf,"nb2");
-        nw <- eiread(dbuf,"nw2");
+        nb <- eiread(dbuf,"nb2",formula,calculate=FALSE,...)  
+        nw <- eiread(dbuf,"nw2",formula,calculate=FALSE,...)  
       }else{
-        nb <- eiread(dbuf,"nb");
-        nw <- eiread(dbuf,"nw");
+        nb <- eiread(dbuf,"nb",formula,calculate=FALSE,...)  
+        nw <- eiread(dbuf,"nw",formula,calculate=FALSE,...)  
       }
     res <- cbind(meanWc(vread(dbuf,"betabs"),nb), 
-                 meanWc(eiread(dbuf,"betaws"),nw))
+                 meanWc(eiread(dbuf,"betaws",formula,calculate=FALSE,...),nw))
     }else if(identical(tolower(str),"maggs")){###		        @ 2 x 1: meanc(aggBs~aggWs) @
-      a <- eiread(dbuf,"aggs")
+      a <- eiread(dbuf,"aggs",formula,calculate=FALSE,...)  
       res <- colMeans(a)
     } else if(identical(tolower(str),"vcaggs")){###		@ 2 x 2: vcx(aggBs~aggWs)  @
-      a <- eiread(dbuf,"aggs")
+      a <- eiread(dbuf,"aggs",formula,calculate=FALSE,...)  
       res <- var(a)
     } else if(identical(tolower(str), "paggs")){##			@ 2 x 2: ests (se's)  @
-      a <- eiread(dbuf,"Maggs")
-      b <- eiread(dbuf,"VCaggs")      
+      a <- eiread(dbuf,"Maggs",formula,calculate=FALSE,...)  
+      b <- eiread(dbuf,"VCaggs",formula,calculate=FALSE,...)        
       b <- sqrt(extract.diag(b))
       res <- rbind(t(as.matrix(a)), t(as.matrix(b)))
       if(Eprt>0){
@@ -1071,7 +1073,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     if(vin(dbuf,"undert")){
       t <- vread(dbuf,"undert")
       x <- vread(dbuf,"underx")
-      v <- eiread(dbuf,"t")
+      v <- eiread(dbuf,"t",formula,calculate=FALSE,...)  
       omx <- cbind(x,(1-x))
       lstreg <- reg(formula,omx,t,...) 
       a <- lstreg$coefficients
@@ -1087,9 +1089,9 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     }
      
     } else if(identical(tolower(str), "neighbor")){ ###             @ 2 x 1 of Neighborhood estimates @
-      t <- eiread(dbuf,"t")
-      b <- eiread(dbuf,"Nb")
-      a <- eiread(dbuf,"Nw")
+      t <- eiread(dbuf,"t",formula,calculate=FALSE,...)  
+      b <- eiread(dbuf,"Nb",formula,calculate=FALSE,...)  
+      a <- eiread(dbuf,"Nw",formula,calculate=FALSE,...)  
       res <- rbind(meanwc(t,b),meanwc(t,a))
       if(Eprt>0){
         message("Freedman et al.'s Neighborhood Model Estimates");
@@ -1122,7 +1124,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       }
     } else if(identical(tolower(str),"palmquist")){###		@ Palmquist's inflation factor  @
       x <- vread(dbuf,"x")
-      n <- eiread(dbuf,"n")
+      n <- eiread(dbuf,"n",formula,calculate=FALSE,...)  
       b <- meanwc(x,n)
       a <- (meanwc(x^2,n)-b^2)/(b*(1-b))
       res <- (1/a)-1
@@ -1133,7 +1135,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       message("eiread: truth needs to be stored first")
       return(NA)
     }
-    truth <- eiread(dbuf,"truth")
+    truth <- eiread(dbuf,"truth",formula,calculate=FALSE,...)  
     res <- truth[,1]
   }  else if(identical(tolower(str),"truthw")){###		@ true betaw @
     if(!vin(dbuf,"truth")){
@@ -1141,31 +1143,31 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     
       return(NA)
     }
-    truth <- eiread(dbuf,"truth")
+    truth <- eiread(dbuf,"truth",formula,calculate=FALSE,...)  
     res <- truth[,2]
   }  else if(identical(tolower(str),"nbv") || identical(tolower(str),"nbt")){###	@ number of blacks who Turnout @
     if(!vin(dbuf,"truth")){
       message("eiread: truth needs to be stored first");
       return(NA);
     }
-    b <- eiread(dbuf,"truthb")
-    nb <- eiread(dbuf,"nb")
+    b <- eiread(dbuf,"truthb",formula,calculate=FALSE,...)  
+    nb <- eiread(dbuf,"nb",formula,calculate=FALSE,...)  
     res <- nb%dot*%b
   } else if(identical(tolower(str),"nbn")){###			@ number of blacks who don't vote @
     if(!vin(dbuf,"truth")){
       message("eiread: truth needs to be stored first");
       return(NA);
     }
-    b <- eiread(dbuf,"truthb")
-    nb <- eiread(dbuf,"nb")
+    b <- eiread(dbuf,"truthb",formula,calculate=FALSE,...)  
+    nb <- eiread(dbuf,"nb",formula,calculate=FALSE,...)  
     res <- nb%dot*%(1-b)
   } else if(identical(tolower(str),"nwv") || identical(tolower(str),"nwt")){###	@ number of whites who Turnout @
     if(!vin(dbuf,"truth")){
       message("eiread: truth needs to be stored first");
       return(NA);
     }
-    b <- eiread(dbuf,"truthw")
-    nw <- eiread(dbuf,"nw")
+    b <- eiread(dbuf,"truthw",formula,calculate=FALSE,...)  
+    nw <- eiread(dbuf,"nw",formula,calculate=FALSE,...)  
     res <- nw%dot*%b
   } else if(identical(tolower(str),"nwn")){###			@ number of blacks who don't vote @
     if(!vin(dbuf,"truth")){
@@ -1173,8 +1175,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       return(NA)
     }
      
-    b <- eiread(dbuf,"truthw")
-    nw <- eiread(dbuf,"nw")
+    b <- eiread(dbuf,"truthw",formula,calculate=FALSE,...)  
+    nw <- eiread(dbuf,"nw",formula,calculate=FALSE,...)  
     res <- nw%dot*%(1-b)
   } else if(identical(tolower(str),"aggtruth")){###		@ aggregate truths  @
     if(!("truth" %inG% cv)){
@@ -1182,7 +1184,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       return(NA)
     }
    
-    n <- eiread(dbuf,"n")
+    n <- eiread(dbuf,"n",formula,calculate=FALSE,...)  
     x <- vread(dbuf,"x")
     nb <- x%dot*%n
     nw <- (1-x)%dot*%n
@@ -1195,7 +1197,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       print(as.vector(res))
     }
   } else if(identical(tolower(str),"psitruth")){###		@ true psi's, truncated scale  @
-    a <- as.matrix(eiread(dbuf,"truth"))
+    a <- as.matrix(eiread(dbuf,"truth",formula,calculate=FALSE,...)  )
     res <- NA
     if(!scalmiss(a)){
       b <- cor(na.omit(a));
@@ -1209,15 +1211,16 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       }
     }
     }else if(identical(tolower(str),"tsims")){###			@ sims from p(T|X=seqas(0,1,100))  @
-      c <- eiread(dbuf,"Eeta");
+      c <- eiread(dbuf,"Eeta",formula,calculate=FALSE,...)  
     if(scalzero(c) && 
-      (!(scalone(eiread(dbuf,"Zb"))) || !(scalone(eiread(dbuf,"Zw"))))){
+      (!(scalone(eiread(dbuf,"Zb",formula,calculate=FALSE,...)))
+       || !(scalone(eiread(dbuf,"Zw",formula,calculate=FALSE,...) )))){
       message("eiread: tsims only works without covariates.")
       return(NA);
     }
       a <- 100
       x <- seqase(0,1,a)
-      b <- eiread(dbuf,"phi")
+      b <- eiread(dbuf,"phi",formula,calculate=FALSE,...) 
       res <- NA
       if(!scalmiss(b)){
     
@@ -1229,10 +1232,10 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
         b[rows(b)-1] <- b[2]
         b[rows(b)] <- b[4]
       }
-      Ez <- eiread(dbuf,"Ez")
+      Ez <- eiread(dbuf,"Ez",formula,calculate=FALSE,...) 
       assign("Ez", Ez, env=evbase)
-      zb <- eiread(dbuf,"Zb")
-      zw <- eiread(dbuf,"Zw")
+      zb <- eiread(dbuf,"Zb",formula,calculate=FALSE,...) 
+      zw <- eiread(dbuf,"Zw",formula,calculate=FALSE,...) 
       lst <- eirepar(b,0,0,0,Ez)
       bb0 <- lst$Bb
       bw0 <- lst$Bw
@@ -1253,14 +1256,14 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     }
 
     } else if( identical(tolower(str), "tsims0")){ ###          @ sims from p(T|X_obs,Z_obs) @
-      b <- eiread(dbuf,"phi")
+      b <- eiread(dbuf,"phi",formula,calculate=FALSE,...) 
       if(scalmiss(b)) return(res <- NA)
       
-      Ez <- eiread(dbuf,"Ez")
-      t <- eiread(dbuf,"t")
-      x <- eiread(dbuf,"x")
-      zb <- eiread(dbuf,"Zb")
-      zw <- eiread(dbuf,"Zw")
+      Ez <- eiread(dbuf,"Ez",formula,calculate=FALSE,...) 
+      t <- eiread(dbuf,"t",formula,calculate=FALSE,...) 
+      x <- eiread(dbuf,"x",formula,calculate=FALSE,...) 
+      zb <- eiread(dbuf,"Zb",formula,calculate=FALSE,...) 
+      zw <- eiread(dbuf,"Zw",formula,calculate=FALSE,...) 
       a <- ifelse(is.matrix(x), rows(x), length(x))
       
       lst <- eirepar(b,zb,zw,as.vector(x),Ez)
@@ -1269,7 +1272,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       sb <- lst$sb
       sw <- lst$sw
       rho <- lst$rho
-      c <- eiread(dbuf,"Esims")
+      c <- eiread(dbuf,"Esims",formula,calculate=FALSE,...) 
       res <- matrix(0, nrow=a,ncol=c);
       bnds <- matrix(c(0, 1, 0, 1),nrow=2, ncol=2, byrow=T)
       for (i in 1:a){
@@ -1280,12 +1283,13 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       res <- cbind(t,res)
       
     }else if(identical(tolower(str),"expvarci")){ ###		@ x~20%CI~mean~80%ci @
-      if( rows(eiread(dbuf,"Eeta"))==4 &&
-      (!scalone(eiread(dbuf,"Zb")) || !scalone(eiread(dbuf,"Zw")))){
+      if( rows(eiread(dbuf,"Eeta",formula,calculate=FALSE,...) )==4 &&
+      (!scalone(eiread(dbuf,"Zb",formula,calculate=FALSE,...) )
+       || !scalone(eiread(dbuf,"Zw",formula,calculate=FALSE,...) ))){
       message("eiread: expvarci only works without covariates.");
       return(NA)
     }
-      b <- eiread(dbuf,"tsims")
+      b <- eiread(dbuf,"tsims",formula,calculate=FALSE,...) 
       res <- NA
     if(!scalmiss(b)){
       x <- as.matrix(b[,1])
@@ -1293,8 +1297,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       res <- cbind(x,b[,floor(0.2*Esims)], colMeans(t(b)), b[,floor(0.8*Esims)])
     }
     } else if(identical(tolower(str), "expvarci0")){###		@ t~20%CI~mean~80%ci @
-      b <- eiread(dbuf,"tsims0")
-      c <- eiread(dbuf,"Esims")
+      b <- eiread(dbuf,"tsims0",formula,calculate=FALSE,...) 
+      c <- eiread(dbuf,"Esims",formula,calculate=FALSE,...) 
       res <- NA
       if (!scalmiss(b)){
         t <- as.matrix(b[,1])
@@ -1303,7 +1307,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       }
     
   }else if(identical(tolower(str), "expvarcis")){###		@ x~20%CI~mean~80%ci LOESS smoothed @
-    b <- eiread(dbuf,"expvarci");
+    b <- eiread(dbuf,"expvarci",formula,calculate=FALSE,...) 
     res <- NA
     if(!scalmiss(b)){
       e <- output
@@ -1352,20 +1356,20 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
         message("Model  Posterior Prior  Marginal")
         message("Number   Prob     Prob   LogLik ", cbind(postp, priorp[,2], mrgllk[,2]))
        ## ?;
-        abounds <- eiread(dbuf,"abounds")
+        abounds <- eiread(dbuf,"abounds",formula,calculate=FALSE,...)  
         assign("abounds",abounds,env=evbase)
         ##?;
-        paggs <- eiread(dbuf,"paggs")
+        paggs <- eiread(dbuf,"paggs",formula,calculate=FALSE,...)  
          assign("paggs",aggs,env=evbase)
         res <- ""
         return(res)
       }
     }
   
-    if (scalone(eiread(dbuf,"Enonpar"))){
+    if (scalone(eiread(dbuf,"Enonpar",formula,calculate=FALSE,...))){
       message("Nonparametric Estimation");
-      message("EnonNumInt:   ", eiread(dbuf,"EnonNum"))
-      message("EnonEval:     ", eiread(dbuf,"EnonEva"))
+      message("EnonNumInt:   ", eiread(dbuf,"EnonNum",formula,calculate=FALSE,...))
+      message("EnonEval:     ", eiread(dbuf,"EnonEva",formula,calculate=FALSE,...))
       message("N:             ", rows(vread(dbuf,"x")))
       message("Esims:        ", vread(dbuf,"Esims"))
      ## ?;
@@ -1380,48 +1384,48 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       message("Esigma:    ", vread(dbuf,"Esigma"),"       ")
       message("Erho:      ", as.vector((vread(dbuf,"Erho"))))
       message("Eisn:      ", vread(dbuf,"Eisn"),"     ")
-      message("resamp:     ",eiread(dbuf,"resamp"))
+      message("resamp:     ",eiread(dbuf,"resamp",formula,calculate=FALSE,...))
       message("GhActual:  ",vread(dbuf,"ghactual"))
       message("Estval:    ",vread(dbuf,"Estval"))
       if("eeta   " %inG% cv)
-        message("Eeta:      ", as.vector(eiread(dbuf,"Eeta")))
+        message("Eeta:      ", as.vector(eiread(dbuf,"Eeta",formula,calculate=FALSE,...) ))
       
       message("log-likelihood:         ", vread(dbuf,"loglik"))
-      message("ln(mean(Imptce Ratio)): ", eiread(dbuf,"meanIR"))
+      message("ln(mean(Imptce Ratio)): ", eiread(dbuf,"meanIR",formula,calculate=FALSE,...) )
      ## ?;
-      pphi <- eiread(dbuf,"pphi")
+      pphi <- eiread(dbuf,"pphi",formula,calculate=FALSE,...)  
       assign("pphi", pphi, env=evbase)
      ## ?;
-      psiu <- eiread(dbuf,"psiu")
+      psiu <- eiread(dbuf,"psiu",formula,calculate=FALSE,...)  
       assign("pphi", psiu, env=evbase)
       ##?;
-      psi <- eiread(dbuf,"psi")
+      psi <- eiread(dbuf,"psi",formula,calculate=FALSE,...)  
       assign("pphi", psi, env=evbase)
       ##?;
     
     }
       if ("truth   "%inG% cv)
         {
-          psitruth <- eiread(dbuf,"psitruth")
+          psitruth <- eiread(dbuf,"psitruth",formula,calculate=FALSE,...)  
           assign("psitruth", psitruth, env=evbase)
         ##?;
-          aggbias <- eiread(dbuf,"aggbias")
+          aggbias <- eiread(dbuf,"aggbias",formula,calculate=FALSE,...)  
           assign("aggbias", aggbias, env=evbase)
           ##?;
-          eiread(dbuf,"eaggbias")
+          eiread(dbuf,"eaggbias",formula,calculate=FALSE,...)  
            assign("eaggbias", eagbias, env=evbase)
           ##?;
-          coverage <- eiread(dbuf,"coverage")
+          coverage <- eiread(dbuf,"coverage",formula,calculate=FALSE,...)  
            assign("coverage", coverage, env=evbase)
 ###?; 
-          eiread(dbuf,"aggtruth")
+          eiread(dbuf,"aggtruth",formula,calculate=FALSE,...)  
            assign("aggtruth", aggtruth, env=evbase)
 ###?;
         }
-    abounds <- eiread(dbuf,"abounds")
+    abounds <- eiread(dbuf,"abounds",formula,calculate=FALSE,...)  
      assign("abounds", abounds, env=evbase)
     ###?;
-    paggs <- eiread(dbuf,"paggs")
+    paggs <- eiread(dbuf,"paggs",formula,calculate=FALSE,...)  
      assign("paggs", paggs, env=evbase)
     res <- ""
     
@@ -1437,13 +1441,13 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
   return(res)
 }
   ###helper to eiread to avoid repetition
-  read.par <- function(dbuf,b, par, mess, evbase=NULL){ 
+  read.par <- function(dbuf,b, par, mess, evbase=NULL,...){ 
   
-    Erho <- eiread(dbuf,"Erho")
+    Erho <- eiread(dbuf,"Erho",formula=NA,calculate=FALSE,...)  
     if(length(evbase))
       assign("Erho", Erho, env=evbase)  
     if (Erho[1]==0){
-      c <- eiread(dbuf,"parnames")
+      c <- eiread(dbuf,"parnames",formula=NA,calculate=FALSE,...) 
       cl <- sapply(c,tolower)
       ss <- unlist(sapply(cl,identical,"rho"))
         
@@ -1455,7 +1459,7 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     Zw <- as.vector(vread(dbuf,"Zw"))
     x <- as.vector(vread(dbuf,"x"))
    
-    Ez <- eiread(dbuf,"Ez")
+    Ez <- eiread(dbuf,"Ez",formula=NA,calculate=FALSE,...) 
     nm <- names(dbuf)
     dbuf <- c(dbuf,list(Ez))
     names(dbuf) <- c(nm, "ez")
@@ -1495,12 +1499,12 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
 ## each element indicating that the CDFBVN function is sufficiently
 ## precise (when 1) and insufficiently precise (when 0)
 ##
-checkr <- function(dbuf,eps,Ez){
+checkr <- function(dbuf,eps,Ez,...){
 ###  local phi,R,rr,zb,zw,x,y,k,kk,loparms,hiparms,loR,hiR,rchk;
 
-  phi <- eiread(dbuf,"phi")
+  phi <- eiread(dbuf,"phi",formula=NA,calculate=FALSE,...) 
   rr <- rows(phi)
-  lst = pluckdta(eiread(dbuf,"dataset"),Ez=Ez)
+  lst = pluckdta(eiread(dbuf,"dataset",formula=NA,calculate=FALSE,...) ,Ez=Ez)
   Zb <- zb <- lst$Zb
   Zw <- zw <- lst$Zw
   x <- lst$x
@@ -1628,4 +1632,13 @@ reg <- function(formula=NA,x,y=NULL,...)
     }
     stop("reg:Provide formula and names data")
 }
+###DESCRIPTION S3 method that calls eiread
+####           if only one argument, then calls "paggs"
+###            if two arguments then calls eiread(object,str)
+summary.ei <- function(object,...){
   
+  drvdot <- match.call(expand.dots=TRUE)
+  if(length(drvdot)>2) str <- drvdot[[3]]
+  else str <- "paggs"
+  return(eiread(object, str))
+}

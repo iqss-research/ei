@@ -5,7 +5,7 @@
 ###       invn, boolean to invert dat[[nidn]]
 ### Run the demo
 ###
-eidemononpar <- function(dat,tind=3,xind=1,nind=5,invn=FALSE,...){
+eidemononpar <- function(dat,tind=1,xind=2,nind=3,invn=FALSE,...){
 res <- dat
 t <- res[[tind]]
 x <- res[[xind]]
@@ -13,7 +13,7 @@ invtvap <- res[[nind]]
 if(invn)
   tvap <- 1/(invtvap +.Machine$double.eps)
 else
-  tvap <- invtap
+  tvap <- invtvap
 ind <- which(x <= 0 | x >= 1 |t <= 0 | t >= 1 |tvap<=0)
 if(length(ind)){
   ind <- unique.default(ind)

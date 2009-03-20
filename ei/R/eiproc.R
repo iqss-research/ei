@@ -51,7 +51,6 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
   
   drvdot <- match.call(expand.dots=TRUE)
   drv  <-  match.call(expand.dots=FALSE)
-
   n <- tvap
  
   entries <- expanddots(drvdot,drv,evbase)
@@ -169,8 +168,9 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
      Eres <- get("Eres", env=evbase)
    ###  Eres <- vput(Eres, get("psiu", env=evbase),"psiu");
      if(length(MLvc) <= 1 && is.na(MLvc)){
-       Eres <- vput(Eres,MLpsi,"phi");
-       Eres <- vput(Eres,MLvc,"vcphi");
+       Eres <- vput(Eres,MLpsi,"phi")
+       Eres <- vput(Eres,MLvc,"vcphi")
+       class(Eres) <- "ei"
       return(Eres);
      }
    
@@ -238,6 +238,7 @@ tst <- paste("Run time: ", date(), "\nEversion", sep="")
     rm("eres", envir=evbase)
   }
   res <- c(res, evbase=list(evbase))
+  class(res) <- "ei"
   return(res)
 }
              
