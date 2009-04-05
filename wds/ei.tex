@@ -11,6 +11,11 @@
 \usepackage{epsf}
 \usepackage{url}
 \usepackage{html}
+
+\usepackage{vmargin}
+\setpapersize{USletter}
+%\topmargin=0in
+
 %\pagestyle{myheadings}
 \htmladdtonavigation{
   \htmladdnormallink{%
@@ -31,31 +36,32 @@
 
 \title{${\mathfrak EI}$: A Program for Ecological Inference}
 \author{Gary King\\ Department of Government\\ Harvard
-  University\thanks{\copyright\ Copyright 1995--2001, All rights
-    reserved.  (Center for Basic Research in the Social Sciences, 34
-    Kirkland Street, Harvard University, Cambridge MA
-    02138\texttt{King@Harvard.Edu}, phone: (617) 495-2027.)  This
-    document can be read on-line in hypertext format from
-    \texttt{http://GKing.Harvard.Edu}. The program implements the
-    procedures described in \emph{A Solution to the Ecological
-      Inference Problem: Reconstructing Individual Behavior from
-      Aggregate Data} (Princeton University Press, 1997).  ${\mathfrak
-      EI}$ was written in the Gauss Programming Language, \copyright
-    Copyright Aptech Systems, Inc., and uses Gauss' Constrained
-    Maximum Likelihood Module written by Ronald J.\ Schoenberg.  For
-    making available public domain Gauss code, I am grateful to David
-    Baird (for an inverse cumulative normal procedure), Martin van der
-    Ende (for an accurate cumulative bivariate normal procedure), and
-    Simon Jackman (for a loess procedure).  For research assistance,
-    my thanks goes to Kosuke Imai and Eric Dickson, and for research
-    support, my thanks goes to the National Science Foundation
-    (IIS-9874747), the National Institutes of Aging (P01 AG17625-01),
-    and the World Health Organization.  EI is copyrighted, but you may
-    copy and distribute this program provided that no charge is made
-    and the copy is identical to the original.  To request an
-    exception, please contact me.}}
+  University\thanks{\copyright\ Copyright 1995--2006, All rights
+    reserved.  (Institute for Quantitative Social Science, Harvard
+    University, 1737 Cambridge St., Cambridge MA 02138;
+    \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu},
+    (617) 495-2027.)  This document can be read on-line in hypertext
+    format from \texttt{http://GKing.Harvard.Edu/ei/ei.html}. The
+    program implements the procedures described in \emph{A Solution to
+      the Ecological Inference Problem: Reconstructing Individual
+      Behavior from Aggregate Data} (Princeton University Press,
+    1997).  ${\mathfrak EI}$ was written in the Gauss Programming
+    Language, \copyright Copyright Aptech Systems, Inc., and uses
+    Gauss' Constrained Maximum Likelihood Module written by Ronald J.\ 
+    Schoenberg.  For making available public domain Gauss code, I am
+    grateful to David Baird (for an inverse cumulative normal
+    procedure), Martin van der Ende (for an accurate cumulative
+    bivariate normal procedure), and Simon Jackman (for a loess
+    procedure).  For research assistance, my thanks goes to Kosuke
+    Imai and Eric Dickson, and for research support, my thanks goes to
+    the National Science Foundation (IIS-9874747), the National
+    Institutes of Aging (P01 AG17625-01), and the World Health
+    Organization.  EI is copyrighted, but you may copy and distribute
+    this program provided that no charge is made and the copy is
+    identical to the original.  To request an exception, please
+    contact me.}}
 
-\date{Version 1.9, 8 February 2003}
+\date{Version 1.9a}
 \newcommand{\Tiny}{\tiny}
 \newcommand{\sump}{\sum_{i=1}^p}
 \newcommand{\mean}{\frac{1}{p}\sump}
@@ -2688,6 +2694,32 @@ opposing side.  Since EI starts with Goodman's regression, which had
 previously been declared as the appropriate method by the Supreme
 Court, and adds information known to be true (i.e., the bounds), EI
 has been relatively uncontroversial in these situations.
+
+I have not collected all uses of EI by the courts, but a recent
+eloquent statement was given in Judge Gruender's concurring opinion in
+\emph{Bone Shirt v.\ Hazeltine} (U.S. Court of Appeals, eighth
+circuit, No.  05-4010, on appeal from District Court of South Dakota,
+filed 22 August 2006, p.20), where he writes ``I find it difficult to
+rely upon [bivariate ecological regression analysis (BERA), i.e.,
+Goodman's regression,] a statistical method that incorporates an
+admittedly erroneous equation that yields a result with an error of
+unknown quantity and effect.  \underline{Daubert} specifically
+requires a district court to consider `the known or potential rate of
+error' of the scientific method utilized by testifying experts. 509
+U.S. at 594.  It is difficult to weigh this factor in
+\underline{Daubert}'s analysis if `the effect of that error is
+unknown.'  336 F. Supp. 2d at 1002.  Nor am I persuaded that previous
+acceptance of BERA results permanently decides the matter.  Science
+evolves, and scientific methods that were once considered unassailable
+truths have been discarded over time.  Unreliable testimony based upon
+those outdated theories and methods must be discarded as well, lest
+scientific stare decisis ensure that such theories survive only in
+court. It may be that the validity of some scientific methods need not
+be constantly reestablished in case after case, but a statistical
+method that contains an apparently unquantified error would not be one
+of them. If Cole's BERA-based testimony were the only basis for the
+district court's opinion, I would likely hold that its conclusions
+were unsupported by competent evidence.''
 
 \paragraph{What if I find a bug?}  First try to replicate the problem
 with the current version of the program (available at
