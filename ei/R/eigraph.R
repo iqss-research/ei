@@ -1920,9 +1920,11 @@ profileit <- function(dbuf,r,npts=100,eigraph.pro=NA,...){
 ###            if two arguments then calls eigraph(x,str)
 plot.ei <- function(x,...){
   
+
   drvdot <- match.call(expand.dots=TRUE)
   if(length(drvdot)>2) str <- drvdot[[3]]
   else str <- "tomogs"
+  
   return (eigraph(x,str))
 }
 
