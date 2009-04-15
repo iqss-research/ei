@@ -1,6 +1,5 @@
 importFrom(mvtnorm,pmvnorm)
-export(ei,einonp,betab2w,
-       user.prompt,eigraph,
+export(ei,user.prompt,eigraph,
        summary.ei,plot.ei)
 S3method(summary,ei)
 S3method(plot,ei)

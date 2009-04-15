@@ -16,7 +16,7 @@ print(names(dbuf))
 message("Obtaining beta blacks")  
 betab <- dbuf$betabs
 message("Calculating beta whites")
-betaw <- betab2w(t,x,betab)
+betaw <- summary(dbuf,"betaw")
 message("Obtaining overall beta's and std errors")
 berr <- summary(dbuf,"paggs")
 print(berr)               
