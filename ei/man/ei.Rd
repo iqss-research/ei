@@ -1,5 +1,6 @@
 \name{ei}
 \alias{ei}
+
 %\encoding{amstex,amssymb}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Ecological Inference: Reconstructing Individual Behavior from

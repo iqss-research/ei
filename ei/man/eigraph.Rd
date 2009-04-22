@@ -13,12 +13,12 @@
 
 \arguments{
   \item{dbuf}{See help file for plot.ei., argument x}
-  \item{str}{See help file for plot.ei, argument \ldots}
-  \item{psiu}{Vector of length 5. Reparameterized $\phi$ into
+  \item{str}{See help file for plot.ei, argument \eqn{\ldots}}
+  \item{psiu}{Vector of length 5. Reparameterized \eqn{$\phi$} into
     untruncated scale (average for bb bw).Default NA.}
   \item{...}{Optional argumnets are the globals specific
   to the graphics:\newline
-  \item{eigraph.bb}{string: xlabel for $ \beta_i^b$ by $ \beta_i^w$ plots. Default="betaB".}
+  \item{eigraph.bb}{string: xlabel for \eqn{$\beta_i^b$} by \eqn{$\beta_i^w$} plots. Default="betaB".}
 
 \item{eigraph.bbhi}{high end for betaB plots. Default=1.}
 
