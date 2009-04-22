@@ -1,26 +1,581 @@
-\SweaveOpts{results=hide, prefix.string=vigpics/ei}
+\SweaveOpts{results=hide,prefix.string=vigpics/EI}
+\include{zinput}
 
 
 %\VignetteIndexEntry{Non-parametric estimatio of Ecological Inference}
 %\VignetteDepends{ei,mvtnorm}
 %\VignetteKeyWords{model,non-parametric, ecological}
 %\VignettePackage{ei}
+
+\title{Ecological Inference: Reconstructing Individual behavior 
+from Aggregate Data; software available at 
+\texttt{http://gking.harvard.edu/ei/}, free of charge and
+open-source (under the terms of the GNU GPL, v. 2).}
+\author{Gary King \thanks{David Florence Professor of Government, Harvard
+  University (Institute for Quantitative Social Sciences, 1737 Cambridge 
+Street, Harvard University, Cambridge MA 02138;
+  \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu}, (617)
+  495-2027).}}
+
 \begin{document}
 
-<<loadLibrary, echo=F,results=hide>>=
-library(ei)
-@ 
+\maketitle
+\tableofcontents
+
+<<beforepkgs, echo=FALSE>>=
+before<-search()
+ ind <- grep("[a-z A-Z]+:ei",before)
+ if(!length(ind) > 0) library(ei, lib.loc="~/.R/library")
+@
+\include{ei.toc}
+
+\section{\tt Acknowlegments}
+\label{ack}
+The code, which was originally written in Gauss, has been translated into R by Elena Villalon who also generated the plots that are presented in this document.
+
+\section{{\tt Introduction}: Ecological Inference}
+\label{intro}
+
+This program provides a method of inferring individual behavior 
+from aggregate data. It implements the statistical procedures, 
+diagnostics, and graphics from the book (EIBAD), 
+A Solution to the Ecological Inference Problem: 
+Reconstructing Individual Behavior from Aggregate Data 
+(Princeton: Princeton University Press, 1997), by Gary King. 
+Please read the book prior to trying this program 
+(a sample chapter and other related information is available at 
+King's website). 
+Except where indicated, all references to page, section, chapter, 
+table, and figure numbers in this document refer to the book.\\
+\newline
+Ecological inference, as traditionally defined, 
+is the process of using aggregate (i.e., ``ecological'') data 
+to infer discrete individual-level relationships of interest 
+when individual-level data are not available. 
+As existing methods usually lead to inaccurate conclusions 
+about the empirical world, the ecological inference problem 
+had been to develop a method that gives accurate answers. 
+Ecological inferences are required in political science research 
+when individual-level surveys are unavailable 
+(e.g., local or comparative electoral politics), unreliable (racial politics), 
+insufficient (political geography), or infeasible (political history). 
+They are also required in numerous areas of major significance in public policy 
+(e.g., for applying the Voting Rights Act) and other academic 
+disciplines ranging from epidemiology and marketing to sociology and 
+quantitative history. Most researchers using aggregate data have 
+encountered some form of the ecological inference problem.\\
+\newline
+Because the ecological inference problem is caused by the lack 
+of individual-level information, no method of ecological inference, 
+including that introduced in this book and estimated by this program, 
+will produce precisely accurate results in every instance. 
+However, potential difficulties are minimized here by models 
+that include more available information, diagnostics to evaluate 
+when assumptions need to be modified, easy methods of modifying 
+the assumptions, and uncertainty estimates for all quantities of interest. 
+I recommend reviewing Chapter 16 while using this program for actual research.
+
+		
+\section{{\tt Overview}: R-commands to run the application}
+\label{commands}
+
+As only four commands are required to use $ {\mathfrak{E}I}$ the program 
+can be easily run interactively, or in batch mode as a regular R program. 
+Each command may also be used with many optional globals and 
+subcommands. An example of these commands are as follows:
 
 
-\section{{\tt ei}: Non-parametric estimation 
-for a 2x2 cell}\label{ei}
+\begin{verbatim}
+> library(ei)
+> data(sample)
+> t <- sample[[1]]
+> x <- sample[[2]]
+> n <- sample[[3]]
+> dbuf <- ei(t,x,n,1,1)
+> plot(dbuf)
+> plot(dbuf, ``nonpar'')
+> summary(dbuf)
+> summary(dbuf, ``betab'')
+\end{verbatim}
+
+In most applications, plot (which can also be invoked with the name eigraph) and  summary 
+would likely be run multiple times with different options chosen, and other commands would 
+be included with these four to read in the data (t, x, and n).\\
+\newline
+These four commands described in this section through a very simple use of $ {\mathfrak{E}I}$. 
+(Refer to the reference section below for further details and more sophisticated uses. 
+That section also includes sample data you can run with simple examples.) 
+For this purpose, and without loss of generality, I use the running example from the 
+book portrayed in Table 2.3 (page 31). This example uses the fraction of the voting age 
+population who are black ($ X_i$), the fraction turning out to vote ($ T_i$), 
+and the number of voting age people ($ {N_i}$) in each precinct ( $ i=1,\ldots,p$) 
+to infer the fraction of blacks who vote ($ \beta_i^b$) and the fraction of whites 
+who vote ($ \beta_i^w$), also in each precinct.\\
+\begin{itemize}
+\item{{ei}: To run the main procedure}
+
+Use the format, dbuf = ei(t,x,n,1,1);, which takes 
+three $ p\times 1$ vectors as inputs: t (e.g., the fraction of the voting age 
+population turning out to vote); x (e.g., the fraction of the voting age 
+population who are black); and n (e.g., the total number of people 
+in the voting age population). (The remaining two inputs are for optional covariates; 
+for the basic model, set them each to 1 for no covariates.) The output of this procedure 
+is the list dbuf (i.e., data buffer). After running ei, 
+it is a good idea to save dbuf on disk for futher analysis.
+The output data buffer from ei includes a large variety of different results useful 
+for understanding the results of the analysis. A minimal set of nonrepetitive information 
+is stored in this list (or data buffer), and a large variety of other information can be easily 
+computed from it. Fortunately, you do not need to know whether the information 
+you request is stored or computed as both are treated the same.\\
+\newline
+To extract information from the data buffer, two procedures are available:
+
+\item{{eigraph or plot}: To graph relevant information}
+
+For graphics, use plot(dbuf,"name") or eigraph(dbuf,''name'');, where dbuf is the list 
+that is the output of ei, and name can be any of a long list of ready-made graphs. 
+For example, use plot(dbuf,"fit"); to assess the fit of the model, plot(dbuf,"tomog
+
+"); 
+to print a tomography graph, or eigraph(dbuf,"xgraph"); to display a scattercross graph.
+
+\item{{analysis}: To obtain relevant information and numerical results}
+
+For numerical information, use v <- summary(dbuf,"name"), where v is the item extracted, 
+dbuf is the list that is the output of ei, and name can be any of a long list 
+of output possibilities. For example, use betab for a vector of point estimates 
+of $ \beta_i^b$, ci80w for 80\% confidence intervals for $ \beta_i^w$, 
+or sum to print a summary of district-level estimates and information.
+\end{itemize}
+
+
+\section{{\tt ei parametric}: Estimation for 2x2 tables}
+\label{eip}
+
+It runs ei setting the argument EnonPar=0, which is the default value, and is based 
+on the assumption of the truncated bivarate normal. Uses the routine nlminb 
+to find the local maximum-liklehood for the parameters optimization with bounds. Then,
+it uses the routine optim with the parameter estimations obtained with nlminb  
+to calculate the numerically differentiated hessian. 
 For a detailed description go to \url{http://gking.harvard.edu/ei}.
+
+\subsection{{\tt ei parametric}: Demos}
+\label{eipdemos}
+
+There are several examples in the demo directory, some of them have true values 
+for $\beta_B$ and $\beta_W$ (i.e., cens1910, kyck88,matproII,and scsp). 
+The following commands allow the user to run the demo data sets:
+
+\begin{verbatim}
+> library(ei)
+> demo(eip.default)
+> demo(eip.fultongen)
+> demo(eip.in90)
+> demo(eip.kyck88)
+> demo(eip.cens1910)
+> demo(eip.lavoteall)
+> demo(eip.matproII)
+> demo(eip.nj)
+> demo(eip.pa90)
+> demo(eip.scp)
+\end{verbatim}
+
+Some of the data sets have many precincts ( $> 1000$) and, even when the performance of ``ei'' 
+is very efficient, the graphics may take sometime to display all the precincts.
+
+\subsection{{\tt ei parametric}: Example}
+
+We are presenting an example with 75 precincts 
 <<BasicExample.data>>=
- data(sample)
-## sample
+ data(sample,package="ei") 
+ dbuf <- ei(sample[[1]], sample[[2]],sample[[3]],1,1)
 @ 
-<<BasicExample.einonpar>>=
- dbuf <- ei(sample[,1], sample[,2],sample[,3],1,1, EnonPar=1)         
+<<Basic.example.betas, echo=true>>=
+message("Obtaining overall beta\'s and std errors")
+berr <- summary(dbuf,"paggs")
+berr
 @ 
+<<Basic.example.graphics>>=
+message("Running graphics:")
+@
+\clearpage
+%\begin{figure}
+%\centering
+%<<label=Partomog,fig=true,echo=true>>=
+%eigraph(dbuf,"tomog")
+%@ 
+%\caption{Tomography lines}
+%\label{fig:sampletomog}
+%\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Partomoge,fig=true,echo=true>>= 
+eigraph(dbuf,"tomoge")
+@
+\caption{Tomography with estimated betaB and betaW}
+\label{fig:sampletomoge}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Partomogci,fig=true,echo=true>>= 
+eigraph(dbuf,"tomogci")
+@
+\caption{Tomography with 80\% confidence intervals}
+\label{fig:sampletomogci}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Partomogci95,fig=true,echo=true>>= 
+eigraph(dbuf,"tomogci95")
+@ 
+\caption{Tomography with 95\% confidence intervals}
+\label{fig:sampletomogci95}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parestsims,fig=true,echo=true>>= 
+eigraph(dbuf,"estsims")
+@ 
+\caption{Simulated betaB's by simulated betaW's}
+\label{fig:sampleestsims}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Partomogs,fig=true,echo=true, width=5, height=6>>= 
+plot(dbuf)
+@ 
+\caption{Tomographic plots}
+\label{fig:sampletomogs}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parxtc,fig=true,echo=true>>= 
+eigraph(dbuf,"xtc")
+@
+\caption{X by T with circles proportional to N}
+\label{fig:samplextc}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parxgraphc,fig=true,echo=true>>= 
+eigraph(dbuf,"xgraphc")
+@ 
+\caption{X-graph with data size proportional to N}
+\label{fig:samplexgraphc}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Pargoodman,fig=true,echo=true>>= 
+eigraph(dbuf,"goodman")
+@ 
+\caption{X by T with goodman's regression line plotted}
+\label{fig:samplegoodman}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parxtfit,fig=true,echo=true>>= 
+eigraph(dbuf,"xtfit")
+@ 
+\caption{X by T with E(T|X) and cond'l 80\% CI}
+\label{fig:samplextfit}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parxtfitg,fig=true,echo=true>>= 
+eigraph(dbuf,"xtfitg")
+@ 
+\caption{xtfit with goodman's regression}
+\label{fig:samplextfitg}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parprofile,fig=true,echo=true>>= 
+eigraph(dbuf,"profile")
+@ 
+\caption{Profile posterior of elements of $\phi$}
+\label{fig:sampleprofile}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=ParprofileR,fig=true,echo=true>>= 
+eigraph(dbuf,"profileR")
+@ 
+\caption{Profile of elements of $\phi$}
+\label{fig:sampleprofileR}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parpost,fig=true,echo=true>>= 
+eigraph(dbuf,"post")
+@ 
+\caption{Density estimates of aggregates $B^b$ and $B^w$}
+\label{fig:samplepost}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parbeta,fig=true,echo=true>>= 
+message("Running beta with kern=E")
+eigraph(dbuf,"beta")
+@
+\caption{Density estimates of est'd betaB's and betaW's}
+\label{fig:samplebeta}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parresults,fig=true,echo=true>>= 
+eigraph(dbuf,"results",kern="E")
+@
+\caption{Combination of pos and beta plots}
+\label{fig:sampleresults}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parlines,fig=true,echo=true>>= 
+eigraph(dbuf,"lines")
+@ 
+\caption{X by T with ESTIMATED line per precinct}
+\label{fig:samplelines}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parbivar,fig=true,echo=true>>= 
+eigraph(dbuf,"bivar")
+@ 
+\caption{Estimated betaB by betaW}
+\label{fig:samplebivar}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parbiasb,fig=true,echo=true>>=
+eigraph(dbuf,"biasb")
+@ 
+\caption{X by EST'd betaB}
+\label{fig:samplebiasb}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parbiasw,fig=true,echo=true,width=4,height=5>>= 
+eigraph(dbuf,"biasw")
+@ 
+\caption{X by EST'd betaW}
+\label{fig:samplebiasw}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parboundx,fig=true,echo=true,width=5,height=5>>= 
+eigraph(dbuf,"boundx")
+@ 
+\caption{X by bounds on betaB and betaW}
+\label{fig:sampleboundx}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=Parbetast,fig=true,echo=true>>= 
+eigraph(dbuf,"betast")
+@ 
+\caption{Estimated betaB and betaW vs turnout vote}
+\label{fig:samplebetast}
+\end{figure} \clearpage
+
+
+
+\section{{\tt ei non-parametric}: Estimation for 2x2 tables}
+\label{einp}
+
+It does not require the assumption of truncated bivarate normal. It also provides a diagnostic for 
+truncated bivariate normality, which can also be useful in deciding about the usefulness 
+of the parametric version of the model. It can be run setting EnonPar=1, and it performance is less 
+efficient thatn that of its parametric counterpart. As a matter of fact, we recommend 
+in general to run the parametcric model as for long data sets the non-parametric models can 
+take a long time and the results are not guarantee to be improved.
+For a detailed description go to \url{http://gking.harvard.edu/ei}.
+
+\subsection{{\tt ei non-parametric}: Demos}
+\label{einpdemos}
+There are several examples in the demo directory, they can be run with the commands:
+
+\begin{verbatim}
+> library(ei)
+> demo(einp.default)
+> demo(einp.fultongen)
+> demo(einp.in90)
+> demo(einp.kyck88)
+> demo(einp.cens1910)
+> demo(eip.lavoteall)
+> demo(einp.matproII)
+> demo(einp.nj)
+> demo(einp.pa90)
+> demo(einp.scp)
+\end{verbatim}
+
+The non-parametric model is not efficient with large data sets that have 
+many  precincts ( $> 1000$), and we recomend 
+to run the parametric examples instead.
+
+\subsection{{\tt ei non-parametric}: Example}
+\label{einpxample}
+
+<<Nonpar.example.data>>=
+ if(exists("dbuf")) rm(dbuf)
+ if(!exists("sample")) data(sample,package="ei") 
+ dbuf <- ei(sample[[1]], sample[[2]],sample[[3]],1,1,EnonPar=1)
+@ 
+<<NonPar.example.betas, echo=true>>=
+message("Obtaining overall beta\'s and std errors")
+berr <- summary(dbuf,"paggs")
+berr
+@ 
+<<NonPar.example.graphics>>=
+message("Running graphics:")
+@ 
+\begin{figure}
+\centering
+<<label=NonPartomoge,fig=true,echo=true,width=4,height=5>>= 
+eigraph(dbuf,"tomoge")
+@
+\caption{Non-parametric tomography with estimated beta's}
+\label{fig:nptomoge}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonPartomogci,fig=true,echo=true,width=5,height=5>>= 
+eigraph(dbuf,"tomogci")
+@
+\caption{Non-parametric tomography with 80\% CI}
+\label{fig:einptomogci}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonPartomogci95,fig=true,echo=true,width=5,height=5>>= 
+eigraph(dbuf,"tomogci95")
+@ 
+\caption{Non-parametric tomography with 95\% CI}
+\label{fig:einptomogci95}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParestsims,fig=true,echo=true,width=5,height=5>>= 
+eigraph(dbuf,"estsims")
+@ 
+\caption{Non-parametric simulated betaB's by betaW's}
+\label{fig:einpestsims}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonPartomogs,fig=true,echo=true>>= 
+plot(dbuf)
+@ 
+\caption{Non-parametric tomography plots}
+\label{fig:einptomogs}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParnonpar,fig=true,echo=true>>= 
+plot(dbuf,"nonpar")
+@
+\caption{Nonparametric surface plot}
+\label{fig:einonparsurface}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParpost,fig=true,echo=true,width=5,height=5>>= 
+eigraph(dbuf,"post")
+@ 
+\caption{Non-parametric density estimates $B^b$ and $B^w$}
+\label{fig:einppost}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParbeta,fig=true,echo=true,width=5,height=5>>= 
+message("Running beta with kern=E")
+eigraph(dbuf,"beta",kern="E")
+@
+\caption{Non-parametric density estimates of est'd betaB's and betaW's}
+\label{fig:einpbeta}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParbeta,fig=true,echo=true,width=5,height=5>>= 
+message("Running beta with kern=TN")
+eigraph(dbuf,"beta",kern="TN")
+@
+\caption{Non-parametric density of est'd betaB's and betaW's}
+\label{fig:einpbetaTN}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParresults,fig=true,echo=true,width=5,height=6>>= 
+eigraph(dbuf,"results",kern="E")
+@
+\caption{Non-parametric combination of pos and beta plots}
+\label{fig:einpresults}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParbivar,fig=true,echo=true,width=5,height=5>>= 
+eigraph(dbuf,"bivar")
+@ 
+\caption{Non-parametric estimated betab by betaw}
+\label{fig:einpbivar}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParbiasb,fig=true,echo=true>>= 
+eigraph(dbuf,"biasb")
+@ 
+\caption{X by EST'd betaB}
+\label{fig:npbiasb}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParbiasw,fig=true,echo=true>>= 
+eigraph(dbuf,"biasw")
+@ 
+\caption{X by EST'd betaW}
+\label{fig:npbiasw}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParboundx,fig=true,echo=true>>= 
+eigraph(dbuf,"boundx")
+@ 
+\caption{X by bounds on betaB and betaW}
+\label{fig:einpboundx}
+\end{figure} \clearpage
+\begin{figure}
+\centering
+<<label=NonParbetast,fig=true,echo=true>>= 
+eigraph(dbuf,"betast")
+@ 
+\caption{Non-parametric est'd betaB and betaW vs turnout vote}
+\label{fig:einpbetast}
+\end{figure} \clearpage
+
+
+
+<<afterpkgs, echo=FALSE>>=
+ after<-search()
+ torm<-setdiff(after,before)
+ for (pkg in torm)
+ detach(pos=match(pkg,search()))
+@
+
+\bibliography{References}
+\label{bib}
+\begin{thebibliography}{6}
+
+\bibitem{gking}Gary King, \textsl{A solution to the Echological Inference Problem: 
+Reconstructing Individual Behaviour from Aggregate Data}, Princeton University Press (1997).
+
+\bibitem{harvardweb}Useful documentation also avalaible at \url{http://GKing.Harvard.Edu}.
+
+\bibitem{Rweb}For R language see \url{http://www.r-project.org}.
+
+\bibitem{statR}Venables, W.N.,and Ripley, B.D., \textsl{Statistics and Computing}, Springer (2002).
+
+
+\end{thebibliography}
+
+
 
 \end{document}

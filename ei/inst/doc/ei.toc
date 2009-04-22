@@ -1,0 +1,9 @@
+\contentsline {section}{\numberline {0.1}\tt Acknowlegments}{2}{section.0.1}
+\contentsline {section}{\numberline {0.2}{\tt Introduction}: Ecological Inference}{2}{section.0.2}
+\contentsline {section}{\numberline {0.3}{\tt Overview}: R-commands to run the application}{2}{section.0.3}
+\contentsline {section}{\numberline {0.4}{\tt ei parametric}: Estimation for 2x2 tables}{4}{section.0.4}
+\contentsline {subsection}{\numberline {0.4.1}{\tt ei parametric}: Demos}{4}{subsection.0.4.1}
+\contentsline {subsection}{\numberline {0.4.2}{\tt ei parametric}: Example}{4}{subsection.0.4.2}
+\contentsline {section}{\numberline {0.5}{\tt ei non-parametric}: Estimation for 2x2 tables}{27}{section.0.5}
+\contentsline {subsection}{\numberline {0.5.1}{\tt ei non-parametric}: Demos}{27}{subsection.0.5.1}
+\contentsline {subsection}{\numberline {0.5.2}{\tt ei non-parametric}: Example}{27}{subsection.0.5.2}
