@@ -25,7 +25,7 @@ Street, Harvard University, Cambridge MA 02138;
 <<beforepkgs, echo=FALSE>>=
 before<-search()
  ind <- grep("[a-z A-Z]+:ei",before)
- if(!length(ind) > 0) library(ei, lib.loc="~/.R/library")
+ if(!length(ind) > 0) library(ei)
 @
 \include{ei.toc}
 
