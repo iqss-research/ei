@@ -43,8 +43,8 @@ for rd in ${Rdfiles}
 done
 
 
-#echo "Sweave(\"cem.Rnw\")" | ${R_CMD} --slave
-echo "library(\"utils\"); options(\"width\"=80); Sweave(\"cem.Rnw\")"  | ${R_CMD} --no-save --no-restore 
+#echo "Sweave(\"ei.Rnw\")" | ${R_CMD} --slave
+echo "library(\"utils\"); options(\"width\"=80); Sweave(\"ei.Rnw\")"  | ${R_CMD} --no-save --no-restore 
 if [ $? -ne 0 ]
 then
 	echo "Error in Sweave: $!";
@@ -52,21 +52,21 @@ then
 fi
 
 #create the manual
-pdflatex cem
-bibtex cem
-pdflatex cem
-pdflatex cem
-pdflatex cem
-pdflatex cem
+pdflatex ei
+bibtex ei
+pdflatex ei
+pdflatex ei
+pdflatex ei
+pdflatex ei
 
 ## report errors:
-grep Warning cem.log
-grep "I'm skipping" cem.blg
-grep Warning cem.blg
-grep -i Error cem.blg
+grep Warning ei.log
+grep "I'm skipping" ei.blg
+grep Warning ei.blg
+grep -i Error ei.blg
 
 ## cleanup
 rm -f *.aux *.toc *.log *.out *.blg *.bbl
-rm -f cem.tex a007.tex
+rm -f ei.tex a007.tex
 
 rm -rf Rd
