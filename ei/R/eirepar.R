@@ -108,8 +108,8 @@ eirepar <- function(b,Zb,Zw,x, Ez=NULL, evbase=parent.frame()){
   
   b <- rndbtn(bb,bw,sb,sw,rho,bounds,sims)
   t <- cor(b)
-  b <- colMeans(as.matrix(b))
   std <- sd(as.data.frame(b))
+  b <- colMeans(as.matrix(b))
   b <- as.matrix(c(b,std,t[2, 1]))
   return(b)
 }
