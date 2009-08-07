@@ -47,17 +47,23 @@
  
    m <- as.matrix(t) %dot*% as.matrix(m) +as.matrix(1-t) %dot*% lb;
   
-   r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% as.matrix(sigma);
+   if(exists("mock_rnorm"))
+     r <- m+matrix(mock_rnorm(rows(m)), nrow=rows(m), ncol=1) %dot*% as.matrix(sigma)
+   else
+     r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% as.matrix(sigma);
    
    t <- (r<lb)| (r>ub);
   
-   for(i in 1:5){
+   for(i in 1:4){
 ###   /* sample rejection method */
     if(colSums(as.matrix(t)) ==0) break; 
      inds <- 1==t
      if(any(inds)){
        ln <- length(subset(inds, inds==TRUE))
-       r[inds] <- m[inds]+ matrix(rnorm(ln, mean=0, sd=1), nrow=ln, ncol=1, byrow=T) %dot*% as.matrix(sigma[inds]);
+       if(exists("mock_rnorm"))
+           r[inds] <- m[inds]+ matrix(mock_rnorm(ln), nrow=ln, ncol=1, byrow=T) %dot*% as.matrix(sigma[inds])
+       else
+           r[inds] <- m[inds]+ matrix(rnorm(ln, mean=0, sd=1), nrow=ln, ncol=1, byrow=T) %dot*% as.matrix(sigma[inds]);
        t <- (r<lb)|(r>ub);
      }
     
@@ -67,9 +73,12 @@
      inds <- 1==t
      if(any(inds))
       ln <- length(grep(TRUE, inds))
-      r[inds]=invcdftn( as.matrix(runif(ln)),m[inds],v[inds],lb[inds],ub[inds]);
+      if(exists("mock_runif"))
+          r[inds]=invcdftn( as.matrix(mock_runif(ln)),m[inds],v[inds],lb[inds],ub[inds])
+      else
+          r[inds]=invcdftn( as.matrix(runif(ln)),m[inds],v[inds],lb[inds],ub[inds]);
    }
-   
+
   return(r);
  }
 

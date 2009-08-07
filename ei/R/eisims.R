@@ -120,7 +120,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
  
     betaBs[,k+0] <- rndtni(Ebb,Vbb,Bbeta[,1:2],evbase=evbase) 
   }
- 
+
  ### /* compute betaWs from betaBs deterministically */
   if (Ebetaws)
     betaWs <- betab2w(t,x,betaBs,evbase)
@@ -250,7 +250,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
     Eres <- vput(Eres,NA,"meanIR")
     Eres <- vput(Eres,NA,"resamp")
     ei.vc <- get("ei.vc", env=evbase)
-    if(ei.vc[Ghactual,1]!=-1)
+    if(Ghactual == 0 || ei.vc[Ghactual,1]!=-1)
       return(rndmn(b,vc,sims,eps=eps))
     else{
  
@@ -260,7 +260,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   if (as.vector(EisFac)==-2) ###                @ use maximum posterior estimates @
     return(t(as.matrix(b))%dot*% matrix(1,nrow=Esims,ncol=1))
   else{
-    if(ei.vc[Ghactual,1]!=-1)
+    if(Ghactual == 0 || ei.vc[Ghactual,1]!=-1)
       vc <- vc/as.vector(EisFac)  ###@ "vc" is -Hessian @
     else
       vc <- vc*as.vector(EisFac) ###  @ "vc" is a variance matrix @
@@ -269,7 +269,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
     
   k <- sims*Eisn;
   if (as.vector(Eist)==0){
-    if (ei.vc[Ghactual,1]!=-1){
+    if (Ghactual == 0 || ei.vc[Ghactual,1]!=-1){
      
       psis <- rndmn(b,vc,k,eps=eps)  ###defaults
     
@@ -289,7 +289,7 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
   norm <- as.matrix(0,nrow=k)
   keepsi <- as.vector(0*b)
   keeplik <- 0
-  if (ei.vc[Ghactual,1]!=-1){
+  if (Ghactual == 0 || ei.vc[Ghactual,1]!=-1){
     Eivc <- invpd(vc,mess="rndisamp")
   }else
     Eivc <- vc
@@ -339,7 +339,10 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
     lnir <- lnir-maxc(lnir)
    
     ir <- exp(lnir) ###	        @ imptce ratio  @
-    rnd <- matrix(runif(rows(ir)), nrow=rows(ir), ncol=1, byrow=TRUE)
+    if(exists("mock_runif"))
+        rnd <- matrix(mock_runif(rows(ir)), nrow=rows(ir), ncol=1, byrow=TRUE)
+    else
+        rnd <- matrix(runif(rows(ir)), nrow=rows(ir), ncol=1, byrow=TRUE)
     tst <- rnd <=ir
     keepsi <- rbind(keepsi, selif(psis,tst))
     keeplik <- rbind(keeplik,selif(lik,tst))

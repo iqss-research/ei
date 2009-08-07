@@ -37,21 +37,35 @@ expanddots <- function(drvdot, drv, evbase=.GlobalEnv){
     if(argsdots[[n]]=="")
       stop("ei: entries in ... should be name")
       
-    if(length(as.list(drvdot[[n]])) > 1){
-      vec <- as.character(drvdot[[n]])
-      sign <- 1
-      vsgn <- trim.blanks(vec[1])
-      if(length(vec) ==2 && identical(vsgn,"-")) sign <- -1
-     
-      lst <- NULL
- 
-      for(m in 2:length(vec)){
-     
-        lst <- c(lst,sign*(as.list(drvdot[[n]])[[m]]))
-      }
-      val <- as.matrix(lst)
-    }else
-    val <- drvdot[[n]]
+#    if(length(as.list(drvdot[[n]])) > 1){
+#      vec <- as.character(drvdot[[n]])
+#      sign <- 1
+#      vsgn <- trim.blanks(vec[1])
+#      if(length(vec) ==2 && identical(vsgn,"-")) sign <- -1
+#     
+#      lst <- NULL
+# 
+#      for(m in 2:length(vec)){
+#        print(as.list(drvdot[[n]])[[m]])
+#     
+#        lst <- c(lst,sign*(as.list(drvdot[[n]])[[m]]))
+#      }
+#      val <- as.matrix(lst)
+#    }else
+    #Trying this out! Only symbols were getting assigned!
+    frame <- parent.frame()
+    nframe <- 1
+    #Kludge to crawl back up the frame stack to evaluate arguments.
+    while(!identical(frame, .GlobalEnv)){
+        val <- try(eval(drvdot[[n]], envir=frame), TRUE)
+        if(class(val) != "try-error") break
+
+        nframe <- nframe + 1
+        frame <- parent.frame(n=nframe)
+    }
+    if(class(val) == "try-error")
+       stop(val) 
+        
     if(!identical(evbase,.GlobalEnv))
       assign(argsdots[n], val, env=evbase)
         
@@ -86,12 +100,14 @@ getEnvVar <- function(evfrom, evto, vecvar=NULL){
   evfrom <- as.environment(evfrom)
   evto <- as.environment(evto)
   
-  ass <- lapply(param, function(att,evfrom,evto) {
+  envlapply <- lapply
+  ass <- envlapply(param, function(att,evfrom,evto) {
   
-    val <- try(get(att, env=evfrom))
+    #val <- try(get(att, env=evfrom))
+    val <- get(att, env=evfrom)
   
-    if(class(val) == "try-error")
-      message("Error getting param")
+    #if(class(val) == "try-error")
+    #  message("Error getting param")
     assign(att, val,env=evto)}, evfrom,evto)
   
 return(evto)

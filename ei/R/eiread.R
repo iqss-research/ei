@@ -399,8 +399,12 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       res <- as.matrix(vread(dbuf, "x2"))
       a <- rows(res)
       c <- cols(res)
-      for(n in 1:a)
-        res[n, ] <- res[n, order(runif(c))]
+      for(n in 1:a){
+        if(exists("mock_runif"))
+            res[n, ] <- res[n, order(mock_runif(c))]
+        else
+            res[n, ] <- res[n, order(runif(c))]
+      }
     }else
       message("eiread: 'x2' option is only available in data buffers created by ei2")
       
@@ -609,15 +613,24 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
     res <- eiread(dbuf,"betabs",formula,calculate=FALSE,...)
     a <- rows(res)
     c <- cols(res)
-    for( i in 1:a)
-      res[i,] <- res[i,order(runif(c))]   
+    for( i in 1:a){
+      if(exists("mock_runif"))
+          res[i,] <- res[i,order(mock_runif(c))]   
+      else
+          res[i,] <- res[i,order(runif(c))]   
+    }
+          
    
   } else if(identical(tolower(str), "rnbetaws")){ ###		@ randomly permuted betabs sims @
     res <- eiread(dbuf,"betaws",formula,calculate=FALSE,...)
     a <- rows(res)
     c <- cols(res)
-    for( i in 1:a)
-      res[i,] <- res[i,order(runif(c))]
+    for( i in 1:a){
+      if(exists("mock_runif"))
+          res[i,] <- res[i,order(mock_runif(c))]
+      else
+          res[i,] <- res[i,order(runif(c))]
+    }
   } else if( identical(tolower(str), "stbetabs")){ ###		@ sorted betaB simulations  @
     betabs <- betaBs <- eiread(dbuf,"betaBs",formula,calculate=FALSE,...) 
     res <- NA
@@ -781,11 +794,11 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       Routput <- 0
       lstreg <- reg(formula,x,truth[,1],...)
       b <- lstreg$coefficients
-      bb <- summary(lstreg)$sigma
+      bb <- summary(lstreg)$coefficients[,2]
       res <- cbind(b,bb)
       lstreg <- reg(formula,x,truth[,2],...)
       b <- lstreg$coefficients
-      bb <- summary(lstreg)$sigma
+      bb <- summary(lstreg)$coefficients[,2]
       res <- rbind(res,cbind(b,bb))
       Eprt <- -1
       if(Eprt>0){
@@ -823,11 +836,11 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       if(is.function(formula)) formula <- NA
       lstreg <- reg(formula,x,betab,...)
       b <- lstreg$coefficients
-      bb <- summary(lstreg)$sigma
+      bb <- summary(lstreg)$coefficients[,2]
       res <- cbind(b,bb)
       lstreg <- reg(formula,x,betaw,...)
       b <- lstreg$coefficients
-      bb <- summary(lstreg)$sigma
+      bb <- summary(lstreg)$coefficients[,2]
       res <- rbind(res, cbind(b,bb));
       Eprt <- -1
       if(Eprt>0){
@@ -875,9 +888,8 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       betaBs <- eiread(dbuf,"betabs",formula,calculate=FALSE,...)  
       betaWs <- eiread(dbuf,"betaws",formula,calculate=FALSE,...)  
       a <- betaBs> betaWs
-      a <- as.logical(a)
-      betaBs[a] <- NA
-      betaWs[a] <- NA
+      betaBs[as.logical(a)] <- NA
+      betaWs[as.logical(a)] <- NA
       res <- cbind(meanwc(t(as.matrix(betaBs)),1), meanwc(t(as.matrix(betaWs)),1), colSums(as.matrix(1-t(a))))
     } else if(identical(tolower(str),"gewba")){###                 @ B^b ~ B^w for sims betaW >= betaB @
       a <- eiread(dbuf,"gewb",formula,calculate=FALSE,...)  
@@ -1054,10 +1066,12 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
       omx <- 1-x
       t <- vread(dbuf,"t")
    
-      lstreg <- reg(formula,cbind(x,omx),t,...)
+      #lstreg <- reg(formula,cbind(x,omx),t,...)
+      lstreg <- lm(t ~ x+omx-1)
       res <- lstreg$coefficients
-      a <- summary(lstreg)$sigma
-   
+      #a <- summary(lstreg)$sigma
+      a <- summary(lstreg)$coefficients[,2]
+
       res <- rbind(as.vector(res), as.vector(a))
       if(Eprt>0){
         message("Goodman's Regression")

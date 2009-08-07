@@ -67,7 +67,10 @@ einonp <- function(t,x, evbase=parent.frame()){
   for (i in 1:nobs){
   
  ###   /* count within categories defined by areas of interpolated trapazoids */
-    cnts <- counts(matrix(runif(Esims), nrow=Esims, ncol=1),areas[,i+0]);
+    if(exists("mock_runif"))
+        cnts <- counts(matrix(mock_runif(Esims), nrow=Esims, ncol=1),areas[,i+0])
+    else
+        cnts <- counts(matrix(runif(Esims), nrow=Esims, ncol=1),areas[,i+0]);
    
  ###   /* use inverse CDF to draw from trapazoidal dist  within categories */
     fa <- trimr(lag(pz[,i+0]),1,0);
@@ -85,13 +88,18 @@ einonp <- function(t,x, evbase=parent.frame()){
     res <- 0;
     for (j in 1:(EnonEval-1)){
       if (!is.na(cnts[j+0]) &&  cnts[j+0]>0 ){
-        res <- rbind(res, (-CD[j+0]+sqrt((C[j+0]^2)*(D[j+0]^2)+ 2*CE[j+0]*(CD[j+0]*a[j+0]+0.5*CE[j+0]*(a[j+0]^2)+as.matrix(runif(cnts[j+0])))))/CE[j])
+        if(exists("mock_runif"))
+            res <- rbind(res, (-CD[j+0]+sqrt((C[j+0]^2)*(D[j+0]^2)+ 2*CE[j+0]*(CD[j+0]*a[j+0]+0.5*CE[j+0]*(a[j+0]^2)+as.matrix(mock_runif(cnts[j+0])))))/CE[j])
+        else
+            res <- rbind(res, (-CD[j+0]+sqrt((C[j+0]^2)*(D[j+0]^2)+ 2*CE[j+0]*(CD[j+0]*a[j+0]+0.5*CE[j+0]*(a[j+0]^2)+as.matrix(runif(cnts[j+0])))))/CE[j])
       }
     }
 
     res <- as.vector(trimr(res,1,0))
-    betabs[i+0,] <- res[order(runif(Esims))];
-
+    if(exists("mock_runif"))
+        betabs[i+0,] <- res[order(mock_runif(Esims))]
+    else
+        betabs[i+0,] <- res[order(runif(Esims))];
   }
   if(dim(betabs)[[1]] != length(x) ||  dim(betabs)[[2]] != Esims)
     stop("Dimension betabs do not agree with spec")

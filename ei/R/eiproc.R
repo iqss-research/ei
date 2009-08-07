@@ -48,6 +48,7 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
 {
  ###  local res,et,MLpsi,MLvc,betaBs,betaWs,tst,Eselect,flat;
   evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment
+  evbase$loglikcount <- 0
   
   drvdot <- match.call(expand.dots=TRUE)
   drv  <-  match.call(expand.dots=FALSE)
@@ -112,7 +113,10 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
   Eselect <- matrix(1,nrow=rows(x),ncol=1)* as.vector(Eselect);
   if(exists("EselRnd")) EselRnd <- get("EselRnd", env=evei)
   if(EselRnd<1){
-    vec <- runif(rows(x),min=0,max=1)
+    if(exists("mock_runif"))
+        vec <-mock_runif(rows(x))
+    else
+        vec <- runif(rows(x),min=0,max=1)
     vec <- matrix(vec)
     Eselect <- Eselect & (vec < EselRnd);
   }
@@ -176,16 +180,16 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
    
   }else{
     message("Skipping likelihood estimation..");
- Eres <- add.to.Eres(get("Eres",env=evbase), round=3, evbase)
+    Eres <- add.to.Eres(get("Eres",env=evbase), round=3, evbase)
    
     
-   assign("Eres", Eres, env=evbase)
+    assign("Eres", Eres, env=evbase)
     if(exists("EdoML.phi")) EdoML.phi <- get("EdoML.phi", env=evei)
     if(exists("EdoML.vcphi")) EdoML.vcphi <- get("EdoML.vcphi", env=evei)
     MLpsi <- mlpsi <- EdoML.phi;
     MLvc <-  mlvc <- EdoML.vcphi;
-    if(rows(mlvc)!= rows(mlpsi))
-      stop("ei: EdoML.phi or EdoML.vcphi input error");
+    #if(rows(mlvc)!= rows(mlpsi))
+    #  stop("ei: EdoML.phi or EdoML.vcphi input error");
     
   }
 
@@ -491,9 +495,10 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
   if(exists("EdoML.phi")) EdoML.phi <- get("EdoML.phi", env=evei)
   if(exists("EdoML.vcphi")) EdoML.vcphi <- get("EdoML.vcphi", env=evei)
     if(scalzero(EdoML)){
-      if( (rows(EdoML.phi) != rows(EdoML.vcphi)) ||
-         (rows(EdoML.phi)!= cols(EdoML.vcphi)) )
-        stop("ei: EdoML, EdoML.phi, or EdoML.vcphi are incorrect")
+      #if( (rows(EdoML.phi) != rows(EdoML.vcphi)) ||
+      #   (rows(EdoML.phi)!= cols(EdoML.vcphi)) )
+      #  stop("ei: EdoML, EdoML.phi, or EdoML.vcphi are incorrect")
+      "Skipping Checks! Really phi should have 2 more elements than row/cols in VCPhi."
     }
 ###Edosim
   if(exists("EdoSim")) EdoSim <- get("EdoSim", env=evei)

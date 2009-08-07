@@ -42,16 +42,21 @@ bounds1<-function(t,x,n,tol,eps=.Machine$double.eps){
         UbetaW<-matrix(0, nrow=p,ncol=1)
         z<-matrix(0, nrow=p,ncol=1)
         o<-matrix(1, nrow=p,ncol=1)
-        m<-o*NA;
+        #m<-o*NA;
+        m <- NA;
         
         c <- na.omit(c)
         if (length(c)){
                 tx<-t[c]/(x[c])
                 tomx<-t[c]/(omx[c])
-                LbetaB[c]<-maxr(z[c],tx-(omx[c]/(x[c])))
-                UbetaB[c]<-minr(tx,o[c])
-                LbetaW[c]<-maxr(z[c],tomx-(x[c]/(1+eps-x[c])))
-                UbetaW[c]<-minr(tomx,o[c])
+                #LbetaB[c]<-maxr(z[c],tx-(omx[c]/(x[c])))
+                LbetaB[c]<-pmax(z[c],tx-(omx[c]/(x[c])))
+                #UbetaB[c]<-minr(tx,o[c])
+                UbetaB[c]<-pmin(tx,o[c])
+                #LbetaW[c]<-maxr(z[c],tomx-(x[c]/(1+eps-x[c])))
+                LbetaW[c]<-pmax(z[c],tomx-(x[c]/(1+eps-x[c])))
+                #UbetaW[c]<-minr(tomx,o[c])
+                UbetaW[c]<-pmin(tomx,o[c])
         }
         c0 <- na.omit(c0)
         if (length(c0)){## homogeneously white 
@@ -70,13 +75,17 @@ bounds1<-function(t,x,n,tol,eps=.Machine$double.eps){
         
 ### fix rounding errors due to machine precision */
 ### basically change any negative value to 0 and any value >1 to 1
-        vu <- as.matrix(c(0,1))
+        #vu <- as.matrix(c(0,1))
         
-        LbetaBa <- recode(LbetaB,cbind((LbetaB<=0),(LbetaB>=1)),vu)
+        #LbetaB <- pmin(pmax(0,LbetaB),1)
+        #LbetaBa <- recode(LbetaB,cbind((LbetaB<=0),(LbetaB>=1)),vu)
     ###      LbetaBa <- recode(LbetaB,cbind((LbetaB<0),(LbetaB>1)),vu)
-        UbetaB  <- recode(UbetaB,cbind((UbetaB<=0),(UbetaB>=1)),vu)
-        LbetaW  <- recode(LbetaW,cbind((LbetaW<=0),(LbetaW>=1)),vu)
-        UbetaW  <- recode(UbetaW,cbind((UbetaW<=0),(UbetaW>=1)),vu)
+        #UbetaB <- pmin(pmax(0,UbetaB),1)
+        #UbetaB  <- recode(UbetaB,cbind((UbetaB<=0),(UbetaB>=1)),vu)
+        #LbetaW <- pmin(pmax(0,LbetaW),1)
+        #LbetaW  <- recode(LbetaW,cbind((LbetaW<=0),(LbetaW>=1)),vu)
+        #UbetaW <- pmin(pmax(0,UbetaW),1)
+        #UbetaW  <- recode(UbetaW,cbind((UbetaW<=0),(UbetaW>=1)),vu)
         
         
         bs<-list(bs=cbind(LbetaB,UbetaB,LbetaW,UbetaW))

@@ -9,9 +9,19 @@ cdfnc <- function(x) {1- pnorm(x)}
 pdf <- function(x){return(dnorm(x))}
 ###random numbers drawn from normal distribution
 rndn <- function(r, c){
-  return(matrix(rnorm(r*c, mean=0, sd=1), nrow=r, ncol=c, byrow=T))}
+  if("mock_rnorm")
+      matrix(mock_rnorm(r*c), nrow=r, ncol=c, byrow=T)
+  else
+      matrix(rnorm(r*c, mean=0, sd=1), nrow=r, ncol=c, byrow=T)
+
+}
 ###random numbers drawn from the uniform distributrion 
-rndu <- function(r, c){matrix(runif(r*c), nrow=r, ncol=c, byrow=TRUE)}
+rndu <- function(r, c){
+    if(exists("mock_runif"))
+        matrix(mock_runif(r*c), nrow=r, ncol=c, byrow=TRUE)
+    else
+        matrix(runif(r*c), nrow=r, ncol=c, byrow=TRUE)
+}
 
 ###DESCRIPTION Computes the cdf of the standardized bivariate normal
 ###            with lower limits in -Inf, i.e. lower tail. 
@@ -146,8 +156,10 @@ invcdfgGary <- function(p,a) {
 rndgam <- function(nr,nc,a,b,c) {
      if( !(a > 0)) 
         stop( "ERROR: RNDG - Shape parameter, A, is not positive" )
-    
-     rndu <- matrix(runif(nr*nc), nrow=nr, ncol=nc)
+     if(exists("mock_runif")) 
+         rndu <- matrix(mock_runif(nr*nc), nrow=nr, ncol=nc)
+     else
+         rndu <- matrix(runif(nr*nc), nrow=nr, ncol=nc)
      res  <- b%dot*%qgamma(rndu,a) + c 
 }
 

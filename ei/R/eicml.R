@@ -234,8 +234,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
       
       message("nlminb in action:Obtainig estimates for stval")
 
-      lst <-  nlminb(stval,f0,y=dataset,ev=evbase,scale=scl,lower=cmlb[,1],upper=cmlb[,2])
-  
+      lst <-  nlminb(stval,f0,y=dataset,ev=evbase,scale=scl,lower=cmlb[,1],upper=cmlb[,2],hessian=T)
 
       assign("optimizationLst",lst,env=evbase)
       b <- lst$par
@@ -258,8 +257,8 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
     }
     
  
-   message("optim in action:Calculating hessian ...")
-   if(is.null(hess)){
+#   message("optim in action:Calculating hessian ...")
+   if(0){#is.null(hess)){
 ###best choice for hessian optim but does not returned the Jacobian
 ###nlm returns both the gradient and the hessian but is slow compare to .Internal(optimhess)
 
@@ -282,10 +281,11 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
      print(as.vector(bop))
      bop[abs(bop) <= as.vector(EdirTol)] <- 0
      mlogl <- lstoptim$objective
-   }
+   #}
      
       assign("optimizationLst",lst,env=evbase)
       vc <- inv(hess)
+    }
  
 ###    
       Eres <- vput(Eres,lst$message,"retcode");
@@ -505,7 +505,6 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
 ##*/
 gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase", env=parent.frame()))
 {
-    
   ##f is the pointer to a function
   eps <- mget("cholTol", envir=evbase,ifnotfound=list(1.e-5))[[1]] 
 ###  evloc <- getEnvVar(evbase, environment())
@@ -537,7 +536,8 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
     eps <- mget("cholTol", envir=evbase,ifnotfound=list(1.e-5))[[1]] 
     loglik <- gvc.ProcName ### pass with gvc, i.e. fn
     res <- loglik(b,dat,ev)
-    res <- colSums(as.matrix(res))
+    #This is negative since optim minimizes by default.
+    res <- -colSums(as.matrix(res))
     return(res)}
  
   for (i in 1:rows(ei.vc))
@@ -549,8 +549,13 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
             message("gvc: trying numerical hessian")
           con <- getControl(length(b))
 ###gvc.procedure pointer to func 
-     hessian <- optimhess(b,gvc.procedure,gr=NULL,evbase=evbase,gvcK=gvc.FixKeep,dat=dataset,control=con,get("EdirTol", env=evbase))        
-  
+     #Turn this negative since optim minimizes by default, but we want
+     #to invert it using methods for a positive definite matrix.
+     hessian <- -optimhess(b,gvc.procedure,gr=NULL,evbase=evbase,gvcK=gvc.FixKeep,dat=dataset,control=con,get("EdirTol", env=evbase))        
+      #require(numDeriv)
+      #ndhess <- hessian
+      #hessian <- -ndhess(gvc.procedure, b, evbase=evbase, dat=dataset)
+      #print(hessian)
   
           GhDelta <- ei.vc[i+0,2]
           if (GhDelta>0)

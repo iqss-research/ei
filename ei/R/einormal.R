@@ -80,7 +80,10 @@ rndmn <- function(mu,vc,n,eps=1.e-5){
 ###  @ cholsky decomp of submatrix   @
     a <- (t(t)%*%ad)%*%t ###              @ rebuild full square-root matrix @
   }
-  mat <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
+  if(exists("mock_rnorm"))
+      mat <- matrix(mock_rnorm(k*n), nrow=k, ncol=n, byrow=T)
+  else
+      mat <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
  
   
   res <- t(mu%plus%(a%*%mat)) ###      @ dep ran normals with mean mu, var vc @
@@ -159,7 +162,10 @@ rndmt <- function(mu,vc,df,n,eps=1.e-5){
 ###@ cholsky decomp of submatrix   @
     a <- (t(t) %*% ad) %*% t               ####@ rebuild full square-root matrix @
   }
-  rndn <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
+  if(exists("mock_rnorm"))
+      rndn <- matrix(mock_rnorm(k*n), nrow=k, ncol=n, byrow=T)
+  else
+      rndn <- matrix(rnorm(k*n, mean=0, sd=1), nrow=k, ncol=n, byrow=T)
   res <- t(mu+a%*%(rndn %dot*%sqrt(df%dot/%rndchi(1,n,df))));
   return(res)
 }
@@ -1242,17 +1248,20 @@ lpdfnorm <- function(y,mu,sig2){
   return(res)
 }
 equalev <- function(vec,x,tol=1.e-4){
-  res <- sapply(vec,function(ll){
-    res <- TRUE
-    err  <- ll-x
-    err1 <- abs(err/ll)
-    err2 <- abs(err/x)
-    err <- ifelse(err1 > err2, err1, err2)
-    if(!is.na(err) && err > tol) res <- FALSE
-    return(res)
-  })
-  res <- unlist(res)
-  if(any(res == FALSE)) return(FALSE)
-  return(TRUE)
+  err <- abs(vec-x)/pmin(vec,x)
+  return(any(!is.na(err) & err > tol))
+
+#  res <- sapply(vec,function(ll){
+#    res <- TRUE
+#    err  <- ll-x
+#    err1 <- abs(err/ll)
+#    err2 <- abs(err/x)
+#    err <- ifelse(err1 > err2, err1, err2)
+#    if(!is.na(err) && err > tol) res <- FALSE
+#    return(res)
+#  })
+#  res <- unlist(res)
+#  if(any(res == FALSE)) return(FALSE)
+#  return(TRUE)
 }
     

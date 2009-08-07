@@ -11,6 +11,8 @@ eiloglik <- function(b, dta,evbase=NULL,...){
   if(!length(evbase))
     evbase <- get("evbase", env=parent.frame())
 
+  assign("loglikcount", get("loglikcount", env=evbase)+1, envir=evbase)
+
 evei <- evlocal <- getEnvVar(evbase, environment())
   ### R CMD check will complain if you do not explicitly get the global variables
   if(exists("Ez")) Ez <- get("Ez", env=evei)
