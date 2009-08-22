@@ -44,7 +44,7 @@
 
 
 
-%\VignetteIndexEntry{Non-parametric estimatio of Ecological Inference}
+%\VignetteIndexEntry{Non-parametric estimation of Ecological Inference}
 %\VignetteDepends{ei,mvtnorm}
 %\VignetteKeyWords{model,non-parametric, ecological}
 %\VignettePackage{ei}
@@ -71,11 +71,11 @@ before<-search()
 @
 \include{ei.toc}
 
-\section{\tt Acknowlegments}
+\section[Acknowledgements]{\tt Acknowlegments}
 \label{ack}
 The code, which was originally written in Gauss, has been translated into R by Elena Villalon who also generated the plots that are presented in this document.
 
-\section{{\tt Introduction}: Ecological Inference}
+\section[Introduction: Ecological Inference]{{\tt Introduction}: Ecological Inference}
 \label{intro}
 
 This program provides a method of inferring individual behavior 
@@ -118,7 +118,7 @@ the assumptions, and uncertainty estimates for all quantities of interest.
 I recommend reviewing Chapter 16 while using this program for actual research.
 
 		
-\section{{\tt Overview}: R-commands to run the application}
+\section[Overview: R-commands to run the application]{{\tt Overview}: R-commands to run the application}
 \label{commands}
 
 As only four commands are required to use $ {\mathfrak{E}I}$ the program 
@@ -191,7 +191,7 @@ or sum to print a summary of district-level estimates and information.
 \end{itemize}
 
 
-\section{{\tt ei parametric}: Estimation for 2x2 tables}
+\section[ei parametric: Estimation for 2x2 tables]{{\tt ei parametric}: Estimation for 2x2 tables}
 \label{eip}
 
 It runs ei setting the argument EnonPar=0, which is the default value, and is based 
@@ -201,7 +201,7 @@ it uses the routine optim with the parameter estimations obtained with nlminb
 to calculate the numerically differentiated hessian. 
 For a detailed description go to \url{http://gking.harvard.edu/ei}.
 
-\subsection{{\tt ei parametric}: Demos}
+\subsection[ei parametric: Demos]{{\tt ei parametric}: Demos}
 \label{eipdemos}
 
 There are several examples in the demo directory, some of them have true values 
@@ -225,7 +225,7 @@ The following commands allow the user to run the demo data sets:
 Some of the data sets have many precincts ( $> 1000$) and, even when the performance of ``ei'' 
 is very efficient, the graphics may take sometime to display all the precincts.
 
-\subsection{{\tt ei parametric}: Example}
+\subsection[ei parametric: Example]{{\tt ei parametric}: Example}
 
 We are presenting an example with 75 precincts 
 <<BasicExample.data>>=
@@ -421,7 +421,7 @@ eigraph(dbuf,"betast")
 
 
 
-\section{{\tt ei non-parametric}: Estimation for 2x2 tables}
+\section[ei non-parametric: Estimation for 2x2 tables]{{\tt ei non-parametric}: Estimation for 2x2 tables}
 \label{einp}
 
 It does not require the assumption of truncated bivarate normal. It also provides a diagnostic for 
@@ -432,7 +432,7 @@ in general to run the parametcric model as for long data sets the non-parametric
 take a long time and the results are not guarantee to be improved.
 For a detailed description go to \url{http://gking.harvard.edu/ei}.
 
-\subsection{{\tt ei non-parametric}: Demos}
+\subsection[ei non-parametric: Demos]{{\tt ei non-parametric}: Demos}
 \label{einpdemos}
 There are several examples in the demo directory, they can be run with the commands:
 
@@ -454,7 +454,7 @@ The non-parametric model is not efficient with large data sets that have
 many  precincts ( $> 1000$), and we recomend 
 to run the parametric examples instead.
 
-\subsection{{\tt ei non-parametric}: Example}
+\subsection[ei non-parametric: Example]{{\tt ei non-parametric}: Example}
 \label{einpxample}
 
 <<Nonpar.example.data>>=
