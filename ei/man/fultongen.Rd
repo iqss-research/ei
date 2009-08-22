@@ -5,9 +5,9 @@
   in Georgia, 1994}
 
 \description{
-  Fulton County in Georgia voter transitions in 1994 for 289 precincts. Rows are precincts and columns are:\newline
-  T (proportion of voting-age population turning out to vote in 1994)\newline
-  X (proportion of voting-age population who turns out to vote in 1992)\newline
+  Fulton County in Georgia voter transitions in 1994 for 289 precincts. Rows are precincts and columns are:
+  T (proportion of voting-age population turning out to vote in 1994)
+  X (proportion of voting-age population who turns out to vote in 1992)
   N (the number of people of voting age in 1994)
 }
 

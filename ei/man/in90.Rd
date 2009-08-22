@@ -5,11 +5,11 @@
 
 \description{
   Marion County Indiana,1990, U.S. Senate election for 661
-  precincts. Rows are precincts and columns are:\newline
-  X (proportion of voting-age population who are black)\newline
-  V (proportion of democratic votes)\newline
-  T (proportion of voting-age population turning out to vote)\newline
-  e2 (additional covariate)\newline
+  precincts. Rows are precincts and columns are:
+  X (proportion of voting-age population who are black)
+  V (proportion of democratic votes)
+  T (proportion of voting-age population turning out to vote)
+  e2 (additional covariate)
   1/N (where N is the number of people of voting age)
  
 }

@@ -6,8 +6,8 @@
 
 \description{
   Hispanic who vote in the Pennsylvania's election, number of precinct
-  is 252 and columns are:\newline
-  X the hispanic population\newline
+  is 252 and columns are:
+  X the hispanic population
   T the turn-out of voter population
  
 }

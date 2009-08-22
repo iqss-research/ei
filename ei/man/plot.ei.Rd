@@ -30,7 +30,7 @@
     data are available, but they are not useful for most ecological
     inference applications, where this information is not available.
     If no name is provided the default is \sQuote{tomogs}. The options
-    are: \newline
+    are: 
     
    \item{beta}{betaB and betaW; betaB vector of length p\eqn{\times 1} with p
 	the number of precincts is the mean posterior over
@@ -245,7 +245,7 @@ For additional globals see help for eigraph.
 \value{None.}
 
 \references{\url{http://gking.harvard.edu/ei}
- \newline
+ 
   \emph{A Solution to the Ecological Inference Problem: Reconstructing
   Individual Behavior from Aggregate Data}, Gary King, Princeton
   University Press, 1997 (EIBAD)}

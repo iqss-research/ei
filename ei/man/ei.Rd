@@ -26,7 +26,7 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
   \item{Zb}{Optional covariate, which may be set equal to 1 for no
     covariate. Default 1.}
   
-  \item{...} {
+  \item{...}{
 
     \item{EnonPar}{Scalar to indicate
 	 the model; for parametric set to 0 and
@@ -35,7 +35,7 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
 	 will be available under eigraph and eiread.) See EIBAD Section
 	 9.3.2.}
     
-    \item{Ebounds} {Scalar. If equal to 1 sets bounds for parametric
+    \item{Ebounds}{Scalar. If equal to 1 sets bounds for parametric
 	 calculations,if equal 0 sets no bounds. Default 1.
     }
     \item{Ecdfbvn}{Determines which procedure to use for computing the
@@ -67,10 +67,9 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
 	 space. The environment \sQuote{evbase} contains all the arguments 
 	 and results of running ei and is good for debugging; see value for
 	 a description of \sQuote{evbase}.  Default FALSE.}
-    \newline
-    
+   
+ 
     \item{Additional inputs are:}{}
-    \newline
     
     \item{EalphaB}{((ncol(Zb)) \eqn{\times 2}) matrix of means (in the
 	 first column) and standard deviations (in the second) of an
@@ -472,7 +471,8 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     ignored unless EdoML=1.)
   }
   \item{psiu}{$\breve{\psi}$, which was reparameterized from $\phi$
-    into untruncated scale.See Equation 7.4, page 136 of EIBAD.\newline
+    into untruncated scale.See Equation 7.4, page 136 of EIBAD.
+
     Here \eqn{\psi} is reparameterized $ \phi$ into ultimate truncated
     scale. See Section 6.2.2.
   }
@@ -505,7 +505,6 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
 }
 
 \references{\url{http://gking.harvard.edu/ei}
-  \newline
   \emph{A Solution to the Ecological Inference Problem: Reconstructing
   Individual Behavior from Aggregate Data}, Gary King, Princeton
   University Press, 1997 (EIBAD)}

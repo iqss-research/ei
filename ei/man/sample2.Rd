@@ -4,10 +4,10 @@
 \title{Turning out black, white and democratic votes}
 
 \description{
-  Rows are the 99 precincts and 4 columns:\newline
-  X (proportion of voting-age population who are black)\newline
-  V (proportion of democratic votes)\newline
-  T (proportion of voting-age population turning out to vote)\newline
+  Rows are the 99 precincts and 4 columns:
+  X (proportion of voting-age population who are black)
+  V (proportion of democratic votes)
+  T (proportion of voting-age population turning out to vote)
   N (number of people of voting age)
 
 }

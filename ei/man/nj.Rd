@@ -5,9 +5,9 @@
 
 \description{
   Non-minority turnout in New Jersey cities and towns in 1990 for 583
-  precincts.Rows are precincts and columns are:\newline
-  T (proportion of voting-age population turning out to vote)\newline
-  X (proportion of voting-age population who are non-minority)\newline
+  precincts.Rows are precincts and columns are:
+  T (proportion of voting-age population turning out to vote)
+  X (proportion of voting-age population who are non-minority)
   N (the number of people of voting age)
 }
 

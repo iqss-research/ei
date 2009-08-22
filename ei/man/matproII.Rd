@@ -6,11 +6,11 @@
 
 \description{
   Voter registarion by race in the states Florida, Lousiana, North
-  Carolina, and South Carolina for 3275 precincts. Rows are precincts and columns are:\newline
-  T (proportion of voting-age population registered)\newline
-  X (proportion of voting-age population who are black)\newline
-  1/N (where N is the number of people of voting age)\newline
-  truthB (Truth for the proportion of voting age black registered)\newline
+  Carolina, and South Carolina for 3275 precincts. Rows are precincts and columns are:
+  T (proportion of voting-age population registered)
+  X (proportion of voting-age population who are black)
+  1/N (where N is the number of people of voting age)
+  truthB (Truth for the proportion of voting age black registered)
   truthW (Truth for the proportion of voting age white registered)
 }
 

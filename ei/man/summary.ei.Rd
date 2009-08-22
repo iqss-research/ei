@@ -31,7 +31,7 @@
   available, but they are not useful for most ecological inference
   applications, where this information is not available.
   The options are included here only because I needed them while writing
-  the book.)\newline
+  the book.)
   
   When used with an EI2 output data buffer (i.e., for $ 2\times C$
   tables), summary.ei (or the internal procedure eiread) uses use
@@ -634,7 +634,7 @@
 \value{Can be a list,  a vector, matrix or string}
 
 \references{\url{http://gking.harvard.edu/ei}
- \newline
+ 
   \emph{A Solution to the Ecological Inference Problem: Reconstructing
   Individual Behavior from Aggregate Data}, Gary King, Princeton
 University Press, 1997 (EIBAD)

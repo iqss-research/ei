@@ -4,9 +4,9 @@
 \title{Turning out black and white vote}
 
 \description{
-  Rows are the 75 precincts and columns are:\newline
-  T (proportion of voting-age population turning out to vote)\newline
-  X (proportion of voting-age population who are black)\newline
+  Rows are the 75 precincts and columns are:
+  T (proportion of voting-age population turning out to vote)
+  X (proportion of voting-age population who are black)
   N (number of people of voting age)
 
 }

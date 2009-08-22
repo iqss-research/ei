@@ -4,11 +4,11 @@
 \title{Census file for black literacy in 1910}
 
 \description{
-  Black literacy in 1910 for 1040 precincts. Rows are precincts and columns are:\newline
-  T (proportion of population over the age of 10 who can read)\newline
-  X (proportion of those who are black)\newline
-  1/N (where N is the number of people of age over 10)\newline
-  truthB (Truth for the proportion of literate black)\newline
+  Black literacy in 1910 for 1040 precincts. Rows are precincts and columns are:
+  T (proportion of population over the age of 10 who can read)
+  X (proportion of those who are black)
+  1/N (where N is the number of people of age over 10)
+  truthB (Truth for the proportion of literate black)
   truthW (Truth for the proportion of literate white)
 }
 

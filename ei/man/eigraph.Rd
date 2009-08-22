@@ -17,7 +17,7 @@
   \item{psiu}{Vector of length 5. Reparameterized \eqn{$\phi$} into
     untruncated scale (average for bb bw).Default NA.}
   \item{...}{Optional argumnets are the globals specific
-  to the graphics:\newline
+  to the graphics:
   \item{eigraph.bb}{string: xlabel for \eqn{$\beta_i^b$} by \eqn{$\beta_i^w$} plots. Default="betaB".}
 
 \item{eigraph.bbhi}{high end for betaB plots. Default=1.}

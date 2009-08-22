@@ -4,9 +4,9 @@
 \title{Proverty status by sex in South Carolina in 1990}
 
 \description{
-  Proverty status by sex in South Carolina for 3187 precincts. Rows are precincts and columns are:\newline
-  T (proportion of people below provery level)\newline
-  X (proportion of male population below proverty)\newline
+  Proverty status by sex in South Carolina for 3187 precincts. Rows are precincts and columns are:
+  T (proportion of people below provery level)
+  X (proportion of male population below proverty)
   N (N is the number of people below proverty)
  
 }
