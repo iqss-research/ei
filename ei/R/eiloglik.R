@@ -13,15 +13,17 @@ eiloglik <- function(b, dta,evbase=NULL,...){
 
   assign("loglikcount", get("loglikcount", env=evbase)+1, envir=evbase)
 
-evei <- evlocal <- getEnvVar(evbase, environment())
+#evei <- evlocal <- getEnvVar(evbase, environment())
   ### R CMD check will complain if you do not explicitly get the global variables
-  if(exists("Ez")) Ez <- get("Ez", env=evei)
-  if(exists("EnumTol")) EnumTol <- get("EnumTol", env=evei)
-  if(exists("Esigma")) Esigma <- get("Esigma", env=evei)
-  if(exists("Erho")) Erho <- get("Erho", env=evei)
-  if(exists("Ebeta")) Ebeta <- get("Ebeta", env=evei)
-  if(exists("EalphaB")) EalphaB <- get("EalphaB", env=evei)
-  if(exists("EalphaW")) EalphaW <- get("EalphaW", env=evei)
+  Ez <- get("Ez", env=evbase)
+  EnumTol <- get("EnumTol", env=evbase)
+  Esigma <- get("Esigma", env=evbase)
+  Erho <- get("Erho", env=evbase)
+  Ebeta <- get("Ebeta", env=evbase)
+  EalphaB <- get("EalphaB", env=evbase)
+  EalphaW <- get("EalphaW", env=evbase)
+
+  evai <- evlocal <- environment()
  
 ##  local sb2,sw2,sbw,x,y,llik,s2,bb,bw,mu,sb,sw,c0,c,c1,cT0,cT1,Zb,Zw,
 ##     rho,tt,bnds,R,omega,epsilon,Ebb,Vbb,res,prior,rs,z,o;
@@ -35,7 +37,7 @@ evei <- evlocal <- getEnvVar(evbase, environment())
  rs <- nrow(as.matrix(y));
 
 ###  /* reparameterize */
-  if(exists("Ez")) Ez <- get("Ez", env=evei)
+  #if(exists("Ez")) Ez <- get("Ez", env=evei)
   lst <- eirepar(b,Zb,Zw,x,Ez,evbase=evbase);  ##tested 
 
 ### lst <- c(list(Bb=Bb), list(Bw=Bw), list(sb=sb), list(sw=sw), list(rho=rho))
