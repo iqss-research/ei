@@ -5,8 +5,8 @@
 
 \description{
  Graphs the results taken from the ei output data buffer (i.e., for $
- 2\times 2$ tables) and, when it get completed, for ei2 data buffers
- ($ 2\times C$ tables). See summary.ei to extracting the numerical
+ 2\eqn{\times} 2$ tables) and, when it get completed, for ei2 data buffers
+ ($ 2\eqn{\times} C$ tables). See summary.ei to extracting the numerical
  information input to the graphics.eigraph(dbuf,"name") or
  plot(x=dbuf,"name").
  See book (EIBAD) \emph{A Solution to the Ecological Inference Problem:
@@ -19,8 +19,7 @@
 \arguments{
   \item{x}{A list output of ei}
   
-  \item{...}
-  {
+  \item{...}{
     A string with the name of the corresponding graph.
     Choose any of the items below in place of name to see the
     corresponding graph. (Items that use true values from
@@ -31,7 +30,7 @@
     inference applications, where this information is not available.
     If no name is provided the default is \sQuote{tomogs}. The options
     are: 
-    
+   \describe{ 
    \item{beta}{betaB and betaW; betaB vector of length p\eqn{\times 1} with p
 	the number of precincts is the mean posterior over
 	the simulations of \eqn{\beta_i^b},and similarly for betaW.}
@@ -234,6 +233,7 @@
 
 \item{xtfitg}{xtfit with Goodman's regression line superimposed.}
 For additional globals see help for eigraph.
+}
 }
     }
   
