@@ -448,9 +448,22 @@ dotfeq <- function(x,y, tol=NULL){
   
   if(!length(tol))
     return(x==y)
-  x <- floor(x/tol)
-  y <- floor(y/tol)
-  return(x==y)
+#  x <- floor(x/tol)
+#  y <- floor(y/tol)
+  denom <- pmin(x,y)
+  if(any(denom==0))
+    diff <- abs(x-y)
+  else
+    diff <- abs((x-y)/pmin(x,y))
+  return(diff < tol)
+}
+
+dotflt <- function(x,y,tol=NULL){
+    return(!dotfeq(x,y,tol) & x < y)
+}
+
+dotfgt <- function(x,y,tol=NULL){
+    return(!dotfeq(x,y,tol) & x > y)
 }
   
 
@@ -605,13 +618,18 @@ inv <- function(mat,svdtol=1e-10)
 ###       pivot boolean
 ###       tol the tolerance approximating mat
 ###       mess a message 
+###
 eichol <- function(mat,pivot=TRUE,tol=0.00001,mess="",linpck=TRUE,sechol=FALSE){
   if(!pivot)return(chol(mat,pivot=FALSE,LINPACK=linpck))
   x <- suppressWarnings(chol(mat,pivot=pivot))
   oo <- order(attr(x,"pivot"))
-  diff <- abs(((t(x[,oo]) %*% x[,oo]) - mat)/mat)
+  diff <- abs(((t(x[,oo]) %*% x[,oo]) - mat))
+  if(any(dotfeq(mat,0)))
+    message("eichol: Matrix contains zeros, so relative error cannot be computed. Using absolute error.")
+  else
+    diff <- abs(diff/mat)
   if(any(diff > tol)){
-    warning(mess," & Q=chol(mat,pivot=T) not positive definite; tol= ",tol)
+    warning(mess," & Q=chol(mat,pivot=T) not positive definite; tol= ",tol, "; max diff=",max(diff))
     if(sechol)  x <- sechol(mat)
   }
   return(x)
@@ -619,14 +637,24 @@ eichol <- function(mat,pivot=TRUE,tol=0.00001,mess="",linpck=TRUE,sechol=FALSE){
     
   
 ###DESCRIPTION inverting a symmetric, positive definite matrix from Choleski decomposition
+### Updated to check for matrices with columns that are completely zero.
+### Transforms the matrix, and runs chol on the submatrix.
 ###
 invpd <- function(mat,tol=1.e-4,mess=""){
 ###  x <- suppressWarnings(chol(mat,pivot=TRUE))
-
+  #Do the Cholesky decomp
   x <- try(chol(mat,pivot=FALSE),silent=TRUE) ###uses LINPACK=FALSE
   if(class(x) == "try-error") x <- eichol(mat,mess="invpd",tol=tol)
   if(class(x)=="try-error") return(x)
-  return(mm <- chol2inv(x,LINPACK=FALSE))
+
+  mm <- chol2inv(x,LINPACK=FALSE)
+  
+  if(any(is.nan(mm)) || any(mm==Inf) || any(is.na(mm))){
+    print(mat)
+    stop("invpd failed. Input matrix is singular and could not be salvaged.")
+  }
+  
+  return(mm)
 }
 
 ###DESCRIPTION pseudo-inverse in Gauss corresponds to
