@@ -18,6 +18,7 @@
     untruncated scale (average for bb bw).Default NA.}
   \item{...}{Optional argumnets are the globals specific
   to the graphics:
+  \describe{
   \item{eigraph.bb}{string: xlabel for \eqn{$\beta_i^b$} by \eqn{$\beta_i^w$} plots. Default="betaB".}
 
 \item{eigraph.bbhi}{high end for betaB plots. Default=1.}
@@ -92,6 +93,7 @@
     the drawn ellipse. Default={.5, .95}; nrow(tomogClr)
     must be $ \geq$ rows(tomogPct).
   }
+}
 }
 }
 \details{Allows users to graphic the output of ei in different
