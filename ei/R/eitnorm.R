@@ -14,6 +14,8 @@
 
  rndtni <- function(m,v,bnds,evbase=get("evbase", env=parent.frame())){
 ###  local r,t,sigma,i,lb,ub,inds;
+   evbase$fcmptol <- 1e-12;
+
    if(!length(evbase))
      evbase <- get("envbase", env=parent.frame())
 
@@ -33,15 +35,13 @@
    }
    lb[is.na(lb)] <- 0
    ub[is.na(ub)] <- 1
-   t <- (lb>ub);
+   t <- ((lb-ub) > evbase$fcmptol)
    if(any(t) && all(!is.na(t))){
-    
      stop("rndtni: upper bound less than lower bound!")
    }
    sigma <- sqrt(v);
 
-   fcmptol <- 1e-12;
-   t <- 1-dotfeq(lb,ub,tol=fcmptol); ###1 -(lb==ub)
+   t <- 1-dotfeq(lb,ub,tol=as.numeric(evbase$fcmptol)); ###1 -(lb==ub)
   
    sigma <- as.matrix(t) %dot*% as.matrix(sigma);
  
@@ -51,9 +51,10 @@
      r <- m+matrix(mock_rnorm(rows(m)), nrow=rows(m), ncol=1) %dot*% as.matrix(sigma)
    else
      r <- m+matrix(rnorm(rows(m), mean=0, sd=1), nrow=rows(m), ncol=1) %dot*% as.matrix(sigma);
-   
-   t <- (r<lb)| (r>ub);
   
+   t <- (dotflt(r,lb,tol=evbase$fcmptol) | dotfgt(r,ub,tol=evbase$fcmptol))
+        #(lb-r > evbase$fcmptol) | (r-ub > evbase$fcmptol) #(r<lb)| (r>ub);
+   
    for(i in 1:4){
 ###   /* sample rejection method */
     if(colSums(as.matrix(t)) ==0) break; 
@@ -64,20 +65,23 @@
            r[inds] <- m[inds]+ matrix(mock_rnorm(ln), nrow=ln, ncol=1, byrow=T) %dot*% as.matrix(sigma[inds])
        else
            r[inds] <- m[inds]+ matrix(rnorm(ln, mean=0, sd=1), nrow=ln, ncol=1, byrow=T) %dot*% as.matrix(sigma[inds]);
-       t <- (r<lb)|(r>ub);
+       t <- (dotflt(r,lb,tol=evbase$fcmptol) | dotfgt(r,ub,tol=evbase$fcmptol))
+           #(lb-r > evbase$fcmptol) | (r-ub > evbase$fcmptol) #(r<lb)| (r>ub);
      }
-    
    }
+
    if(colSums(as.matrix(t))!=0){
 ###  /* sample rejection fails for some elements; try CDF method */
      inds <- 1==t
      if(any(inds))
-      ln <- length(grep(TRUE, inds))
-      if(exists("mock_runif"))
-          r[inds]=invcdftn( as.matrix(mock_runif(ln)),m[inds],v[inds],lb[inds],ub[inds])
+      #ln <- length(grep(TRUE, inds))
+      ln <- length(subset(inds, inds==TRUE))
+      if(exists("mock_runif")){
+          r[inds]=invcdftn(as.matrix(mock_runif(ln),nc=1),m[inds],v[inds],lb[inds],ub[inds])
+      }
       else
-          r[inds]=invcdftn( as.matrix(runif(ln)),m[inds],v[inds],lb[inds],ub[inds]);
-   }
+          r[inds]=invcdftn( as.matrix(runif(ln),nc=1),m[inds],v[inds],lb[inds],ub[inds]);
+      }
 
   return(r);
  }
@@ -133,9 +137,9 @@ rndbtn <- function(bb,bw,sb,sw,rho,bounds,sims, evbase=parent.frame()){
 ## OUTPUT: Nx1
 ## y = normal variate
 
-invcdftn <- function(p,mu,sigma2,lft,rgt){
+invcdftn <- function(p,mu,sigma2,lft,rgt, evbase=get("evbase", parent.frame())){
 ###  local t,res,ok,tL,tR,clft,crgt;
-  if( any(lft>=rgt))
+  if( any((lft - rgt) > evbase$fcmptol))
     stop("invcdftn: left must be < right")
 
 
@@ -150,8 +154,8 @@ invcdftn <- function(p,mu,sigma2,lft,rgt){
   crgt <- pnorm(rgt,mean=mu,sd=sigma);
   
   res <- qnorm(p%dot*%(crgt-clft)+clft,mean=mu,sd=sigma);
-  tL <- (res<lft);
-  tR <- (res>rgt);
+  tL <- (lft-res > evbase$fcmptol);
+  tR <- (res-rgt > evbase$fcmptol);
   ok <- (res>=lft) & (res<=rgt);
   res <- res%dot*%ok+lft%dot*%tL+rgt%dot*%tR;
   tL <- (tL+tR);
