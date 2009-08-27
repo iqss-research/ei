@@ -129,7 +129,7 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
     else
         vec <- runif(rows(x),min=0,max=1)
     vec <- matrix(vec)
-    Eselect <- Eselect & (vec < EselRnd);
+    Eselect <- Eselect & (vec < evbase$EselRnd);
   }
  
  
@@ -146,7 +146,7 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
     Eres <- add.to.Eres(evbase$Eres, round=2, evbase)
     evbase$Eres <- Eres 
     
-    return(timing(et,Eprt,Eres,Eselect0))
+    return(timing(et,evbase$Eprt, evbase$Eres,Eselect0))
   }
   ### /* parametric estimation: */
   
