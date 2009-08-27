@@ -42,7 +42,7 @@
 ##             likelihood estimation.
 
 #include ei.ext;
-quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol=1.e+10, macheps=2.23e-16,savedat=FALSE) {
+quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol=1.e+10, macheps=2.23e-16,savedat=TRUE) {
    x <- matrix(x,ncol=1)
    y <- matrix(y,ncol=1)
    if(!length(macheps)) macheps <- .Machine$double.eps
@@ -138,7 +138,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
   else if (cols(Ebounds)==2)
     cml.bounds <- cml.Bounds <- rbind(Ebounds,cbind(0,0.0001),cbind(0,0.0001))
   else if (scalone(Ebounds)) ###    automatic bounds calculation 
-    {
+  {
       bnds <- matrix(c(-10,10),nrow=1)
       nbnds <- matrix(c(-20,20),nrow=1)
       if (Ez[1]==1)
@@ -153,7 +153,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
     
       cml.bounds <- cml.Bounds <- rbind(cml.Bounds,cbind(-6, 3),cbind(-6,3),cbind(-2,2))
       print(cml.bounds)
-    }else{
+  }else{
      
     stop(message="quadcml: problem with Ebounds")
     
@@ -161,7 +161,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
  
    
   if (gridl==0 && cols(Ebounds)!=2)
-    {
+  {
       ##  @ sneak past CML checks on parameters @
       tt <- rows(stval)
       tt <- matrix(c(tt-1,tt), nrow=2)
@@ -170,7 +170,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
       tt <- matrix(c(tt-1,tt),nrow=2)
       cml.bounds[tt,2] <- cml.Bounds[tt,2] <- cml.Bounds[tt,2]+ Edirtol
       
-    }
+  }
   
   if (Eprt==0)
     output <- 0
@@ -199,7 +199,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
    assign("cml.Bounds", cml.Bounds, env=evbase)
    assign("cml.bounds", cml.Bounds, env=evbase)
   if (gridl==0)
-    {
+  {
 ###  /* run CML */
 ###  search parameters with bounds 
 
@@ -226,7 +226,7 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
       scl <- rep(1,length(stval)) ##default
       
   ### to get closer results to Gauss code set:    
-  ###    ind <- which(cmlbintv > 2*as.vector(EdirTol))
+  #    ind <- which(cmlbintv > 2*as.vector(EdirTol))
   ###    if(length(ind) > 0) scl[ind] <- 10 ##make it closer to Gauss
   ### MASS book recommends to make scale[i] * paremetre[i] ~ 1    
      ind <- which(cmlbintv <= 1)
@@ -234,66 +234,44 @@ quadcml <- function(x,Zb,Zw,y,evbase=get("evbase", env=parent.frame()), optimTol
       
       message("nlminb in action:Obtainig estimates for stval")
 
-      lst <-  nlminb(stval,f0,y=dataset,ev=evbase,scale=scl,lower=cmlb[,1],upper=cmlb[,2],hessian=T)
-
-      assign("optimizationLst",lst,env=evbase)
+  #    lst <-  nlminb(stval,f0,y=dataset,ev=evbase,scale=scl,lower=cmlb[,1],upper=cmlb[,2],control=list(rel.tol=1e-4))
+      lst <-  nlminb(stval,f0,y=dataset,ev=evbase,lower=cmlb[,1],upper=cmlb[,2], control=list(rel.tol=as.numeric(evbase$EnumTol)))
+      evbase$optimizationLst <- lst
       b <- lst$par
       names(b) <- cml.ParNames
       message("nlminb:Calculated params...")
       print(as.vector(b))
       mlogl  <- lst$objective
-      cntgrd <- lst$evaluations[[1]]
-      cntfn  <- lst$evaluations[[2]]
+      #cntgrd <- lst$evaluations[[1]]
+      #cntfn  <- lst$evaluations[[2]]
       ret  <-  lst$convergence
       mess <- paste(lst$message," Iterations=  ", lst$iterations)
       message(mess)
      
       if(ret >=1 ){
      
-      message("nlminb did not converge or produce an error...Ebounds=", Ebounds)
-      message(mess)
-      print(lst)
-      stop("Change defaults control arguments in nmlinb...,no bounds Ebounds=0")
+      warning("nlminb did not converge or produced an error...Ebounds=", Ebounds)
+      message("\nnlminb: convergence problem.\nRetrying with optim. Even if optim succeeds, the dataset is numerically unstable.\nResults should be treated with caution.")
+      #print(lst)
+      opbounds <- cmlb
+      lstoptim <- cml.optim(par=b,opbounds,dataset=dataset, fn=f0,fctr=optimTol,hess=TRUE,evbase)
+      if(lstoptim$convergence >= 1)
+          stop("Change defaults control arguments to optimizers. E.g., eliminate bounds with Ebounds=0 or set EnumTol higher.")
+      b <- lstoptim$par
+      mlogl <- lstoptim$objective
+      evbase$optim.optimizationLst <- lstoptim
+      message("Optim: success.")
+      print(as.vector(b))
     }
     
- 
-#   message("optim in action:Calculating hessian ...")
-   if(0){#is.null(hess)){
-###best choice for hessian optim but does not returned the Jacobian
-###nlm returns both the gradient and the hessian but is slow compare to .Internal(optimhess)
-
-  
-     opbounds <- find.bounds(b,Edirtol,perctg=0.2) ### narrow bounds around the results of nlminb
-     lstoptim <- cml.optim(par=b,opbounds,dataset=dataset, fn=f0,fctr=optimTol,hess=TRUE,evbase)
-    
-     ret  <-  lstoptim$convergence
-     mess <- paste(lstoptim$message," Iterations=  ", lstoptim$iterations)
-    
-     
-     if(ret >=1 ){
-      message(mess)   
-      stop("optim did not converge or produce an error...")
-     }
-     hess <- lstoptim$hessian
-     lst$hessian <- hess
-     bop <- lstoptim$par
-     message("optim:Calculated params...")
-     print(as.vector(bop))
-     bop[abs(bop) <= as.vector(EdirTol)] <- 0
-     mlogl <- lstoptim$objective
-   #}
-     
-      assign("optimizationLst",lst,env=evbase)
-      vc <- inv(hess)
-    }
  
 ###    
       Eres <- vput(Eres,lst$message,"retcode");
-      logl <- -mlogl*cml.NumObs ###cml.NumObs = rows(dataset)
+      logl <- -mlogl#*cml.NumObs ###cml.NumObs = rows(dataset)
       Eres <- vput(Eres,logl,"loglik");
       if (Eprt>=2)
           message("CML converged; Computing variance-covariance matrix...?")
-    }
+  }
  ##########################################################  
  ###this part does not work:Not even in GAUSS code 
   if (gridl!=0){ ###/* run GRID search */
@@ -552,10 +530,6 @@ gvc <- function(fn,b,dataset,GhFix=NULL,ei.vc=NULL, Eprt=NULL,evbase=get("evbase
      #Turn this negative since optim minimizes by default, but we want
      #to invert it using methods for a positive definite matrix.
      hessian <- -optimhess(b,gvc.procedure,gr=NULL,evbase=evbase,gvcK=gvc.FixKeep,dat=dataset,control=con,get("EdirTol", env=evbase))        
-      #require(numDeriv)
-      #ndhess <- hessian
-      #hessian <- -ndhess(gvc.procedure, b, evbase=evbase, dat=dataset)
-      #print(hessian)
   
           GhDelta <- ei.vc[i+0,2]
           if (GhDelta>0)
