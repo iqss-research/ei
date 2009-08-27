@@ -66,8 +66,8 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
     EisFix <- MLpsi[(rows(MLpsi)-2):rows(MLpsi)]
     assign("EisFix", EisFix, env=evbase)
     
-    yy1 <- rndisamp(eiloglik,trimr(MLpsi,0,3), MLvc[1:(rows(MLpsi)-3), 1:(rows(MLpsi)-3)],
-                    dataset,Esims,EisFix, evbase) 
+    yy1 <- matrix(rndisamp(eiloglik,trimr(MLpsi,0,3), MLvc[1:(rows(MLpsi)-3), 1:(rows(MLpsi)-3)],
+                    dataset,Esims,EisFix, evbase), nr=Esims)
     yy2 <-  rndmn(Erho[2],0,Esims,eps=eps)  
     yy3 <-  rndmn(etaB,etaBs,Esims,eps=eps)
     yy4 <- rndmn(etaW,etaBs,Esims,eps=eps)
@@ -78,9 +78,9 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
  
     EisFix <- MLpsi[(rows(MLpsi)-1):rows(MLpsi)]
     assign("EisFix", EisFix, env=evbase)
-    yy1 <- rndisamp(eiloglik,trimr(MLpsi,0,2),
+    yy1 <- matrix(rndisamp(eiloglik,trimr(MLpsi,0,2),
                     MLvc[1:(rows(MLpsi)-2),1:(rows(MLpsi)-2)],
-                    dataset,Esims,EisFix,evbase)
+                    dataset,Esims,EisFix,evbase), nr=Esims)
      
     yy2 <- rndmn(etaB,etaBs,Esims,eps=eps)  
     yy3 <-   rndmn(etaW,etaBs,Esims,eps=eps)
@@ -89,7 +89,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
                    
   }
   psisims <-  as.matrix(PSIsims)  ###Gauss 100x5; here 100x7
- 
+  evbase$psisims <- psisims
   
   if(EisChk)                          
     Eres <- vput(Eres,psisims,"PhiSims") ###  @ save name corresponds to book @ 
@@ -117,7 +117,7 @@ psim1 <- function(T,X,tvap,Zb,Zw,MLpsi,MLvc,evbase=get("evbase", env=parent.fram
     lst <- exvar(T,x,y$Bb,y$Bw,y$sb,y$sw, y$rho,evbase)
     Ebb <- lst[[5]]
     Vbb <- lst[[6]]
- 
+
     betaBs[,k+0] <- rndtni(Ebb,Vbb,Bbeta[,1:2],evbase=evbase) 
   }
 
@@ -228,7 +228,6 @@ betab2w <- function(t,x,betab, evbase=NULL){
 ##**                      in dbuf; 0 save mean(lliksims) in dbuf
 ##*/
 rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.frame())){
-
   if (rows(vc)!=rows(b) || cols(vc)!=rows(b))
     stop("rndisamp: input error")
   
@@ -305,7 +304,6 @@ rndisamp <- function(f,b,vc,dataset,sims,EFix,evbase=get("evbase",env=parent.fra
 
  
     if (as.vector(Eist)==0){
-  
       norm[i] <- lnpdfmn2(psis[i,],b,0,Eivc) ## var from _Eivc above @
        
     }else{
