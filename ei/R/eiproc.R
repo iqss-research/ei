@@ -47,6 +47,9 @@
 ei <- function(t,x,tvap,Zb=1, Zw=1,...)
 {
  ###  local res,et,MLpsi,MLvc,betaBs,betaWs,tst,Eselect,flat;
+ #evbase is the parent environment of "ei", which it shares with other package functions
+ #evbase corresponds to the "global" environment in GAUSS but is hidden from the user 
+ #evei is the current environment
   evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment
   evbase$loglikcount <- 0
   
@@ -58,25 +61,29 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
   
   ###	@ timing start @
   et   <- proc.time()
-  param  <- ls(env=evbase)
+  #param  <- ls(env=evbase)
 
-  if(length(grep("Eprt", param)) && length(grep("Eversion", param))){
-    Eversion <- get("Eversion", env=evbase)
-    message(Eversion)
+  #if(length(grep("Eprt", param)) && length(grep("Eversion", param))){
+  if(!is.null(evbase$Eprt) && !is.null(evbase$Eversion)){
+    #Eversion <- get("Eversion", env=evbase)
+    message(evbase$Eversion)
   }
 ##  print(EnonPar) 
   ### copy variables from evbase to local environment evei
-  evei <- getEnvVar(evbase, environment())  ##environment evei= current environment
+  #evei <- getEnvVar(evbase, environment())  ##environment evei= current environment
+  evei <- environment()
  
    ### print(eval(as.symbol(entries)))
-  if(get("dbug", env=environment()))
-    evbase <<- evbase
-  if(exists("Eprt")) Eprt <- get("Eprt", env=evei)
-  if(!scalzero(Eres) && vin(Eres,"titl") && Eprt >0)
-    message(vread(Eres,"titl"))
+  #if(get("dbug", env=environment()))
+  if(!is.null(evbase$dbug) && evbase$dbug)
+    assign("evbase", evbase, envir=.GlobalEnv)
+  #if(exists("Eprt")) Eprt <- get("Eprt", env=evei)
+  #if(!scalzero(Eres) && vin(Eres,"titl") && Eprt >0)
+  if(!scalzero(evbase$Eres) && !is.null(evbase$Eres$titl) && evbase$Eprt >0)
+    message(evbase$Eres$titl)
  
-  Eres <- add.to.Eres(get("Eres",env=evbase), round=1, evbase)
-  assign("Eres", Eres, env=evbase)
+  Eres <- add.to.Eres(evbase$Eres, round=1, evbase)
+  evbase$Eres <- Eres 
 ###testing and debugging            
 ###  lapply(param, function(x){
 ###    print(x)
@@ -86,8 +93,9 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
 
   
 ###  /* verify inputs */
-  if(exists("Echeck")) Echeck <- get("Echeck", env=evei)
-  if(as.logical(Echeck)){
+  if(is.null(evbase$Echeck))
+    stop("Echeck not specified")
+  if(as.logical(evbase$Echeck)){
     message("Consistency checks of globals")
     tst <- ""
     tst <- checkinputs(t,x,tvap,Zb, Zw,evbase)
@@ -98,9 +106,10 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
     return(tst)
     }
   }
-  if(exists("EnonPar")) EnonPar <- get("EnonPar", env=evei)
-    if(Eprt>0){
-      if(EnonPar)
+  if(is.null(evbase$EnonPar))
+    stop("EnonPar not specified")
+    if(evbase$Eprt>0){
+      if(evbase$EnonPar)
         message("Inputs ok, beginning nonparametric estimation...")
       else
       message("Inputs ok, beginning preliminary estimation...")
@@ -108,11 +117,13 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
   
   
  ###  /* augment _Eselect if _EselRnd<1 */
-  assign("Eselect", Eselect, env=evbase);  ###$@ save existing value @
+  Eselect <- evbase$Eselect
   Eselect0 <- Eselect
   Eselect <- matrix(1,nrow=rows(x),ncol=1)* as.vector(Eselect);
-  if(exists("EselRnd")) EselRnd <- get("EselRnd", env=evei)
-  if(EselRnd<1){
+
+  if(is.null(evbase$EselRnd))
+    stop("EselRnd not specified.")
+  if(evbase$EselRnd<1){
     if(exists("mock_runif"))
         vec <-mock_runif(rows(x))
     else
@@ -123,31 +134,33 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
  
  
 ###  /* nonparametric estimation */
-  if(exists("dbug")) dbug <- get("dbug", env=evei) 
-  if(dbug==TRUE && identical(parent.frame(), .GlobalEnv))
-    assign("evbase", evbase, env=parent.frame()) 
-  if(EnonPar>=1){
+  if(is.null(evbase$dbug))
+     stop("dbug not specified")
+  if(evbase$dbug)
+    assign("evbase", evbase, env=.GlobalEnv) 
+  if(evbase$EnonPar>=1){
        
     betaBs <- einonp(t,x, evbase);
-    assign("betaBs", betaBs, env=evbase); 
+    evbase$betaBs <- betaBs; 
   
-    Eres <- add.to.Eres(get("Eres",env=evbase), round=2, evbase)
-    assign("Eres", Eres, env=evbase)
+    Eres <- add.to.Eres(evbase$Eres, round=2, evbase)
+    evbase$Eres <- Eres 
     
     return(timing(et,Eprt,Eres,Eselect0))
   }
   ### /* parametric estimation: */
   
   ###/* eta influence on Zb,Zw */
-  if(exists("Eeta")) Eeta <- get("Eeta", env=evei)
-  if(rows(Eeta)!=4){
-  if(Eeta[1]==1 ||  Eeta[1]==4){
+  if(is.null(evbase$Eeta))
+    stop("Eeta not specified")
+  if(rows(evbase$Eeta)!=4){
+  if(evbase$Eeta[1]==1 || evbase$Eeta[1]==4){
     Zb <- x;
     Zw <- 1;
-  }else if(Eeta[1]==2 || Eeta[1]==5){
+  }else if(evbase$Eeta[1]==2 || evbase$Eeta[1]==5){
     Zb <- 1;
     Zw <- x;
-  }else if(Eeta[1]==3){
+  }else if(evbase$Eeta[1]==3){
     Zb <- Zw <- x;
  
   }
@@ -158,18 +171,18 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
 
  ### clearg _Ez;	@ n of covariates, incl. implied constant term for Zb|Zw @
   Ez <- as.matrix(c((cols(Zb)+1-scalone(Zb)),(cols(Zw)+1-scalone(Zw))));
-  assign("Ez", Ez, env=evbase)
+  evbase$Ez <- Ez 
 
 ###  /* likelihood estimation */
-  if(exists("EdoML")) EdoML <- get("EdoML", env=evei)
-  if(EdoML==1){
-   
-     lst  <- quadcml(x,Zb,Zw,t,evbase,optimTol=get("opTimTol", env=evbase));
+  if(is.null(evbase$EdoML))
+    stop("EdoML not specified")
+  if(evbase$EdoML==1){
+     lst  <- quadcml(x,Zb,Zw,t,evbase,optimTol=evbase$optimTol);
      MLpsi <- lst[[1]]
      MLvc <- lst[[2]]
-     assign("MLpsi", MLpsi, env=evbase)
-     assign("MLvc", MLvc, env=evbase)
-     Eres <- get("Eres", env=evbase)
+     evbase$MLpis <- MLpsi
+     evbase$MLvc <- MLvc
+     Eres <- evbase$Eres 
    ###  Eres <- vput(Eres, get("psiu", env=evbase),"psiu");
      if(length(MLvc) <= 1 && is.na(MLvc)){
        Eres <- vput(Eres,MLpsi,"phi")
@@ -180,34 +193,35 @@ ei <- function(t,x,tvap,Zb=1, Zw=1,...)
    
   }else{
     message("Skipping likelihood estimation..");
-    Eres <- add.to.Eres(get("Eres",env=evbase), round=3, evbase)
-   
+    Eres <- add.to.Eres(evbase$Eres, round=3, evbase)
+    evbase$Eres <- Eres 
     
-    assign("Eres", Eres, env=evbase)
-    if(exists("EdoML.phi")) EdoML.phi <- get("EdoML.phi", env=evei)
-    if(exists("EdoML.vcphi")) EdoML.vcphi <- get("EdoML.vcphi", env=evei)
-    MLpsi <- mlpsi <- EdoML.phi;
-    MLvc <-  mlvc <- EdoML.vcphi;
+    if(is.null(evbase$EdoML.phi))
+        stop("EdoML.phi not specified")
+    if(is.null(evbase$EdoML.vcphi))
+        stop("EdoML.vcphi")
+    MLpsi <- mlpsi <- evbase$EdoML.phi;
+    MLvc <-  mlvc <- evbase$EdoML.vcphi;
     #if(rows(mlvc)!= rows(mlpsi))
     #  stop("ei: EdoML.phi or EdoML.vcphi input error");
     
   }
 
  ###/* simulation */
-  if(exists("EdoSim")) EdoSim <- get("EdoSim", env=evei)
-  if(EdoSim==1){
+  if(is.null(evbase$EdoSim))
+    stop("EdoSim not specified")
+  if(evbase$EdoSim==1){
   ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
-     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc); ### eisims.src 
+     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc,evbase); ### eisims.src 
      betaBs <- lst$betaBs
      betaWs <- lst$betaWs
-      Eres <- get("Eres",env=evbase)
-   assign("Eres", Eres, env=evbase)
+     Eres <- evbase$Eres
      Eres   <- vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @
-     assign("Eres", Eres,env=evbase)
+     evbase$Eres <- Eres
    }
 
 
- return(timing(et,Eprt,Eres,Eselect0));
+ return(timing(et,evbase$Eprt,evbase$Eres,Eselect0));
  
 
 }
@@ -635,7 +649,7 @@ checkinputs <- function(t,x,n,Zb, Zw,evbase=NULL){
 ###
 eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   ## general
-  
+
   ##use for debugging only
   dbug <- FALSE
   
@@ -654,8 +668,8 @@ eiset <- function(t=NULL,x=NULL,tvap=NULL,Zb=1,Zw=1,...){
   EselRnd <- as.matrix(1);
   EdoSim <- as.matrix(1);
   EdoML <- as.matrix(1);
-  EdoML.phi <- as.matrix(0);
-  EdoML.vcphi <- as.matrix(0);
+  EdoML.phi <- matrix(0);
+  EdoML.vcphi <- matrix(0);
   message("Use Ecdfbvn=4,3,6 for best results")
   Ecdfbvn<- as.matrix(6); ### EV: I have changed the default Ecdfbvn<- 5
   EnumTol<- as.matrix(0.0001);
