@@ -150,7 +150,7 @@ return(evbase)
 add.to.Eres <- function(Eres=list(), round=1, evbase=NULL,...)
 {
   if(!length(evbase))
-    evbase <- eiset()
+    evbase <- get("evbase", env=parent.frame())
   
   evei <- getEnvVar(evbase, environment())
         
@@ -158,11 +158,14 @@ add.to.Eres <- function(Eres=list(), round=1, evbase=NULL,...)
     if(round == 1){
       ### vput(Eres,t,"t") will work as well BUT R CMD check complains 
       if(exists("t"))
-        Eres <- vput(Eres,get("t",env=evei),"t") 
+        #Eres <- vput(Eres,get("t",env=evei),"t") 
+        Eres <- vput(Eres, t, "t")
       if(exists("x"))
-        Eres <- vput(Eres,get("x", env=evei),"x")
+        #Eres <- vput(Eres,get("x", env=evei),"x")
+        Eres <- vput(Eres, x, "x")
       if(exists("tvap"))
-        Eres <- vput(Eres,get("tvap", env=evei),"n")
+        #Eres <- vput(Eres,get("tvap", env=evei),"n")
+        Eres <- vput(Eres, tvap, "n")
       if(exists("Zb"))
         Eres <- vput(Eres,get("Zb", env=evei),"Zb")
       if(exists("Zw"))
