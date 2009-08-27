@@ -27,7 +27,8 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     covariate. Default 1.}
   
   \item{...}{
-
+    Additional inputs are:
+    \describe{
     \item{EnonPar}{Scalar to indicate
 	 the model; for parametric set to 0 and
 	 for non-parametric estimation set EnonPar=1.Default 0.
@@ -40,6 +41,7 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     }
     \item{Ecdfbvn}{Determines which procedure to use for computing the
 	 area of the bivariate normal distribution above the unit square:
+     \describe{
 	 \item{1}{based on the Gauss function CDFBVN;}
 	 \item{2}{Martin van der Ende's method (based on D.R. Divgi,
 	   \emph{Calculation of the univariate and bivariate
@@ -62,15 +64,13 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
 	 innacurate and jump discontinuously and for very small
 	 values. Because of this, small values are truncated at the global
 	 EcdfTol, which you may wish to adjust.
+     }
     }
     \item{dbug}{if TRUE it puts environment \sQuote{evbase} in the user
 	 space. The environment \sQuote{evbase} contains all the arguments 
 	 and results of running ei and is good for debugging; see value for
 	 a description of \sQuote{evbase}.  Default FALSE.}
-   
  
-    \item{Additional inputs are:}{}
-    
     \item{EalphaB}{((ncol(Zb)) \eqn{\times 2}) matrix of means (in the
 	 first column) and standard deviations (in the second) of an
 	 independent normal prior distribution on elements of
@@ -150,7 +150,7 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     best to also set the priors EalphaB and EalphaW. See EIBAD Chapter 9,
     and the parameterization in Equation 9.2 (page 170). Options
     include:  
-
+    \describe{
     \item{1}{Eeta=0 excludes \eqn{X_i}, which is equivalent to setting
 	 \eqn{\alpha^b=\alpha^w=0} (default).}
     
@@ -173,7 +173,8 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     its standard error to b. Set to a \eqn{3\times 1} vector \eqn{5\vert
 	 a\vert b} to set zb=1 and zw=x, to estimate \eqn{\alpha^w}, and fix 
     \eqn{\alpha^b=a} and its standard error to b.}
-}
+    }
+    }
 \item{Ei.vc}{
   \eqn{M\times 2} matrix (\eqn{M\geq 1}), each row of which
   represents instructions for one attempt to compute an estimated
@@ -358,9 +359,11 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     region. This continues until differences in the parameters differ by
     the global Edirtol.)
   }
-
   }
+  }
+
 }
+
 \details{
   In the near future, it will also present 
   bayesian model averaging procedures, and implement theses models
@@ -470,16 +473,16 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     output of the likelihood maximization procedure. (This global is
     ignored unless EdoML=1.)
   }
-  \item{psiu}{$\breve{\psi}$, which was reparameterized from $\phi$
+  \item{psiu}{\eqn{\breve{\psi}}, which was reparameterized from \eqn{\phi}
     into untruncated scale.See Equation 7.4, page 136 of EIBAD.
 
-    Here \eqn{\psi} is reparameterized $ \phi$ into ultimate truncated
+    Here \eqn{\psi} is reparameterized \eqn{\phi} into ultimate truncated
     scale. See Section 6.2.2.
   }
   \item{parnames}{Character vector of names for \eqn{\phi}.}
   
   \item{lnir}{If EisChk=1, this is a Esims\eqn{\ast}Eisn
-    \eqn{\times}nrow($\phi$)+1 matrix ,
+    \eqn{\times}nrow(\eqn{\phi})+1 matrix ,
     containing the log of the importance ratio as the first column and
     normal simulations of \eqn{t(\tilde{\phi})} as the remaining
     columns. If EisChk=0, this is the scalar mean importance ratio
@@ -493,12 +496,12 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     log-likelihood values for each simulation; otherwise it is a scalar
     mean of these.}
   
-  \item{PhiSims}{If  EisChk=1, PhiSims is a Esims\eqn{\times}nrow($
-    \phi$) matrix of random simulations of $ \phi$; otherwise, it is a
-    nrow($ \phi$)$ \times 2$ matrix of the means (in the first column)
+  \item{PhiSims}{If  EisChk=1, PhiSims is a Esims\eqn{\times}nrow(
+    \eqn{\phi}) matrix of random simulations of \eqn{\phi}; otherwise, it is a
+    nrow(\eqn{\phi}) \eqn{\times} 2 matrix of the means (in the first column)
     and standard deviations (in the second column) of the simulations
     (which are the mean and standard deviations of the posterior
-    distribution of $ \phi$). See Section 8.2 of EIBAD.}
+    distribution of \eqn{\phi}). See Section 8.2 of EIBAD.}
   
   \item{evbase}{Global environment to be used for the graphics.}
   \item{date}{Current date.}          
@@ -523,145 +526,11 @@ See the documentation on line: \url{http://gking.harvard.edu/ei/docs
 ##-- ==>  Define data, use random,
 ##--	or do  help(data=index)  for the standard data sets.
 
-function(t,x,tvap,Zb, Zw,...)
-{
- ###  local res,et,MLpsi,MLvc,betaBs,betaWs,tst,Eselect,flat;
-  evbase <- eiset(t,x,tvap,Zb,Zw,...)  ##environment 
-  drvdot <- match.call(expand.dots=TRUE)
-  drv  <-  match.call(expand.dots=FALSE)
-
-  n <- tvap
- 
-  evbase <- expanddots(drvdot,drv,evbase)
-  
-  ###	@ timing start @
-  et   <- proc.time()
-  param  <- ls(env=evbase)
-
-  if(length(grep("Eprt", param)) && length(grep("Eversion", param))){
-    Eversion <- get("Eversion", env=evbase)
-    message(Eversion)
-  }
-##  print(EnonPar) 
-  ### copy variables from evbase to local environment evei
-  evei <- getEnvVar(evbase, environment())  ##environment 
- 
-  if(!scalzero(Eres) && vin(Eres,"titl") && Eprt >0)
-    message(vread(Eres,"titl"))
- 
-  Eres <- add.to.Eres(Eres, round=1, evbase)
- 
-###testing and debugging            
-###  lapply(param, function(x){
-###    print(x)
-###    print(get(x, env=evbase))})
-###    checkinputs(t,x,n,Zb,Zw);
-###   return(evbase)
-
-  
-###  /* verify inputs */
-  if(as.logical(Echeck)){
- 
-    tst <- ""
-    tst <- checkinputs(t,x,tvap,Zb, Zw,evbase)
-    if(tst != ""){
-      print(tst)
-  ###    "----- EI Aborted -----";
-      return(Eres)
-    }
-    if(Eprt>0){
-      if(EnonPar)
-        print("Inputs ok, beginning nonparametric estimation...")
-      else
-      print("Inputs ok, beginning preliminary estimation...")
-    }
-  }
-  
- ###  /* augment _Eselect if _EselRnd<1 */
-  assign("Eselect", Eselect, env=evbase);  ###$@ save existing value @
-  Eselect0 <- Eselect
-  Eselect <- matrix(1,nrow=rows(x),ncol=1)* as.vector(Eselect);
- 
-  if(EselRnd<1){
-    vec <- runif(rows(x),min=0,max=1)
-    vec <- matrix(vec)
-    Eselect <- Eselect & (vec < EselRnd);
-  }
- 
- 
-###  /* nonparametric estimation */
-  
-  if(dbug==T) evglobal <<- evbase 
-  if(EnonPar>=1){
-       
-    betaBs <- einonp(t,x, evbase);
-    assign("betaBs", betaBs, env=evbase); 
-  
-
-    Eres <- add.to.Eres(Eres, round=2, evbase)  
-    return(timing(et,Eprt,Eres,Eselect0))
-  }
-  ### /* parametric estimation: */
-  
-  ###/* eta influence on Zb,Zw */
-  if(rows(Eeta)!=4){
-  if(Eeta[1]==1 ||  Eeta[1]==4){
-    Zb <- x;
-    Zw <- 1;
-  }else if(Eeta[1]==2 || Eeta[1]==5){
-    Zb <- 1;
-    Zw <- x;
-  }else if(Eeta[1]==3){
-    Zb <- Zw <- x;
- 
-  }
-}
-
-  ### /* set internal global */
+data(sample)
+attach(sample)
+dbuf <- ei(t,x,n)
 
 
- ### clearg _Ez;	@ n of covariates, incl. implied constant term for Zb|Zw @
-  Ez <- as.matrix(c((cols(Zb)+1-scalone(Zb)),(cols(Zw)+1-scalone(Zw))));
-  assign("Ez", Ez, env=evbase)
-
-###  /* likelihood estimation */
-  if(EdoML==1){
-   
-     lst  <- quadcml(x,Zb,Zw,t);
-     MLpsi <- lst$Mlpsi
-     MLvc <- lst$MLvc
-     
-     if(length(MLvc) <= 1 && is.na(MLvc)){
-       Eres <- vput(Eres,MLpsi,"phi");
-       Eres <- vput(Eres,MLvc,"vcphi");
-      return(Eres);
-     }
-  }else{
-    message("Skipping likelihood estimation..");
-     Eres <- add.to.Eres(Eres, round=3, evbase)  
-  
-    MLpsi <- mlpsi <- EdoML.phi;
-    MLvc <-  mlvc <- EdoML.vcphi;
-    if(rows(mlvc)!= rows(mlpsi))
-      stop("ei: EdoML.phi or EdoML.vcphi input error");
-    
-  }
-
- ###/* simulation */
-  if(EdoSim==1){
-  ###  {betaBs,betaWs} = psim1(T,X,tvap,Zb,Zw,MLpsi,MLvc);
-     lst <- psim1(t,x,tvap,Zb,Zw,MLpsi,MLvc);
-     betaBs <- lst$betaBs
-     betaWs <- lst$betaWs
-     Eres   <- vput(Eres,betaBs,"betaBs"); ###@ no need to save betaWs; see eiread @
-     assign("Eres", Eres,env=evbase)
-   }
-
-
- return(timing(et,Eprt,Eres,Eselect0));
- 
-
-}
 }
 \keyword{file}% at least one, from doc/KEYWORDS
 \keyword{datasets}% __ONLY ONE__ keyword per line
