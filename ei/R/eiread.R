@@ -253,9 +253,9 @@ eiread <- function(dbuf, str, formula=NA,calculate=FALSE,...){
   nmdbuf <- names(dbuf)
   nmdbuf <- sapply(nmdbuf,tolower)
   names(dbuf) <- nmdbuf
-  message("Variables in list are")
-  prettynm <- paste(names(dbuf), collapse="\t")
-  message(prettynm)
+  #message("Variables in list are")
+  #prettynm <- paste(names(dbuf), collapse="\t")
+  #message(prettynm)
   
   if (vin(dbuf,"eimetar"))
     eimetar <- vread(dbuf,"eimetar")
