@@ -27,8 +27,7 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     covariate. Default 1.}
   
   \item{...}{
-    Additional inputs are:
-    \describe{
+    \itemize{
     \item{EnonPar}{Scalar to indicate
 	 the model; for parametric set to 0 and
 	 for non-parametric estimation set EnonPar=1.Default 0.
@@ -41,7 +40,7 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     }
     \item{Ecdfbvn}{Determines which procedure to use for computing the
 	 area of the bivariate normal distribution above the unit square:
-     \describe{
+         \itemize{
 	 \item{1}{based on the Gauss function CDFBVN;}
 	 \item{2}{Martin van der Ende's method (based on D.R. Divgi,
 	   \emph{Calculation of the univariate and bivariate
@@ -58,19 +57,23 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
 		integral},\emph{Journal of Statist. Comput. Simul.} 35:
 	   101-107). See EIBAD Appendix F.
 	 }
+	}
 	 Option 6 is more accurate,other options are 3 and 4 and 5.However,
 	 fundamental progress remains to be made on methods of integrating
 	 the bivariate normal, as all currently available methods are
 	 innacurate and jump discontinuously and for very small
 	 values. Because of this, small values are truncated at the global
 	 EcdfTol, which you may wish to adjust.
-     }
     }
     \item{dbug}{if TRUE it puts environment \sQuote{evbase} in the user
 	 space. The environment \sQuote{evbase} contains all the arguments 
 	 and results of running ei and is good for debugging; see value for
 	 a description of \sQuote{evbase}.  Default FALSE.}
+   
  
+\emph{ Additional inputs are:}
+
+    
     \item{EalphaB}{((ncol(Zb)) \eqn{\times 2}) matrix of means (in the
 	 first column) and standard deviations (in the second) of an
 	 independent normal prior distribution on elements of
@@ -150,7 +153,7 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     best to also set the priors EalphaB and EalphaW. See EIBAD Chapter 9,
     and the parameterization in Equation 9.2 (page 170). Options
     include:  
-    \describe{
+	\itemize{
     \item{1}{Eeta=0 excludes \eqn{X_i}, which is equivalent to setting
 	 \eqn{\alpha^b=\alpha^w=0} (default).}
     
@@ -173,8 +176,8 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     its standard error to b. Set to a \eqn{3\times 1} vector \eqn{5\vert
 	 a\vert b} to set zb=1 and zw=x, to estimate \eqn{\alpha^w}, and fix 
     \eqn{\alpha^b=a} and its standard error to b.}
-    }
-    }
+	}
+}
 \item{Ei.vc}{
   \eqn{M\times 2} matrix (\eqn{M\geq 1}), each row of which
   represents instructions for one attempt to compute an estimated
@@ -322,8 +325,9 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     observations are not always needed for estimating $\phi$. Since all
     observations will still be included in the simulation stage,
     precinct-level estimates of all quantities of interest will still be
-    available. (If used with EI2, each iteration of EI includes a
-    different randomly selected set of observations).}
+    available. 
+%   (If used with EI2, each iteration of EI includes a different randomly selected set of observations).
+   }
   
   \item{Esigma}{Standard deviation of an underlying normal
     distribution, from which a half normal is constructed as a prior for
@@ -357,13 +361,10 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     on all the parameters, chooses the region of highest likelihood,
     zooms in and repeats the procedure on the narrower parameter
     region. This continues until differences in the parameters differ by
-    the global Edirtol.)
+    the global Edirtol.) }
   }
   }
-  }
-
 }
-
 \details{
   In the near future, it will also present 
   bayesian model averaging procedures, and implement theses models
@@ -451,7 +452,9 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
   \item{betabs}{Matrix of point estimates. Number of rows equal to the lenght of 
     either input vectors, x,t, or n; number of columns equal to number of
     simulation \code{Esims}. The prescint estimates from the aggregate
-    data.See Chapter 8 of EIBAD. (Uses x2 simulations when used with ei2).}
+    data.See Chapter 8 of EIBAD. 
+%    (Uses x2 simulations when used with ei2).
+  }
   \item{betaBs}{Same as \dQuote{betabs}.}
   
   \item{retcode}{Non applicable.}
@@ -496,12 +499,11 @@ dbuf <- ei(t,x,n,Zb,Zw,...)
     log-likelihood values for each simulation; otherwise it is a scalar
     mean of these.}
   
-  \item{PhiSims}{If  EisChk=1, PhiSims is a Esims\eqn{\times}nrow(
-    \eqn{\phi}) matrix of random simulations of \eqn{\phi}; otherwise, it is a
-    nrow(\eqn{\phi}) \eqn{\times} 2 matrix of the means (in the first column)
+  \item{PhiSims}{If  EisChk=1, PhiSims is a Esims\eqn{\times}nrow(\eqn{\phi}) matrix of random simulations of \eqn{\phi}; otherwise, it is a
+    \eqn{nrow(\phi) \times 2} matrix of the means (in the first column)
     and standard deviations (in the second column) of the simulations
     (which are the mean and standard deviations of the posterior
-    distribution of \eqn{\phi}). See Section 8.2 of EIBAD.}
+    distribution of \eqn{ \phi}). See Section 8.2 of EIBAD.}
   
   \item{evbase}{Global environment to be used for the graphics.}
   \item{date}{Current date.}          
@@ -520,7 +522,6 @@ it into R.
 See the documentation on line: \url{http://gking.harvard.edu/ei/docs
 }
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,

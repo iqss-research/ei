@@ -42,12 +42,13 @@
     that will not change the prompt-messages.}
   
   \item{...}{
-    \describe{
     By default, if no second argument is provided, the
     function call \code{summary(dbuf)} will return \sQuote{Paggs}.
     If a second argument is provided then it needs to be one of the
     following options (note that the arguments are case insensitive):
-   
+  
+\itemize{ 
+
    \item{EalphaB}{
     value of this global (priors on \eqn{\alpha^b})}
 
@@ -174,8 +175,9 @@
 
   \item{aggs}{
     Esims \eqn{\times} 2: simulations of district-level quantities of
-    interest, \eqn{\hat{B}^b\sim\hat{B}^w}. See Section 8.3.
-    (Uses x2 simulations when used with ei2).}
+    interest, \eqn{\hat{B}^b\sim\hat{B}}. See Section 8.3.
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{AggTruth}{
     2 \eqn{\times} 1: true district-level \eqn{B^b} and \eqn{B^w}.
@@ -185,31 +187,41 @@
   \item{beta}{
     p \eqn{\times} 2 point estimates of \eqn{\beta_i^b} (in the first column)
     and \eqn{\beta_i^w} (in the second) based on their mean posterior.
-    See Section 8.2. (Uses x2 simulations when used with ei2.)}
+    See Section 8.2. 
+%(Uses x2 simulations when used with ei2.)
+}
 
   \item{betaB}{
     p \eqn{\times} 1 point estimates of \eqn{\beta_i^b} based on its mean
-    posterior. See EIBAD Section 8.2. (Uses x2 simulations when used with ei2.)}
+    posterior. See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2.)
+}
 
   \item{betaBs}{
     p \eqn{\times} Esims: simulations of \eqn{\beta_i^b}.
-    See EIBAD Chapter 8. (Uses x2 simulations when used with ei2).}
+    See EIBAD Chapter 8. 
+%(Uses x2 simulations when used with ei2).
+    }
 
   \item{betaW}{
-    p \eqn{\times} 1 point estimate of \eqn{ \beta_i^w} based on its mean
-    posterior. See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    p \eqn{\times} 1 point estimate of \eqn{\beta_i^w} based on its mean
+    posterior. See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+   }
 
   \item{betaWs}{
     p \eqn{\times} Esims: simulations of \eqn{\beta_i^w}.
-    See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+  }
 
   \item{bounds}{
     p \eqn{\times} 4: bounds on \eqn{\beta_i^b} and \eqn{\beta_i^w},
     lowerB, upperB, lowerW, upperW. See EIBAD Chapter 5.}
 
-  \item{bounds2}{
-    p \eqn{\time} 4: bounds on \eqn{\lambda_i^b} and \eqn{ \lambda_i^w},
-    lowerB, upperB, lowerW, upperW. See EIBAD Chapter 5, eqns 5.4.}
+ \item{bounds2}{
+   p \eqn{\times} 4: bounds on \eqn{\lambda_i^b} and \eqn{\lambda_i^w},
+   lowerB, upperB, lowerW, upperW. See EIBAD Chapter 5, eqns 5.4.}
 
   \item{checkR}{
     nrow(\eqn{\phi}) \eqn{\times} 2: matrix with rows corresponding to \eqn{\phi},
@@ -220,53 +232,72 @@
     to make the comparison (Equation 6.15, p.104). See option R.}
 
   \item{CI50b}{
-    p \eqn{\times} 2: lower, upper 50\% confidence intervals for \eqn{ 
-    \beta_i^b}. See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    p \eqn{\times} 2: lower, upper 50\% confidence intervals for \eqn{\beta_i^b}.
+	 See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+ }
 
   \item{CI50w}{
     p \eqn{\times} 2: lower, upper 50\% confidence intervals for 
-    \eqn{\beta_i^w}. See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    \eqn{\beta_i^w}. See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{CI80b}{
-    p \eqn{\times} 2: lower, upper 80\% confidence intervals for \eqn{ 
-    \beta_i^b}. See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    p \eqn{\times} 2: lower, upper 80\% confidence intervals for \eqn{\beta_i^b}. 
+	See EIBAD Section 8.2. %(Uses x2 simulations when used with ei2).
+}
 
   \item{CI80bw}{
     p \eqn{\times} 4: lowerB, upperB, lowerW, upperW 80\%
     confidence intervals for \eqn{\beta_i^b} and \eqn{\beta_i^w}.
-    See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{CI80w}{
     p \eqn{\times} 2: lower, upper 80\% confidence intervals
-    for \eqn{\beta_i^w}. See Section 8.2. (Uses x2 simulations when used with ei2).}
+    for \eqn{\beta_i^w}. See Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{CI95b}{
-    p\eqn{\times} 2: lower, upper 95\% confidence intervals for \eqn{ 
-    \beta_i^b}. See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    p\eqn{\times} 2: lower, upper 95\% confidence intervals for \eqn{\beta_i^b}. See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{CI95bw}{
     p\eqn{\times} 4: lowerB, upperB, lowerW, upperW
-    95\% confidence intervals for \eqn{\beta_i^b} and \eqn{ \beta_i^w}.
-    See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    95\% confidence intervals for \eqn{\beta_i^b} and \eqn{\beta_i^w}.
+    See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{CI95w}{
     p \eqn{\times} 2: lower, upper 95\% confidence intervals
-    for \eqn{\beta_i^w}. See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+    for \eqn{\beta_i^w}. See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{coverage}{
     2 \eqn{\times} 4: confidence interval coverage; percent of true values
     within the 50\% and 80\% confidence intervals:
     50b, 80b, 50w, 80w (1st row = means, 2nd = weighted
     means).Requires truth to have been added to \sQuote{dbuf} the output
-    of ei. (Uses x2 simulations when used with ei2).}
+    of ei. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{CsbetaB}{
     p \eqn{\times} 1: confidence interval-based standard error of \eqn{\beta_i^b}.
-    (Uses x2 simulations when used with ei2).}
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{CsbetaW}{
     p \eqn{\times} 1 confidence interval-based standard error of
-    \eqn{\beta_i^w}. (Uses x2 simulations when used with ei2).}
+    \eqn{\beta_i^w}. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{DataSet}{
     Zb, Zw, x, t, used for input to eiloglik.
@@ -299,23 +330,28 @@
     given $ X_i$. X, 20\%CI, mean, 80\%CI of sims from
     P(T_i\eqn{\vert} X), where $ X$ in this context is 100 numbers
     equally spaced between 0 and 1. See EIBAD Section 8.5.
-    (Uses x2 simulations when used with ei2).}
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{ExpVarCI0}{
     p\eqn{\times} 4: 80\% confidence intervals for $ T_i$ given
     the observed values of $ X_i$ and/or Zb and Zw when applicable.
     T, 20\%CI, mean, 80\%CI of sims from
-    P(T_i\eqn{\vert} X, Zb, Zw) (Uses x2 simulations when used with ei2).}
+    P(T_i\eqn{\vert} X, Zb, Zw) 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{ExpVarCIs}{
     100\eqn{\times} 4: same as expvarci, but smoothed with LOESS.
-    Used for eigraph's xtfit. See EIBAD Section 8.5. (Uses x2 simulations when used with ei2).}
+    Used for eigraph's xtfit. See EIBAD Section 8.5. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{GEbw}{
     p\eqn{\times} 3: \eqn{\beta_i^b, \beta_i^w, }Nsims.
     Point estimates of \eqn{\beta_i^b} and \eqn{\beta_i^w},
-    based on the mean posterior under the prior that \eqn{ 
-    \beta_i^b\geq\beta_i^w}. Use this option (instead of beta)
+    based on the mean posterior under the prior that \eqn{\beta_i^b\geq\beta_i^w}.
+     Use this option (instead of beta)
     if you are reasonably certain that \eqn{\beta_i^b\geq\beta_i^w}.
     This procedure is based on simulations for which the inequality holds,
     and thus also reports Nsims, the number of simulations on which
@@ -357,21 +393,23 @@
    value of log-likelihood at the maximum (unnormalized) for each observation.}
 
   \item{lnIR}{
-    If EisChk=1, this is a Esims\eqn{\ast}Eisn \eqn{\eqn{\times}} nrow(\eqn{\phi})+1 matrix ,
+    If EisChk=1, this is a \eqn{Esims\ast Eisn \times nrow(\phi)+1} matrix ,
     containing the log of the importance ratio as the first column
     and normal simulations of \eqn{t(\tilde{\phi})} as the remaining columns.
     If EisChk=0, this is the scalar mean importance ratio (equivalent to
     meanIR below).}
  
    \item{LLikSims}{
-    If EiLlikS=1, this is Esims\eqn{\eqn{\times}}1 vector of
+    If EiLlikS=1, this is Esims\eqn{\times}1 vector of
     log-likelihood values for each simulation;
     otherwise it is a scalar mean of these.}
 
   \item{Maggs}{
     2\eqn{\times} 1: point estimate of 2 district-level parameters,
     \eqn{\hat{B}^b} and \eqn{\hat{B}^w}: meanc(aggs).
-    See EIBAD Section 8.3. (Uses x2 simulations when used with ei2).}
+    See EIBAD Section 8.3. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{MeanIR}{
     scalar log of the mean importance ratio.}
@@ -386,10 +424,10 @@
     p\eqn{\times} 1: denominator of x and t, equal to \eqn{x\ast n}, \eqn{N_i^{b}}
     (e.g., number of blacks in the voting age population).}
 
-  \item{Nb2}{
-    for ei2 data buffers only, p\eqn{\times} Esims: denominator of x2 and V,
-    equal to \eqn{x2\ast n}, \eqn{N_i^{b}}
-    (e.g., number of blacks in the voting age population).}
+%  \item{Nb2}{
+%    for ei2 data buffers only, p\eqn{\times} Esims: denominator of x2 and V,
+%    equal to \eqn{x2\ast n}, \eqn{N_i^{b}}
+%    (e.g., number of blacks in the voting age population).}
 
   \item{Nt}{
     p\eqn{\times} 1: numerator of t, equal to \eqn{t\ast n},
@@ -416,9 +454,10 @@
     p\eqn{\times} 1: equal to (1-x)\eqn{\ast} n, \eqn{N_i^{w}}
     (e.g., number of whites in the voting age population).}
 
-  \item{Nw2}{
-    for ei2 data buffers only, p\eqn{\times} Esims:
-    equal to \eqn{(1-x2)\ast n}, \eqn{N_i^{w}} (e.g., number of whites in the voting age population).}
+%\item{Nw2}{
+%  for ei2 data buffers only, p\eqn{\times} Esims:
+%  equal to \eqn{(1-x2)\ast n}, \eqn{N_i^{w}} 
+% (e.g., number of whites in the voting age population).}
 
   \item{NwN}{
     p\eqn{\times} 1: \eqn{N_i^{wN}} (e.g., number of whites who don't vote).
@@ -432,7 +471,9 @@
 
   \item{Paggs}{
     2\eqn{\times} 2: row 1: \eqn{\hat{B}^b} and \eqn{\hat{B}^w}; row 2: standard
-    errors. See EIBAD Section 8.3. (Uses x2 simulations when used with ei2).}
+    errors. See EIBAD Section 8.3. 
+%(Uses x2 simulations when used with ei2).
+}
 
   \item{Palmquist}{
     scalar: Palmquist's Inflation Factor. See EIBAD Equation 3.14, page 52.}
@@ -492,29 +533,39 @@
   p\eqn{\times} Esims: randomly horizontally permuted
   simulations of \eqn{\beta_{i}^{b}}. This is essentially equivalent
   to betaBs except that it randomly permutes estimation
-  variation also. (Uses x2 simulations when used with ei2).}
+  variation also. 
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{RNbetaWs}{
    p\eqn{\times} Esims: randomly horizontally permuted simulations of
   \eqn{\beta_i^w}. This is essentially equivalent to betaWs except
   that it randomly permutes estimation variation also.
-  (Uses x2 simulations when used with ei2).}
+  
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{sbetaB}{
   p\eqn{\times} 1 standard error for the estimate of \eqn{\beta_i^b},
   based on the standard deviation of its posterior.
-  See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+  See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{sbetaW}{
   p\eqn{\times} 1 standard error for the estimate of \eqn{\beta_i^w},
   based on the standard deviation of its posterior.
-  See EIBAD Section 8.2. (Uses x2 simulations when used with ei2).}
+  See EIBAD Section 8.2. 
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{STbetaBs}{
   p\eqn{\times} Esims: SORTED simulations of \eqn{\beta_i^b}
   (e.g., the 80\% confidence interval lower bound is
   STbetaBs[int(0.1* Esims)]). See EIBAD Section 8.2.
-  (Uses x2 simulations when used with ei2).}
+  
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{STbetaWs}{
   p\eqn{\times} Esims: SORTED simulations of \eqn{\beta_i^w}
@@ -543,8 +594,9 @@
   p x 2: percentile of sorted simulates at which the true value
   falls for \eqn{\beta_i^b} and \eqn{\beta_i^w}.
   Requires truth to have been added  to \sQuote{dbuf}, which is the
-  output of ei. See EIBAD Figure 10.7, page 213. (Uses x2 simulations
-  when used with ei2).}
+  output of ei. See EIBAD Figure 10.7, page 213.
+% (Uses x2 simulations when used with ei2).
+}
 
 
 \item{truth}{
@@ -563,17 +615,23 @@
   100\eqn{\times}Esims +1: simulations of $ T_i$ given $ X_i$.
   rows correspond to 100 values of $ X_i$ equally spaced between zero
   and one, columns are $ X_i$ and sorted simulations of \eqn{T_i\vert X_i}.
-  See EIBAD Section 8.5. (Uses x2 simulations when used with ei2).}
+  See EIBAD Section 8.5. 
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{tsims0}{
   p\eqn{\times} Esims +1: simulations of $ T_i$ given observed
   values of $ X_i$ and/or Zb and Zw. The first column is the actual
-  values of $ T_i$ (Uses x2 simulations when used with ei2).}
+  values of $ T_i$ 
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{VCaggs}{
   2\eqn{\times} 2: variance matrix of 2 district-level parameters,
   \eqn{\hat{B}^b} and \eqn{\hat{B}^w}.
-  See EIBAD Section 8.3. (Uses x2 simulations when used with ei2).}
+  See EIBAD Section 8.3. 
+%(Uses x2 simulations when used with ei2).
+}
 
 \item{VCphi}{
   global variance matrix of coefficients phi from gvc().
@@ -586,16 +644,16 @@
   (for ei2, this is the mean posterior estimate of $ x_i$,
   as, e.g., the black fraction of those voting).}
 
-\item{x2}{
-  for ei2 data buffers only, p\eqn{\times}\texttt{Esims}:
-  simulations of the explanatory variable proportion,
-  $ x_i$ (e.g., black fraction of voters).}
+%\item{x2}{
+%  for ei2 data buffers only, p\eqn{\times}\texttt{Esims}:
+%  simulations of the explanatory variable proportion,
+%  $ x_i$ (e.g., black fraction of voters).}
 
-\item{x2rn}{
-  for ei2 data buffers only, p\eqn{\times}\texttt{Esims}:
-  horizontally randomly permuted simulations of the explanatory variable
-  proportion, $ x_i$ (e.g., black fraction of voters).
-  (This is useful because x2 has only EI2.m unique columns.)} 
+%\item{x2rn}{
+%  for ei2 data buffers only, p\eqn{\times}\texttt{Esims}:
+%  horizontally randomly permuted simulations of the explanatory variable
+%  proportion, $ x_i$ (e.g., black fraction of voters).
+%  (This is useful because x2 has only EI2.m unique columns.)} 
 
 \item{Zb}{
   matrix of covariates for \eqn{\beta_i^b} or 1 for none;
@@ -614,7 +672,7 @@
   Same as \code{v = ei:::eiread(dbuf,"name")} but eiread is internal to
   the R-package.\\
   Global variables relevant to this procedure are:
-\describe{
+\itemize{
 \item{Eprt}{
   if \eqn{\geq} 1, in addition to outputting results in v,
   print a display of the item to the screen
@@ -629,7 +687,7 @@
   (in case of eimodels.def and eimodels.run) in dbuf should be
   accessed when running summary (i.e. eiread) and plot (i.e. eigraph).
   Default=1.} 
-} 
+}
 }
 
 \value{Can be a list,  a vector, matrix or string}

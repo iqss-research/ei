@@ -4,9 +4,8 @@
 \title{Graphic Parameters and Options for  ei model.}
 
 \description{
- Graphs the results taken from the ei output data buffer (i.e., for $
- 2\eqn{\times} 2$ tables) and, when it get completed, for ei2 data buffers
- ($ 2\eqn{\times} C$ tables). See summary.ei to extracting the numerical
+ Graphs the results taken from the ei output data buffer 
+See summary.ei to extracting the numerical
  information input to the graphics.eigraph(dbuf,"name") or
  plot(x=dbuf,"name").
  See book (EIBAD) \emph{A Solution to the Ecological Inference Problem:
@@ -30,7 +29,7 @@
     inference applications, where this information is not available.
     If no name is provided the default is \sQuote{tomogs}. The options
     are: 
-   \describe{ 
+   \itemize{ 
    \item{beta}{betaB and betaW; betaB vector of length p\eqn{\times 1} with p
 	the number of precincts is the mean posterior over
 	the simulations of \eqn{\beta_i^b},and similarly for betaW.}
@@ -232,6 +231,7 @@
   See Figure 10.3, page 206.}
 
 \item{xtfitg}{xtfit with Goodman's regression line superimposed.}
+
 For additional globals see help for eigraph.
 }
 }
