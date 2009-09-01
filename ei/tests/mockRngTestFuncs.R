@@ -77,7 +77,8 @@ reset_mock <- function(){
     require(ei)
     .mockRNGState <<- new.env(parent=.GlobalEnv)
     .mockRNGState$cursor <<- 0
-    load("rndu_1.RData", envir=.mockRNGState)
+    .mockRNGState$rndu_list <- as.vector(as.matrix(read.table("rndu_1.tab", header=F)))
+    #load("rndu_1.RData", envir=.mockRNGState)
     #load("rndu_1.RData", envir=.mockRNGState) 
     environment(mock_rnorm) <<- .mockRNGState
     environment(mock_runif) <<- .mockRNGState
