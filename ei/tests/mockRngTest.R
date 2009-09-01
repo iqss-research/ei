@@ -1,0 +1,6 @@
+source('mockRngTestFuncs.R')
+.setUp()
+test.cens1910()
+test.kyck88()
+test.matproII()
+test.nj()
