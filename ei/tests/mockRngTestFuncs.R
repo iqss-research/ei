@@ -83,6 +83,10 @@ reset_mock <- function(){
     environment(mock_rnorm) <<- .mockRNGState
     environment(mock_runif) <<- .mockRNGState
     environment(reset_mock) <<- .mockRNGState
+    unlockBinding("mock_runif", environment(ei))
+    environment(ei)$mock_runif <- mock_runif
+    unlockBinding("mock_rnorm", environment(ei))
+    environment(ei)$mock_rnorm <- mock_rnorm
 }
 ######Global parameters#####
 qis <- c('aggs',
@@ -126,6 +130,7 @@ ugly_datasets <- c("FULTONGEN")
 datasets <- c(good_datasets)
 
 #####Actual test functions#####
+
 test.cens1910 <- function(){
     run_all("CENS1910")
 }
@@ -159,6 +164,8 @@ qi_test <- function(dataset){
     for(q in qis){
         print(q)
         x <- all.equal(g_res[[q]], round(r_res[[q]],4), tol=1e-3, check.attributes=F)
+        if(class(x)=="character")
+            stop(x)
     }
 }    
 
