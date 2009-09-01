@@ -29,7 +29,7 @@ Data (Princeton: Princeton University Press, 1997), by Gary King.
       <ul>      
 	<li>To install, sign on to R, and type:
 	    install.packages("ei",repos="http://gking.harvard.edu")  or 
-	    <!-- rbuild: replace 'cem_' '.tar.gz' version -->
+	    <!-- rbuild: replace 'ei_' '.tar.gz' version -->
 	    <a href="/src/contrib/ei_2.4-6.tar.gz">download this file</a> and
 	    install yourself.</li>
 
