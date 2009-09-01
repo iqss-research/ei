@@ -127,7 +127,6 @@ datasets <- c(good_datasets)
 
 #####Actual test functions#####
 test.cens1910 <- function(){
-    print(mock_rnorm)
     run_all("CENS1910")
 }
 
