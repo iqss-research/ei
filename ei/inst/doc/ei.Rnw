@@ -14,7 +14,7 @@
 \usepackage{stmaryrd}
 \usepackage{bbm}
 \usepackage{epsf}
-\usepackage{psfig}
+%\usepackage{psfig}
 %\usepackage{wcolor}
 \usepackage{textcomp} % for \texttrademark
 \usepackage{makeidx}
