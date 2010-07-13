@@ -1,6 +1,1 @@
-importFrom(mvtnorm,pmvnorm)
-export(ei,user.prompt,eigraph,
-       summary.ei,plot.ei)
-S3method(summary,ei)
-S3method(plot,ei)
-
+exportPattern("^[[:alpha:]]+")
