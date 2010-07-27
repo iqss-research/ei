@@ -14,8 +14,8 @@ library(tmvtnorm)
 repar <- function(Bb0, Bw0, sb0, sw0, rho0, Bb0v, Bw0v, Zb, Zw){
 	sb=exp(sb0)
 	sw=exp(sw0)
-	bb=Bb0*(.25+sb^2) + .5 + as.matrix(Zb-mean(Zb))%*%as.matrix(Bb0v)
-	bw=Bw0*(.25+sw^2) + .5 + as.matrix(Zw-mean(Zw))%*%as.matrix(Bw0v)
+	bb=Bb0*(.25+sb^2) + .5 + as.matrix(apply(Zb,2, function(x) x - mean(x)))%*%as.matrix(Bb0v)
+	bw=Bw0*(.25+sw^2) + .5 + as.matrix(apply(Zw,2, function(x) x - mean(x)))%*%as.matrix(Bw0v)
 	rho=(exp(2*rho0)-1)/(exp(2*rho0) +1)
 	return(c(t(bb), t(bw), sb, sw, rho))
 	}

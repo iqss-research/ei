@@ -8,13 +8,14 @@ samp <- function(t,x,n, Zb, Zw, par, varcv, nsims, keep, numb, covs){
 #mat <- matrix(rnorm(5*nsims), nrow=5)
 #draw <- t(par + a%*%mat)
 import1 <- NULL
-draw <- rmvnorm(nsims, par[covs], varcv)
-varcv2 <- solve(varcv)
-phiv <- dmvnorm(draw, par[covs], varcv2, log=T)
+varcv2 <- solve(varcv)/4
+draw <- rmvnorm(nsims, par[covs], varcv2)
+varcv3 <- solve(varcv2)
+phiv <- dmvnorm(draw, par[covs], varcv3, log=T)
 zbmiss <- ifelse(covs[6:(5+numb)]==FALSE,TRUE,FALSE)
 zwmiss <- ifelse(covs[(6+numb):length(covs)]==FALSE, TRUE, FALSE)
 if(zbmiss==TRUE&zwmiss==FALSE){
-	draw <- cbind(draw[,1:5], rep(1,nsims), draw[,(6+numb):length(par)])
+	draw <- cbind(draw[,1:5], rep(1,nsims), draw[,(5+numb):sum(covs)])
 	}
 if(zbmiss==FALSE&zwmiss==TRUE){
 	draw <- cbind(draw, rep(1,nsims))
@@ -25,7 +26,7 @@ if(zbmiss==TRUE&zwmiss==TRUE){
 for(i in 1:nsims){
 #ymu <- draw[i,] - par
 #phiv = -(t(as.matrix(ymu))%*%solve(varcv)%*%as.matrix(ymu))/2
-import1[i] <- like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=1) - phiv[i]
+import1[i] <- like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb) - phiv[i]
 }
 lnir <- import1-max(import1[1:nsims])
 ir <- exp(lnir)
@@ -40,14 +41,16 @@ return(keep)
 
 
 ei <- function(t,x,n,Zb,Zw){
+Zb <- as.matrix(Zb)
+Zw <- as.matrix(Zw)
 numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))
 solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, method="BFGS", control=list(fnscale=-1), hessian=T) 
 
 covs <- as.logical(ifelse(diag(solution$hessian)==0,0,1))
-varcv <- solve(-solution$hessian[covs,covs])
-varcv <- varcv/4
+varcv <- -solution$hessian[covs,covs]
+#varcv <- varcv
 
 
 keep <- matrix(data=NA, ncol=(length(solution$par)))
@@ -61,7 +64,7 @@ while(dim(keep)[1]<100){
 #	}
 
 
-keep <- keep[2:dim(keep)[1],]
+keep <- keep[2:100,]
 mu <- keep[,1:2]
 sd <- keep[,3:4]
 rho <- keep[,5]
@@ -78,11 +81,11 @@ rho <- (exp(2*rho)-1)/(exp(2*rho) +1)
 psi <- cbind(mu1, mu2, sd, rho)
 
 bb <- psi[,1:length(x)]	
-bw <- psi[,(length(x)+1):length(data$x)*2]
+bw <- psi[,(length(x)+1):(length(x)*2)]
 sb <- psi[,(length(x)*2+1)]
 sw <- psi[,(length(x)*2+2)]
 rho <- psi[,(length(x)*2+3)]
-omx <- 1-data$x
+omx <- 1-x
 sbw <- rho*sb*sw
 betab <- matrix(nrow=length(x),ncol=dim(keep)[1])
 betaw <- matrix(nrow=length(x),ncol=dim(keep)[1])
@@ -110,7 +113,7 @@ mbetab <- apply(betab,1,mean)
 mbetaw <- apply(betaw,1,mean)
 sdbetab <- apply(betab,1,sd)
 sdbetaw <- apply(betaw,1,sd)
-output <- list(solution$par, solution$hessian, psi, mbetab, mbetaw, sdbetab, sdbetaw)
-names(output) <- c("phi", "hessian", "psi", "betab", "betaw", "sbetab", "sbetaw")
+output <- list(solution$par, solution$hessian, psi, mbetab, mbetaw, sdbetab, sdbetaw, betab, betaw)
+names(output) <- c("phi", "hessian", "psi", "betab", "betaw", "sbetab", "sbetaw", "betabs", "betaws")
 return(output)
 }

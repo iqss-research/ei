@@ -13,6 +13,8 @@ abounds <- function(x,t,n){
 	}
 	
 aggs <- function(x,t,n, betab, betaw){
+	betab <- as.matrix(betab)
+	betaw <- as.matrix(betaw)
 	omx <- 1-x
 	Nb <- n*x
 	Nw <- n*omx
@@ -31,6 +33,8 @@ maggs <- function(x,t,n, betab, betaw){
 	omx <- 1-x
 	Nb <- n*x
 	Nw <- n*omx
+	betab <- as.matrix(betab)
+	betaw <- as.matrix(betaw)
 	Bbgg <- vector(mode="numeric", length=dim(betab)[2])
 	for (i in 1:dim(betab)[2]){
 		Bbgg[i] <- weighted.mean(betab[,i], Nb)
@@ -43,6 +47,8 @@ maggs <- function(x,t,n, betab, betaw){
 	}
 	
 VCaggs <- function(x,t,n,betab, betaw){
+	betab <- as.matrix(betab)
+	betaw <- as.matrix(betaw)
 	omx <- 1-x
 	Nb <- n*x
 	Nw <- n*omx
@@ -83,5 +89,5 @@ goodman <- function(t, x){
 	BetaW <- summary(lm.g)$coefficients[1,]
 	BetaB <- summary(lm.w)$coefficients[1,]
 	coefs <- rbind(BetaB, BetaW)
-	return(summary(lm.w)$coefficients)
+	return(coefs)
 	}
