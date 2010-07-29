@@ -36,8 +36,8 @@ repar <- function(Bb0, Bw0, sb0, sw0, rho0, Bb0v, Bw0v, Zb, Zw){
 ## 	return(cbind(mu, s2, epsilon, omega, ebb,vbb))
 ## 	}
 
-numb <- 2
-like <- function(param, y, x, n, Zb, Zw, numb){
+#numb <- 2
+like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, ealphaw){
 	Bb0 <- param[1]
 	Bw0 <- param[2]
 	sb0 <- param[3]
@@ -89,11 +89,11 @@ like <- function(param, y, x, n, Zb, Zw, numb){
 	llik <- llik + sum(res) - sum(R)
 	#Priors
 	prior=0
-	erho = .5
-	esigma = .5
-	ebeta = 0
-	ealphab= NA #matrix(c(1,1, 2,2), nrow=2)
-	ealphaw = NA #as.matrix(c(1,2), nrow=1)
+	#erho = .5
+	#esigma = .5
+	#ebeta = 0
+	#ealphab= NA #matrix(c(1,1, 2,2), nrow=2)
+	#ealphaw = NA #as.matrix(c(1,2), nrow=1)
 	if (esigma>0) prior = prior-(1/(2*esigma^2))*(sigb2+sigw2);
 	lpdfnorm = log(dnorm(rho0,0,sd=erho))
 	#lpdfnorm = -.918938533204672741 - (log(erho^2) +((rho0)^2)/(erho^2))/2

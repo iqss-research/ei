@@ -43,7 +43,7 @@ maggs <- function(x,t,n, betab, betaw){
 	for (i in 1:dim(betaw)[2]){
 		Bwgg[i] <- weighted.mean(betaw[,i], Nw)
 		}
-	return(c(mean(Bbgg), mean(Bwgg)))
+	return(c(mean(Bbgg), mean(Bwgg), sd(Bbgg), sd(Bwgg)))
 	}
 	
 VCaggs <- function(x,t,n,betab, betaw){
