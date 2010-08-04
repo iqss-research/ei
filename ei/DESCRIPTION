@@ -2,9 +2,9 @@ Package: ei
 Version: 0.0-1
 Date: 2009-04-22
 Title: ei
-Author: Gary King <king@harvard.edu>,Elena Villalon <evillalon@iq.harvard.edu>
-Maintainer: Elena Villalon <evillalon@iq.harvard.edu>
-Depends: R (>= 2.5.0), mvtnorm
+Author: Gary King <king@harvard.edu>,Molly Roberts <roberts8@fas.harvard.edu>
+Maintainer: Molly Roberts <roberts8@fas.harvard.edu>
+Depends: R (>= 2.5.0), mvtnorm, msm, tmvtnorm, ellipse, plotrix, MASS
 Description:  Software accompanying Gary King's book: A Solution to the 
 	Ecological Inference Problem. 
 License: GPL version 2 or newer
