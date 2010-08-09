@@ -12,6 +12,7 @@ numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))
 solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, method="BFGS", control=list(fnscale=-1), hessian=T) 
+print(1)
 covs <- as.logical(ifelse(diag(solution$hessian)==0,0,1))
 varcv <- -solution$hessian[covs,covs]
 #varcv <- varcv
@@ -22,6 +23,7 @@ while(dim(keep)[1]<100){
 	keep <- samp(t,x,n, Zb, Zw, solution$par, varcv, 1000, keep, numb=numb, covs, erho, esigma, ebeta, ealphab, ealphaw)
 	resamp = resamp + 1
 	}
+print(2)
 
 #for (i in 1:dim(keep)[1]){
 #	keeplik <- like(as.vector(keep[i,]), data$t, data$x, data$n, #data$x, data$x)
@@ -42,7 +44,7 @@ mu2 <- mu[,2]*(.25 + sd[,2]^2) + .5 + t(as.matrix(apply(Zw,2, function (x) x - m
 #phin <- dmvnorm(psi, par, log=T)
 rho <- (exp(2*rho)-1)/(exp(2*rho) +1)
 psi <- cbind(mu1, mu2, sd, rho)
-
+print(3)
 bb <- psi[,1:length(x)]	
 bw <- psi[,(length(x)+1):(length(x)*2)]
 sb <- psi[,(length(x)*2+1)]

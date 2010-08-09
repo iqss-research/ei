@@ -61,6 +61,10 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	sigb2 <- sb^2
 	sigw2 <- sw^2
 	sigbw = rho*sb*sw
+#Compute likelihood for different categories
+
+#0<T<1, 0<X<1
+
 	omx <- 1-x
 	mu = bb*x + bw*omx
 	epsilon = y - mu
@@ -82,12 +86,84 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	res <- log(pnorm(bounds[,2], mean=ebb, sd=s) - pnorm(bounds[,1], mean=ebb, sd=s))
 	#res <- log(pnorm(bounds[,1], mean=ebb, sd=s, lower.tail=F) - pnorm(bounds[,2], mean=ebb, sd=s, lower.tail=F))
 	R <- NULL
-	for(i in 1:length(x)){
-	R[i] <- log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=c(bb[i], bw[i]), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2), nrow=2)))
-	}
-	llik <- -.5*sum((log(s2)+(epsilon^2)/(s2))) 
-	llik <- llik + sum(res) - sum(R)
-	#Priors
+	bs <- as.matrix(cbind(bb, bw))
+	R <- apply(bs, 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+	#for(i in 1:length(x)){
+	#R[i] <- log(pmvnorm(lower=c(0,0), upper=c(1,1), #mean=c(bb[i], bw[i]), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2), nrow=2)))
+	#}
+	
+homoindx <- ifelse(x==0, 1, 0)
+homoindx <- ifelse(x==1, 2, homoindx)
+enumtol=.0001
+cT0 <- ifelse(y<enumtol & homoindx==0,1,0)
+cT1 <- ifelse(y>(1-enumtol) & homoindx==0,1,0)
+ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
+	lliki  <- -.5*(log(s2[ok])+epsilon[ok]^2/s2[ok])
+	llik.het <- -.5*sum((log(s2[ok])+(epsilon[ok]^2)/(s2[ok]))) 
+	llik.het <- llik.het + sum(res[ok]) - sum(R[ok])
+
+#Homogenous precincts
+
+#X=0
+wh <- homoindx==1
+llik.wh=0
+if (sum(wh)>0){
+epsilon= y[wh]-bw[wh]
+llik.whi = -.5*(log(sigw2)+(epsilon^2)/(sigw2))
+llik.wh=-.5*sum((log(sigw2)+(epsilon^2)/(sigw2)))
+bnds=cbind(rep(0,sum(wh)),rep(1,sum(wh)))
+Ebb = bb[wh]+rho*(sb/sw)*epsilon
+Vbb = sigb2*(1-rho^2)
+s <- sqrt(Vbb)
+res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
+R <- apply(bs[wh,], 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+llik.wh = llik.wh + sum(res)-sum(R)
+}
+
+#X=1
+bl <- homoindx==2
+llik.bl=0
+if (sum(bl)>0){
+epsilon = y[bl] - bb[bl]
+llik.bl = -.5*sum((log(sigb2)+(epsilon^2)/(sigb2)))
+bnds = cbind(rep(0, sum(bl)),rep(1,sum(bl)))
+Ebb=bw[bl] + rho*(sw/sb)*epsilon
+Vbb=sigw2*(1-rho^2)
+s <- sqrt(Vbb)
+res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
+R <- apply(bs[bl,], 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+llik.bl = llik.bl + sum(res)-sum(R)
+}
+
+#T=0, 0<X<1
+llik.cT0=0
+if(sum(cT0)>0){
+if(sum(cT0)==1){
+first = apply(as.matrix(t(bs[cT0,])), 1, function (x) dmvnorm(c(0,0),mean=as.vector(x), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)))
+
+second = apply(as.matrix(t(bs[cT0,])), 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+llik.cT0=sum(first)-sum(second)
+}
+else{
+first = apply(bs[cT0,], 1, function (x) dmvnorm(c(0,0),mean=as.vector(x), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)))
+
+second = apply(bs[cT0,], 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+llik.cT0=sum(first)-sum(second)
+}
+}
+
+llik.cT1=0
+if(sum(cT1)>0){
+#T=1, 0<X<1
+first = apply(as.matrix(bs[cT1,]), 1, function (x) dmvnorm(c(1,1),mean=as.vector(x), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)))
+
+second = apply(as.matrix(bs[cT1,]), 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+llik.cT1=sum(first)-sum(second)
+}
+
+llik=llik.het + llik.bl + llik.wh + llik.cT0 + llik.cT1
+
+#Priors
 	prior=0
 	#erho = .5
 	#esigma = .5
@@ -97,16 +173,17 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	if (esigma>0) prior = prior-(1/(2*esigma^2))*(sigb2+sigw2);
 	lpdfnorm = log(dnorm(rho0,0,sd=erho))
 	#lpdfnorm = -.918938533204672741 - (log(erho^2) +((rho0)^2)/(erho^2))/2
-	if(erho>0) prior= prior +lpdfnorm
-	if(ebeta>0 & mean(bb)<0) prior = prior - .5*((mean(bb)^2)/ebeta)
-	if (ebeta>0 & mean(bb)>1) prior = prior -.5*((mean(bb)-1)^2/ebeta)
-	if (ebeta>0 & mean(bw)<0) prior = prior - .5*((mean(bw)^2)/ebeta)
-	if (ebeta>0 & mean(bw)>1) prior = prior -.5*((mean(bw)-1)^2/ebeta)
+	if(erho>0) prior = prior +lpdfnorm
+	if(ebeta>0 & (mean(bb)<0)) prior = prior -.5*((mean(bb)^2)/ebeta) 
+	if(ebeta>0 & mean(bb)>1) prior = prior -.5*((mean(bb)-1)^2/ebeta)
+	if(ebeta>0 & mean(bw)<0) prior = prior -.5*((mean(bw)^2)/ebeta)
+	if(ebeta>0 & mean(bw)>1) prior = prior -.5*((mean(bw)-1)^2/ebeta)
 	if(sum(is.na(ealphab))==0) prior=prior + sum(dmvnorm(Bb0v, ealphab[,1], sigma=diag(ealphab[,2]^2), log=T))
 	if(sum(is.na(ealphaw))==0) prior=prior + sum(dmvnorm(Bw0v, ealphaw[,1], sigma=diag(ealphaw[,2]), log=T))
 	llik = llik + prior
 	return(llik)
       }
+
 
 #Alternative res
 #for (i in 1:length(vbb)){
