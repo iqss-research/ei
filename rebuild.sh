@@ -1,5 +1,12 @@
 #!/usr/bin/sh
 
+
+if [ -x /usr/bin/R ]
+then
+    R="/usr/bin/R"
+fi
+
+
 echo "* checking if cran folder exists"
 
 # check if folder exists
@@ -13,46 +20,55 @@ fi
 
 
 # copy over
-echo " * copying over files"
-cp -Rfv cem cran/
+echo "* copying over files"
+cp -Rf ei cran/
 
 
 # useless file removal
 
-if [ -d cem/inst/stata ]
+if [ -d ei/inst/stata ]
 then
-    echo " * removing cem/inst/stata"
-    rm -rf cem/inst/stata
+    echo " * removing /inst/stata"
+    rm -rf ei/inst/stata
 fi
 
-if [ -d cem/inst/stext ]
+if [ -d ei/inst/stext ]
 then
-    echo " * removing cem/inst/text"
-    rm -rf cem/inst/text
+    echo " * removing ei/inst/text"
+    rm -rf ei/inst/text
 fi
 
-if [ -d cem/inst/CVS ]
+if [ -d ei/inst/CVS ]
 then
-    echo " * removing cem/inst/CVS"
-    rm -rf cem/inst/CVS
+    echo " * removing ei/inst/CVS"
+    rm -rf ei/inst/CVS
 fi
 
-if [ -d cem/inst/doc/CVS ]
+if [ -d ei/inst/doc/CVS ]
 then
-    echo " * removing cem/inst/doc/CVS"
-    rm -rf cem/inst/doc/CVS
+    echo " * removing ei/inst/doc/CVS"
+    rm -rf ei/inst/doc/CVS
 fi
 
 
 echo "* building the package"
-R CMD build cem
-
+$R CMD build ei
 
 echo "* checking the package"
-R CMD CHECK cem*.tar.gz
+$R CMD check ei*.tar.gz
 
 
+if [ -x ei.tar.gz ]
+then
+    echo "* removing ei.tar.gz"
+    rm -f ei.tar.gz
+fi
 
 
+#
+echo "* compressing package"
+tar -czf ei.tar.gz ei/
 
-
+#
+echo "* installing package"
+$R CMD INSTALL ei.tar.gz
