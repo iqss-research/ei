@@ -1,0 +1,20 @@
+plot.ei <- function(ei.object, ...){
+	function.list <- list("tomogD" = tomog, "tomog"=tomogl, "tomogCI"=tomog80CI, "tomogCI95"=tomog95CI, "tomogE"=tomogE, "tomogP" = tomogP2, "betab"=betabd, 
+"betaw"=betawd, "xt"=xt, "xtc"=xtc, "xtfit"=xtfit, "xtfitg"=xtfitg, "estsims"=estsims, "boundXb"=boundXb, "boundXw"=boundXw, "truth"=truthfn)
+	arguments <- list(...)
+	results <- list()
+if (length(arguments)==1) par(mfrow=c(1,1))
+else {row = round(length(arguments)/2+.1)
+	par(mfrow=c(row, 2))
+}
+for (arg in arguments) {
+	if (arg %in% names(function.list)){
+		results[[arg]] <- function.list[[arg]] (ei.object)
+}
+	else
+		results[[arg]] <- NA
+}
+	if (length(results) <1)
+	warning("plot object is empty")
+	
+}
