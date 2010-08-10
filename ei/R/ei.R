@@ -2,8 +2,7 @@
 library(msm)
 library(mvtnorm)
 library(tmvtnorm)
-
-
+library(ucminf)
 #ei1 <- ei(t,x,n,Zb,Zw,erho=.5,esigma=.5,ebeta=0,ealphab=NA,ealphaw=NA, truth=NA)
 ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=0, ealphab=NA, ealphaw=NA, truth=NA){
 Zb <- as.matrix(Zb)
@@ -11,10 +10,10 @@ Zw <- as.matrix(Zw)
 numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))
-solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, method="BFGS", control=list(fnscale=-1), hessian=T) 
+solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3) 
 print(1)
 covs <- as.logical(ifelse(diag(solution$hessian)==0,0,1))
-varcv <- -solution$hessian[covs,covs]
+varcv <- solution$hessian[covs,covs]
 #varcv <- varcv
 
 keep <- matrix(data=NA, ncol=(length(solution$par)))
@@ -23,11 +22,7 @@ while(dim(keep)[1]<100){
 	keep <- samp(t,x,n, Zb, Zw, solution$par, varcv, 1000, keep, numb=numb, covs, erho, esigma, ebeta, ealphab, ealphaw)
 	resamp = resamp + 1
 	}
-print(2)
 
-#for (i in 1:dim(keep)[1]){
-#	keeplik <- like(as.vector(keep[i,]), data$t, data$x, data$n, #data$x, data$x)
-#	}
 
 keep <- keep[2:100,]
 mu <- keep[,1:2]
@@ -54,6 +49,15 @@ omx <- 1-x
 sbw <- rho*sb*sw
 betab <- matrix(nrow=length(x),ncol=dim(keep)[1])
 betaw <- matrix(nrow=length(x),ncol=dim(keep)[1])
+
+homoindx <- ifelse(x==0, 1, 0)
+homoindx <- ifelse(x==1, 2, homoindx)
+enumtol=.0001
+cT0 <- y<enumtol & homoindx==0
+cT1 <- y>(1-enumtol) & homoindx==0
+ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
+
+
 for (i in 1:dim(keep)[1]){
 sig2 <- sb[i]^2*x^2 + sw[i]^2*omx^2 + sbw[i]*2*x*omx
 omega <- sb[i]^2*x + sbw[i]*omx
@@ -63,15 +67,25 @@ vbb <- sb[i]^2 - (omega^2)/sig2
 s <- sqrt(vbb)
 bounds <- bounds1(x,t,n)
 out<- NULL
-for(j in 1:length(x)){
-out[j] <- rtnorm(1, mean=mbb[j], sd=s[j], lower=bounds[j,1], upper=bounds[j,2])
+for(j in 1:length(x[ok])){
+out[ok][j] <- rtnorm(1, mean=mbb[ok][j], sd=s[ok][j], lower=bounds[ok,][j,1], upper=bounds[ok,][j,2])
 }
+out[wh] <- NA
+out[bl] <- t[bl]
+out[cT1] <- bounds[cT1,1]
+out[cT0] <- bounds[cT0,1]
+
 betab[,i] = out
 }
+
 omx <- 1 - x
-for (j in 1:length(x)){
-	betabs <- betab[j,]
-	betaw[j,] <- t[j]/omx[j]-betabs*x[j]/omx[j]
+for (j in 1:length(x[ok])){
+	betabs <- betab[ok,][j,]
+	betaw[ok,][j,] <- t[ok][j]/omx[ok][j]-betabs*x[ok][j]/omx[ok][j]
+	betaw[wh,] <- rep(1, dim(keep)[1])*t[wh]
+	betaw[bl,] <- rep(NA, dim(keep)[1])
+	betaw[cT1,] <- rep(bounds[cT1,3],dim(keep)[1])
+	betaw[cT0,] <- rep(bounds[cT0,3], dim(keep)[1])
 	}
 
 mbetab <- apply(betab,1,mean)
@@ -84,10 +98,8 @@ class(output) <- "ei"
 return(output)
 }
 
+
 samp <- function(t,x,n, Zb, Zw, par, varcv, nsims, keep, numb, covs, erho, esigma, ebeta, ealphab, ealphaw){
-#a <- t(chol(varcv))
-#mat <- matrix(rnorm(5*nsims), nrow=5)
-#draw <- t(par + a%*%mat)
 import1 <- NULL
 varcv2 <- solve(varcv)/4
 draw <- rmvnorm(nsims, par[covs], varcv2)
@@ -105,9 +117,7 @@ if(zbmiss==TRUE&zwmiss==TRUE){
 	draw <- cbind(draw, rep(1,nsims), rep(1,nsims))
 	}
 for(i in 1:nsims){
-#ymu <- draw[i,] - par
-#phiv = -(t(as.matrix(ymu))%*%solve(varcv)%*%as.matrix(ymu))/2
-import1[i] <- like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta, ealphab, ealphaw) - phiv[i]
+import1[i] <- -like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta, ealphab, ealphaw) - phiv[i]
 }
 lnir <- import1-max(import1[1:nsims])
 ir <- exp(lnir)

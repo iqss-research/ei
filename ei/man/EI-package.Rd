@@ -1,10 +1,7 @@
-\name{ei}
+\name{EI}
 \alias{EI}
-\alias{ei}
 \docType{package}
-\title{
-
-}
+\title{EI Package}
 \description{
 
 }

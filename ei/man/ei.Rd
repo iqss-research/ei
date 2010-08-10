@@ -40,5 +40,5 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 }
 
 \examples{
-
+print("!!!!!!!")
 }
