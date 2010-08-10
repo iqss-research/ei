@@ -1,0 +1,210 @@
+\SweaveOpts{results=hide,prefix.string=vigpics/EI}
+%\include{zinput}
+\documentclass[oneside,letterpaper,titlepage]{article}
+%\usepackage[notref]{showkeys} % [notref]
+\usepackage{Rd/Rd}
+\usepackage{Rd/Sweave}
+\usepackage{Rd/upquote}
+
+\usepackage[reqno]{amsmath}
+\usepackage{natbib}
+\usepackage{graphicx
+}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{stmaryrd}
+\usepackage{bbm}
+\usepackage{epsf}
+%\usepackage{psfig}
+%\usepackage{wcolor}
+\usepackage{textcomp} % for \texttrademark
+\usepackage{makeidx}
+
+\usepackage{verbatim}
+% \usepackage{epsf}
+\usepackage{url}
+\usepackage{html}
+\usepackage{dcolumn}
+\usepackage{longtable}
+\usepackage{vmargin}
+\topmargin=0in
+\def\fp#1{\mathbbm{#1}}
+
+%\setpapersize{USletter}
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+%\pagestyle{myheadings}
+\htmladdtonavigation{
+  \htmladdnormallink{%
+    \htmladdimg{http://gking.harvard.edu/pics/home.gif}}
+  {http://gking.harvard.edu/}}
+\newcommand{\hlink}{\htmladdnormallink}
+
+\bodytext{ BACKGROUND="http://gking.harvard.edu/pics/temple.jpg"}
+\setcounter{tocdepth}{3}
+
+
+
+%\VignetteIndexEntry{Non-parametric estimation of Ecological Inference}
+%\VignetteDepends{ei,mvtnorm}
+%\VignetteKeyWords{model,non-parametric, ecological}
+%\VignettePackage{ei}
+
+\title{Ecological Inference: Reconstructing Individual behavior 
+from Aggregate Data; software available at 
+\texttt{http://gking.harvard.edu/ei/}, free of charge and
+open-source (under the terms of the GNU GPL, v. 2).}
+\author{Gary King \thanks{David Florence Professor of Government, Harvard
+  University (Institute for Quantitative Social Sciences, 1737 Cambridge 
+Street, Harvard University, Cambridge MA 02138;
+  \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu}, (617)
+  495-2027).}}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+<<beforepkgs, echo=FALSE>>=
+before<-search()
+ ind <- grep("[a-z A-Z]+:ei",before)
+ if(!length(ind) > 0) library(ei)
+@
+\include{ei.toc}
+
+\section[Acknowledgements]{\tt Acknowlegments}
+\label{ack}
+The code, which was originally written in Gauss, has been translated into R by Elena Villalon who also generated the plots that are presented in this document.
+
+\section[Introduction: Ecological Inference]{{\tt Introduction}: Ecological Inference}
+\label{intro}
+
+This program provides a method of inferring individual behavior 
+from aggregate data. It implements the statistical procedures, 
+diagnostics, and graphics from the book, 
+A Solution to the Ecological Inference Problem: 
+Reconstructing Individual Behavior from Aggregate Data 
+(Princeton: Princeton University Press, 1997), by Gary King. 
+Please read the book prior to trying this program 
+(a sample chapter and other related information is available at 
+King's website). 
+Except where indicated, all references to page, section, chapter, 
+table, and figure numbers in this document refer to the book.\\
+\newline
+Ecological inference, as traditionally defined, 
+is the process of using aggregate (i.e., ``ecological'') data 
+to infer discrete individual-level relationships of interest 
+when individual-level data are not available. 
+As existing methods usually lead to inaccurate conclusions 
+about the empirical world, the ecological inference problem 
+had been to develop a method that gives accurate answers. 
+Ecological inferences are required in political science research 
+when individual-level surveys are unavailable 
+(e.g., local or comparative electoral politics), unreliable (racial politics), 
+insufficient (political geography), or infeasible (political history). 
+They are also required in numerous areas of major significance in public policy 
+(e.g., for applying the Voting Rights Act) and other academic 
+disciplines ranging from epidemiology and marketing to sociology and 
+quantitative history. Most researchers using aggregate data have 
+encountered some form of the ecological inference problem.\\
+\newline
+Because the ecological inference problem is caused by the lack 
+of individual-level information, no method of ecological inference, 
+including that introduced in this book and estimated by this program, 
+will produce precisely accurate results in every instance. 
+However, potential difficulties are minimized here by models 
+that include more available information, diagnostics to evaluate 
+when assumptions need to be modified, easy methods of modifying 
+the assumptions, and uncertainty estimates for all quantities of interest. 
+I recommend reviewing Chapter 16 while using this program for actual research.
+
+		
+\section[Overview: R-commands to run the application]{{\tt Overview}: R-commands to run the application}
+\label{commands}
+
+As only four commands are required to use $ {\mathfrak{E}I}$ the program 
+can be easily run interactively, or in batch mode as a regular R program. 
+Each command may also be used with many optional globals and 
+subcommands. An example of these commands are as follows:
+
+
+\begin{verbatim}
+
+\end{verbatim}
+
+In most applications, plot and  eiread 
+would likely be run multiple times with different options chosen, and other commands would 
+be included with these four to read in the data (t, x, and n).\\
+\newline
+These four commands described in this section through a very simple use of $ {\mathfrak{E}I}$. 
+(Refer to the reference section below for further details and more sophisticated uses. 
+That section also includes sample data you can run with simple examples.) 
+For this purpose, and without loss of generality, I use the running example from the 
+book portrayed in Table 2.3 (page 31). This example uses the fraction of the voting age 
+population who are black ($ X_i$), the fraction turning out to vote ($ T_i$), 
+and the number of voting age people ($ {N_i}$) in each precinct ( $ i=1,\ldots,p$) 
+to infer the fraction of blacks who vote ($ \beta_i^b$) and the fraction of whites 
+who vote ($ \beta_i^w$), also in each precinct.\\
+\begin{itemize}
+\item{{ei}: To run the main procedure}
+
+Use the format, dbuf = ei(t,x,n,1,1);, which takes 
+three $ p\times 1$ vectors as inputs: t (e.g., the fraction of the voting age 
+population turning out to vote); x (e.g., the fraction of the voting age 
+population who are black); and n (e.g., the total number of people 
+in the voting age population). (The remaining two inputs are for optional covariates; 
+for the basic model, set them each to 1 for no covariates.) The output of this procedure 
+is the list dbuf (i.e., data buffer). After running ei, 
+it is a good idea to save dbuf on disk for futher analysis.
+The output data buffer from ei includes a large variety of different results useful 
+for understanding the results of the analysis. A minimal set of nonrepetitive information 
+is stored in this list (or data buffer), and a large variety of other information can be easily 
+computed from it. Fortunately, you do not need to know whether the information 
+you request is stored or computed as both are treated the same.\\
+\newline
+To extract information from the data buffer, two procedures are available:
+
+\item{{eigraph or plot}: To graph relevant information}
+
+For graphics, use plot(dbuf, ``name") or eigraph(dbuf,``name'');, where dbuf is the list 
+that is the output of ei, and name can be any number of a long list of ready-made graphs. 
+For example, plot(dbuf,"tomog"); 
+to print a tomography graph, or eigraph(dbuf,"xt"); to display a scattercross graph.
+
+\item{{analysis}: To obtain relevant information and numerical results}
+
+For numerical information, use v <- eiread(dbuf, ``name"), where v is the item extracted, 
+dbuf is the list that is the output of ei, and name can be any of a long list 
+of output possibilities. For example, use betab for a vector of point estimates 
+of $ \beta_i^b$, ci80w for 80\% confidence intervals for $ \beta_i^w$. 
+summary() can be used to print a summary of district-level estimates and information.
+
+\end{itemize}
+
+\clearpage
+
+\section{Reference to EI's Functions}
+
+\include{Rd/ei}
+\include{Rd/eiread}
+\include{Rd/plot.ei}
+
+\bibliography{References}
+\label{bib}
+\begin{thebibliography}{6}
+
+\bibitem{gking}Gary King, \textsl{A solution to the Echological Inference Problem: 
+Reconstructing Individual Behaviour from Aggregate Data}, Princeton University Press (1997).
+
+\bibitem{harvardweb}Useful documentation also avalaible at \url{http://GKing.Harvard.Edu}.
+
+\bibitem{Rweb}For R language see \url{http://www.r-project.org}.
+
+\bibitem{statR}Venables, W.N.,and Ripley, B.D., \textsl{Statistics and Computing}, Springer (2002).
+
+
+\end{thebibliography}
+
+
+
+\end{document}
