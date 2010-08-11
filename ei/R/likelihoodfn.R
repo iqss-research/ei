@@ -55,7 +55,6 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	sigb2 <- sb^2
 	sigw2 <- sw^2
 	sigbw = rho*sb*sw
-print(c(bb[1],bw[1],sb[1],sw[1],rho[1]))
 #Compute likelihood for different categories
 homoindx <- ifelse(x==0, 1, 0)
 homoindx <- ifelse(x==1, 2, homoindx)

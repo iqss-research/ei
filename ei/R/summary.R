@@ -2,10 +2,14 @@ summary.ei <- function(ei1){
 #Calculate maximum likelihood results in the scale of estimation
 numb <- ei1$numb
 covs <- as.logical(ifelse(diag(ei1$hessian)==0,0,1))
-sdphi <- diag(sqrt(solve(-ei1$hessian[covs,covs])))
+sdphi <- sqrt(diag((solve(ei1$hessian[covs,covs]))))
 zbmiss <- ifelse(covs[6:(5+numb)]==FALSE,TRUE,FALSE)
 zwmiss <- ifelse(covs[(6+numb):length(covs)]==FALSE, TRUE, FALSE)
 names <- c("Bb0", "Bw0", "sigB", "sigW", "rho")
+if(zbmiss==FALSE&zwmiss==FALSE){
+sdphi <- c(sdphi[1:5], 0,0)
+names <- c(names, "Zb", "Zw")
+}
 if(zbmiss==TRUE&zwmiss==FALSE){
 	sdphi <- c(sdphi[1:5], 0, sdphi[(5+numb):sum(covs)])
 	numw <- length(ei1$phi) - (5+numb)
@@ -71,12 +75,13 @@ return(output)
 print.summary <- function(sum.object, ...){
 for (key in names(sum.object)){
 	val <- sum.object[[key]]
-	message(key)
-
-	if ((is.character(val) || is.numeric(val)) && length(val) < 2)
-		message(val)
-	else
+	if ((is.character(val) || is.numeric(val)) && length(val) < 2){
+		message(cat(key, "=", val))
+	}
+	else{
+		message()
+		message(key)
 		print(val)
-	message()
+}
 }
 }

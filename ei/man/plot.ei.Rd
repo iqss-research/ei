@@ -40,11 +40,14 @@ plot.ei(ei.object, ...)
 
 }
 \references{
-Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Princton University Press.
+Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Princeton University Press.
 }
 \author{
 %%  ~~who you are~~
 }
 \examples{
-
+data(sample)
+attach(sample)
+dbuf <- ei(t,x,n,1,1)
+plot(dbuf, "tomog", "betab", "betaw", "xtfit")
 }

@@ -7,15 +7,22 @@ library(ucminf)
 ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=0, ealphab=NA, ealphaw=NA, truth=NA){
 Zb <- as.matrix(Zb)
 Zw <- as.matrix(Zw)
+if (dim(Zb)[1]==1 & Zb==1) Zb <- as.matrix(rep(1,length(x)))
+if (dim(Zw)[1]==1 & Zw==1) Zw <- as.matrix(rep(1,length(x)))
 numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))
+message("Maximizing likelihood")
 solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3) 
-print(1)
+#solution <- genoud(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, nvars=5, starting.values=start)
+#solution <- maxLik(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw,start=start)
+#solution <- subplex(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw)
+#solution <- nlminb(start, like,y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T)
 covs <- as.logical(ifelse(diag(solution$hessian)==0,0,1))
 varcv <- solution$hessian[covs,covs]
 #varcv <- varcv
 
+message("Importance Sampling..")
 keep <- matrix(data=NA, ncol=(length(solution$par)))
 resamp <- 0
 while(dim(keep)[1]<100){
@@ -39,7 +46,6 @@ mu2 <- mu[,2]*(.25 + sd[,2]^2) + .5 + t(as.matrix(apply(Zw,2, function (x) x - m
 #phin <- dmvnorm(psi, par, log=T)
 rho <- (exp(2*rho)-1)/(exp(2*rho) +1)
 psi <- cbind(mu1, mu2, sd, rho)
-print(3)
 bb <- psi[,1:length(x)]	
 bw <- psi[,(length(x)+1):(length(x)*2)]
 sb <- psi[,(length(x)*2+1)]
@@ -53,9 +59,11 @@ betaw <- matrix(nrow=length(x),ncol=dim(keep)[1])
 homoindx <- ifelse(x==0, 1, 0)
 homoindx <- ifelse(x==1, 2, homoindx)
 enumtol=.0001
-cT0 <- y<enumtol & homoindx==0
-cT1 <- y>(1-enumtol) & homoindx==0
+cT0 <- t<enumtol & homoindx==0
+cT1 <- t>(1-enumtol) & homoindx==0
 ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
+wh <- homoindx==1
+bl <- homoindx==2
 
 
 for (i in 1:dim(keep)[1]){
@@ -132,5 +140,5 @@ message("resamp")
 message(ei.object$resamp)
 message("Maximum likelihood results in scale of estimation")
 print(ei.object$phi)
-message("Use summary() and get() for more quantities of interest.")
+message("Use summary() and eiread() for more quantities of interest.")
 }
