@@ -74,7 +74,7 @@ before<-search()
 
 \section[Acknowledgements]{\tt Acknowlegments}
 \label{ack}
-The code, which was originally written in Gauss, has been translated into R by Elena Villalon who also generated the plots that are presented in this document.
+
 
 \section[Introduction: Ecological Inference]{{\tt Introduction}: Ecological Inference}
 \label{intro}
@@ -129,7 +129,10 @@ subcommands. An example of these commands are as follows:
 
 
 \begin{verbatim}
-
+dbuf <- ei(t,x,n,1,1)
+summary(ei)
+eiread(ei, "betab","betaw")
+plot(ei, "tomog","betab","betaw","xtfit")
 \end{verbatim}
 
 In most applications, plot and  eiread 
@@ -164,14 +167,14 @@ you request is stored or computed as both are treated the same.\\
 \newline
 To extract information from the data buffer, two procedures are available:
 
-\item{{eigraph or plot}: To graph relevant information}
+\item{{plot}: To graph relevant information}
 
-For graphics, use plot(dbuf, ``name") or eigraph(dbuf,``name'');, where dbuf is the list 
+For graphics, use plot(dbuf, ``name");, where dbuf is the list 
 that is the output of ei, and name can be any number of a long list of ready-made graphs. 
 For example, plot(dbuf,"tomog"); 
-to print a tomography graph, or eigraph(dbuf,"xt"); to display a scattercross graph.
+to print a tomography graph, or plot(dbuf,"xt"); to display a scattercross graph.
 
-\item{{analysis}: To obtain relevant information and numerical results}
+\item{{eiread}: To obtain relevant information and numerical results}
 
 For numerical information, use v <- eiread(dbuf, ``name"), where v is the item extracted, 
 dbuf is the list that is the output of ei, and name can be any of a long list 
