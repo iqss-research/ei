@@ -26,9 +26,7 @@ Data (Princeton: Princeton University Press, 1997), by Gary King.
   <li>EI for R:</li>
       <ul>      
 	<li>To install, sign on to R, and type:
-	    install.packages("ei",repos="http://r.iq.harvard.edu")  or 
-	    <!-- rbuild: replace 'ei_' '.tar.gz' version -->
-	    <a href="/src/contrib/ei_2.4-6.tar.gz">download this file</a> and
+	    install.packages("ei",repos="http://r.iq.harvard.edu")  or download the current tarball and
 	    install yourself.</li>
 
 	<li>For documentation, from R, type library(cem), and then ?ei,
