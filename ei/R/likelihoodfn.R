@@ -2,15 +2,6 @@ library(msm)
 library(mvtnorm)
 library(tmvtnorm)
 
-## repar <- function(Bb0, Bw0, sb0, sw0, rho0){
-## 	sb=exp(sb0)
-## 	sw=exp(sw0)
-## 	bb=Bb0*(.25+sb^2) + .5
-## 	bw=Bw0*(.25+sw^2) + .5
-## 	rho=(exp(2*rho0)-1)/(exp(2*rho0) +1)
-## 	return(c(bb,bw,sb,sw,rho))
-## 	}
-
 repar <- function(Bb0, Bw0, sb0, sw0, rho0, Bb0v, Bw0v, Zb, Zw){
 	sb=exp(sb0)
 	sw=exp(sw0)
@@ -55,13 +46,17 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	sigb2 <- sb^2
 	sigw2 <- sw^2
 	sigbw = rho*sb*sw
+
 #Compute likelihood for different categories
+
 homoindx <- ifelse(x==0, 1, 0)
 homoindx <- ifelse(x==1, 2, homoindx)
 enumtol=.0001
 cT0 <- y<enumtol & homoindx==0
 cT1 <- y>(1-enumtol) & homoindx==0
 ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
+
+#print(c(mean(Bb0),mean(Bw0),mean(sb0),mean(sw0),mean(rho0),mean(Bb0v),mean(Bw0v)))
 
 #0<T<1, 0<X<1
 
@@ -80,22 +75,18 @@ ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
 b.s = (bounds[ok,][,2]-ebb[ok])/s[ok]
 as = (bounds[ok,][,1]-ebb[ok])/s[ok]
 res[ok] <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
-
+#res[ok] <- ifelse(res[ok]==NA,-999,res[ok])
+print(summary(res))
 	R <- NULL
 	bs <- as.matrix(cbind(bb, bw))
-for (i in 1:length(x[ok])){
-R[ok][i] <-log(pmvnorm(lower=c(-bb[ok][i]/sb,-bw[ok][i]/sw), upper=c(-bb[ok][i]/sb+1/sb,-bw[ok][i]/sw+1/sw), mean=c(0, 0), corr=matrix(c(1,rho,rho,1), nrow=2)))
-}
-	#R[ok] <- apply(bs[ok,], 1, function (x) log(pmvnorm(lower=
-#c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, #sigbw,sigbw,sigw2),nrow=2), algorithm=Miwa())))
-	#for(i in 1:length(x)){
-	#R[i] <- log(pmvnorm(lower=c(0,0), upper=c(1,1), #mean=c(bb[i], bw[i]), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2), nrow=2)))
-	#}
-	
 
-	lliki  <- -.5*(log(s2[ok])+epsilon[ok]^2/s2[ok])
-	llik.het <- -.5*sum((log(s2[ok])+(epsilon[ok]^2)/(s2[ok]))) 
-	llik.het <- llik.het + sum(res[ok]) - sum(R[ok])
+R[ok] <- createR(ok,2)
+
+print(summary(R))
+	
+#lliki  <- -.5*(log(s2[ok])+epsilon[ok]^2/s2[ok]) + res[ok] - R[ok]
+llik.het <- -.5*sum((log(s2[ok])+(epsilon[ok]^2)/(s2[ok]))) 
+llik.het <- llik.het + sum(res[ok]) - sum(R[ok])
 
 #Homogenous precincts
 
@@ -110,15 +101,12 @@ bnds=cbind(rep(0,sum(wh)),rep(1,sum(wh)))
 Ebb = bb[wh]+rho*(sb/sw)*epsilon
 Vbb = sigb2*(1-rho^2)
 s <- sqrt(Vbb)
-res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
-if(sum(wh)==1){
-R <- log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=bs[wh,], sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2)))
-}
-if(sum(wh)>1){
-R <- apply(bs[wh,], 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
-}
-llik.wh = llik.wh + sum(res)-sum(R)
-
+b.s = (bnds[,2]-Ebb)/s
+as = (bnds[,1]-Ebb)/s
+res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
+#res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
+R[wh] <- createR(wh,2)
+llik.wh = llik.wh + sum(res)-sum(R[wh])
 }
 
 #X=1
@@ -131,29 +119,29 @@ bnds = cbind(rep(0, sum(bl)),rep(1,sum(bl)))
 Ebb=bw[bl] + rho*(sw/sb)*epsilon
 Vbb=sigw2*(1-rho^2)
 s <- sqrt(Vbb)
-res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
-if(sum(bl)==1){
-R <- log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=bs[bl,], sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2)))
-}
-if(sum(bl)>1){
-R <- apply(bs[bl,], 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
-}
-llik.bl = llik.bl + sum(res)-sum(R)
+b.s = (bnds[,2]-Ebb)/s
+as = (bnds[,1]-Ebb)/s
+res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
+#res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
+R[bl] <- reateR(bl,2)
+llik.bl = llik.bl + sum(res)-sum(R[bl])
 }
 
 #T=0, 0<X<1
 llik.cT0=0
 if(sum(cT0)>0){
+bb.cT0 = bs[cT0,][1]
+bw.cT0 = bs[cT0,][2]
+sigma = matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)
 if(sum(cT0)==1){
-first = log(dmvnorm(c(0,0),mean=bs[cT0,], sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)))
-
-second = log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=bs[cT0,], sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2)))
+first = log(dmvnorm(c(0,0),mean=bs[cT0,], sigma=sigma))
+second <- createR(cT0,2)
 llik.cT0=sum(first)-sum(second)
 }
 else{
-first = apply(bs[cT0,], 1, function (x) log(dmvnorm(c(0,0),mean=as.vector(x), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2))))
-
-second = apply(bs[cT0,], 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+first = apply(bs[cT0,], 1, function (x) log(dmvnorm(c(0,0),mean=as.vector(x), sigma=sigma)))
+second <- NULL
+second <- createR(cT0,2)
 llik.cT0=sum(first)-sum(second)
 }
 }
@@ -161,17 +149,26 @@ llik.cT0=sum(first)-sum(second)
 #T=1, 0<X<1
 llik.cT1=0
 if(sum(cT1)>0){
-if(sum(cT1)==1){
-first = log(dmvnorm(c(1,1),mean=bs[cT1,], sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)))
 bb.cT1 = bs[cT1,][1]
 bw.cT1 = bs[cT1,][2]
-second = log(pmvnorm(lower=c(-bb.cT1/sb,-bw.cT1/sw), upper=c(-bb.cT1/sb + 1/sb, -bw.cT1/sw + 1/sw), mean=c(0,0), corr=matrix(c(1,rho,rho,1), nrow=2)))
+sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)
+if(sum(cT1)==1){
+first = log(dmvnorm(c(1,1),mean=bs[cT1,], sigma=sigma,nrow=2))
+#qi <- pmvnorm(lower=c(-bb.cT1/sb,-bw.cT1/sw), upper=c(-bb.cT1/sb + 1/sb, -bw.cT1/sw + 1/sw), mean=c(0,0), #corr=matrix(c(1,rho,rho,1), nrow=2))
+#qi <- ifelse(qi<0 | qi==0, 1*10^-322,qi)
+#second = ifelse(qi<0|qi==0, -999,log(qi))
+second <- createR(cT1,2)
 llik.cT1=sum(first)-sum(second)
 }
 if(sum(cT1)>1){
-first = apply(as.matrix(bs[cT1,]), 1, function (x) log(dmvnorm(c(1,1),mean=as.vector(x), sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2))))
-
-second = apply(as.matrix(bs[cT1,]), 1, function (x) log(pmvnorm(lower=c(0,0), upper=c(1,1), mean=as.vector(x), sigma=matrix(c(sigb2, sigbw,sigbw,sigw2),nrow=2))))
+first = apply(as.matrix(bs[cT1,]), 1, function (x) log(dmvnorm(c(1,1),mean=as.vector(x), sigma=sigma)))
+second <- NULL
+second <- createR(cT1,2)
+#for (i in 1:length(bb.cT1)){
+#qi <- pmvnorm(lower=c(-bb.cT1[i]/sb,-bw.cT1[i]/sw), upper=c(-bb.cT1[i]/sb + 1/sb, -bw.cT1[i]/sw + 1/sw), mean=c#(0,0), corr=matrix(c(1,rho,rho,1), nrow=2))
+#qi <- ifelse(qi<0 | qi==0, 1*10^-322,qi)
+#second[i] = ifelse(qi<0|qi==0, -999,log(qi))
+#}
 llik.cT1=sum(first)-sum(second)
 }
 }
@@ -190,6 +187,7 @@ llik=llik.het + llik.bl + llik.wh + llik.cT0 + llik.cT1
 	if(sum(is.na(ealphab))==0) prior=prior + sum(dmvnorm(Bb0v, ealphab[,1], sigma=diag(ealphab[,2]^2), log=T));
 	if(sum(is.na(ealphaw))==0) prior=prior + sum(dmvnorm(Bw0v, ealphaw[,1], sigma=diag(ealphaw[,2]), log=T));
 	llik = llik + prior
+	print(-llik)
 	return(-llik)
       }
 

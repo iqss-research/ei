@@ -13,11 +13,14 @@ numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))
 message("Maximizing likelihood")
-solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3) 
+solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3)
+print(solution$par)
+print(solution$convergence) 
 #solution <- genoud(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, nvars=5, starting.values=start)
 #solution <- maxLik(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw,start=start)
-#solution <- subplex(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw)
-#solution <- nlminb(start, like,y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T)
+#solution <- subplex(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw)
+#solution <- nlminb(start, like,y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T)
+
 covs <- as.logical(ifelse(diag(solution$hessian)==0,0,1))
 varcv <- solution$hessian[covs,covs]
 #varcv <- varcv
@@ -129,6 +132,7 @@ import1[i] <- -like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb, erho, esigm
 }
 lnir <- import1-max(import1[1:nsims])
 ir <- exp(lnir)
+print(mean(ir))
 tst <- ir[1:nsims]>runif(nsims,0,1)
 keep <- rbind(keep, draw[tst,])
 return(keep)
