@@ -123,7 +123,7 @@ b.s = (bnds[,2]-Ebb)/s
 as = (bnds[,1]-Ebb)/s
 res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
 #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
-R[bl] <- reateR(bl,2)
+R[bl] <- createR(bl,2)
 llik.bl = llik.bl + sum(res)-sum(R[bl])
 }
 
