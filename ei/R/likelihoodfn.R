@@ -71,20 +71,20 @@ ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
 	bounds <- bounds1(x, y, n)
 	s <- sqrt(vbb)
 	res <- NULL
-	#res[ok] <- log(pnorm(bounds[ok,2], mean=ebb[ok], sd=s[ok]) - #pnorm(bounds[ok,1], mean=ebb[ok], sd=s[ok]))
+	#res[ok] <- log(pnorm(bounds[ok,2], mean=ebb[ok], sd=s[ok]) - #pnorm(bounds[ok,1], mean=ebb[ok], sd=s[ok]))s
 b.s = (bounds[ok,][,2]-ebb[ok])/s[ok]
 as = (bounds[ok,][,1]-ebb[ok])/s[ok]
 res[ok] <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
 #res[ok] <- ifelse(res[ok]==NA,-999,res[ok])
-print(summary(res))
+#print(summary(res))
 	R <- NULL
 	bs <- as.matrix(cbind(bb, bw))
 
-R[ok] <- createR(ok,2)
+R[ok] <- createR(ok,2,bb,bw,sb,sw,rho)
 
-print(summary(R))
+#print(summary(R))
 	
-#lliki  <- -.5*(log(s2[ok])+epsilon[ok]^2/s2[ok]) + res[ok] - R[ok]
+lliki  <- -.5*(log(s2[ok])+epsilon[ok]^2/s2[ok]) + res[ok] - R[ok]
 llik.het <- -.5*sum((log(s2[ok])+(epsilon[ok]^2)/(s2[ok]))) 
 llik.het <- llik.het + sum(res[ok]) - sum(R[ok])
 
@@ -105,7 +105,7 @@ b.s = (bnds[,2]-Ebb)/s
 as = (bnds[,1]-Ebb)/s
 res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
 #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
-R[wh] <- createR(wh,2)
+R[wh] <- createR(wh,2,bb,bw,sb,sw,rho)
 llik.wh = llik.wh + sum(res)-sum(R[wh])
 }
 
@@ -123,7 +123,7 @@ b.s = (bnds[,2]-Ebb)/s
 as = (bnds[,1]-Ebb)/s
 res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
 #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
-R[bl] <- createR(bl,2)
+R[bl] <- createR(bl,2,bb,bw,sb,sw,rho)
 llik.bl = llik.bl + sum(res)-sum(R[bl])
 }
 
@@ -135,13 +135,13 @@ bw.cT0 = bs[cT0,][2]
 sigma = matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)
 if(sum(cT0)==1){
 first = log(dmvnorm(c(0,0),mean=bs[cT0,], sigma=sigma))
-second <- createR(cT0,2)
+second <- createR(cT0,2,bb,bw,sb,sw,rho)
 llik.cT0=sum(first)-sum(second)
 }
 else{
 first = apply(bs[cT0,], 1, function (x) log(dmvnorm(c(0,0),mean=as.vector(x), sigma=sigma)))
 second <- NULL
-second <- createR(cT0,2)
+second <- createR(cT0,2,bb,bw,sb,sw,rho)
 llik.cT0=sum(first)-sum(second)
 }
 }
@@ -157,13 +157,13 @@ first = log(dmvnorm(c(1,1),mean=bs[cT1,], sigma=sigma,nrow=2))
 #qi <- pmvnorm(lower=c(-bb.cT1/sb,-bw.cT1/sw), upper=c(-bb.cT1/sb + 1/sb, -bw.cT1/sw + 1/sw), mean=c(0,0), #corr=matrix(c(1,rho,rho,1), nrow=2))
 #qi <- ifelse(qi<0 | qi==0, 1*10^-322,qi)
 #second = ifelse(qi<0|qi==0, -999,log(qi))
-second <- createR(cT1,2)
+second <- createR(cT1,2,bb,bw,sb,sw,rho)
 llik.cT1=sum(first)-sum(second)
 }
 if(sum(cT1)>1){
 first = apply(as.matrix(bs[cT1,]), 1, function (x) log(dmvnorm(c(1,1),mean=as.vector(x), sigma=sigma)))
 second <- NULL
-second <- createR(cT1,2)
+second <- createR(cT1,2,bb,bw,sb,sw,rho)
 #for (i in 1:length(bb.cT1)){
 #qi <- pmvnorm(lower=c(-bb.cT1[i]/sb,-bw.cT1[i]/sw), upper=c(-bb.cT1[i]/sb + 1/sb, -bw.cT1[i]/sw + 1/sw), mean=c#(0,0), corr=matrix(c(1,rho,rho,1), nrow=2))
 #qi <- ifelse(qi<0 | qi==0, 1*10^-322,qi)

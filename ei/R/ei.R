@@ -13,15 +13,17 @@ numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))
 message("Maximizing likelihood")
-solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3)
+#solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3)
+solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3, control=list(stepmax=1,trace=T))
+
 print(solution$par)
 print(solution$convergence) 
 #solution <- genoud(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, nvars=5, starting.values=start)
 #solution <- maxLik(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw,start=start)
-#solution <- subplex(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw)
-#solution <- nlminb(start, like,y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T)
+#solution <- subplex(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw)
+#solution <- nlminb(start, like,y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T)
 
-covs <- as.logical(ifelse(diag(solution$hessian)==0,0,1))
+covs <- as.logical(ifelse(diag(solution$hessian)==0|diag(solution$hessian)==1,0,1))
 varcv <- solution$hessian[covs,covs]
 #varcv <- varcv
 
@@ -93,11 +95,19 @@ omx <- 1 - x
 for (j in 1:length(x[ok])){
 	betabs <- betab[ok,][j,]
 	betaw[ok,][j,] <- t[ok][j]/omx[ok][j]-betabs*x[ok][j]/omx[ok][j]
-	betaw[wh,] <- rep(1, dim(keep)[1])*t[wh]
-	betaw[bl,] <- rep(NA, dim(keep)[1])
-	betaw[cT1,] <- rep(bounds[cT1,3],dim(keep)[1])
-	betaw[cT0,] <- rep(bounds[cT0,3], dim(keep)[1])
 	}
+if(sum(wh)>0){
+betaw[wh,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(t[wh]))
+}
+if(sum(bl)>0){
+betaw[bl,] <- matrix(rep(NA, dim(keep)[1]*dim(betaw[bl,])[1]),nrow=dim(betaw[bl,])[1])
+}
+if(sum(cT1)>0){
+betaw[cT1,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(bounds[cT1,3]))
+}
+if(sum(cT0)>0){
+betaw[cT0,] <-as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(bounds[cT0,3]))
+}
 
 mbetab <- apply(betab,1,mean)
 mbetaw <- apply(betaw,1,mean)
