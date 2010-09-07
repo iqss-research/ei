@@ -1,5 +1,3 @@
-library(mnormt)
-library(cubature)
 createR <- function(sub, Rfun, bb, bw, sb,sw, rho){
 out <- NULL
 lower = cbind(-bb[sub]/sb, -bw[sub]/sw)
