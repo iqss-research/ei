@@ -1,4 +1,4 @@
-createR <- function(sub, Rfun, bb, bw, sb,sw, rho){
+createR <- function(sub, Rfun, bb, bw, sb,sw, rho, x, numb, numw){
 out <- NULL
 lower = cbind(-bb[sub]/sb, -bw[sub]/sw)
 upper = cbind(-bb[sub]/sb+1/sb, -bw[sub]/sw+1/sw)
@@ -7,14 +7,16 @@ corr=matrix(c(1,rho,rho,1),nrow=2)
 #pmvnorm
 
 if (Rfun==1){
-	for(i in 1:length(x[sub])){
+out <- NULL
+	makeR <- function (i){
 		qi <- pmvnorm(lower=lower[i,], upper=upper[i,], mean=mean, corr=corr)
-		qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
-		out[i] <- log(qi)
-		if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
-		out[i] <- ifelse(is.na(out[i])|abs(out[i]==Inf), 999, out[i])
 		}
-	return(out)
+out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
+out <- ifelse(out<0|out==0, 1*10^-322,out)
+out <- log(out)
+if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
+out <- ifelse(is.na(out)|abs(out==Inf), 999, out)
+return(out)
 	}
 
 if (Rfun==2){

@@ -1,7 +1,3 @@
-library(msm)
-library(mvtnorm)
-library(tmvtnorm)
-
 repar <- function(Bb0, Bw0, sb0, sw0, rho0, Bb0v, Bw0v, Zb, Zw){
 	sb=exp(sb0)
 	sw=exp(sw0)
@@ -11,24 +7,8 @@ repar <- function(Bb0, Bw0, sb0, sw0, rho0, Bb0v, Bw0v, Zb, Zw){
 	return(c(t(bb), t(bw), sb, sw, rho))
 	}
 	
-## #exvar <- function(x,y,n,bb, bw, sb,sw, rho){
-## 	sigb2 <- sb^2
-## 	sigw2 <- sw^2
-## 	sigbw = rho*sb*sw
-## 	omx <- 1-x
-## 	mu = bb*x + bw*omx
-## 	epsilon = y - mu
-## 	#s2 = sigw2 + (2*sigbw-2*sigw2)*x + (sigb2 + sigw2 - 2*sigbw)*(x^2)
-## 	s2 = sigb2*(x^2) + sigw2*(omx^2) + 2*sigbw*x*omx
-## 	omega = sigb2*x + sigbw*omx
-## 	ebb = bb + (omega/s2)*epsilon
-## 	vbb = sigb2 - (omega^2)/s2
-## 	vbb = ifelse(vbb<1*10^-322, 1*10^-322, vbb)
-## 	return(cbind(mu, s2, epsilon, omega, ebb,vbb))
-## 	}
-
-#numb <- 2
-like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, ealphaw){
+like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun){
+#Transform parameters
 	Bb0 <- param[1]
 	Bw0 <- param[2]
 	sb0 <- param[3]
@@ -40,14 +20,15 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	sw=exp(sw0)
 	Zb <- as.matrix(Zb)
 	Zw <- as.matrix(Zw)
-	bb=Bb0*(.25+sb^2) + .5 + as.matrix(apply(Zb,2, function(x) x - mean(x)))%*%as.matrix(Bb0v)
+	bb=Bb0*(.25+sb^2) + .5 + as.matrix(apply(Zb,2, function(x) x - mean(x)))%*%as.matrix	(Bb0v)
 	bw=Bw0*(.25+sw^2) + .5 + as.matrix(apply(Zw,2, function(x) x - mean(x)))%*%as.matrix(Bw0v)
 	rho=(exp(2*rho0)-1)/(exp(2*rho0) +1)
 	sigb2 <- sb^2
 	sigw2 <- sw^2
 	sigbw = rho*sb*sw
 
-#Compute likelihood for different categories
+print(c(mean(bb),mean(bw),sb,sw,rho))
+#Create Demographic Categories
 
 homoindx <- ifelse(x==0, 1, 0)
 homoindx <- ifelse(x==1, 2, homoindx)
@@ -56,7 +37,7 @@ cT0 <- y<enumtol & homoindx==0
 cT1 <- y>(1-enumtol) & homoindx==0
 ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
 
-#print(c(mean(Bb0),mean(Bw0),mean(sb0),mean(sw0),mean(rho0),mean(Bb0v),mean(Bw0v)))
+#Compute likelihood for different categories
 
 #0<T<1, 0<X<1
 
@@ -71,16 +52,15 @@ ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
 	bounds <- bounds1(x, y, n)
 	s <- sqrt(vbb)
 	res <- NULL
-	#res[ok] <- log(pnorm(bounds[ok,2], mean=ebb[ok], sd=s[ok]) - #pnorm(bounds[ok,1], mean=ebb[ok], sd=s[ok]))s
-b.s = (bounds[ok,][,2]-ebb[ok])/s[ok]
-as = (bounds[ok,][,1]-ebb[ok])/s[ok]
-res[ok] <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
-#res[ok] <- ifelse(res[ok]==NA,-999,res[ok])
-#print(summary(res))
+	b.s = (bounds[ok,][,2]-ebb[ok])/s[ok]
+	as = (bounds[ok,][,1]-ebb[ok])/s[ok]
+	res[ok] <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
+	#res[ok] <- log(pnorm(bounds[ok,2], mean=ebb[ok], sd=s[ok]) - #pnorm(bounds[ok,1], 			#mean=ebb[ok], sd=s[ok]))s
+		#res[ok] <- ifelse(res[ok]==NA,-999,res[ok])
+		#print(summary(res))
 	R <- NULL
 	bs <- as.matrix(cbind(bb, bw))
-
-R[ok] <- createR(ok,2,bb,bw,sb,sw,rho)
+	R[ok] <- createR(ok,Rfun,bb,bw,sb,sw,rho,x)
 
 #print(summary(R))
 	
@@ -105,7 +85,7 @@ b.s = (bnds[,2]-Ebb)/s
 as = (bnds[,1]-Ebb)/s
 res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
 #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
-R[wh] <- createR(wh,2,bb,bw,sb,sw,rho)
+R[wh] <- createR(wh,Rfun,bb,bw,sb,sw,rho,x)
 llik.wh = llik.wh + sum(res)-sum(R[wh])
 }
 
@@ -123,7 +103,7 @@ b.s = (bnds[,2]-Ebb)/s
 as = (bnds[,1]-Ebb)/s
 res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
 #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
-R[bl] <- createR(bl,2,bb,bw,sb,sw,rho)
+R[bl] <- createR(bl,Rfun,bb,bw,sb,sw,rho,x)
 llik.bl = llik.bl + sum(res)-sum(R[bl])
 }
 
@@ -135,13 +115,13 @@ bw.cT0 = bs[cT0,][2]
 sigma = matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)
 if(sum(cT0)==1){
 first = log(dmvnorm(c(0,0),mean=bs[cT0,], sigma=sigma))
-second <- createR(cT0,2,bb,bw,sb,sw,rho)
+second <- createR(cT0,Rfun,bb,bw,sb,sw,rho,x)
 llik.cT0=sum(first)-sum(second)
 }
 else{
 first = apply(bs[cT0,], 1, function (x) log(dmvnorm(c(0,0),mean=as.vector(x), sigma=sigma)))
 second <- NULL
-second <- createR(cT0,2,bb,bw,sb,sw,rho)
+second <- createR(cT0,Rfun,bb,bw,sb,sw,rho,x)
 llik.cT0=sum(first)-sum(second)
 }
 }
@@ -153,17 +133,17 @@ bb.cT1 = bs[cT1,][1]
 bw.cT1 = bs[cT1,][2]
 sigma=matrix(c(sigb2,sigbw,sigbw,sigw2),nrow=2)
 if(sum(cT1)==1){
-first = log(dmvnorm(c(1,1),mean=bs[cT1,], sigma=sigma,nrow=2))
+first = log(dmvnorm(c(1,1),mean=bs[cT1,], sigma=sigma))
 #qi <- pmvnorm(lower=c(-bb.cT1/sb,-bw.cT1/sw), upper=c(-bb.cT1/sb + 1/sb, -bw.cT1/sw + 1/sw), mean=c(0,0), #corr=matrix(c(1,rho,rho,1), nrow=2))
 #qi <- ifelse(qi<0 | qi==0, 1*10^-322,qi)
 #second = ifelse(qi<0|qi==0, -999,log(qi))
-second <- createR(cT1,2,bb,bw,sb,sw,rho)
+second <- createR(cT1,Rfun,bb,bw,sb,sw,rho,x)
 llik.cT1=sum(first)-sum(second)
 }
 if(sum(cT1)>1){
 first = apply(as.matrix(bs[cT1,]), 1, function (x) log(dmvnorm(c(1,1),mean=as.vector(x), sigma=sigma)))
 second <- NULL
-second <- createR(cT1,2,bb,bw,sb,sw,rho)
+second <- createR(cT1,Rfun,bb,bw,sb,sw,rho,x)
 #for (i in 1:length(bb.cT1)){
 #qi <- pmvnorm(lower=c(-bb.cT1[i]/sb,-bw.cT1[i]/sw), upper=c(-bb.cT1[i]/sb + 1/sb, -bw.cT1[i]/sw + 1/sw), mean=c#(0,0), corr=matrix(c(1,rho,rho,1), nrow=2))
 #qi <- ifelse(qi<0 | qi==0, 1*10^-322,qi)
@@ -188,6 +168,7 @@ llik=llik.het + llik.bl + llik.wh + llik.cT0 + llik.cT1
 	if(sum(is.na(ealphaw))==0) prior=prior + sum(dmvnorm(Bw0v, ealphaw[,1], sigma=diag(ealphaw[,2]), log=T));
 	llik = llik + prior
 	print(-llik)
+	if(is.na(llik)|abs(llik)==Inf) llik = -2000000
 	return(-llik)
       }
 

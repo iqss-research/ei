@@ -80,11 +80,12 @@ tomog3 <- function(bb,bw,sb,sw,rho){
 
 #Tomography plot with 80% CIs
 tomog80CI <- function(ei.object){
-x <- ei.object$x
-t <- ei.object$t
-n <- ei.object$n
-betabs <- ei.object$betabs
-betaws <- ei.object$betaws
+ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+x <- ei.object$x[ok]
+t <- ei.object$t[ok]
+n <- ei.object$n[ok]
+betabs <- ei.object$betabs[ok,]
+betaws <- ei.object$betaws[ok,]
 tomogd(x,t,n,"Tomography Plot with 80% CIs")
 betabcd <- apply(betabs,1,function(x) quantile(x, probs=c(.1,.9)))
 betawcd <- apply(betaws,1,function (x) quantile(x,probs=c(.1,.9)))
@@ -95,11 +96,12 @@ for(i in 1:n){
 }
 #Tomography plot with 95% CIs
 tomog95CI <- function(ei.object){
-x <- ei.object$x
-t <- ei.object$t
-n <- ei.object$n
-betabs <- ei.object$betabs
-betaws <- ei.object$betaws
+ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+x <- ei.object$x[ok]
+t <- ei.object$t[ok]
+n <- ei.object$n[ok]
+betabs <- ei.object$betabs[ok,]
+betaws <- ei.object$betaws[ok,]
 tomogd(x,t,n,"Tomography Plot with 95% CIs")
 betabcd <- apply(betabs,1,function(x) quantile(x, probs=c(.025,.975)))
 betawcd <- apply(betaws,1,function (x) quantile(x,probs=c(.025,.975)))
@@ -111,11 +113,12 @@ for(i in 1:n){
 
 #TomogE -- Tomography plot with mean posterior betabs and betaws
 tomogE <- function(ei.object){
-x <- ei.object$x
-t <- ei.object$t
-n <- ei.object$n
-betabs <- ei.object$betabs
-betaws <- ei.object$betaws
+ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+x <- ei.object$x[ok]
+t <- ei.object$t[ok]
+n <- ei.object$n[ok]
+betabs <- ei.object$betabs[ok,]
+betaws <- ei.object$betaws[ok,]
 tomogd(x,t,n,"Tomography Plot with Mean Posterior Betabs and Betaws")
 betabm <- apply(betabs,1,mean)
 betawm <- apply(betaws,1,mean)
@@ -164,7 +167,8 @@ tomog3(bbp,bwp,mean(sbp),mean(swp),mean(rhop))
 
 #Density of betab
 betabd <- function(ei.object){
-betabs <- ei.object$betabs
+ok <- !is.na(ei.object$betab)
+betabs <- ei.object$betabs[ok,]
 betabm <- apply(betabs,1,mean)
 plot(density(betabm), xlim=c(0,1),  col="green", xlab="betaB", ylab="density across precincts, f(betaB)", main="Density of betaB")
 vb <- as.vector(betabm)
@@ -175,7 +179,8 @@ for (i in 1:length(vb)){
 
 #Density of betaw
 betawd <- function(ei.object){
-betaws <- ei.object$betaws
+ok <- !is.na(ei.object$betaw)
+betaws <- ei.object$betaws[ok,]
 betawm <- apply(betaws,1,mean)
 plot(density(betawm), xlim=c(0,1), col="green", xlab="betaW", ylab="density across precincts, f(betaW)", main="Density of betaW")
 vw <- as.vector(betawm)
@@ -213,13 +218,14 @@ for (i in 1:length(x)){
 #XTfit plot
 
 xtfit <- function(ei.object){
-betabs <- ei.object$betabs
-betaws <- ei.object$betaws
+ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+x <- ei.object$x[ok]
+t <- ei.object$t[ok]
+n <- ei.object$n[ok]
+betabs <- ei.object$betabs[ok,]
+betaws <- ei.object$betaws[ok,]
 low <- .1
 up <- .9
-x <- ei.object$x
-t <- ei.object$t
-n <- ei.object$n
 circ <- .04
 plot(x, t, xlim=c(0,1), ylim=c(0,1),xaxs="i",yaxs="i", main="X and T Scatterplot with E(T|X) and 80% CIs", ylab="T", xlab="X", pch=20)
 minn <- min(n)
@@ -248,13 +254,14 @@ lines(x, upr, col="red")
 
 #XTfitg plot
 xtfitg <- function(ei.object){
-betabs <- ei.object$betabs
-betaws <- ei.object$betaws
+ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+x <- ei.object$x[ok]
+t <- ei.object$t[ok]
+n <- ei.object$n[ok]
+betabs <- ei.object$betabs[ok,]
+betaws <- ei.object$betaws[ok,]
 low <- .1
 up <- .9
-x <- ei.object$x
-t <- ei.object$t
-n <- ei.object$n
 circ <- .04
 plot(x, t, xlim=c(0,1), ylim=c(0,1),xaxs="i",yaxs="i", main="X and T Scatterplot with E(T|X), 80% CIs, and Goodman", ylab="T", xlab="X", pch=20)
 minn <- min(n)
@@ -295,8 +302,9 @@ abline(lm.fit, col="red")
 #Estsims plot
 
 estsims <- function(ei.object){
-betabs <- as.vector(ei.object$betabs)
-betaws <- as.vector(ei.object$betaws)
+ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+betabs <- ei.object$betabs[ok,]
+betaws <- ei.object$betaws[ok,]
 colors = runif(length(betabs),26,51)
 plot(betabs, betaws, xlim=c(0,1), ylim=c(0,1),xaxs="i",yaxs="i", main="Simulations of betaW and betaB", ylab="betaW simulations", xlab="betaB simulations", pch=20, col=colors, lty=2, cex=.25)
 }

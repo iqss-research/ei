@@ -4,7 +4,7 @@ library(mvtnorm)
 library(tmvtnorm)
 library(ucminf)
 #ei1 <- ei(t,x,n,Zb,Zw,erho=.5,esigma=.5,ebeta=0,ealphab=NA,ealphaw=NA, truth=NA)
-ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=0, ealphab=NA, ealphaw=NA, truth=NA){
+ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=0, ealphab=NA, ealphaw=NA, truth=NA, Rfun=2){
 Zb <- as.matrix(Zb)
 Zw <- as.matrix(Zw)
 if (dim(Zb)[1]==1 & Zb==1) Zb <- as.matrix(rep(1,length(x)))
@@ -13,8 +13,8 @@ numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))
 message("Maximizing likelihood")
-#solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3)
-solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3, control=list(stepmax=1,trace=T))
+#solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, #esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3, Rfun=Rfun, #method="BFGS")
+solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, Rfun = Rfun, hessian=3) #control=list(maxeval=10))
 
 print(solution$par)
 print(solution$convergence) 
@@ -31,7 +31,7 @@ message("Importance Sampling..")
 keep <- matrix(data=NA, ncol=(length(solution$par)))
 resamp <- 0
 while(dim(keep)[1]<100){
-	keep <- samp(t,x,n, Zb, Zw, solution$par, varcv, 1000, keep, numb=numb, covs, erho, esigma, ebeta, ealphab, ealphaw)
+	keep <- samp(t,x,n, Zb, Zw, solution$par, varcv, 1000, keep, numb=numb, covs, erho, esigma, ebeta, ealphab, ealphaw, Rfun)
 	resamp = resamp + 1
 	}
 
@@ -120,7 +120,7 @@ return(output)
 }
 
 
-samp <- function(t,x,n, Zb, Zw, par, varcv, nsims, keep, numb, covs, erho, esigma, ebeta, ealphab, ealphaw){
+samp <- function(t,x,n, Zb, Zw, par, varcv, nsims, keep, numb, covs, erho, esigma, ebeta, ealphab, ealphaw, Rfun){
 import1 <- NULL
 varcv2 <- solve(varcv)/4
 draw <- rmvnorm(nsims, par[covs], varcv2)
@@ -137,9 +137,12 @@ if(zbmiss==FALSE&zwmiss==TRUE){
 if(zbmiss==TRUE&zwmiss==TRUE){
 	draw <- cbind(draw, rep(1,nsims), rep(1,nsims))
 	}
-for(i in 1:nsims){
-import1[i] <- -like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta, ealphab, ealphaw) - phiv[i]
-}
+#for(i in 1:nsims){
+#import1[i] <- -like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta, #ealphab, ealphaw, Rfun) - phiv[i]
+#}
+
+import1 <- apply(as.matrix(1:nsims),1,function(i) -like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun) - phiv[i])
+
 lnir <- import1-max(import1[1:nsims])
 ir <- exp(lnir)
 print(mean(ir))

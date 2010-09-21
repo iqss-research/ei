@@ -42,11 +42,12 @@ abounds <- function(ei.object){
 	}
 	
 aggs <- function(ei.object){
-	x <- ei.object$x
-	t <- ei.object$t
-	n <- ei.object$n
-	betab <- as.matrix(ei.object$betabs)
-	betaw <- as.matrix(ei.object$betaws)
+	ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+	x <- ei.object$x[ok]
+	t <- ei.object$t[ok]
+	n <- ei.object$n[ok]
+	betab <- ei.object$betabs[ok,]
+	betaw <- ei.object$betaws[ok,]
 	omx <- 1-x
 	Nb <- n*x
 	Nw <- n*omx
@@ -62,14 +63,15 @@ aggs <- function(ei.object){
 	}
 	
 maggs <- function(ei.object){
-	x <- ei.object$x
-	t <- ei.object$t
-	n <- ei.object$n
+	ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+	x <- ei.object$x[ok]
+	t <- ei.object$t[ok]
+	n <- ei.object$n[ok]
+	betab <- ei.object$betabs[ok,]
+	betaw <- ei.object$betaws[ok,]
 	omx <- 1-x
 	Nb <- n*x
 	Nw <- n*omx
-	betab <- as.matrix(ei.object$betabs)
-	betaw <- as.matrix(ei.object$betaws)
 	Bbgg <- vector(mode="numeric", length=dim(betab)[2])
 	for (i in 1:dim(betab)[2]){
 		Bbgg[i] <- weighted.mean(betab[,i], Nb)
@@ -82,11 +84,12 @@ maggs <- function(ei.object){
 	}
 	
 VCaggs <- function(ei.object){
-	x <- ei.object$x
-	t <- ei.object$t
-	n <- ei.object$n
-	betab <- as.matrix(ei.object$betabs)
-	betaw <- as.matrix(ei.object$betaws)
+	ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+	x <- ei.object$x[ok]
+	t <- ei.object$t[ok]
+	n <- ei.object$n[ok]
+	betab <- ei.object$betabs[ok,]
+	betaw <- ei.object$betaws[ok,]
 	omx <- 1-x
 	Nb <- n*x
 	Nw <- n*omx
@@ -103,16 +106,26 @@ VCaggs <- function(ei.object){
 	}
 	
 CI80b <- function(ei.object){
-	betab <- ei.object$betabs
-	lwr <- apply(betab, 1, function(x) quantile(x, probs=c(.1)))
-	upr <-apply(betab, 1, function(x) quantile(x, probs=c(.9)))
+	ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+	betab <- ei.object$betabs[ok,]
+	lwr <- vector(mode="numeric",length=length(x))
+	upr <- vector(mode="numeric",length=length(x))
+	lwr[ok] <- apply(betab, 1, function(x) quantile(x, probs=c(.1)))
+	lwr[!ok] <- NA
+	upr[ok] <-apply(betab, 1, function(x) quantile(x, probs=c(.9)))
+	upr[!ok] <- NA
 	return(cbind(lwr,upr))
 	}
 	
 CI80w <- function(ei.object){
-	betaw <- ei.object$betaws
-	lwr <- apply(betaw, 1, function(x) quantile(x, probs=c(.1)))
-	upr <-apply(betaw, 1, function(x) quantile(x, probs=c(.9)))
+	ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+	betaw <- ei.object$betaws[ok,]
+	lwr <- vector(mode="numeric",length=length(x))
+	upr <- vector(mode="numeric",length=length(x))
+	lwr[ok] <- apply(betaw, 1, function(x) quantile(x, probs=c(.1)))
+	lwr[!ok] <- NA
+	upr[ok] <-apply(betaw, 1, function(x) quantile(x, probs=c(.9)))
+	upr[!ok] <- NA
 	return(cbind(lwr,upr))
 	}
 	
