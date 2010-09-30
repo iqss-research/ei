@@ -8,8 +8,8 @@ ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=0, ealphab=NA, ealphaw=NA,
 Zb <- as.matrix(Zb)
 Zw <- as.matrix(Zw)
 if(dim(Zb)[1]==1 & Zb[1,1]==1 & dim(Zw)[1]==1 & Zw[1,1]==1) Rfun=5
-if (dim(Zb)[1]==1 & Zb==1) Zb <- as.matrix(rep(1,length(x)))
-if (dim(Zw)[1]==1 & Zw==1) Zw <- as.matrix(rep(1,length(x)))
+if (dim(Zb)[1]==1 & Zb[1,1]==1) Zb <- as.matrix(rep(1,length(x)))
+if (dim(Zw)[1]==1 & Zw[1,1]==1) Zw <- as.matrix(rep(1,length(x)))
 numb <- dim(Zb)[2]
 numw <- dim(Zw)[2]
 start <- c(0,0,-1.2,-1.2, 0, rep(0, numb+numw))

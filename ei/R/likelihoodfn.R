@@ -27,8 +27,8 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	sigw2 <- sw^2
 	sigbw = rho*sb*sw
 
-print(c(mean(Bb0),mean(Bw0),sb0,sw0,rho0,mean(Bb0v),mean(Bw0v)))
-print(c(mean(bb),mean(bw),sb,sw,rho))
+#print(c(mean(Bb0),mean(Bw0),sb0,sw0,rho0,mean(Bb0v),mean(Bw0v)))
+#print(c(mean(bb),mean(bw),sb,sw,rho))
 #Create Demographic Categories
 
 homoindx <- ifelse(x==0, 1, 0)

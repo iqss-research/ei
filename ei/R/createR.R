@@ -11,7 +11,8 @@ out <- NULL
 	makeR <- function (i){
 		qi <- pmvnorm(lower=lower[i,], upper=upper[i,], mean=mean, corr=corr)
 		}
-out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
+out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
+#out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
 out <- ifelse(out<0|out==0, 1*10^-322,out)
 out <- log(out)
 if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
@@ -20,13 +21,22 @@ return(out)
 	}
 
 if (Rfun==2){
-	for(i in 1:length(x[sub])){
+	makeR <- function(i){
 		qi <- sadmvn(lower=lower[i,], upper=upper[i,], mean=mean, varcov=corr)
-		qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
-		out[i] <- log(qi)
-		if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
-		out[i] <- ifelse(is.na(out[i])|abs(out[i]==Inf), 999, out[i])
-		}
+	}
+out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
+out <- ifelse(out<0|out==0, 1*10^-322,out)
+out <- log(out)
+if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
+out <- ifelse(is.na(out)|abs(out==Inf), 999, out)
+#return(out)
+#	for(i in 1:length(x[sub])){
+#		qi <- sadmvn(lower=lower[i,], upper=upper[i,], mean=mean, varcov=corr)
+#		qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
+#		out[i] <- log(qi)
+#		if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
+#		out[i] <- ifelse(is.na(out[i])|abs(out[i]==Inf), 999, out[i])
+#		}
 	return(out)
 	}
 if (Rfun==3){
