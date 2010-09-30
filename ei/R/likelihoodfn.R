@@ -27,6 +27,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta, ealphab, eal
 	sigw2 <- sw^2
 	sigbw = rho*sb*sw
 
+print(c(mean(Bb0),mean(Bw0),sb0,sw0,rho0,mean(Bb0v),mean(Bw0v)))
 print(c(mean(bb),mean(bw),sb,sw,rho))
 #Create Demographic Categories
 
@@ -55,6 +56,8 @@ ok <- ifelse(homoindx==0 & cT0==0 & cT1==0,T, F)
 	b.s = (bounds[ok,][,2]-ebb[ok])/s[ok]
 	as = (bounds[ok,][,1]-ebb[ok])/s[ok]
 	res[ok] <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
+	#res[ok] <- ifelse(abs(res[ok])==Inf, log(1*10^-15),res[ok])
+	#res[ok] <- ifelse(abs(res[ok])==Inf, NaN,res[ok])
 	#res[ok] <- log(pnorm(bounds[ok,2], mean=ebb[ok], sd=s[ok]) - #pnorm(bounds[ok,1], 			#mean=ebb[ok], sd=s[ok]))s
 		#res[ok] <- ifelse(res[ok]==NA,-999,res[ok])
 		#print(summary(res))
@@ -84,6 +87,7 @@ s <- sqrt(Vbb)
 b.s = (bnds[,2]-Ebb)/s
 as = (bnds[,1]-Ebb)/s
 res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
+
 #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
 R[wh] <- createR(wh,Rfun,bb,bw,sb,sw,rho,x)
 llik.wh = llik.wh + sum(res)-sum(R[wh])
@@ -103,6 +107,7 @@ b.s = (bnds[,2]-Ebb)/s
 as = (bnds[,1]-Ebb)/s
 res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
 #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1], mean=Ebb, sd=s))
+#res[ok] <- ifelse(abs(res[ok])==Inf, NaN,res[ok])
 R[bl] <- createR(bl,Rfun,bb,bw,sb,sw,rho,x)
 llik.bl = llik.bl + sum(res)-sum(R[bl])
 }
@@ -168,7 +173,7 @@ llik=llik.het + llik.bl + llik.wh + llik.cT0 + llik.cT1
 	if(sum(is.na(ealphaw))==0) prior=prior + sum(dmvnorm(Bw0v, ealphaw[,1], sigma=diag(ealphaw[,2]), log=T));
 	llik = llik + prior
 	print(-llik)
-	if(is.na(llik)|abs(llik)==Inf) llik = -2000000
+	if(is.na(llik)|abs(llik)==Inf) llik = NaN
 	return(-llik)
       }
 

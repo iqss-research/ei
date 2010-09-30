@@ -49,5 +49,16 @@ if (Rfun==4){
 		}
 	return(out)
 	}
-}	
 
+if (Rfun==5){
+	lower = lower[1,]
+	upper = upper[1,]
+	qi <- pmvnorm(lower=lower, upper=upper, mean=mean, corr=corr)
+	qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
+	qi <- log(qi)
+	if(is.na(qi)|abs(qi)==Inf) print ("R not real")
+	qi <- ifelse((is.na(qi)|abs(qi)==Inf),999,qi)
+	out <- rep(qi,length(x[sub]))
+	return(out)
+}
+}

@@ -7,6 +7,7 @@ library(ucminf)
 ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=0, ealphab=NA, ealphaw=NA, truth=NA, Rfun=2){
 Zb <- as.matrix(Zb)
 Zw <- as.matrix(Zw)
+if(dim(Zb)[1]==1 & Zb[1,1]==1 & dim(Zw)[1]==1 & Zw[1,1]==1) Rfun=5
 if (dim(Zb)[1]==1 & Zb==1) Zb <- as.matrix(rep(1,length(x)))
 if (dim(Zw)[1]==1 & Zw==1) Zw <- as.matrix(rep(1,length(x)))
 numb <- dim(Zb)[2]
@@ -31,7 +32,7 @@ message("Importance Sampling..")
 keep <- matrix(data=NA, ncol=(length(solution$par)))
 resamp <- 0
 while(dim(keep)[1]<100){
-	keep <- samp(t,x,n, Zb, Zw, solution$par, varcv, 1000, keep, numb=numb, covs, erho, esigma, ebeta, ealphab, ealphaw, Rfun)
+	keep <- samp(t,x,n, Zb, Zw, solution$par, varcv, 100, keep, numb=numb, covs, erho, esigma, ebeta, ealphab, ealphaw, Rfun)
 	resamp = resamp + 1
 	}
 
@@ -100,7 +101,7 @@ if(sum(wh)>0){
 betaw[wh,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(t[wh]))
 }
 if(sum(bl)>0){
-betaw[bl,] <- matrix(rep(NA, dim(keep)[1]*dim(betaw[bl,])[1]),nrow=dim(betaw[bl,])[1])
+betaw[bl,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(t[bl]))
 }
 if(sum(cT1)>0){
 betaw[cT1,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(bounds[cT1,3]))
@@ -142,11 +143,13 @@ if(zbmiss==TRUE&zwmiss==TRUE){
 #}
 
 import1 <- apply(as.matrix(1:nsims),1,function(i) -like(as.vector(draw[i,]), t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun) - phiv[i])
-
-lnir <- import1-max(import1[1:nsims])
-ir <- exp(lnir)
-print(mean(ir))
-tst <- ir[1:nsims]>runif(nsims,0,1)
+ok <- !is.nan(import1)
+lnir <- import1-max(import1[ok])
+ir <- NA
+ir[ok] <- exp(lnir[ok])
+print(mean(is.finite(ir)))
+tst <- ifelse(is.finite(ir), ir>runif(1,0,1), FALSE)
+print(sum(tst))
 keep <- rbind(keep, draw[tst,])
 return(keep)
 }
