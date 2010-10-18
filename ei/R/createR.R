@@ -11,32 +11,32 @@ out <- NULL
 	makeR <- function (i){
 		qi <- pmvnorm(lower=lower[i,], upper=upper[i,], mean=mean, corr=corr)
 		}
-out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
-#out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
-out <- ifelse(out<0|out==0, 1*10^-322,out)
-out <- log(out)
-#if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
-out <- ifelse(is.na(out)|abs(out==Inf), 999, out)
-return(out)
+	out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
+	#out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
+	out <- ifelse(out<0|out==0, 1*10^-322,out)
+	out <- log(out)
+	#if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
+	out <- ifelse(is.na(out)|abs(out==Inf), 999, out)
+	return(out)
 	}
 
 if (Rfun==2){
 	makeR <- function(i){
 		qi <- sadmvn(lower=lower[i,], upper=upper[i,], mean=mean, varcov=corr)
 	}
-out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
-out <- ifelse(out<0|out==0, 1*10^-322,out)
-out <- log(out)
-if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
-out <- ifelse(is.na(out)|abs(out==Inf), 999, out)
-#return(out)
-#	for(i in 1:length(x[sub])){
-#		qi <- sadmvn(lower=lower[i,], upper=upper[i,], mean=mean, varcov=corr)
-#		qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
-#		out[i] <- log(qi)
-#		if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
-#		out[i] <- ifelse(is.na(out[i])|abs(out[i]==Inf), 999, out[i])
-#		}
+	out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
+	out <- ifelse(out<0|out==0, 1*10^-322,out)
+	out <- log(out)
+	if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
+	out <- ifelse(is.na(out)|abs(out==Inf), 999, out)
+	#return(out)
+	#	for(i in 1:length(x[sub])){
+	#		qi <- sadmvn(lower=lower[i,], upper=upper[i,], mean=mean, varcov=corr)
+	#		qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
+	#		out[i] <- log(qi)
+	#		if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
+	#		out[i] <- ifelse(is.na(out[i])|abs(out[i]==Inf), 999, out[i])
+	#		}
 	return(out)
 	}
 if (Rfun==3){
@@ -63,8 +63,9 @@ if (Rfun==4){
 if (Rfun==5){
 	lower = lower[1,]
 	upper = upper[1,]
-	qi <- pmvnorm(lower=lower, upper=upper, mean=mean, corr=corr)
-	qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
+	#qi <- pmvnorm(lower=lower, upper=upper, mean=mean, corr=corr)
+	qi <- sadmvn(lower=lower, upper=upper, mean=mean, varcov=corr)
+	qi <- ifelse(qi<1*10^-14, 1*10^-14,qi)
 	qi <- log(qi)
 	if(is.na(qi)|abs(qi)==Inf) print ("R not real")
 	qi <- ifelse((is.na(qi)|abs(qi)==Inf),999,qi)

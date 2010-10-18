@@ -345,16 +345,50 @@ abline(lm.xw, lty=2)
 #truth
 truthfn <- function(ei.object){
 n <- ei.object$n
+x <- ei.object$x
+omx <- 1-x
 truebb <- ei.object$truth[,1]
 truebw <- ei.object$truth[,2]
 betabs <- ei.object$betabs
 betaws <- ei.object$betaws
+betab <- ei.object$betab
+betaw <- ei.object$betaw
 truthbb <- sum(truebb*n)/sum(n)
 truthbw <- sum(truebw*n)/sum(n)
-par(mfrow=c(1,2))
-ag <- aggs(x,t,n,betabs,betaws)
+circ=.04
+par(mfrow=c(2,2))
+ag <- aggs(ei.object)
 plot(density(ag[,1]), xlim=c(0,1),ylim=c(0,max(density(ag[,1])$y)+1), yaxs="i",xaxs="i", main="Density of Bb Posterior & Truth", xlab="Bb",ylab="Density")
 lines(c(truthbb, truthbb), c(0,.25*(max(density(ag[,1])$y)+1)), lwd=3)
 plot(density(ag[,2]), xlim=c(0,1),ylim=c(0,max(density(ag[,2])$y)+1), yaxs="i", xaxs="i", main="Density of Bw Posterior & Truth", xlab="Bw",ylab="Density")
 lines(c(truthbw, truthbw), c(0,.25*(max(density(ag[,2])$y)+1)), lwd=3)
+
+plot(betab, truebb, xlim=c(0,1),ylim=c(0,1),xaxs="i",yaxs="i", xlab="Estimated betab",cex=.1,ylab="True betab")
+minn <- min(x*n)
+maxn <- max(x*n)
+for (i in 1:length(betab)){
+	radius = (n[i]*x[i]-minn+1)/(1+maxn-minn)
+	draw.circle(betab[i], truebb[i], radius*circ)
+	}
+ci80b = CI80b(dbuf)
+low = mean(abs(ci80b[,1]-betab))
+high = mean(abs(ci80b[,2]-betab))
+abline(0,1)
+lines(c(0,1),c(-low,1-low),lty=2)
+lines(c(0,1),c(high,1+high),lty=2)
+
+plot(betaw, truebw, xlim=c(0,1),ylim=c(0,1),xaxs="i",yaxs="i",xlab="Estimated betaw", ylab="True betaw",cex=.1)
+minn <- min(omx*n)
+maxn <- max(omx*n)
+for (i in 1:length(betaw)){
+	radius = (omx[i]*n[i]-minn+1)/(1+maxn-minn)
+	draw.circle(betaw[i], truebw[i], radius*circ)
+	}
+ci80w = CI80w(dbuf)
+low = mean(abs(ci80w[,1]-betaw))
+high = mean(abs(ci80w[,2]-betaw))
+abline(0,1)
+lines(c(0,1),c(-low,1-low),lty=2)
+lines(c(0,1),c(high,1+high),lty=2)
+
 }
