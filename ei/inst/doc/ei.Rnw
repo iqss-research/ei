@@ -51,12 +51,13 @@
 %\VignetteKeyWords{model,non-parametric, ecological}
 %\VignettePackage{ei}
 
-\title{EI: A(n R) Program for Ecological Inference}
-\author{Gary King \thanks{David Florence Professor of Government, Harvard
-  University (Institute for Quantitative Social Sciences, 1737 Cambridge 
-Street, Harvard University, Cambridge MA 02138;
-  \texttt{http://GKing.Harvard.Edu}, \texttt{King@Harvard.Edu}, (617)
-  495-2027.} \and Margaret Roberts \thanks{Department of Government, 1737 Cambridge Street, Harvard Univeristy, Cambridge MA 02138}}
+\title{EI: A(n R) Program for Ecological Inference} \author{Gary King
+  \thanks{Albert J.' Weatherhead III University Professor, Harvard
+    University (Institute for Quantitative Social Sciences, 1737
+    Cambridge Street, Harvard University, Cambridge MA 02138;
+    http://GKing.Harvard.Edu, King@Harvard.Edu, 617-500-7570.} \and
+  Margaret Roberts \thanks{Department of Government, 1737 Cambridge
+    Street, Harvard Univeristy, Cambridge MA 02138}}
 
 
 \begin{document}
