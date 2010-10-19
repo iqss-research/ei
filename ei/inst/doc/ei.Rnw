@@ -52,7 +52,7 @@
 %\VignettePackage{ei}
 
 \title{EI: A(n R) Program for Ecological Inference} \author{Gary King
-  \thanks{Albert J.' Weatherhead III University Professor, Harvard
+  \thanks{Albert J.\ Weatherhead III University Professor, Harvard
     University (Institute for Quantitative Social Sciences, 1737
     Cambridge Street, Harvard University, Cambridge MA 02138;
     http://GKing.Harvard.Edu, King@Harvard.Edu, 617-500-7570.} \and
@@ -75,44 +75,41 @@
 \section[Introduction: Ecological Inference]{{\tt Introduction}: Ecological Inference}
 \label{intro}
 
-This program provides a method of inferring individual behavior 
-from aggregate data. It implements the statistical procedures, 
-diagnostics, and graphics from the book, 
-\textbf{A Solution to the Ecological Inference Problem: 
-Reconstructing Individual Behavior from Aggregate Data} 
-(Princeton: Princeton University Press, 1997), by Gary King. 
-Please read the book prior to trying this program 
-(a sample chapter and other related information is available at 
-King's website). 
+This program provides a method of inferring individual behavior from
+aggregate data. It implements the statistical procedures, diagnostics,
+and graphics from the book, \textbf{A Solution to the Ecological
+  Inference Problem: Reconstructing Individual Behavior from Aggregate
+  Data} (Princeton: Princeton University Press, 1997), by Gary King.
+See \url{http://gking.harvard.edu/eicamera/kinroot.html}.
+
 Except where indicated, all references to page, section, chapter, 
 table, and figure numbers in this document refer to the book.\\
-\newline
-Ecological inference, as traditionally defined, 
-is the process of using aggregate (i.e., ``ecological'') data 
-to infer discrete individual-level relationships of interest 
-when individual-level data are not available. 
-As existing methods usually lead to inaccurate conclusions 
-about the empirical world, the ecological inference problem 
-had been to develop a method that gives accurate answers. 
-Ecological inferences are required in political science research 
-when individual-level surveys are unavailable 
-(e.g., local or comparative electoral politics), unreliable (racial politics), 
-insufficient (political geography), or infeasible (political history). 
-They are also required in numerous areas of major significance in public policy 
-(e.g., for applying the Voting Rights Act) and other academic 
-disciplines ranging from epidemiology and marketing to sociology and 
-quantitative history. Most researchers using aggregate data have 
+
+Ecological inference, as traditionally defined, is the process of
+using aggregate (i.e., ``ecological'') data to infer discrete
+individual-level relationships of interest when individual-level data
+are not available.  As existing methods usually lead to inaccurate
+conclusions about the empirical world, the ecological inference
+problem had been to develop a method that gives accurate answers.
+Ecological inferences are required in political science research when
+individual-level surveys are unavailable (e.g., local or comparative
+electoral politics), unreliable (racial politics), insufficient
+(political geography), or infeasible (political history).  They are
+also required in numerous areas of major significance in public policy
+(e.g., for applying the Voting Rights Act) and other academic
+disciplines ranging from epidemiology and marketing to sociology and
+quantitative history. Most researchers using aggregate data have
 encountered some form of the ecological inference problem.\\
-\newline
-Because the ecological inference problem is caused by the lack 
-of individual-level information, no method of ecological inference, 
-including that introduced in this book and estimated by this program, 
-will produce precisely accurate results in every instance. 
-However, potential difficulties are minimized here by models 
-that include more available information, diagnostics to evaluate 
-when assumptions need to be modified, easy methods of modifying 
-the assumptions, and uncertainty estimates for all quantities of interest. 
-We recommend reviewing Chapter 16 while using this program for actual research.
+\newline Because the ecological inference problem is caused by the
+lack of individual-level information, no method of ecological
+inference, including that introduced in this book and estimated by
+this program, will produce precisely accurate results in every
+instance.  However, potential difficulties are minimized here by
+models that include more available information, diagnostics to
+evaluate when assumptions need to be modified, easy methods of
+modifying the assumptions, and uncertainty estimates for all
+quantities of interest.  We recommend reviewing Chapter 16 while using
+this program for actual research.
 
 		
 \section[Overview: R-commands to run the application]{{\tt Overview}: R-commands to run the application}

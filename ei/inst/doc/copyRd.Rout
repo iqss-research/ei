@@ -46,4 +46,4 @@ Copying .sty files
 > q("no")
 > proc.time()
    user  system elapsed 
-  0.330   0.036   0.522 
+  0.335   0.041   0.373 
