@@ -1,6 +1,6 @@
 \SweaveOpts{results=hide,prefix.string=vigpics/EI}
 %\include{zinput}
-\documentclass[oneside,letterpaper,titlepage]{article}
+\documentclass[11pt,oneside,letterpaper,titlepage]{article}
 %\usepackage[notref]{showkeys} % [notref]
 \usepackage{Rd/Rd}
 \usepackage{Rd/Sweave}
@@ -85,13 +85,10 @@ See \url{http://gking.harvard.edu/eicamera/kinroot.html}.
 Except where indicated, all references to page, section, chapter, 
 table, and figure numbers in this document refer to the book.\\
 
-Ecological inference, as traditionally defined, is the process of
-using aggregate (i.e., ``ecological'') data to infer discrete
-individual-level relationships of interest when individual-level data
-are not available.  As existing methods usually lead to inaccurate
-conclusions about the empirical world, the ecological inference
-problem had been to develop a method that gives accurate answers.
-Ecological inferences are required in political science research when
+Ecological inference is the process of using aggregate (i.e.,
+``ecological'') data to infer discrete individual-level relationships
+of interest when individual-level data are not available.  Ecological
+inferences are required in political science research when
 individual-level surveys are unavailable (e.g., local or comparative
 electoral politics), unreliable (racial politics), insufficient
 (political geography), or infeasible (political history).  They are
@@ -99,32 +96,34 @@ also required in numerous areas of major significance in public policy
 (e.g., for applying the Voting Rights Act) and other academic
 disciplines ranging from epidemiology and marketing to sociology and
 quantitative history. Most researchers using aggregate data have
-encountered some form of the ecological inference problem.\\
-\newline Because the ecological inference problem is caused by the
-lack of individual-level information, no method of ecological
-inference, including that introduced in this book and estimated by
-this program, will produce precisely accurate results in every
-instance.  However, potential difficulties are minimized here by
-models that include more available information, diagnostics to
-evaluate when assumptions need to be modified, easy methods of
-modifying the assumptions, and uncertainty estimates for all
-quantities of interest.  We recommend reviewing Chapter 16 while using
-this program for actual research.
+encountered some form of the ecological inference problem.
+
+Because the ecological inference problem is caused by the lack of
+individual-level information, no method of ecological inference,
+including that estimated by this program, will always produce accurate
+results.  However, potential difficulties are reduced by models that
+include more available information, diagnostics to evaluate when
+assumptions need to be modified, easy methods of modifying the
+assumptions, and uncertainty estimates for quantities of interest.  We
+recommend reviewing Chapter 16 while using this program for actual
+research.
 
 		
 \section[Overview: R-commands to run the application]{{\tt Overview}: R-commands to run the application}
 \label{commands}
 
-In this section we describe the basic commands in \verb#EI#.  For this purpose, and without loss of generality, we use the running example from the 
-book portrayed in Table 2.3 (page 31). This example uses the fraction of the voting age 
-population who are black ($ X_i$), the fraction turning out to vote ($ T_i$), 
-and the number of voting age people ($ {N_i}$) in each precinct ( $ i=1,\ldots,p$) 
-to infer the fraction of blacks who vote ($ \beta_i^b$) and the fraction of whites 
-who vote ($ \beta_i^w$), also in each precinct. 
-(For an extended example of \verb#EI#, refer to the user's guide below.)
-As only four commands are required to use \verb#EI#, the program 
-can be easily run interactively, or in batch mode as a regular R program. 
-An example of a sequence of these commands are as follows:
+In this section we describe the basic commands in \verb#EI#.  For this
+purpose, and without loss of generality, we use the running example
+from the book portrayed in Table 2.3 (page 31). This example uses the
+fraction of the voting age population who are black ($ X_i$), the
+fraction turning out to vote ($ T_i$), and the number of voting age
+people ($ {N_i}$) in each precinct ( $ i=1,\ldots,p$) to infer the
+fraction of blacks who vote ($ \beta_i^b$) and the fraction of whites
+who vote ($ \beta_i^w$), also in each precinct.  (For an extended
+example of \verb#EI#, refer to the user's guide below.)  As only four
+commands are required to use \verb#EI#, the program can be easily run
+interactively, or in batch mode as a regular R program.  An example of
+a sequence of these commands are as follows:
 
 <<echo=TRUE, eval=FALSE>>=
 dbuf <- ei(t,x,n,1,1)
@@ -141,46 +140,70 @@ be included with these four to read in the data (\verb#t#, \verb#x#, and \verb#n
 \begin{itemize}
 \item{{\verb#ei#}: To run the main procedure}
 
-Use the format, \verb#dbuf = ei(t,x,n,1,1)#, which takes 
-three $ p\times 1$ vectors as inputs: \verb#t# (e.g. the fraction of the voting age 
-population turning out to vote); \verb#x# (e.g. the fraction of the voting age 
-population who are black); and \verb#n# (e.g. the total number of people 
-in the voting age population). The remaining two inputs are for optional covariates.
-For the basic model, set them each to 1 for no covariates. The output of this procedure 
-is the list \verb#dbuf# (i.e. a data buffer). After running \verb#ei#, 
-it is a good idea to save \verb#dbuf# on disk for further analysis.
-The output data buffer from \verb#ei# includes a large variety of different results useful 
-for understanding the results of the analysis. A minimal set of nonrepetitive information 
-is stored in this list (or data buffer), and a large variety of other information can be easily 
-computed from it. Fortunately, you do not need to know whether the information 
-you request is stored or computed as both are treated the same.\\
-\newline
-To extract information from the data buffer, three procedures are available:
+  Use the format, \verb#dbuf = ei(t,x,n,1,1)#, which takes three $
+  p\times 1$ vectors as inputs: \verb#t# (e.g. the fraction of the
+  voting age population turning out to vote); \verb#x# (e.g. the
+  fraction of the voting age population who are black); and \verb#n#
+  (e.g. the total number of people in the voting age population). The
+  remaining two inputs are for optional covariates.  For the basic
+  model, set them each to 1 for no covariates. The output of this
+  procedure is the list \verb#dbuf# (i.e. an output object of class
+  list called a ``data buffer''). After running \verb#ei#, it is a
+  good idea to save \verb#dbuf# on disk for further analysis.  The
+  output data buffer from \verb#ei# includes a large variety of
+  different results useful for understanding the results of the
+  analysis. A minimal set of nonrepetitive information is stored in
+  this list (or data buffer), and a large variety of other information
+  can be easily computed from it. Fortunately, you do not need to know
+  whether the information
+  you request is stored or computed as both are treated the same.\\
+  \newline To extract information from the data buffer, three
+  procedures are available:
 
 \item{{\verb#summary#}: To obtain a general summary of district-level information}
 
-\verb#summary(dbuf)# will produce aggregate information about the \verb#ei# results.  It also includes information on the values specified for the prior. 
+  \verb#summary(dbuf)# will produce aggregate information about the
+  \verb#ei# results.  It also includes information on the values
+  specified for the prior.
 
 \item{{\verb#plot#}: To graph relevant information}
 
-For graphics, use \verb#plot(dbuf, "name")#;, where \verb#dbuf# is the list 
-that is the output of \verb#ei#, and name can be any number of a long list of ready-made graphs. 
-For example, \verb#plot(dbuf,"tomog")#s
-will plot a tomography graph, and \verb#plot(dbuf,"xt")# will display a scattercross graph. Any number of graphs can be selected in plot for output.  For example, \verb#plot(dbuf,"tomog","xt")# will produce both a tomography graph and a scattercross graph.
+  For graphics, use \verb#plot(dbuf, "name")#;, where \verb#dbuf# is
+  the list that is the output of \verb#ei#, and name can be any number
+  of a long list of ready-made graphs.  For example,
+  \verb#plot(dbuf,"tomog")#s will plot a tomography graph, and
+  \verb#plot(dbuf,"xt")# will display a scattercross graph. Any number
+  of graphs can be selected in plot for output.  For example,
+  \verb#plot(dbuf,"tomog","xt")# will produce both a tomography graph
+  and a scattercross graph.
 
 \item{{\verb#eiread#}: To obtain relevant information and numerical results}
 
-For numerical information, use \verb#v <- eiread(dbuf, "name")#, where \verb#v# is the item extracted, \verb#dbuf# is the data buffer output from \verb#ei#, and name can be any of a list 
-of output possibilities. For example, \verb#eiread(dbuf, "betab")# will give a vector of point estimates 
-of $ \beta_i^b$, \verb#eiread(dbuf, "ci80w")# will give 80\% confidence intervals for $ \beta_i^w$. 
-Any number of items can be selected for output.  For example, \verb#eiread(dbuf, "betab", "ci80b")# will produce a list of the point estimates and 80\% confidence intervals for $ \beta_i^b$.
+  For numerical information, use \verb#v <- eiread(dbuf, "name")#,
+  where \verb#v# is the item extracted, \verb#dbuf# is the data buffer
+  output from \verb#ei#, and name can be any of a list of output
+  possibilities. For example, \verb#eiread(dbuf, "betab")# will give a
+  vector of point estimates of $ \beta_i^b$,
+  \verb#eiread(dbuf, "ci80w")# will give 80\% confidence intervals for
+  $ \beta_i^w$.  Any number of items can be selected for output.  For
+  example, \verb#eiread(dbuf, "betab", "ci80b")# will produce a list
+  of the point estimates and 80\% confidence intervals for $
+  \beta_i^b$.
 
 \end{itemize}
 
 \section{User's Guide: An Example}
 
-We now show how to use \verb#EI# through a simple example. We use data on voter registration and racial background of people from 268 counties in four Southern U.S. States: Florida, Louisiana, and South Carolina.  These are the same data used in Chapter 10 of \textbf{A Solution to the Ecological Inference Problem: 
-Reconstructing Individual Behavior from Aggregate Data} by Gary King. The data include the total voting age population in each county (\verb#n#), the proportion of the population in each county who are black (\verb#x#), and the proportion of the population in each county who are registered to vote  (\verb#t#).  The proportion of whites registered can be computed by (\verb#1-x#). You can load the data into R using the command
+We now show how to use \verb#EI# through a simple example. We use data
+on voter registration and racial background of people from 268
+counties in four Southern U.S. States: Florida, Louisiana, and South
+Carolina.  These are the same data used in Chapter 10. The data
+include the total voting age population in each county (\verb#n#), the
+proportion of the population in each county who are black (\verb#x#),
+and the proportion of the population in each county who are registered
+to vote (\verb#t#).  The proportion of whites registered can be
+computed by (\verb#1-x#). You can load the data into R using the
+command
 
 <<echo=TRUE>>=
 library(ei)
@@ -192,11 +215,22 @@ attach(matproii)
 
 \subsection{The Basic EI Algorithm}
 
-To begin, we perform ecological inference by calling the function \verb#ei#. \verb#ei# first computes and maximizes a likelihood distribution based on the inputed data. Then it estimates county-level quantities of interest based on the possible values, or "bounds", for each county and the overall likelihood distribution.  \\
-\newline
-To run this algorithm, at minimum we need to have three vectors.  Two vectors, \verb#t# and \verb#x#, contain the aggregate known information about the counties of interest.  In this example, \verb#t# is the proportion of voters registered in each county, and \verb#x# is the proportion of blacks in each county.  These two vectors contain aggregate information, since we are interested in the proportion of voters in each country who are black.  The last vector we need is \verb#n#, the number of people of interest in each county.  In this example, \verb#n# is the number of people of voting age.\\
-\newline
-We proceed by performing ecological inference without covariates on the data:
+To begin, we perform ecological inference by calling the function
+\verb#ei#. \verb#ei# first computes and maximizes a likelihood
+distribution based on the inputed data. Then it estimates county-level
+quantities of interest based on the possible values, or "bounds", for
+each county and the overall likelihood distribution.  \\ \newline To
+run this algorithm, at a minimum we need to have three vectors.  Two
+vectors, \verb#t# and \verb#x#, contain the aggregate known
+information about the counties of interest.  In this example, \verb#t#
+is the proportion of voters registered in each county, and \verb#x# is
+the proportion of blacks in each county.  These two vectors contain
+aggregate information, since we are interested in the proportion of
+voters in each country who are black.  The last vector we need is
+\verb#n#, the number of people of interest in each county.  In this
+example, \verb#n# is the number of people of voting age.\\ \newline We
+proceed by performing ecological inference without covariates on the
+data:
 
 <<echo=TRUE>>=
 dbuf = ei(t,x,n,1,1)
