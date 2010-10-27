@@ -108,8 +108,8 @@ VCaggs <- function(ei.object){
 CI80b <- function(ei.object){
 	ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
 	betab <- ei.object$betabs[ok,]
-	lwr <- vector(mode="numeric",length=length(x))
-	upr <- vector(mode="numeric",length=length(x))
+	lwr <- vector(mode="numeric",length=length(ei.object$x))
+	upr <- vector(mode="numeric",length=length(ei.object$x))
 	lwr[ok] <- apply(betab, 1, function(x) quantile(x, probs=c(.1)))
 	lwr[!ok] <- NA
 	upr[ok] <-apply(betab, 1, function(x) quantile(x, probs=c(.9)))
@@ -120,8 +120,8 @@ CI80b <- function(ei.object){
 CI80w <- function(ei.object){
 	ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
 	betaw <- ei.object$betaws[ok,]
-	lwr <- vector(mode="numeric",length=length(x))
-	upr <- vector(mode="numeric",length=length(x))
+	lwr <- vector(mode="numeric",length=length(ei.object$x))
+	upr <- vector(mode="numeric",length=length(ei.object$x))
 	lwr[ok] <- apply(betaw, 1, function(x) quantile(x, probs=c(.1)))
 	lwr[!ok] <- NA
 	upr[ok] <-apply(betaw, 1, function(x) quantile(x, probs=c(.9)))

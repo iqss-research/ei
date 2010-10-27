@@ -23,8 +23,8 @@ eiread(ei.object, ...)
 \value{
 \item{betab}{\eqn{p} x \eqn{1} point estimate of \eqn{\beta_i^b} based on its mean posterior.  See section 8.2}
 	\item{betaw}{\eqn{p} x \eqn{1} point estimate of \eqn{\beta_i^w} based on its mean posterior.  See section 8.2}
-	\item{sbetab}{\eqn{p} x \eqn{1} standard error for the stimate of \eqn{\beta_i^b}, based on the standard deviation of its posterior.  See section 8.2}
-	\item{sbetaw}{\eqn{p} x \eqn{1} standard error for the stimate of \eqn{\beta_i^w}, based on the standard deviation of its posterior.  See section 8.2}
+	\item{sbetab}{\eqn{p} x \eqn{1} standard error for the estimate of \eqn{\beta_i^b}, based on the standard deviation of its posterior.  See section 8.2}
+	\item{sbetaw}{\eqn{p} x \eqn{1} standard error for the estimate of \eqn{\beta_i^w}, based on the standard deviation of its posterior.  See section 8.2}
 	\item{phi}{Maximum posterior estimates of the CML}
 	\item{psisims}{Matrix of random simulations of \eqn{\psi}.  See section 8.2}
 	\item{bounds}{\eqn{p} x \eqn{4}: bounds on \eqn{\beta_i^b} and \eqn{\beta_i^w}, lowerB ~ upperB ~ lowerW ~ upperW.  See Chapter 5.}
@@ -47,7 +47,6 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 
 \examples{
 data(sample)
-attach(sample)
-dbuf <- ei(t,x,n,1,1)
+dbuf <- ei(t,x,n,data=sample)
 eiread(dbuf, "betab", "betaw")
 }

@@ -1,11 +1,12 @@
 eiread <- function(ei.object, ...){
 	function.list <- list("betab" = betaB, "betaw" = betaW, "phi" = phi, "sbetab" = sbetab, "sbetaw" = sbetaw, "psisims" = psisims, "bounds" = bounds, "CI80b" = CI80b, "CI80w" = CI80w, "abounds" = abounds, "aggs" = aggs, "maggs" = maggs, "VCaggs" = VCaggs, "eaggbias" = eaggbias, "goodman" = goodman)
+	dec <- ei.object$precision
 	arguments <- list(...)
 	results <- list()
 	
 for (arg in arguments) {
 	if (arg %in% names(function.list))
-		results[[arg]] <- function.list[[arg]](ei.object)
+		results[[arg]] <- floor(function.list[[arg]](ei.object)*10^dec)/10^dec
 	else 
 		results[[arg]] <- NA
 }

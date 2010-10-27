@@ -5,14 +5,14 @@
 Plotting Ecological Inference Estimates
 }
 \description{
-'plot' method for the class '"ei"'.
+`plot' method for the class `ei'.
 }
 \usage{
 plot.ei(ei.object, ...)
 }
 
 \arguments{
-  \item{ei.object}{An ei.object from the function ei.}
+  \item{ei.object}{An \code{ei} object from the function \code{ei}.}
 \item{\dots}{A list of options to return in graphs.  See values below.} 
 }
  
@@ -32,11 +32,11 @@ plot.ei(ei.object, ...)
 	\item{xt}{Basic \eqn{X_i} by \eqn{T_i} scatterplot.}
 	\item{xtc}{Basic \eqn{X_i} by \eqn{T_i} scatterplot with circles sized proportional to \eqn{N_i}.}
 	\item{xtfit}{\eqn{X_i} by \eqn{T_i} plot with estimated \eqn{E(T_i|X_i)} and conditional \eqn{80\%} confidence intervals.  See Figure 10.3, page 206.}
-	\item{xtfitg}{xtfit with Goodman's regression line superimposed.}
+	\item{xtfitg}{\code{xtfit} with Goodman's regression line superimposed.}
 	\item{estsims}{All the simulated \eqn{\beta_i^b}'s by all the simulated \eqn{\beta_i^w}'s.  The simulations should take roughly the same shape of the mean posterior contours, except for those sampled from outlier tomography lines.}
 	\item{boundXb}{\eqn{X_i} by the bounds on \eqn{\beta_i^b} (each precinct appears as one vertical line), see the lines in the left graph in Figure 13.2, page 238.}
 	\item{boundXw}{\eqn{X_i} by the bounds on \eqn{\beta_i^w} (each precinct appears as one vertical line), see the lines in the right graph in Figure 13.2, page 238.}
-	\item{truth}{Compares truth to estimates at the district and precinct-level.  Requires truth in the eiobject.  See Figures 10.4 (page 208) and 10.5 (page 210).}
+	\item{truth}{Compares truth to estimates at the district and precinct-level.  Requires \code{truth} in the \code{ei} object.  See Figures 10.4 (page 208) and 10.5 (page 210).}
 
 }
 \references{
@@ -47,7 +47,6 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 }
 \examples{
 data(sample)
-attach(sample)
-dbuf <- ei(t,x,n,1,1)
+dbuf <- ei(t,x,n,data=sample)
 plot(dbuf, "tomog", "betab", "betaw", "xtfit")
 }

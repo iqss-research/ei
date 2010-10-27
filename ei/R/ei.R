@@ -4,7 +4,14 @@ library(mvtnorm)
 library(tmvtnorm)
 library(ucminf)
 #ei1 <- ei(t,x,n,Zb,Zw,erho=.5,esigma=.5,ebeta=.5,ealphab=NA,ealphaw=NA, truth=NA)
-ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=.5, ealphab=NA, ealphaw=NA, truth=NA, Rfun=2){
+ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5, ealphab=NA, ealphaw=NA, truth=NA, Rfun=2, precision=4){
+	if(dim(data)[1]>0){
+		t <- data$t
+		x <- data$x
+		n <- data$n
+		if(Zb!=1) Zb <- data$Zb
+		if(Zw!=1) Zw <- data$Zw
+	}
 	Zb <- as.matrix(Zb)
 	Zw <- as.matrix(Zw)
 	if(dim(Zb)[1]==1 & Zb[1,1]==1 & dim(Zw)[1]==1 & Zw[1,1]==1) Rfun=5
@@ -117,8 +124,8 @@ ei <- function(t,x,n,Zb,Zw, erho=.5, esigma=.5, ebeta=.5, ealphab=NA, ealphaw=NA
 	mbetaw <- apply(betaw,1,mean)
 	sdbetab <- apply(betab,1,sd)
 	sdbetaw <- apply(betaw,1,sd)
-	output <- list(solution$par, solution$hessian, psi, mbetab, mbetaw, sdbetab, sdbetaw, betab, betaw, 			resamp, erho, esigma, ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw, truth)
-	names(output) <- c("phi", "hessian", "psi", "betab", "betaw", "sbetab", "sbetaw", "betabs", "betaws", 			"resamp", "erho", "esigma", "ebeta", "ealphab", "ealphaw", "numb", "x", "t", "n", "Zb", "Zw", 			"truth")
+	output <- list(solution$par, solution$hessian, psi, mbetab, mbetaw, sdbetab, sdbetaw, betab, betaw, 			resamp, erho, esigma, ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw, truth, precision)
+	names(output) <- c("phi", "hessian", "psi", "betab", "betaw", "sbetab", "sbetaw", "betabs", "betaws", 			"resamp", "erho", "esigma", "ebeta", "ealphab", "ealphaw", "numb", "x", "t", "n", "Zb", "Zw", 			"truth", "precision")
 	class(output) <- "ei"
 	return(output)
 }

@@ -67,22 +67,36 @@ magg <- matrix(maggs(ei1), nrow=2)
 rownames(magg) <- c("Bb", "Bw")
 colnames(magg) <- c("mean", "sd")
 
-output <- list(ei1$erho, ei1$esigma, ei1$ebeta, n, ei1$resamp, mle, psiu, psit, ab, magg)
-names(output) <- c("Erho", "Esigma", "Ebeta", "N", "Resamp", "Maximum likelihood results in scale of estimation (and se's)", "Untruncated psi's", "Truncated psi's (ultimate scale)", "Aggregate Bounds", "Estimates of Aggregate Quantities of Interest")
+output <- list(ei1$erho, ei1$esigma, ei1$ebeta, n, ei1$resamp, mle, psiu, psit, ab, magg, ei1$precision)
+names(output) <- c("Erho", "Esigma", "Ebeta", "N", "Resamp", "Maximum likelihood results in scale of estimation (and se's)", "Untruncated psi's", "Truncated psi's (ultimate scale)", "Aggregate Bounds", "Estimates of Aggregate Quantities of Interest", "precision")
 class(output) <- "summary"
 return(output)
 }
 
 print.summary <- function(sum.object, ...){
+dec <- sum.object$precision
+sum.object = sum.object[1:length(sum.object)-1]
+top <- list()
+num = 1
 for (key in names(sum.object)){
 	val <- sum.object[[key]]
+	
 	if ((is.character(val) || is.numeric(val)) && length(val) < 2){
-		message(cat(key, "=", val))
+		top[[num]] <- sum.object[[key]]
+		names(top[[num]]) = key
+		num=num+1
 	}
-	else{
+}
+	message(cat(names(top[[1]]), "=", top[[1]], ",",names(top[[2]]), "=", top[[2]],",",names(top[[3]]), "=", top[[3]],",",names(top[[4]]), "=", top[[4]],",",names(top[[5]]), "=", top[[5]]))
+
+for (key in names(sum.object)){
+	val <- sum.object[[key]]
+	if (!((is.character(val) || is.numeric(val)) && length(val) < 2)){
 		message()
 		message(key)
-		print(val)
+		print(floor(val * 10^dec)/(10^dec))
+
 }
 }
 }
+

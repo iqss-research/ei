@@ -370,7 +370,7 @@ for (i in 1:length(betab)){
 	radius = (n[i]*x[i]-minn+1)/(1+maxn-minn)
 	draw.circle(betab[i], truebb[i], radius*circ)
 	}
-ci80b = CI80b(dbuf)
+ci80b = CI80b(ei.object)
 low = mean(abs(ci80b[,1]-betab))
 high = mean(abs(ci80b[,2]-betab))
 abline(0,1)
