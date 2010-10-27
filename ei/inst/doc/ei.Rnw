@@ -27,8 +27,13 @@
 \usepackage{html}
 \usepackage{dcolumn}
 \usepackage{longtable}
-\usepackage{vmargin}
-\topmargin=0in
+%\usepackage{vmargin}
+%\topmargin=1in
+% === margin and formatting ===
+\usepackage{setspace}
+\usepackage{fullpage}
+\usepackage{caption}
+
 \def\fp#1{\mathbbm{#1}}
 
 %\setpapersize{USletter}
@@ -80,12 +85,12 @@ aggregate data. It implements the statistical procedures, diagnostics,
 and graphics from the book, \textbf{A Solution to the Ecological
   Inference Problem: Reconstructing Individual Behavior from Aggregate
   Data} (Princeton: Princeton University Press, 1997), by Gary King.
-See \url{http://gking.harvard.edu/eicamera/kinroot.html}.
+See \url{http://gking.harvard.edu/eicamera/kinroot.html}.\\
 
-Except where indicated, all references to page, section, chapter, 
+\noindent Except where indicated, all references to page, section, chapter, 
 table, and figure numbers in this document refer to the book.\\
 
-Ecological inference is the process of using aggregate (i.e.,
+\noindent Ecological inference is the process of using aggregate (i.e.,
 ``ecological'') data to infer discrete individual-level relationships
 of interest when individual-level data are not available.  Ecological
 inferences are required in political science research when
@@ -96,9 +101,9 @@ also required in numerous areas of major significance in public policy
 (e.g., for applying the Voting Rights Act) and other academic
 disciplines ranging from epidemiology and marketing to sociology and
 quantitative history. Most researchers using aggregate data have
-encountered some form of the ecological inference problem.
+encountered some form of the ecological inference problem.\\
 
-Because the ecological inference problem is caused by the lack of
+\noindent Because the ecological inference problem is caused by the lack of
 individual-level information, no method of ecological inference,
 including that estimated by this program, will always produce accurate
 results.  However, potential difficulties are reduced by models that
@@ -126,10 +131,10 @@ interactively, or in batch mode as a regular R program.  An example of
 a sequence of these commands are as follows:
 
 <<echo=TRUE, eval=FALSE>>=
-dbuf <- ei(t,x,n,1,1)
-summary(ei)
-eiread(ei, "betab","betaw")
-plot(ei, "tomog","betab","betaw","xtfit")
+dbuf <- ei(t,x,n)
+summary(dbuf)
+eiread(dbuf, "betab","betaw")
+plot(dbuf, "tomog","betab","betaw","xtfit")
 @
 
 \noindent In most applications, \verb#plot# and \verb#eiread# 
@@ -140,13 +145,11 @@ be included with these four to read in the data (\verb#t#, \verb#x#, and \verb#n
 \begin{itemize}
 \item{{\verb#ei#}: To run the main procedure}
 
-  Use the format, \verb#dbuf = ei(t,x,n,1,1)#, which takes three $
+  Use the format, \verb#dbuf = ei(t,x,n)#, which takes three $
   p\times 1$ vectors as inputs: \verb#t# (e.g. the fraction of the
   voting age population turning out to vote); \verb#x# (e.g. the
   fraction of the voting age population who are black); and \verb#n#
-  (e.g. the total number of people in the voting age population). The
-  remaining two inputs are for optional covariates.  For the basic
-  model, set them each to 1 for no covariates. The output of this
+  (e.g. the total number of people in the voting age population). The output of this
   procedure is the list \verb#dbuf# (i.e. an output object of class
   list called a ``data buffer''). After running \verb#ei#, it is a
   good idea to save \verb#dbuf# on disk for further analysis.  The
@@ -171,7 +174,7 @@ be included with these four to read in the data (\verb#t#, \verb#x#, and \verb#n
   For graphics, use \verb#plot(dbuf, "name")#;, where \verb#dbuf# is
   the list that is the output of \verb#ei#, and name can be any number
   of a long list of ready-made graphs.  For example,
-  \verb#plot(dbuf,"tomog")#s will plot a tomography graph, and
+  \verb#plot(dbuf,"tomog")# will plot a tomography graph, and
   \verb#plot(dbuf,"xt")# will display a scattercross graph. Any number
   of graphs can be selected in plot for output.  For example,
   \verb#plot(dbuf,"tomog","xt")# will produce both a tomography graph
@@ -208,7 +211,6 @@ command
 <<echo=TRUE>>=
 library(ei)
 data(matproii)
-attach(matproii)
 @
 
 \noindent The statistical goal is to estimate the fraction of blacks registered ($\beta_i^b$) and the fraction of whites registered ($\beta_i^w$) in each county. These quantities of interest are generally unknown.  However, \verb#EI# also includes an option that allows the user to assess the reliability of the \verb#EI# algorithm when the true quantities of interest are known. To illustrate the use of this "truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (\verb#tw#). 
@@ -233,10 +235,10 @@ proceed by performing ecological inference without covariates on the
 data:
 
 <<echo=TRUE>>=
-dbuf = ei(t,x,n,1,1)
+dbuf = ei(t,x,n,data=matproii)
 @
 
-\noindent The \verb#1,1# in the \verb#ei# call specify that no covariates should be included in estimation.  To include a covariate on $\beta_i^b$ simply replace the first \verb#1# with a covariate vector for $\beta_i^b$. Similarly, to include a cpvariate on $\beta_i^w$, replace the second \verb#1# with a covariate vector for $\beta_i^w$.\\
+\noindent To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#. Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#.\\
 \newline
 Next, we use \verb#summary(dbuf)# to obtain general information about the estimation. 
 
@@ -245,35 +247,30 @@ summary(dbuf)
 @
 
 \begin{verbatim}
-Erho = 0.5
-Esigma = 0.5
-Ebeta = 0.5
-N = 268
-Resamp = 2
+Erho = 0.5 , Esigma = 0.5 , Ebeta = 0.5 , N = 268 , Resamp = 4
 
 Maximum likelihood results in scale of estimation (and se's)
-      Bb0       Bw0       sigB       sigW       rho Zb Zw
- 1.267095 1.9348579 -1.1150909 -1.3271242 1.6051356  0  0
- 0.278658 0.2764883  0.2096715  0.1616891 0.3096247  0  0
+    Bb0    Bw0    sigB    sigW    rho Zb Zw
+ 1.2670 1.9348 -1.1151 -1.3272 1.6051  0  0
+ 0.2786 0.2764  0.2096  0.1616 0.3096  0  0
 
 Untruncated psi's
-        BB       BW        SB        SW       RHO
- 0.9798303 1.142635 0.3374653 0.2727997 0.9215691
+     BB     BW    SB     SW    RHO
+ 0.9604 1.1264 0.327 0.2672 0.9202
 
 Truncated psi's (ultimate scale)
-        BB        BW        SB        SW       RHO
- 0.6169952 0.8271868 0.1995737 0.1412539 0.7798519
+     BB     BW     SB     SW    RHO
+ 0.6199 0.8261 0.1972 0.1418 0.7867
 
 Aggregate Bounds
-          betab     betaw
-lower 0.2125903 0.7025925
-upper 0.9754242 0.9200036
+       betab  betaw
+lower 0.2125 0.7025
+upper 0.9754 0.9200
 
 Estimates of Aggregate Quantities of Interest
-        mean          sd
-Bb 0.5655017 0.017029042
-Bw 0.8194223 0.004853354
-
+     mean     sd
+Bb 0.5691 0.0137
+Bw 0.8183 0.0039
 \end{verbatim}
 
 \noindent The \verb#summary# function provides basic information about the ecological inference estimation, the maximum likelihood estimates on three scales, and an overall summary of the quantities of interest.  First, it reports the values of the priors used in ecological inference (\verb#Erho, Esigma, Ebeta#).  It also reports the number of counties in the dataset (\verb#N#), as well as the number of importance sampling iterations required to produce estimates of the quantities of interest (\verb#resamp#).  \\
@@ -302,16 +299,14 @@ Plotting \verb#EI# output is extremely useful for understanding the results of t
 plot(dbuf, "tomog")
 @
 
-\pagebreak
-
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
-pdf("tomogplot.pdf", width=9, height=6, pointsize=10)
+pdf("tomogplot.pdf", width=6, height=6, pointsize=10)
 plot(dbuf, "tomog")
 invisible(dev.off())
 @
-\includegraphics[width=0.82\textwidth,   viewport=0 0 700 400,clip]{tomogplot} 
+\includegraphics[width=3in, height=3in,   viewport=0 0 420 395,clip]{tomogplot} 
 \end{center}
 \caption{Tomography Plot with ML Contours}
 \label{fig:tomog}
@@ -321,17 +316,16 @@ invisible(dev.off())
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
-pdf("tomogplot2.pdf", width=9, height=6, pointsize=10)
+pdf("tomogplot2.pdf", width=14, height=6, pointsize=10)
 plot(dbuf, "tomogE", "tomogCI")
 invisible(dev.off())
 @
-\includegraphics[width=0.82\textwidth,   viewport=0 0 700 400,clip]{tomogplot2} 
+\includegraphics[width=7.5in, height=2.5in,   viewport=0 0 1400 395,clip]{tomogplot2} 
 \end{center}
 \caption{Tomography Plots: Point Estimates and Confidence Intervals}
 \label{fig:tomog2}
 \end{figure}
 
-\pagebreak
 \noindent Each line on the map represents the possible values for $\beta_i^b$ and $\beta_i^w$ for one county.  The contour lines identify the portion of the lines that have the highest probability of containing the true estimates of $\beta_i^b$ and $\beta_i^w$.  These contour lines provide information about the overall pattern of registration.  Note that the area with highest probability is in the upper right-hand corner, where the proportion of whites registered is between $0.75$ and $1$ and the proportion of blacks registered is between $0.5$ and $1$.  Further, we see that the lines are clustered in the upper half of the figure, indicating that the possible values of $\beta_i^w$ will have a lower variance than the possible values of $\beta_i^b$.\\
 \newline
 Figure 2 is a double plot of the point estimates and their confidence intervals.  To compute this, we call plot to generate two graphs: a tomography plot with the point estimates generated from the algorithm, and a tomography plot with 80\% confidence intervals on the point estimate.  
@@ -364,11 +358,11 @@ plot(dbuf, "xtfit")
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
-pdf("betas.pdf", width=9, height=6, pointsize=10)
+pdf("betas.pdf", width=14, height=6, pointsize=10)
 plot(dbuf, "betab", "betaw")
 invisible(dev.off())
 @
-\includegraphics[width=0.82\textwidth,   viewport=0 0 700 400,clip]{betas} 
+\includegraphics[width=8.5in, height=2.5in,   viewport=0 0 1400 395,clip]{betas} 
 \end{center}
 \caption{Plots with Distribution of Point Estimates for $\beta_i^b$ and $\beta_i^w$}
 \label{fig:betas}
@@ -378,11 +372,11 @@ invisible(dev.off())
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
-pdf("xtfit.pdf", width=9, height=6, pointsize=10)
+pdf("xtfit.pdf", width=6, height=6, pointsize=10)
 plot(dbuf, "xtfit")
 invisible(dev.off())
 @
-\includegraphics[width=0.82\textwidth,   viewport=0 0 700 400,clip]{xtfit} 
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 400,clip]{xtfit} 
 \end{center}
 \caption{X and T Scatterplot with E(T|X) and 80\% CIs}
 \label{fig:xtfit}
@@ -392,8 +386,8 @@ invisible(dev.off())
 \noindent Finally, if we have data on the true proportions of registered blacks and registered whites in each county, as we do in this dataset, we can use plots in \verb#EI# to assess how well the algorithm works on the given data.  To do this, rerun the \verb#ei# algorithm, adding the truth vectors, \verb#tb# and \verb#tw# as the truth argument.
 
 <<echo=TRUE>>=
-truth = cbind(tb,tw)
-dbuf = ei(t,x,n,1,1,truth=truth)
+truth = cbind(matproii$tb,matproii$tw)
+dbuf = ei(t,x,n,data=matproii,truth=truth)
 @
 
 \noindent Then use plot to compare the estimates of the \verb#EI# algorithm to the true proportions of white and black registered voters in each county.
@@ -402,18 +396,18 @@ dbuf = ei(t,x,n,1,1,truth=truth)
 plot(dbuf, "truth")
 @
 
-\noindent The "truth" plot (Figure 5) has four components.  The top two figures have the posterior densities of the aggregate quantities of interest $B^b$ and $B^w$.  These densities tell us in what range the algorithm predicts that the point estimates lie.  For example, the density of $B^b$ is wider than the density of $B^w$, indicating that our estimates of $B^w$ lie in a smaller range than than our estimates of $B^b$.  The true aggregate values, computed from the \verb#truth# data we inputed, are indicated by the vertical bars.  The fact that the true $B^b$ and $B^w$ are within the densities we computed confirms that the model is did a good job at predicting the true proportions of registered white and black voters.\\
+\noindent The ``truth" plot (Figure 5) has four components.  The top two figures have the posterior densities of the aggregate quantities of interest $B^b$ and $B^w$.  These densities tell us in what range the algorithm predicts that the point estimates lie.  For example, the density of $B^b$ is wider than the density of $B^w$, indicating that our estimates of $B^w$ lie in a smaller range than than our estimates of $B^b$.  The true aggregate values, computed from the \verb#truth# data we inputed, are indicated by the vertical bars.  The fact that the true $B^b$ and $B^w$ are within the densities we computed confirms that the model is did a good job at predicting the true proportions of registered white and black voters.\\
 \newline
 \noindent The bottom two figures in Figure 5 plot the estimated values of $\beta_i^b$ and $\beta_i^w$ against the true values.  The size of each of the circles plotted is proportional to the number of blacks in the county in the first graph and the number of whites in each county in the second graph. If the estimated values were exactly equal to the true values, all of the points would be on the $45^{\circ}$ line.  Because the points fall quite close to the $45^{\circ}$ and do not deviate from the line in a systematic way, we can see that the \verb#EI# algorithm predicts the point estimates quite well.
 
 \begin{figure}[Ht]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
-pdf("truth2.pdf", width=9, height=6, pointsize=10)
+pdf("truth2.pdf", width=6, height=6, pointsize=10)
 plot(dbuf, "truth")
 invisible(dev.off())
 @
-\includegraphics[width=0.82\textwidth,   viewport=0 0 700 400,clip]{truth2} 
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{truth2} 
 \end{center}
 \caption{Comparing Estimates to the Truth at the County Level}
 \label{fig:truth}
@@ -429,7 +423,7 @@ invisible(dev.off())
 \label{bib}
 \begin{thebibliography}{6}
 
-\bibitem{gking}Gary King, \textsl{A solution to the Ecological Inference Problem: 
+\bibitem{gking}Gary King, \textsl{A Solution to the Ecological Inference Problem: 
 Reconstructing Individual Behaviour from Aggregate Data}, Princeton University Press (1997).
 
 \bibitem{harvardweb}Useful documentation also avalaible at \url{http://GKing.Harvard.Edu}.
