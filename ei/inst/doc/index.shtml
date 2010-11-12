@@ -7,7 +7,7 @@
 
 <h1>EI: A(n R) Program for Ecological Inference</h1>
 
-<a href="/">Gary King<a> and <a href="/">Margaret Roberts</a>
+<a href="/">Gary King<a>, <a href="/">Margaret Roberts</a>
 <br /><br />
 <!-- rbuild: replace 'Version:' '</b>' version -->
 <b>Version:0.041</b>
@@ -40,13 +40,13 @@ Data</b> (Princeton: Princeton University Press, 1997), by Gary King.
     
 <li>Please send ALL questions, bugs, and requests to our mailing List
     (you must subscribe to send): <a
-    href="http://lists.gking.harvard.edu/index.cgi?info=cem"
+    href="http://lists.gking.harvard.edu/index.cgi?info=ei"
     target="gkingext">[Un]Subscribe</a>, or <a
-    href="http://lists.gking.harvard.edu/lists/cem_at_lists_gking_harvard_edu/"
+    href="http://lists.gking.harvard.edu/lists/ei_at_lists_gking_harvard_edu/"
     target="gkingext">Browse/Search Archives</a></li>
     
-<li><a href="/cem/" target="ChangeDetectionWiz"
-    onClick="doChangeDetectionPopup()">Be notified automatically of cem
+<li><a href="/eiR/" target="ChangeDetectionWiz"
+    onClick="doChangeDetectionPopup()">Be notified automatically of eiR
     updates</a></li>
     
 </ul>
