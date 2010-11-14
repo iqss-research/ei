@@ -24,7 +24,7 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5, ealphab=N
 	#solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, #erho=erho, esigma=esigma, 		#ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3, #Rfun=Rfun, method="BFGS")
 	solution <- ucminf(start, like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, 		ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, Rfun = Rfun, hessian=3) #control=list(maxeval=10))
 
-	print(solution$par)
+	#print(solution$par)
 	#print(solution$convergence) 
 	#solution <- genoud(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, 		#ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, nvars=5, starting.values=start)
 	#solution <- maxLik(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb, erho=erho, esigma=esigma, 		#ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw,start=start)

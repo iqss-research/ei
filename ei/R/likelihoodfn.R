@@ -172,7 +172,7 @@ llik=llik.het + llik.bl + llik.wh + llik.cT0 + llik.cT1
 	if(sum(is.na(ealphab))==0) prior=prior + sum(dmvnorm(Bb0v, ealphab[,1], sigma=diag(ealphab[,2]^2), log=T));
 	if(sum(is.na(ealphaw))==0) prior=prior + sum(dmvnorm(Bw0v, ealphaw[,1], sigma=diag(ealphaw[,2]), log=T));
 	llik = llik + prior
-	print(-llik)
+	#print(-llik)
 	if(is.na(llik)|abs(llik)==Inf) llik = NaN
 	return(-llik)
       }
