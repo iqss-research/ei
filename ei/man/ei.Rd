@@ -1,7 +1,6 @@
 \name{ei}
 \alias{EI}
 \alias{ei}
-\docType{function}
 \title{
 Ecological Inference Estimation
 }

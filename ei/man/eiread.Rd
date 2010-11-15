@@ -1,6 +1,5 @@
 \name{eiread}
 \alias{eiread}
-\docType{function}
 \title{
 Quantities of Interest from Ecological Inference Estimation
 }
