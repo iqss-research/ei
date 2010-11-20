@@ -13,7 +13,7 @@
 <b>Version:0.041</b>
 
 <p style="float:left; width: 160; margin: 1.5em;"> <img 
-src= "votes_for_women.gif"></p>
+src= "./votes_for_women.gif"></p>
 
 <p>This program provides a method of inferring individual behavior
 from aggregate data. It implements the statistical procedures,
