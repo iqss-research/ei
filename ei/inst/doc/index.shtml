@@ -12,8 +12,8 @@
 <!-- rbuild: replace 'Version:' '</b>' version -->
 <b>Version:0.041</b>
 
-<p style="float:left; width: 300px; margin: 1.5em;"> <img 
-src= "./votes_for_women.jpg" width="300px" /> <br /><small>A picture of women in Portland advocating for the right to vote.  William Ogburn and Inez Goltra (1919) study of voting behavior in newly enfranchised women in Oregon is the first known conception of the ecological inference problem.</small> </p>
+<p style="float:left; width: 100px; margin: 1.5em;"> <img 
+src= "votes_for_women.jpg" width="100px" /> <br /><small>A picture of women in Portland advocating for the right to vote.  William Ogburn and Inez Goltra (1919) study of voting behavior in newly enfranchised women in Oregon is the first known conception of the ecological inference problem.</small> </p>
 
 <p>This program provides a method of inferring individual behavior
 from aggregate data. It implements the statistical procedures,
