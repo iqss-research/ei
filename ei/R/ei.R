@@ -5,16 +5,18 @@
 
 #@Rfun specifies function used to calculate R in the likelihood
 
-ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5, ealphab=NA, ealphaw=NA, truth=NA, Rfun=2, precision=4){
+ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
+               ealphab=NA, ealphaw=NA, truth=NA, Rfun=2, precision=4){
+
 #Check to make sure data is not null
   if(dim(data)[1]>0){
-    t <- data$t
-    x <- data$x
-    n <- data$n
-    if(Zb!=1) Zb <- data$Zb
-    if(Zw!=1) Zw <- data$Zw
+    t <- data[[t]]
+    x <- data[[x]]
+    n <- data[[n]]
+    if(is.character(Zb)) Zb <- data[[Zb]]
+    if(is.character(Zb)) Zw <- data[[Zw]]
   }
-
+  
   Zb <- as.matrix(Zb)
   Zw <- as.matrix(Zw)
 
