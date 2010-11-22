@@ -235,10 +235,10 @@ proceed by performing ecological inference without covariates on the
 data:
 
 <<echo=TRUE>>=
-dbuf = ei(t,x,n,data=matproii)
+dbuf = ei("t","x","n",data=matproii)
 @
 
-\noindent To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#. Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#.\\
+\noindent When we include the data argument, the arguments for \verb#t,x,n# should be strings rather than vectors. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string for the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string for the name of the covariate in the dataset.\\
 \newline
 Next, we use \verb#summary(dbuf)# to obtain general information about the estimation. 
 
@@ -387,7 +387,7 @@ invisible(dev.off())
 
 <<echo=TRUE>>=
 truth = cbind(matproii$tb,matproii$tw)
-dbuf = ei(t,x,n,data=matproii,truth=truth)
+dbuf = ei("t","x","n",data=matproii,truth=truth)
 @
 
 \noindent Then use plot to compare the estimates of the \verb#EI# algorithm to the true proportions of white and black registered voters in each county.
