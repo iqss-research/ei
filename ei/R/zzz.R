@@ -580,7 +580,7 @@ simulations", xlab="betaB simulations", pch=20, col=colors, lty=2,
   truthbw <- sum(truebw*n)/sum(n)
   circ=.04
   par(mfrow=c(2,2))
-  ag <- aggs(ei.object)
+  ag <- .aggs(ei.object)
   plot(density(ag[,1]),
        xlim=c(0,1),ylim=c(0,max(density(ag[,1])$y)+1),
        yaxs="i",xaxs="i", main="Density of Bb Posterior & Truth",
@@ -601,7 +601,7 @@ simulations", xlab="betaB simulations", pch=20, col=colors, lty=2,
     radius = (n[i]*x[i]-minn+1)/(1+maxn-minn)
     draw.circle(betab[i], truebb[i], radius*circ)
   }
-  ci80b = CI80b(ei.object)
+  ci80b = .CI80b(ei.object)
   low = mean(abs(ci80b[,1]-betab))
   high = mean(abs(ci80b[,2]-betab))
   abline(0,1)
@@ -616,7 +616,7 @@ betaw", ylab="True betaw",cex=.1)
     radius = (omx[i]*n[i]-minn+1)/(1+maxn-minn)
     draw.circle(betaw[i], truebw[i], radius*circ)
   }
-  ci80w = CI80w(dbuf)
+  ci80w = .CI80w(dbuf)
   low = mean(abs(ci80w[,1]-betaw))
   high = mean(abs(ci80w[,2]-betaw))
   abline(0,1)
