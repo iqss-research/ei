@@ -46,6 +46,6 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 
 \examples{
 data(sample)
-dbuf <- ei(t,x,n,data=sample)
+dbuf <- ei("t","x","n",data=sample)
 eiread(dbuf, "betab", "betaw")
 }
