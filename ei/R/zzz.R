@@ -76,7 +76,8 @@
       qi <- sadmvn(lower=lower[i,], upper=upper[i,], mean=mean,
                    varcov=corr)
     }
-    out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
+    #out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
+    out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
     out <- ifelse(out<0|out==0, 1*10^-322,out)
     out <- log(out)
     if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")

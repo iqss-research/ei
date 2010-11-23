@@ -9,7 +9,7 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
                ealphab=NA, ealphaw=NA, truth=NA, Rfun=2, precision=4){
 
 #Check to make sure data is not null
-  if(dim(data)[1]>0){
+  if(!missing(data)){
     t <- data[[t]]
     x <- data[[x]]
     n <- data[[n]]
