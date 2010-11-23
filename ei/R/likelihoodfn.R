@@ -50,7 +50,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   vbb = sigb2 - (omega^2)/s2
   vbb = ifelse(vbb<1*10^-322, .0001, vbb)
   bounds <- bounds1(x, y, n)
-  s <- sqrt(vbb)
+  s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
   res <- NULL
   b.s = (bounds[ok,][,2]-ebb[ok])/s[ok]
   as = (bounds[ok,][,1]-ebb[ok])/s[ok]
@@ -83,7 +83,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     bnds=cbind(rep(0,sum(wh)),rep(1,sum(wh)))
     Ebb = bb[wh]+rho*(sb/sw)*epsilon
     Vbb = sigb2*(1-rho^2)
-    s <- sqrt(Vbb)
+    s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
     b.s = (bnds[,2]-Ebb)/s
     as = (bnds[,1]-Ebb)/s
     res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
@@ -102,7 +102,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     bnds = cbind(rep(0, sum(bl)),rep(1,sum(bl)))
     Ebb=bw[bl] + rho*(sw/sb)*epsilon
     Vbb=sigw2*(1-rho^2)
-    s <- sqrt(Vbb)
+    s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
     b.s = (bnds[,2]-Ebb)/s
     as = (bnds[,1]-Ebb)/s
     res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
