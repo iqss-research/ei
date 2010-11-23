@@ -13,9 +13,9 @@ ei(t, x, n, Zb=1, Zw=1,data=NA, erho=.5, esigma=.5, ebeta=.5, ealphab=NA,
 }
 
 \arguments{
-	\item{t}{\eqn{p} x \eqn{1} vector}
-	\item{x}{\eqn{p} x \eqn{1} vector}
-	\item{n}{\eqn{p} x \eqn{1} vector}
+	\item{t}{\eqn{p} x \eqn{1} vector, or name of vector if data argument is included}
+	\item{x}{\eqn{p} x \eqn{1} vector, or name of vector if data argument is included}
+	\item{n}{\eqn{p} x \eqn{1} vector, or name of vector if data argument is included}
 	\item{Zb}{
 \eqn{p} x \eqn{k^b} matrix of covariates}
 	\item{Zw}{
