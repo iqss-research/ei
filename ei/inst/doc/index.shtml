@@ -7,23 +7,26 @@
 
 <h1>EI: A(n R) Program for Ecological Inference</h1>
 
-<a href="http://gking.harvard.edu">Gary King</a>, <a href="http://scholar.harvard.edu/mroberts">Margaret Roberts</a>
+<a href="http://gking.harvard.edu">Gary King</a> and 
+<a href="http://scholar.harvard.edu/mroberts">Margaret Roberts</a>
 <br /><br />
 <!-- rbuild: replace 'Version:' '</b>' version -->
 <b>Version:0.041</b>
 
-<div style="float:left; width: 200px; margin: 1.5em;"><p> <img 
-src= "votes_for_women.jpg" width="200px" /> <br /><small>Women in Portland advocating for the right to vote. William
-	Ogburn and Inez Goltra's 1919 study of voting behavior in
-	newly enfranchised women in Oregon is the first known
-	conception of the ecological inference problem.</small>
-    </p><div style="clear:both;"></div></div>
+<div style="float:left; width: 200px; margin: 1.5em;"><p> <img src=
+"votes_for_women.jpg" width="200px" /> <br /><small>Women in Portland
+advocating for the right to vote. William Ogburn and Inez Goltra's
+1919 study of voting behavior of newly enfranchised women in Oregon is
+among the first known studies explicitly recognizing the ecological
+inference problem.</small> </p><div style="clear:both;"></div></div>
 
 <p>This program provides a method of inferring individual behavior
 from aggregate data. It implements the statistical procedures,
-diagnostics, and graphics from the book <b>A Solution to the Ecological
-Inference Problem: Reconstructing Individual Behavior from Aggregate
-Data</b> (Princeton: Princeton University Press, 1997), by Gary King.
+diagnostics, and graphics from the book <a
+href="http://gking.harvard.edu/eicamera/kinroot.html">A Solution to
+the Ecological Inference Problem: Reconstructing Individual Behavior
+from Aggregate Data</a> (Princeton University Press, 1997),
+by Gary King.
 </p>
   
 <ul> 
