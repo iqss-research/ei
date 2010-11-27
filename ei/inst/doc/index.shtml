@@ -35,7 +35,8 @@ by Gary King.
 	    install.packages("ei",repos="http://r.iq.harvard.edu")  or 
 	    <!-- rbuild: replace 'ei_' '.tar.gz' version -->
 	    <a href="http://r.iq.harvard.edu/src/contrib/ei_2.4-6.tar.gz">download this file</a> and
-	    install yourself.</li>
+	    install yourself. To install on Mac or Windows, sign
+      on to R and type: install.packages("ei", type="source", repos="http://r.iq.harvard.edu")</li>
 
 	<li>For documentation, from R, type library(ei), and then ?ei,
 	    or download <a href="http://gking.harvard.edu/eiR/ei-documentation2.pdf">PDF</a></li>
