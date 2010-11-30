@@ -59,12 +59,12 @@ summary.ei <- function(x){
   rownames(psit) <- c("")
 
 #Aggregate Bounds
-  ab <- matrix(abounds(ei1), nrow=2)
+  ab <- matrix(.abounds(ei1), nrow=2)
   rownames(ab) <- c("lower", "upper")
   colnames(ab) <- c("betab", "betaw")
 
 #Estimates of Aggregate Quantities of Interest
-  magg <- matrix(maggs(ei1), nrow=2)
+  magg <- matrix(.maggs(ei1), nrow=2)
   rownames(magg) <- c("Bb", "Bw")
   colnames(magg) <- c("mean", "sd")
   output <- list(ei1$erho, ei1$esigma, ei1$ebeta, n, ei1$resamp,
