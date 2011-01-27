@@ -21,8 +21,10 @@ eiread <- function(ei.object, ...){
     else
       results[[arg]] <- NA
   }
+  if (length(results)==1)
+    results <- results[[1]]
   if (length(results) <1)
     warning("qi results object is empty")
-  class(results) <- "eiread"
+  #class(results) <- "eiread"
   results
 }
