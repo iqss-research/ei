@@ -12,8 +12,8 @@
   draw <- rmvnorm(nsims, par[covs], varcv2)
   varcv3 <- solve(varcv2)
   phiv <- dmvnorm(draw, par[covs], varcv3, log=T)
-  zbmiss <- ifelse(covs[6:(5+numb)] == FALSE,TRUE,FALSE)
-  zwmiss <- ifelse(covs[(6+numb):length(covs)] == FALSE, TRUE, FALSE)
+  zbmiss <- ifelse(covs[6] == FALSE,TRUE,FALSE)
+  zwmiss <- ifelse(covs[(6+numb)] == FALSE, TRUE, FALSE)
   if(zbmiss == TRUE & zwmiss == FALSE){
     draw <- cbind(draw[,1:5], rep(1,nsims), draw[,(5+numb):sum(covs)])
   }
@@ -145,8 +145,8 @@ if (Rfun==5){
   draw <- rmvnorm(nsims, par[covs], varcv2)
   varcv3 <- solve(varcv2)
   phiv <- dmvnorm(draw, par[covs], varcv3, log=T)
-  zbmiss <- ifelse(covs[6:(5+numb)] == FALSE,TRUE,FALSE)
-  zwmiss <- ifelse(covs[(6+numb):length(covs)] == FALSE, TRUE, FALSE)
+  zbmiss <- ifelse(covs[6] == FALSE,TRUE,FALSE)
+  zwmiss <- ifelse(covs[(6+numb)] == FALSE, TRUE, FALSE)
   if(zbmiss == TRUE & zwmiss == FALSE){
     draw <- cbind(draw[,1:5], rep(1,nsims), draw[,(5+numb):sum(covs)])
   }
