@@ -14,7 +14,7 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
     x <- data[[x]]
     n <- data[[n]]
     if(is.character(Zb)) Zb <- data[[Zb]]
-    if(is.character(Zb)) Zw <- data[[Zw]]
+    if(is.character(Zw)) Zw <- data[[Zw]]
   }
   
   Zb <- as.matrix(Zb)
