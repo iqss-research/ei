@@ -16,6 +16,8 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   Bw0v <- param[(numb+6):length(param)]
   sb=exp(sb0)
   sw=exp(sw0)
+  sb = ifelse(sb==Inf, exp(100), sb)
+  sw = ifelse(sw==Inf, exp(100), sw)
   Zb <- as.matrix(Zb)
   Zw <- as.matrix(Zw)
   bb=Bb0*(.25+sb^2) + .5 +
