@@ -34,6 +34,12 @@
                   -like(as.vector(draw[i,]),t, x, n, Zb, Zw,
                   numb=numb, erho, esigma, ebeta, ealphab, ealphaw,Rfun)
                    - phiv[i])
+
+for(i in 1:nsims){
+   out = -like(as.vector(draw[i,]),t, x, n, Zb, Zw,numb=numb, erho, esigma, ebeta, ealphab, ealphaw,Rfun)
+    print i
+}
+
   ok <- !is.nan(import1)
   lnir <- import1-max(import1[ok])
   ir <- NA
@@ -52,6 +58,10 @@
 
 .createR <- function(sub, Rfun, bb, bw, sb,sw, rho, x, numb, numw){
   out <- NULL
+  sw <- ifelse(sw==0, .0001, sw)
+  sb <- ifelse(sb==0, .0001, sb)
+  sw <- ifelse(sw==Inf,8000, sw)
+  sb <- ifelse(sw==Inf, 8000, sb) 
   lower = cbind(-bb[sub]/sb, -bw[sub]/sw)
   upper = cbind(-bb[sub]/sb+1/sb, -bw[sub]/sw+1/sw)
   mean=c(0,0)
