@@ -35,11 +35,6 @@
                   numb=numb, erho, esigma, ebeta, ealphab, ealphaw,Rfun)
                    - phiv[i])
 
-for(i in 1:nsims){
-   out = -like(as.vector(draw[i,]),t, x, n, Zb, Zw,numb=numb, erho, esigma, ebeta, ealphab, ealphaw,Rfun)
-    print i
-}
-
   ok <- !is.nan(import1)
   lnir <- import1-max(import1[ok])
   ir <- NA
