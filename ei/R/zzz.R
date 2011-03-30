@@ -13,7 +13,7 @@
 
   draw <- rmvnorm(nsims, par[covs], varcv2)
   varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv3, log=T)
+  phiv <- dmvnorm(draw, par[covs], varcv2, log=T)
   zbmiss <- ifelse(covs[6] == FALSE,TRUE,FALSE)
   zwmiss <- ifelse(covs[(6+numb)] == FALSE, TRUE, FALSE)
   if(zbmiss == TRUE & zwmiss == FALSE){
