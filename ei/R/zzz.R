@@ -8,10 +8,25 @@
 .samp <- function(t,x,n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
                   erho, esigma, ebeta, ealphab, ealphaw, Rfun){
   import1 <- NULL
-  varcv2 <- solve(varcv)/4
+
+varcv2 <- solve(varcv)/4
+#varcv3 <- solve(varcv2)
+#  if(sum(varcv>.000001)==dim(varcv)[1]*dim(varcv)[2]){
+#  varcv2 <- solve(varcv)/4
+#  varcv3 <- solve(varcv2)
+#  }
+#  if(sum(varcv>.000001)!=dim(varcv)[1]*dim(varcv)[2]){
+#  varcv2 <- varcv
+#  varcv3 <- varcv
+#}
+#  if(sum(varcv2>100)>0){
+# varcv2 <- varcv2*.1
+#  varcv3 <- varcv2
+#}
+
   draw <- rmvnorm(nsims, par[covs], varcv2)
   varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv3, log=T)
+  phiv <- dmvnorm(draw, par[covs], varcv2, log=T)
   zbmiss <- ifelse(covs[6] == FALSE,TRUE,FALSE)
   zwmiss <- ifelse(covs[(6+numb)] == FALSE, TRUE, FALSE)
   if(zbmiss == TRUE & zwmiss == FALSE){
@@ -52,11 +67,7 @@
 #numb numw -- number of covaraites for bb and bw
 
 .createR <- function(sub, Rfun, bb, bw, sb,sw, rho, x, numb, numw){
-  out <- NULL
-  sw <- ifelse(sw==0, .0001, sw)
-  sb <- ifelse(sb==0, .0001, sb)
-  sw <- ifelse(sw==Inf,8000, sw)
-  sb <- ifelse(sw==Inf, 8000, sb) 
+  out <- NULL 
   lower = cbind(-bb[sub]/sb, -bw[sub]/sw)
   upper = cbind(-bb[sub]/sb+1/sb, -bw[sub]/sw+1/sw)
   mean=c(0,0)
