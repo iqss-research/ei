@@ -9,24 +9,11 @@
                   erho, esigma, ebeta, ealphab, ealphaw, Rfun){
   import1 <- NULL
 
-varcv2 <- solve(varcv)/4
-#varcv3 <- solve(varcv2)
-#  if(sum(varcv>.000001)==dim(varcv)[1]*dim(varcv)[2]){
-#  varcv2 <- solve(varcv)/4
-#  varcv3 <- solve(varcv2)
-#  }
-#  if(sum(varcv>.000001)!=dim(varcv)[1]*dim(varcv)[2]){
-#  varcv2 <- varcv
-#  varcv3 <- varcv
-#}
-#  if(sum(varcv2>100)>0){
-# varcv2 <- varcv2*.1
-#  varcv3 <- varcv2
-#}
+  varcv2 <- solve(varcv)/4
 
   draw <- rmvnorm(nsims, par[covs], varcv2)
   varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv2, log=T)
+  phiv <- dmvnorm(draw, par[covs], varcv3, log=T)
   zbmiss <- ifelse(covs[6] == FALSE,TRUE,FALSE)
   zwmiss <- ifelse(covs[(6+numb)] == FALSE, TRUE, FALSE)
   if(zbmiss == TRUE & zwmiss == FALSE){
