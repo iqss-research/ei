@@ -22,9 +22,11 @@ message(cat(names(top[[1]]), "=", top[[1]], ",",names(top[[2]]),
  "=", top[[2]],",",names(top[[3]]), "=", top[[3]],",",
  names(top[[4]]), "=", top[[4]],",",names(top[[5]]), "=", top[[5]]))
 }
-if(!("Resamp" %in% names(sum.object)){
+if(!("Resamp" %in% names(sum.object))){
 
-
+message(cat(names(top[[1]]), "=", top[[1]], ",",names(top[[2]]),
+ "=", top[[2]],",",names(top[[3]]), "=", top[[3]],",",
+ names(top[[4]]), "=", top[[4]]))
 
 }
 for (key in names(sum.object)){
@@ -34,5 +36,6 @@ for (key in names(sum.object)){
      message(key)
      print(floor(val * 10^dec)/(10^dec))
     }
+}
 }
 }
