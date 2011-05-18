@@ -147,7 +147,7 @@ if (Rfun==5){
   varcv2 <- solve(varcv)/4
   draw <- rmvnorm(nsims, par[covs], varcv2)
   varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv3, log=T)
+  phiv <- dmvnorm(draw, par[covs], varcv2, log=T)
   zbmiss <- ifelse(covs[6] == FALSE,TRUE,FALSE)
   zwmiss <- ifelse(covs[(6+numb)] == FALSE, TRUE, FALSE)
   if(zbmiss == TRUE & zwmiss == FALSE){
@@ -287,6 +287,7 @@ if (Rfun==5){
   if(!("betabs"%in% names(ei.object))){
    message("Error: This plot function requires an ei.sim object.")
   }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -301,10 +302,15 @@ if (Rfun==5){
     lines(betabcd[,i], sort(betawcd[,i],decreasing=T), col="red",
           lwd=3)
   }
+  }
 }
 
 #Tomography plot with 95% CIs
 .tomog95CI <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -322,9 +328,14 @@ if (Rfun==5){
           lwd=3)
   }
 }
+}
 
 #TomogE -- Tomography plot with mean posterior betabs and betaws
 .tomogE <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -336,6 +347,7 @@ Betaws")
   betabm <- apply(betabs,1,mean)
   betawm <- apply(betaws,1,mean)
   points(betabm, betawm, col="red", pch=19)
+}
 }
 
 #TomogP -- Tomography plot with contours based on mean posterior psi
@@ -351,6 +363,10 @@ Betaws")
 
 
 .tomogP2 <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   x <- ei.object$x
   t <- ei.object$t
   n <- ei.object$n
@@ -370,6 +386,7 @@ Betaws")
 #	tomog4(bbp[,i], bwp[,i], mean(sbp), mean(swp), mean #(rhop))
 #	}
 }
+}
 
 
 #Density plots
@@ -380,6 +397,10 @@ Betaws")
 
 #Density of betab
 .betabd <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)
   betabs <- ei.object$betabs[ok,]
   betabm <- apply(betabs,1,mean)
@@ -391,9 +412,14 @@ betaB")
     lines(c(vb[i], vb[i]), c(0,.25))
   }
 }
+}
 
 #Density of betaw
 .betawd <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betaw)
   betaws <- ei.object$betaws[ok,]
   betawm <- apply(betaws,1,mean)
@@ -404,6 +430,7 @@ betaW")
   for (i in 1:length(vw)){
     lines(c(vw[i], vw[i]), c(0,.25))
   }
+}
 }
 
 
@@ -438,6 +465,10 @@ Scatterplot with Population Density Circles", ylab="T", xlab="X",
 #XTfit plot
 
 .xtfit <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -469,12 +500,17 @@ Scatterplot with E(T|X) and 80% CIs", ylab="T", xlab="X", pch=20)
   lines(x, lwr, col="red")
   lines(x, upr, col="red")
 }
+}
 
 #xtfit(x,t,n,.04,"",ei.1$betabs, ei.1$betaws, .2,.8)
 
 
 #XTfitg plot
 .xtfitg <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -511,6 +547,7 @@ Scatterplot with E(T|X), 80% CIs, and Goodman", ylab="T", xlab="X",
   lm.fit <- lm(t ~ x)
   abline(lm.fit, col="green")
 }
+}
 
 #Goodman plot
 .goodman <- function(ei.object){
@@ -526,6 +563,10 @@ Scatterplot with Goodman", ylab="T", xlab="X", pch=20)
 #Estsims plot
 
 .estsims <- function(ei.object){
+  if(!("betabs"%in% names(ei.object))){
+   message("Error: This plot function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   betabs <- ei.object$betabs[ok,]
   betaws <- ei.object$betaws[ok,]
@@ -534,6 +575,7 @@ Scatterplot with Goodman", ylab="T", xlab="X", pch=20)
        main="Simulations of betaW and betaB", ylab="betaW
 simulations", xlab="betaB simulations", pch=20, col=colors, lty=2,
        cex=.25)
+}
 }
 
 #boundXB
@@ -635,27 +677,53 @@ betaw", ylab="True betaw",cex=.1)
 #Functions for Quantities of Interest
 
 .betaB <- function(ei.object){
+    if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ei.object$betab
+}
 }
 
 .betaW <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ei.object$betaw
+}
 }
 
 .sbetab <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ei.object$sbetab
 }
+ }
 
 .sbetaw <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ei.object$sbetaw
 }
+}
+   
 
 .phi <- function(ei.object){
   ei.object$phi
 }
 
 .psisims <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ei.object$psi
+}
 }
 
 .bounds <- function(ei.object){
@@ -678,6 +746,10 @@ betaw", ylab="True betaw",cex=.1)
 }
 	
 .aggs <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -697,8 +769,13 @@ betaw", ylab="True betaw",cex=.1)
   }
   return(cbind(Bbgg, Bwgg))
 }
+}
 	
 .maggs <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -718,8 +795,13 @@ betaw", ylab="True betaw",cex=.1)
   }
   return(c(mean(Bbgg), mean(Bwgg), sd(Bbgg), sd(Bwgg)))
 }
+}
 	
 .VCaggs <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -741,8 +823,13 @@ betaw", ylab="True betaw",cex=.1)
                  var(Bwgg, Bwgg)), nrow=2)
   return(vc)
 }
+}
 	
 .CI80b <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   betab <- ei.object$betabs[ok,]
   lwr <- vector(mode="numeric",length=length(ei.object$x))
@@ -753,8 +840,13 @@ betaw", ylab="True betaw",cex=.1)
   upr[!ok] <- NA
   return(cbind(lwr,upr))
 }
+}
 	
 .CI80w <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   betaw <- ei.object$betaws[ok,]
   lwr <- vector(mode="numeric",length=length(ei.object$x))
@@ -765,8 +857,13 @@ betaw", ylab="True betaw",cex=.1)
   upr[!ok] <- NA
   return(cbind(lwr,upr))
 }
+}
 	
 .eaggbias <- function(ei.object){
+   if(!("betabs"%in% names(ei.object))){
+   message("Error: This eiread function requires an ei.sim object.")
+  }
+  if("betabs"%in% names(ei.object)){
   x <- ei.object$x
   mbetab <- ei.object$betab
   mbetaw <- ei.object$betaw
@@ -776,6 +873,7 @@ betaw", ylab="True betaw",cex=.1)
     list(summary(lm.b)$coefficients,summary(lm.w)$coefficients)
   names(output) <- c("betaB", "betaW")
   return(output)
+}
 }
 	
 .goodman <- function(ei.object){
