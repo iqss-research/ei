@@ -11,6 +11,7 @@ Ecological Inference Estimation
 ei(t, x, n, Zb=1, Zw=1,data=NA, erho=.5, esigma=.5, ebeta=.5, ealphab=NA,
  ealphaw=NA, truth=NA, precision=4)
 }
+ei.sim(dbuf)
 
 \arguments{
 	\item{t}{\eqn{p} x \eqn{1} vector, or name of vector if data argument is included}
@@ -45,4 +46,6 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 data(sample)
 dbuf <- ei("t","x","n",data=sample)
 summary(dbuf)
+dbufsim <- ei.sim(dbuf)
+summary(dbufsim)
 }
