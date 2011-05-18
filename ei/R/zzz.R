@@ -620,7 +620,7 @@ betaw", ylab="True betaw",cex=.1)
     radius = (omx[i]*n[i]-minn+1)/(1+maxn-minn)
     draw.circle(betaw[i], truebw[i], radius*circ)
   }
-  ci80w = .CI80w(dbuf)
+  ci80w = .CI80w(ei.object)
   low = mean(abs(ci80w[,1]-betaw))
   high = mean(abs(ci80w[,2]-betaw))
   abline(0,1)
@@ -786,3 +786,5 @@ betaw", ylab="True betaw",cex=.1)
   coefs <- rbind(BetaB, BetaW)
   return(coefs)
 }
+
+
