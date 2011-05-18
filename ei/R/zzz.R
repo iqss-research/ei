@@ -101,7 +101,7 @@
       qi <- adaptIntegrate(fun, lower=lower[i,],
                            upper=upper[i,])$integral
       out[i] <- log(qi)
-      if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
+      #if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
       out[i] <- ifelse(is.na(out[i])|abs(out[i]==Inf), 999, out[i])
     }
     return(out)
@@ -112,7 +112,7 @@
                    BPD=c(rho,rho),INF=rep(2,2))$PROB
       qi <- ifelse(qi<0|qi==0, 1*10^-322,qi)
       out[i] <- log(qi)
-      if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
+      #if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
       out[i] <- ifelse(is.na(out[i])|abs(out[i]==Inf), 999, out[i])
     }
     return(out)
@@ -125,7 +125,7 @@ if (Rfun==5){
   qi <- sadmvn(lower=lower, upper=upper, mean=mean, varcov=corr)
   qi <- ifelse(qi<1*10^-14, 1*10^-14,qi)
   qi <- log(qi)
-  if(is.na(qi)|abs(qi)==Inf) print ("R not real")
+  #if(is.na(qi)|abs(qi)==Inf) print ("R not real")
   qi <- ifelse((is.na(qi)|abs(qi)==Inf),999,qi)
   out <- rep(qi,length(x[sub]))
   return(out)
