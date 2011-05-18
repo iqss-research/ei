@@ -237,6 +237,7 @@ data:
 
 <<echo=TRUE>>=
 dbuf = ei("t","x","n",data=matproii)
+dbufsim = ei.sim(dbuf)
 @
 
 \noindent When the data argument is included, the arguments \verb#"t","x","n"# refer to names of the variables in the dataset and therefore must be strings. If the data argument is not specified, \verb#ei(t,x,n)# can be used where \verb#t,x# and \verb#n# are the vectors containing the data. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string that refers to the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string that refers to the name of the covariate in the dataset.\\
@@ -244,7 +245,7 @@ dbuf = ei("t","x","n",data=matproii)
 Next, we use \verb#summary(dbuf)# to obtain general information about the estimation. 
 
 <<echo=TRUE, eval=FALSE>>=
-summary(dbuf)
+summary(dbufsim)
 @
 
 \begin{verbatim}
@@ -285,7 +286,7 @@ Finally, \verb#summary# produces information on aggregrate quantities of interes
 \verb#eiread# extracts quantities of interest in a list format from the object \verb#dbuf#.  For example, 
 
 <<echo=TRUE>>=
-bb.out <- eiread(dbuf, "betab", "sbetab")
+bb.out <- eiread(dbufsim, "betab", "sbetab")
 @
 
 \noindent extracts the point estimates and estimated standard deviations for $\beta_i^b$, the estimates of the proportion of registered blacks in each county.  The user can then use \verb#bb.out$betab# to obtain a vector of the point estimates for $\beta_i^b$, and \verb#bb.out$sbetab# to obtain a vector of the standard devations for $\beta_i^b$.  \\
@@ -297,14 +298,14 @@ bb.out <- eiread(dbuf, "betab", "sbetab")
 Plotting \verb#EI# output is extremely useful for understanding the results of the ecological inference algorithm and diagnosing problems with estimation.  First, we graph a tomography plot of the data (Figure 1).
 
 <<echo=TRUE,eval=FALSE>>=
-plot(dbuf, "tomog")
+plot(dbufsim, "tomog")
 @
 
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("tomogplot.pdf", width=6, height=6, pointsize=10)
-plot(dbuf, "tomog")
+plot(dbufsim, "tomog")
 invisible(dev.off())
 @
 \includegraphics[width=3in, height=3in,   viewport=0 0 420 395,clip]{tomogplot} 
@@ -318,7 +319,7 @@ invisible(dev.off())
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("tomogplot2.pdf", width=14, height=6, pointsize=10)
-plot(dbuf, "tomogE", "tomogCI")
+plot(dbufsim, "tomogE", "tomogCI")
 invisible(dev.off())
 @
 \includegraphics[width=7.5in, height=2.5in,   viewport=0 0 1400 395,clip]{tomogplot2} 
@@ -332,7 +333,7 @@ invisible(dev.off())
 Figure 2 is a double plot of the point estimates and their confidence intervals.  To compute this, we call plot to generate two graphs: a tomography plot with the point estimates generated from the algorithm, and a tomography plot with 80\% confidence intervals on the point estimate.  
 
 <<echo=TRUE,eval=FALSE>>=
-plot(dbuf, "tomogE","tomogCI")
+plot(dbufsim, "tomogE","tomogCI")
 @
 
 \noindent This plot is useful to visualize the actual estimates and confidence intervals for each county.  We can see that the point estimates and confidence intervals are clustered in the same area as the contours from the previous plot.  Further, the point estimates and confidence intervals only fall on the lines that indicate the possible values of $\beta_i^b$ and $\beta_i^w$.\\
@@ -340,7 +341,7 @@ plot(dbuf, "tomogE","tomogCI")
 Figure 3 shows plots that indicate the distribution of $\beta_i^b$ and $\beta_i^w$. To produce these plots, run:
 
 <<echo=TRUE,eval=FALSE>>=
-plot(dbuf, "betab","betaw")
+plot(dbufsim, "betab","betaw")
 @
 
 \noindent Density plots are useful to visualize the location and uncertainty of the point estimates.  The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s $\beta_i^b$ and $\beta_i^w$.  You can see that the variance of the point estimates from $\beta_i^b$ is much higher than the variance of point estimates from $\beta_i^w$. \\ 
@@ -348,7 +349,7 @@ plot(dbuf, "betab","betaw")
 Figure 4 portrays the results of the \verb#EI# algorithm by plotting the proportion of blacks in each country by the proportion of registered voters in each county.  To produce this plot, use:
 
 <<echo=TRUE,eval=FALSE>>=
-plot(dbuf, "xtfit")
+plot(dbufsim, "xtfit")
 @
 
 \noindent The circles around each of the points in this plot are proportional to the population of each county.  The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80\% confidence interval around the regression line.  The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.  
@@ -358,7 +359,7 @@ plot(dbuf, "xtfit")
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("betas.pdf", width=14, height=6, pointsize=10)
-plot(dbuf, "betab", "betaw")
+plot(dbufsim, "betab", "betaw")
 invisible(dev.off())
 @
 \includegraphics[width=8.5in, height=2.5in,   viewport=0 0 1400 395,clip]{betas} 
@@ -372,7 +373,7 @@ invisible(dev.off())
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("xtfit.pdf", width=6, height=6, pointsize=10)
-plot(dbuf, "xtfit")
+plot(dbufsim, "xtfit")
 invisible(dev.off())
 @
 \includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 400,clip]{xtfit} 
@@ -404,7 +405,7 @@ plot(dbufsim, "truth")
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("truth2.pdf", width=6, height=6, pointsize=10)
-plot(dbuf, "truth")
+plot(dbufsim, "truth")
 invisible(dev.off())
 @
 \includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{truth2} 
