@@ -131,10 +131,11 @@ interactively, or in batch mode as a regular R program.  An example of
 a sequence of these commands are as follows:
 
 <<echo=TRUE, eval=FALSE>>=
-dbuf <- ei(t,x,n)
+dbuf <- ei("t","x","n",data=data)
 summary(dbuf)
-eiread(dbuf, "betab","betaw")
-plot(dbuf, "tomog","betab","betaw","xtfit")
+dbufsim <- ei.sim(dbuf)
+eiread(dbufsim, "betab","betaw")
+plot(dbufsim, "tomog","betab","betaw","xtfit")
 @
 
 \noindent In most applications, \verb#plot# and \verb#eiread# 
@@ -145,7 +146,7 @@ be included with these four to read in the data (\verb#t#, \verb#x#, and \verb#n
 \begin{itemize}
 \item{{\verb#ei#}: To run the main procedure}
 
-  Use the format, \verb#dbuf = ei(t,x,n)#, which takes three $
+  Use the format, \verb#dbuf = ei("t","x","n",data=data)#, which takes three $
   p\times 1$ vectors as inputs: \verb#t# (e.g. the fraction of the
   voting age population turning out to vote); \verb#x# (e.g. the
   fraction of the voting age population who are black); and \verb#n#
@@ -238,7 +239,7 @@ data:
 dbuf = ei("t","x","n",data=matproii)
 @
 
-\noindent When we include the data argument, the arguments for \verb#t,x,n# should be strings rather than vectors. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string for the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string for the name of the covariate in the dataset.\\
+\noindent When the data argument is included, the arguments \verb#"t","x","n"# refer to names of the variables in the dataset and therefore must be strings. If the data argument is not specified, \verb#ei(t,x,n)# can be used where \verb#t,x# and \verb#n# are the vectors containing the data. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string that refers to the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string that refers to the name of the covariate in the dataset.\\
 \newline
 Next, we use \verb#summary(dbuf)# to obtain general information about the estimation. 
 
@@ -353,8 +354,6 @@ plot(dbuf, "xtfit")
 \noindent The circles around each of the points in this plot are proportional to the population of each county.  The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80\% confidence interval around the regression line.  The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.  
 
 
-\pagebreak
-
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
@@ -388,12 +387,13 @@ invisible(dev.off())
 <<echo=TRUE>>=
 truth = cbind(matproii$tb,matproii$tw)
 dbuf = ei("t","x","n",data=matproii,truth=truth)
+dbufsim = ei.sim(dbuf)
 @
 
 \noindent Then use plot to compare the estimates of the \verb#EI# algorithm to the true proportions of white and black registered voters in each county.
 
 <<echo=TRUE, eval=FALSE>>=
-plot(dbuf, "truth")
+plot(dbufsim, "truth")
 @
 
 \noindent The ``truth" plot (Figure 5) has four components.  The top two figures have the posterior densities of the aggregate quantities of interest $B^b$ and $B^w$.  These densities tell us in what range the algorithm predicts that the point estimates lie.  For example, the density of $B^b$ is wider than the density of $B^w$, indicating that our estimates of $B^w$ lie in a smaller range than than our estimates of $B^b$.  The true aggregate values, computed from the \verb#truth# data we inputed, are indicated by the vertical bars.  The fact that the true $B^b$ and $B^w$ are within the densities we computed confirms that the model is did a good job at predicting the true proportions of registered white and black voters.\\
