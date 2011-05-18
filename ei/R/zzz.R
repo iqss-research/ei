@@ -83,7 +83,7 @@
     out <- apply(as.matrix(1:length(x[sub])), 1, makeR)
     out <- ifelse(out<0|out==0, 1*10^-322,out)
     out <- log(out)
-    if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
+    #if(sum(is.na(out))>0|sum((out==Inf))>0) print("R not real")
     out <- ifelse(is.na(out)|abs(out==Inf), 999, out)
         #return(out)
         # for(i in 1:length(x[sub])){
