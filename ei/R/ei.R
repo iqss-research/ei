@@ -63,26 +63,28 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
   covs <- as.logical(ifelse(diag(solution$hessian)==0|
                             diag(solution$hessian)==1,0,1))
   hessian <- solution$hessian[covs,covs]
-  output <- list(solution$par, hessian, erho, esigma,
+  output <- list(solution$par, solution$hessian,hessian, erho, esigma,
                  ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
-                 truth,precision)
+                 truth,precision, covs, Rfun)
 
-  names(output) <- c("phi", "hessian",  "erho",
+  names(output) <- c("phi", "hessian","hessianC",  "erho",
                      "esigma", "ebeta", "ealphab", "ealphaw", "numb",
                      "x", "t", "n", "Zb", "Zw",
-                     "truth", "precision")
+                     "truth", "precision", "covs", "Rfun")
   class(output) <- "ei"
   return(output)
 }
 
  ei.sim <- function(ei.object){
-   hessian <- ei.object$hessian
+   hessian <- ei.object$hessianC
    erho <- ei.object$erho
    esigma <- ei.object$esigma
    ebeta <- ei.object$ebeta
    ealphab <- ei.object$ealphab
    ealphaw <- ei.object$ealphaw
    numb <- ei.object$numb
+   covs <- ei.object$covs
+   Rfun <- ei.object$Rfun
    x <- ei.object$x
    t <- ei.object$t
    n <- ei.object$n
@@ -187,13 +189,13 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
   mbetaw <- apply(betaw,1,mean)
   sdbetab <- apply(betab,1,sd)
   sdbetaw <- apply(betaw,1,sd)
-  output <- list(ei.object$phi, hessian, psi, mbetab, mbetaw,
+  output <- list(ei.object$phi, ei.object$hessian, hessian, psi, mbetab, mbetaw,
                  sdbetab, sdbetaw, betab, betaw,resamp, erho, esigma,
                  ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
                  truth,
                  precision)
 
-  names(output) <- c("phi", "hessian", "psi", "betab", "betaw",
+  names(output) <- c("phi", "hessian", "hessianC","psi", "betab", "betaw",
                      "sbetab",
                      "sbetaw", "betabs", "betaws", "resamp", "erho",
                      "esigma", "ebeta", "ealphab", "ealphaw", "numb",

@@ -17,11 +17,16 @@ for (key in names(sum.object)){
      num=num+1
    }
 }
-
+if("Resamp" %in% names(sum.object)){
 message(cat(names(top[[1]]), "=", top[[1]], ",",names(top[[2]]),
  "=", top[[2]],",",names(top[[3]]), "=", top[[3]],",",
  names(top[[4]]), "=", top[[4]],",",names(top[[5]]), "=", top[[5]]))
+}
+if(!("Resamp" %in% names(sum.object)){
 
+
+
+}
 for (key in names(sum.object)){
   val <- sum.object[[key]]
   if (!((is.character(val) || is.numeric(val)) && length(val) < 2)){

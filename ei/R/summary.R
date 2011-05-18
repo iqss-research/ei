@@ -1,7 +1,8 @@
 #@x is an ei.object
 
-summary.ei <- function(x){
-  ei1 <- x
+summary.ei <- function(object){
+  if("psi" %in% names(object)){
+  ei1 <- object
   #Calculate maximum likelihood results in the scale of estimation
   numb <- ei1$numb
   covs <- as.logical(ifelse(diag(ei1$hessian)==0,0,1))
@@ -72,10 +73,61 @@ summary.ei <- function(x){
   names(output) <- c("Erho", "Esigma", "Ebeta", "N", "Resamp",
         "Maximum likelihood results in scale of estimation (and se's)",
         "Untruncated psi's", "Truncated psi's (ultimate scale)",
-        "Aggregate Bounds", "Estimates of Aggregate Quantities of
-        Interest", "precision")
+        "Aggregate Bounds", "Estimates of Aggregate Quantities of Interest", "precision")
   class(output) <- "summary"
   return(output)
+}
+  if (!("psi"%in% names(object))){
+
+ei1 <- object
+  #Calculate maximum likelihood results in the scale of estimation
+  n <- length(ei1$x)
+  numb <- ei1$numb
+  covs <- as.logical(ifelse(diag(ei1$hessian)==0,0,1))
+  sdphi <- sqrt(diag((solve(ei1$hessian[covs,covs]))))
+  zbmiss <- ifelse(covs[6:(5+numb)]==FALSE,TRUE,FALSE)
+  zwmiss <- ifelse(covs[(6+numb):length(covs)]==FALSE, TRUE, FALSE)
+  names <- c("Bb0", "Bw0", "sigB", "sigW", "rho")
+  if(zbmiss==FALSE&zwmiss==FALSE){
+    sdphi <- c(sdphi[1:5], 0,0)
+    names <- c(names, "Zb", "Zw")
+  }
+  if(zbmiss==TRUE&zwmiss==FALSE){
+    sdphi <- c(sdphi[1:5], 0, sdphi[(5+numb):sum(covs)])
+    numw <- length(ei1$phi) - (5+numb)
+    wname <- NULL
+    for (i in 1:numw){
+      wname[i] = paste("Zw",(i-1), sep="")
+    }
+    names <- c(names, "Zb0", wname)
+  }
+  if(zbmiss==FALSE&zwmiss==TRUE){
+    sdphi <- c(sdphi, 0)
+    bname <- NULL
+    for (i in 1:numb){
+      bname[i] = paste("Zb",(i-1), sep="")
+    }
+    names <- c(names, bname, "Zw0")
+  }
+  if(zbmiss==TRUE&zwmiss==TRUE){
+    sdphi <- c(sdphi, 0, 0)
+    names <- c(names, "Zb0", "Zw0")
+  }
+  mle <- rbind(ei1$phi, sdphi)
+  colnames(mle) <- names
+  rownames(mle) <- c("","")
+#Aggregate Bounds
+  ab <- matrix(.abounds(ei1), nrow=2)
+  rownames(ab) <- c("lower", "upper")
+  colnames(ab) <- c("betab", "betaw")
+ output <- list(ei1$erho, ei1$esigma, ei1$ebeta, n,
+                 mle,ab, ei1$precision)
+  names(output) <- c("Erho", "Esigma", "Ebeta", "N",
+        "Maximum likelihood results in scale of estimation (and se's)","Aggregate Bounds","precision")
+  class(output) <- "summary"
+  return(output)
+
+  }
 }
 
 
