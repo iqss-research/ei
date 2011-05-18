@@ -38,9 +38,9 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
      ebeta=ebeta, ealphab =ealphab,ealphaw=ealphaw, Rfun=Rfun, hessian=3)
 #This didn't work
   #solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb,
-  #Zw=Zw,numb=numb, #erho=erho, esigma=esigma,
-  #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=3,
-  #Rfun=Rfun, method="BFGS") = Rfun, hessian=3)
+  #Zw=Zw,numb=numb, erho=erho, esigma=esigma,
+  #ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T,
+  #Rfun=Rfun, method="BFGS")
   #control=list(maxeval=10))
   #print(solution$par)
   #print(solution$convergence)
@@ -62,14 +62,40 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
   #Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian)==0|
                             diag(solution$hessian)==1,0,1))
-  varcv <- solution$hessian[covs,covs]
+  hessian <- solution$hessian[covs,covs]
+  output <- list(solution$par, hessian, erho, esigma,
+                 ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
+                 truth,precision)
 
-  #Bein Importance Sampling
+  names(output) <- c("phi", "hessian",  "erho",
+                     "esigma", "ebeta", "ealphab", "ealphaw", "numb",
+                     "x", "t", "n", "Zb", "Zw",
+                     "truth", "precision")
+  class(output) <- "ei"
+  return(output)
+}
+
+ ei.sim <- function(ei.object){
+   hessian <- ei.object$hessian
+   erho <- ei.object$erho
+   esigma <- ei.object$esigma
+   ebeta <- ei.object$ebeta
+   ealphab <- ei.object$ealphab
+   ealphaw <- ei.object$ealphaw
+   numb <- ei.object$numb
+   x <- ei.object$x
+   t <- ei.object$t
+   n <- ei.object$n
+   Zb <- ei.object$Zb
+   Zw <- ei.object$Zw
+   truth <- ei.object$truth
+   precision <- ei.object$precision
+  #Begin Importance Sampling
   message("Importance Sampling..")
-  keep <- matrix(data=NA, ncol=(length(solution$par)))
+  keep <- matrix(data=NA, ncol=(length(ei.object$phi)))
   resamp <- 0
   while(dim(keep)[1] < 100){
-    keep <- .samp(t,x,n, Zb, Zw, solution$par, varcv, 100, keep,
+    keep <- .samp(t,x,n, Zb, Zw, ei.object$phi, hessian, 100, keep,
                  numb=numb, covs, erho, esigma,
                  ebeta, ealphab, ealphaw, Rfun)
     resamp = resamp + 1
@@ -81,7 +107,7 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
   sd <- keep[,3:4]
   rho <- keep[,5]
   Bb0v <- keep[,6:(5+numb)]
-  Bw0v <- keep[,(6+numb):length(solution$par)]
+  Bw0v <- keep[,(6+numb):length(ei.object$phi)]
   sd[,1] <- exp(sd[,1])
   sd[,2] <- exp(sd[,2])
 
@@ -161,7 +187,7 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
   mbetaw <- apply(betaw,1,mean)
   sdbetab <- apply(betab,1,sd)
   sdbetaw <- apply(betaw,1,sd)
-  output <- list(solution$par, solution$hessian, psi, mbetab, mbetaw,
+  output <- list(ei.object$phi, hessian, psi, mbetab, mbetaw,
                  sdbetab, sdbetaw, betab, betaw,resamp, erho, esigma,
                  ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
                  truth,
