@@ -284,7 +284,7 @@ if (Rfun==5){
 
 #Tomography plot with 80% CIs
 .tomog80CI <- function(ei.object){
-  if(!("betabs"%in% names(ei.object)){
+  if(!("betabs"%in% names(ei.object))){
    message("Error: This plot function requires an ei.sim object.")
   }
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
