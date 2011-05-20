@@ -174,7 +174,8 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
   }
 
   if(sum(bl)>0){
-    betaw[bl,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(t[bl]))
+    betaw[bl,] <- NA
+    #betaw[bl,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(t[bl]))
   }
   if(sum(cT1)>0){
     betaw[cT1,] <-

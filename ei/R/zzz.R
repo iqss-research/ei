@@ -148,6 +148,7 @@ if (Rfun==5){
   draw <- rmvnorm(nsims, par[covs], varcv2)
   varcv3 <- solve(varcv2)
   phiv <- dmvnorm(draw, par[covs], varcv2, log=T)
+  #print("samp")
   zbmiss <- ifelse(covs[6] == FALSE,TRUE,FALSE)
   zwmiss <- ifelse(covs[(6+numb)] == FALSE, TRUE, FALSE)
   if(zbmiss == TRUE & zwmiss == FALSE){
