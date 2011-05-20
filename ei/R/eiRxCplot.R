@@ -48,10 +48,10 @@ if (estimates==TRUE){
   betawm <- apply(betaws,1, mean)
   #n <- dim(betabcd)[2]
   for(i in 1:n){
-    if (rand[i]==TRUE) {lines(betabcd[,i], sort(betawcd[,i],decreasing=T), col="yellow",lwd=1.5)
+    if (rand[i]==TRUE) {lines(betabcd[ok,i], sort(betawcd[ok,i],decreasing=T), col="yellow",lwd=1.5)
     	}
     if(random==FALSE){
-    points(betabm, betawm, col="yellow", cex=1, pch=16)
+    points(betabm[ok], betawm[ok], col="yellow", cex=1, pch=16)
     }
   }
 }
