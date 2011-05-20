@@ -47,11 +47,11 @@ if (estimates==TRUE){
   betawcd <- apply(betaws,1,function (x) quantile(x,probs=c(.1,.9)))
   betawm <- apply(betaws,1, mean)
   #n <- dim(betabcd)[2]
-  for(i in 1:n){
-    if (rand[i]==TRUE) {lines(betabcd[ok,i], sort(betawcd[ok,i],decreasing=T), col="yellow",lwd=1.5)
+  for(i in 1:sum(ok)){
+    if (rand[i]==TRUE) {lines(betabcd[,i], sort(betawcd[,i],decreasing=T), col="yellow",lwd=1.5)
     	}
     if(random==FALSE){
-    points(betabm[ok], betawm[ok], col="yellow", cex=1, pch=16)
+    points(betabm, betawm, col="yellow", cex=1, pch=16)
     }
   }
 }
