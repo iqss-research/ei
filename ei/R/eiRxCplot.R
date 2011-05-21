@@ -1,6 +1,6 @@
 #Plot to help visualize multiple dimensions.
 
-eiRxCplot <- function(ei.object, random =FALSE, black=TRUE, hispanic=TRUE,white=TRUE,informative=FALSE, threshold, title,xaxis, yaxis, percent, data, estimates=TRUE){
+eiRxCplot <- function(ei.object, random =FALSE, black=TRUE, hispanic=TRUE,white=TRUE,informative=FALSE, threshold, title,xaxis, yaxis, percent, data, estimates=TRUE, legendpos = c(.69,1)){
   #ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x
   t <- ei.object$t
@@ -56,6 +56,6 @@ if (estimates==TRUE){
   }
 }
   #if (random==TRUE) text(.85,.97,paste("Unanimous",unan))
-  legend(.69,1,c("White", "Black", "Hispanic", "Mixed", "CI of Estimates"), col=c("green", "red", "blue", "black", "yellow"), lwd=1)
+  legend(legendpos[1], legendpos[2],1,c("White", "Black", "Hispanic", "Mixed", "CI of Estimates"), col=c("green", "red", "blue", "black", "yellow"), lwd=1)
 }
 
