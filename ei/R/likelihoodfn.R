@@ -84,8 +84,8 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     Ebb = bb[wh]+rho*(sb/sw)*epsilon
     vbb = sigb2*(1-rho^2)
     s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
-    b.s = (bnds[,2]-Ebb)/s[wh]
-    as = (bnds[,1]-Ebb)/s[wh]
+    b.s = (bnds[,2]-Ebb)/s
+    as = (bnds[,1]-Ebb)/s
     res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
     #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1],
     #mean=Ebb, sd=s))
@@ -103,8 +103,8 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     Ebb=bw[bl] + rho*(sw/sb)*epsilon
     vbb=sigw2*(1-rho^2)
     s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
-    b.s = (bnds[,2]-Ebb)/s[bl]
-    as = (bnds[,1]-Ebb)/s[bl]
+    b.s = (bnds[,2]-Ebb)/s
+    as = (bnds[,1]-Ebb)/s
     res <- log(pnorm(as, lower.tail=F) - pnorm(b.s, lower.tail=F))
     #res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1],
     #mean=Ebb, sd=s)) #res[ok] <- ifelse(abs(res[ok])==Inf,
