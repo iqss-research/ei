@@ -244,7 +244,7 @@ dbufsim = ei.sim(dbuf)
 
 \noindent When the data argument is included, the arguments \verb#"t","x","n"# refer to names of the variables in the dataset and therefore must be strings. If the data argument is not specified, \verb#ei(t,x,n)# can be used where \verb#t,x# and \verb#n# are the vectors containing the data. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string that refers to the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string that refers to the name of the covariate in the dataset.\\
 \newline
-Next, we use \verb#summary(dbuf)and \verb#summary(dbufsim)# to obtain general information about the estimation. 
+Next, we use \verb#summary(dbuf)#and \verb#summary(dbufsim)# to obtain general information about the estimation. 
 
 <<echo=TRUE, eval=FALSE>>=
 summary(dbufsim)
