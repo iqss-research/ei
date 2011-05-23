@@ -30,7 +30,7 @@ xaxis="betab",yaxis="betaw",  estimates=TRUE, legendpos=c(.69,1))
   \item{yaxis}{Y-axis label for the plot}
   \item{estimates}{Specifies whether or not the quantities of interest
     should be included in the plot.  If estimates=FALSE, \code{ei.sim}
-    is not needed to use \code{eiRxCplot}.
+    is not needed to use \code{eiRxCplot}.}
    \item{legendpos}{Specifies coordinate position for the legend.}
 }
  
