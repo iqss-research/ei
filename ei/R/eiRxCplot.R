@@ -1,6 +1,6 @@
 #Plot to help visualize multiple dimensions.
 
-eiRxCplot <- function(ei.object, random =FALSE, black=TRUE, hispanic=TRUE,white=TRUE,informative=FALSE, threshold, title,xaxis, yaxis, percent, data, estimates=TRUE, legendpos = c(.69,1)){
+eiRxCplot <- function(ei.object, random =FALSE, groups, groupnames = groups, informative=FALSE, threshold=.65, title="EI RxC Plot",xaxis="betab", yaxis="betaw", percent=.15, data, estimates=TRUE, legendpos = c(.69,1)){
   #ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x
   t <- ei.object$t
@@ -20,24 +20,37 @@ ok2 <- NULL
   if (random ==TRUE) {
        rand <- sample(c(TRUE, FALSE),length(x),replace=T, prob=c(percent,1-percent))
 }
-  if (black == TRUE) {
-    bl <- data$black.ei >threshold}
-  if (hispanic==TRUE){
- his <- data$hisp.ei > threshold}
-  if (white==TRUE){
- whit <- data$whit.ei > threshold
- }
- none <- !bl & !his & !whit
+
+groupind <- matrix(nrow=n, ncol=length(groups))
+for(i in 1:length(groups)){
+ groupind[,i] <- data[,c(groups[i])]>threshold 
+}
+
+none <- apply(groupind, 1, function (x) ifelse(sum(x)==0,TRUE,FALSE))
+
+#if (black == TRUE) {
+#    bl <- data$black.ei >threshold}
+#  if (hispanic==TRUE){
+# his <- data$hisp.ei > threshold}
+#  if (white==TRUE){
+# whit <- data$whit.ei > threshold
+#}
+# none <- !bl & !his & !whit
 #print(sum(ok2))
-  if (informative==TRUE) {
+if (informative==TRUE) {
      ok2 <- bounds[,2]-bounds[,1] <.15 | bounds[,4]-bounds[,3] < .15
 }
+cols = rainbow(length(groups))
+ for (j in 1:length(groups)){
   for(i in 1:n){
-    if (bl[i] == TRUE & rand[i]==TRUE)  lines(bbounds[i,], wbounds[i,], col="red", lwd=1)
-    if (whit[i] == TRUE & rand[i]==TRUE)  lines(bbounds[i,], wbounds[i,], col="green", lwd=1)
-    if (his[i] == TRUE & rand[i]==TRUE)  lines(bbounds[i,], wbounds[i,], col="blue", lwd=1)
+    if (groupind[i,j] == TRUE & rand[i]==TRUE)  lines(bbounds[i,], wbounds[i,], col=cols[j], lwd=1)
+  }
+}
+
+for(i in 1:n){
   if (none[i] == TRUE & rand[i]==TRUE)  lines(bbounds[i,], wbounds[i,], col="black", lwd=1)
   }
+
 if (estimates==TRUE){
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   betabs <- ei.object$betabs[ok,]
@@ -56,6 +69,6 @@ if (estimates==TRUE){
   }
 }
   #if (random==TRUE) text(.85,.97,paste("Unanimous",unan))
-  legend(legendpos[1], legendpos[2],1,c("White", "Black", "Hispanic", "Mixed", "CI of Estimates"), col=c("green", "red", "blue", "black", "yellow"), lwd=1)
+  legend(legendpos[1], legendpos[2],c(groupnames, "Mixed", "CI of Estimates"), col=c(cols, "black", "yellow"), lwd=1)
 }
 
