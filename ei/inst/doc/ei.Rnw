@@ -57,52 +57,11 @@
 %\VignettePackage{ei}
 
 \title{EI: A(n R) Program for Ecological Inference} \author{Gary King
-  \thanks{Albert J.\ Weatherhead III University Professor, Harvard
+  \thanks{Albert J. Weatherhead III University Professor, Harvard
     University (Institute for Quantitative Social Sciences, 1737
     Cambridge Street, Harvard University, Cambridge MA 02138;
     http://GKing.Harvard.Edu, King@Harvard.Edu, 617-500-7570.} \and
-  Margaret # totalballots: data$g10_tv
-# planname: plan
-# total whites: data$vawhitealn
-# total blacks: data$vablackaln
-# total hispanics: data$vahispanic
-# total votes for Democratic candidate: data$g10_dv
-# total votes for Republican candidate: data$g10_rv
-
-erhoWhitGovT <- function(erho, data){
-   dbuf <- ei("turnout.ei", "nonwhit.ei", "total.ei", data=data, erho=5)
-   dbufsim <- ei.sim(dbuf)
-}
-
-erhoBlackGovT <- function(erho, data){
-   dbuf <- ei("turnout.ei", "black.ei", "total.ei", data=data, erho=3)
-   dbufsim <- ei.sim(dbuf)
-}
-
-
-erhoHispGovT <- function(erho, data){
-   dbuf <- ei("turnout.ei", "hisp.ei", "total.ei", data=data, erho=3)
-   dbufsim <- ei.sim(dbuf)
-}
-
-
-erhoWhitGovV <- function(erho, data){
-   dbuf <- ei("g10_dv.ei", "nonwhit.ei", "total.ei", data=data, erho=3)
-   dbufsim <- ei.sim(dbuf)
-}
-
-erhoBlackGovV <- function(erho, data){
-   dbuf <- ei("g10_dv.ei", "black.ei", "total.ei", data=data, erho=3)
-   dbufsim <- ei.sim(dbuf)
-}
-
-
-erhoHispGovV <- function(erho, data){
-   dbuf <- ei("g10_dv.ei", "hisp.ei", "total.ei", data=data, erho=3)
-   dbufsim <- ei.sim(dbuf)
-}Roberts \thanks{Department of Government, 1737 Cambridge
-    Street, Harvard Univeristy, Cambridge MA 02138}}
-
+  Margaret Roberts \thanks{Department of Government, 1737 Cambridge Street, Harvard University, Cambrdige MA 02138}}
 
 \begin{document}
 
@@ -468,7 +427,11 @@ dbuf = ei("t","x","n",data=eiRxCsample)
 dbufsim = ei.sim(dbuf)
 @
 
-However, we might be interested in visualizing the amount of information we are getting from each different ethnic group.  We might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as "non-whites".  To do this, we can use \verb#eiRxCplot#.
+However, we might be interested in visualizing the amount of information we are getting from each different ethnic group.  We might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as ``non-whites".  To do this, we can use \verb#eiRxCplot#.
+
+<<echo=TRUE, eval=FALSE>>=
+eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
+@
 
 \begin{figure}[Ht]
 \begin{center}
