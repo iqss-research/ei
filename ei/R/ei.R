@@ -149,6 +149,7 @@ ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
     eps <- t - (bb[i,])*x - (bw[i,])*omx
     mbb <- bb[i,] + omega/sig2*eps
     vbb <- sb[i]^2 - (omega^2)/sig2
+	vbb = ifelse(vbb<1*10^-32, .0001, vbb)
     s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
     bounds <- bounds1(x,t,n)
     out<- NULL

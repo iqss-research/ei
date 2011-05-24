@@ -83,6 +83,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     bnds=cbind(rep(0,sum(wh)),rep(1,sum(wh)))
     Ebb = bb[wh]+rho*(sb/sw)*epsilon
     vbb = sigb2*(1-rho^2)
+    vbb = ifelse(vbb<1*10^-32, .0001, vbb)
     s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
     b.s = (bnds[,2]-Ebb)/s
     as = (bnds[,1]-Ebb)/s
@@ -102,6 +103,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     bnds = cbind(rep(0, sum(bl)),rep(1,sum(bl)))
     Ebb=bw[bl] + rho*(sw/sb)*epsilon
     vbb=sigw2*(1-rho^2)
+	vbb = ifelse(vbb<1*10^-32, .0001, vbb)
     s <- ifelse(vbb>=0 & vbb!=Inf & !is.na(vbb),sqrt(vbb),NaN)
     b.s = (bnds[,2]-Ebb)/s
     as = (bnds[,1]-Ebb)/s

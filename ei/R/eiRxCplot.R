@@ -1,7 +1,8 @@
 #Plot to help visualize multiple dimensions.
 
-eiRxCplot <- function(ei.object, random =FALSE, groups, groupnames = groups, informative=FALSE, threshold=.65, title="EI RxC Plot",xaxis="betab", yaxis="betaw", percent=.15, data, estimates=TRUE, legendpos = c(.69,1)){
+eiRxCplot <- function(ei.object, random =FALSE, groups, groupnames = groups, informative=FALSE, threshold=.65, title="EI RxC Plot",xaxis="betab", yaxis="betaw", prop=.15, data, estimates=TRUE, legendpos = c(.69,1)){
   #ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
+  percent = prop
   x <- ei.object$x
   t <- ei.object$t
   n <- ei.object$n
@@ -37,9 +38,9 @@ none <- apply(groupind, 1, function (x) ifelse(sum(x)==0,TRUE,FALSE))
 #}
 # none <- !bl & !his & !whit
 #print(sum(ok2))
-if (informative==TRUE) {
-     ok2 <- bounds[,2]-bounds[,1] <.15 | bounds[,4]-bounds[,3] < .15
-}
+#if (informative==TRUE) {
+#     ok2 <- bounds[,2]-bounds[,1] <.15 | bounds[,4]-bounds[,3] < .15
+#}
 cols = rainbow(length(groups))
  for (j in 1:length(groups)){
   for(i in 1:n){
