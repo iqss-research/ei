@@ -462,28 +462,28 @@ invisible(dev.off())
 
 We might be interested in doing a 2x2 analysis on the non-white vs. white turnout in each precinct. We could use \verb#ei# to complete this analysis, as we did above:
 
-<<echo=TRUE>>=
-data(eiRxCsample)
-dbuf = ei("t","x","n",data=eiRxCsample)
-dbufsim = ei.sim(dbuf)
-@
+%<<echo=FALSE>>=
+%data(eiRxCsample)
+%dbuf = ei("t","x","n",data=eiRxCsample, erho=5)
+%dbufsim = ei.sim(dbuf)
+%@
 
 However, we might be interested in visualizing the amount of information we are getting from each different ethnic group.  We might be interested in whether blacks turn out to vote differently from hispanics, even though we have grouped them together in our 2x2 analysis as "non-whites".  To do this, we can use \verb#eiRxCplot#.
 
-\begin{figure}[Ht]
-\begin{center}
-<<results=tex,echo=FALSE>>= 
-pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
-eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"), data=eiRxCsample,
-groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White
+%\begin{figure}[Ht]
+%\begin{center}
+%<<results=tex,echo=FALSE>>= 
+%pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
+%eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"), %%data=eiRxCsample,
+%groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White
 Turnout", xaxis="Non-white", yaxis="White")
-invisible(dev.off())
-@
-\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{eiRxCplot} 
-\end{center}
-\caption{Visualizing RxC information in a 2x2 Analysis}
-\label{fig:eiRxC}
-\end{figure}
+%invisible(dev.off())
+%@
+%\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]%{eiRxCplot} 
+%\end{center}
+%\caption{Visualizing RxC information in a 2x2 Analysis}
+%\label{fig:eiRxC}
+%\end{figure}
 
 
 \clearpage
