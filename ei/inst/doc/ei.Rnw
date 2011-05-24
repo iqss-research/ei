@@ -179,7 +179,7 @@ plot(dbufsim, "tomog","betab","betaw","xtfit")
 
 \noindent In most applications, \verb#plot# and \verb#eiread# 
 would likely be run multiple times with different options chosen, and other commands would 
-be included with these four to read in the data (\verb#t#, \verb#x#, and \verb#n#).\\
+be included with these five to read in the data (\verb#t#, \verb#x#, and \verb#n#).\\
 \newline
  
 \begin{itemize}
@@ -255,14 +255,14 @@ library(ei)
 data(matproii)
 @
 
-\noindent The statistical goal is to estimate the fraction of blacks registered ($\beta_i^b$) and the fraction of whites registered ($\beta_i^w$) in each county. These quantities of interest are generally unknown.  However, \verb#EI# also includes an option that allows the user to assess the reliability of the \verb#EI# algorithm when the true quantities of interest are known. To illustrate the use of this "truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (\verb#tw#). 
+\noindent The statistical goal is to estimate the fraction of blacks registered ($\beta_i^b$) and the fraction of whites registered ($\beta_i^w$) in each county. These quantities of interest are generally unknown.  However, \verb#EI# also includes an option that allows the user to assess the reliability of the \verb#EI# algorithm when the true quantities of interest are known. To illustrate the use of this ``truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (\verb#tw#). 
 
 \subsection{The Basic EI Algorithm}
 
 To begin, we perform ecological inference by calling the function
 \verb#ei#. \verb#ei# first computes and maximizes a likelihood
 distribution based on the inputed data. Then we use the function \verb#ei.sim# to estimate county-level
-quantities of interest based on the possible values, or "bounds", for
+quantities of interest based on the possible values, or ``bounds", for
 each county and the overall likelihood distribution.  \\ \newline To
 run this algorithm, at a minimum we need to have three vectors.  Two
 vectors, \verb#t# and \verb#x#, contain the aggregate known
@@ -318,7 +318,7 @@ Bw 0.8183 0.0039
 
 \noindent The \verb#summary# function provides basic information about the ecological inference estimation, the maximum likelihood estimates on three scales, and an overall summary of the quantities of interest.  First, it reports the values of the priors used in ecological inference (\verb#Erho, Esigma, Ebeta#).  It also reports the number of counties in the dataset (\verb#N#), as well as the number of importance sampling iterations required to produce estimates of the quantities of interest (\verb#resamp#).  \\
 \newline
-When summary is used on a \verb#ei.sim# object, \verb#summary# also produces information about the maximum likelihood estimates.  First, it provides the maximum likelihood estimates in the scale of estimation. Next, it provides the values of the MLEs when they are transformed into an untruncated bivariate normal distribution.  These estimates provide information about the location of the highest density of estimates for the proportion of blacks who are registered to vote and the proportion of whites who are registered to vote.  Last, it provides the values of the MLEs on the ultimate truncated bivariate normal scale.  These estimates are an unweighted average of the fraction of blacks and whites registered to vote over all the counties in the sample.  In this example, the \verb#EI# algorithm predicts that the unweighted average of the proportion of blacks registered to vote across counties is 0.62 and the unweighted average of the proportion of whites registered to vote is 0.83.\\
+When summary is used on a \verb#ei.sim# object, \verb#summary# produces information both about the maximum likelihood estimates and the quantities of interest.  First, it provides the maximum likelihood estimates in the scale of estimation. Next, it provides the values of the MLEs when they are transformed into an untruncated bivariate normal distribution.  These estimates provide information about the location of the highest density of estimates for the proportion of blacks who are registered to vote and the proportion of whites who are registered to vote.  Last, it provides the values of the MLEs on the ultimate truncated bivariate normal scale.  These estimates are an unweighted average of the fraction of blacks and whites registered to vote over all the counties in the sample.  In this example, the \verb#EI# algorithm predicts that the unweighted average of the proportion of blacks registered to vote across counties is 0.57 and the unweighted average of the proportion of whites registered to vote is 0.82.\\
 \newline
 Finally, \verb#summary# produces information on aggregrate quantities of interest.  The aggregate bounds are the mean of the bounds on the proportions of black and white voters, weighted by the population in each county.  The aggregate quantities of interest are the weighted mean of the proportion of registered blacks and the proportion of registered whites in each county.  In this example the weighted average proportion of blacks who are registered is 0.57, and the weighted average proportion of whites who are registered is 0.82.  
 
@@ -458,17 +458,17 @@ invisible(dev.off())
 \clearpage
 
 \section{Plotting RxC Information: eiRxCplot}
-\verb#eiRxCplot# allows the user to include RxC information into the tomography plot in order to visualize the RxC dynamic in a 2x2 analysis.  For example, the data \verb#eiRxCsample# contains voter turnout information and demographic information for three groups in several precincts: blacks, whites, and hispanics. The variable \verb#x# represents the proportion of non-whites that voted, the variable \verb#t# represents the proportion of people in a precinct that turned out to vote, and \verb#n# represents the total number of people in the precinct. The data also contain the variables \verb#whit.ei#, \verb#black.ei#, and \verb#hisp.ei#, which have the proportion of whites, blacks, and hispanics in each precinct.
+\verb#eiRxCplot# allows the user to include RxC information into the tomography plot in order to visualize the RxC dynamic in a 2x2 analysis.  For example, the data \verb#eiRxCsample# contains voter turnout information and demographic information for three groups in a district: blacks, whites, and hispanics. The variable \verb#x# represents the proportion of non-whites that voted, the variable \verb#t# represents the proportion of people in a precinct that turned out to vote, and \verb#n# represents the total number of people in the precinct. The data also contain the variables \verb#whit.ei#, \verb#black.ei#, and \verb#hisp.ei#, which have the proportion of whites, blacks, and hispanics in each precinct.
 
-We might be interested in doing a 2x2 analysis on the non-white vs. white turnout in each precinct. We could use \verb#ei# to complete this analysis, as we did above:
+We might be interested in doing a 2x2 analysis on the non-white vs. white turnout in each precinct. We could use \verb#ei# to run this analysis, as we did above:
 
-<<echo=FALSE>>=
+<<echo=TRUE>>=
 data(eiRxCsample)
-dbuf = ei("t","x","n",data=eiRxCsample, erho=5)
+dbuf = ei("t","x","n",data=eiRxCsample)
 dbufsim = ei.sim(dbuf)
 @
 
-However, we might be interested in visualizing the amount of information we are getting from each different ethnic group.  We might be interested in whether blacks turn out to vote differently from hispanics, even though we have grouped them together in our 2x2 analysis as "non-whites".  To do this, we can use \verb#eiRxCplot#.
+However, we might be interested in visualizing the amount of information we are getting from each different ethnic group.  We might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as "non-whites".  To do this, we can use \verb#eiRxCplot#.
 
 \begin{figure}[Ht]
 \begin{center}
@@ -477,7 +477,7 @@ pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
 eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
 invisible(dev.off())
 @
-\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]%{eiRxCplot} 
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{eiRxCplot} 
 \end{center}
 \caption{Visualizing RxC information in a 2x2 Analysis}
 \label{fig:eiRxC}
