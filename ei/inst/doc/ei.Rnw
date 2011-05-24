@@ -433,7 +433,7 @@ However, we might be interested in visualizing the amount of information we are 
 eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
 @
 
-\begin{figure}[Ht]
+\begin{figure}[h!]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
@@ -453,6 +453,7 @@ This plot shows us that districts where there are a over 65\% hispanics have muc
 \include{Rd/ei}
 \include{Rd/eiread}
 \include{Rd/plot.ei}
+\include{Rd/eiRxCplot.Rd}
 
 \bibliography{References}
 \label{bib}
