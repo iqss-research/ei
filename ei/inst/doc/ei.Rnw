@@ -61,7 +61,46 @@
     University (Institute for Quantitative Social Sciences, 1737
     Cambridge Street, Harvard University, Cambridge MA 02138;
     http://GKing.Harvard.Edu, King@Harvard.Edu, 617-500-7570.} \and
-  Margaret Roberts \thanks{Department of Government, 1737 Cambridge
+  Margaret # totalballots: data$g10_tv
+# planname: plan
+# total whites: data$vawhitealn
+# total blacks: data$vablackaln
+# total hispanics: data$vahispanic
+# total votes for Democratic candidate: data$g10_dv
+# total votes for Republican candidate: data$g10_rv
+
+erhoWhitGovT <- function(erho, data){
+   dbuf <- ei("turnout.ei", "nonwhit.ei", "total.ei", data=data, erho=5)
+   dbufsim <- ei.sim(dbuf)
+}
+
+erhoBlackGovT <- function(erho, data){
+   dbuf <- ei("turnout.ei", "black.ei", "total.ei", data=data, erho=3)
+   dbufsim <- ei.sim(dbuf)
+}
+
+
+erhoHispGovT <- function(erho, data){
+   dbuf <- ei("turnout.ei", "hisp.ei", "total.ei", data=data, erho=3)
+   dbufsim <- ei.sim(dbuf)
+}
+
+
+erhoWhitGovV <- function(erho, data){
+   dbuf <- ei("g10_dv.ei", "nonwhit.ei", "total.ei", data=data, erho=3)
+   dbufsim <- ei.sim(dbuf)
+}
+
+erhoBlackGovV <- function(erho, data){
+   dbuf <- ei("g10_dv.ei", "black.ei", "total.ei", data=data, erho=3)
+   dbufsim <- ei.sim(dbuf)
+}
+
+
+erhoHispGovV <- function(erho, data){
+   dbuf <- ei("g10_dv.ei", "hisp.ei", "total.ei", data=data, erho=3)
+   dbufsim <- ei.sim(dbuf)
+}Roberts \thanks{Department of Government, 1737 Cambridge
     Street, Harvard Univeristy, Cambridge MA 02138}}
 
 
@@ -167,13 +206,13 @@ be included with these four to read in the data (\verb#t#, \verb#x#, and \verb#n
 \item{{\verb#summary#}: To obtain a general summary of district-level information}
 
   \verb#summary(dbuf)# will produce aggregate information about the
-  \verb#ei# results.  If you have only run \verb#ei#, \verb#summary# will summarize the maximum likelihood estimates.  If you have fun \verb#ei.sim#,\verb#summary# will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values
+  \verb#ei# results.  If you have only run \verb#ei#, \verb#summary# will summarize the maximum likelihood estimates.  If you have run \verb#ei.sim#, \verb#summary# will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values
   specified for the prior.
 
 \item{{\verb#plot#}: To graph relevant information}
 
   For graphics, use \verb#plot(dbuf, "name")#;, where \verb#dbuf# is
-  the list that is the output of \verb#ei# or \verb#ei.sim#, and name can be any number
+  the ei.object that is the output of \verb#ei# or \verb#ei.sim#, and name can be any number
   of a long list of ready-made graphs.  For example,
   \verb#plot(dbuf,"tomog")# will plot a tomography graph, and
   \verb#plot(dbuf,"xt")# will display a scattercross graph. Any number
@@ -181,7 +220,7 @@ be included with these four to read in the data (\verb#t#, \verb#x#, and \verb#n
   \verb#plot(dbuf,"tomog","xt")# will produce both a tomography graph
   and a scattercross graph.
 
-  Plotting tomography plots after estimating the maximum likelihood estimates using \verb#ei#, but before simulating quantities of interest using \verb#ei.sim# can be useful to determine what priors to include. However, for some plots, \verb#plot# will need the simulated quantities of interest.  These plots only run on data buffers from \verb#ei.sim#. 
+  Some of the plots can be produced after estimating the maximum likelihood estimates using \verb#ei#, but before simulating quantities of interest with \verb#ei.sim#. These initial plots can be useful in determining which priors to include. However, for some plots, \verb#plot# will need the simulated quantities of interest.  These plots only run on data buffers from \verb#ei.sim#. 
   
 \item{{\verb#eiread#}: To obtain relevant information and numerical results}
 
@@ -416,7 +455,38 @@ invisible(dev.off())
 \label{fig:truth}
 \end{figure}
 
-\pagebreak
+\clearpage
+
+\section{Plotting RxC Information: eiRxCplot}
+\verb#eiRxCplot# allows the user to include RxC information into the tomography plot in order to visualize the RxC dynamic in a 2x2 analysis.  For example, the data \verb#eiRxCsample# contains voter turnout information and demographic information for three groups in several precincts: blacks, whites, and hispanics. The variable \verb#x# represents the proportion of non-whites that voted, the variable \verb#t# represents the proportion of people in a precinct that turned out to vote, and \verb#n# represents the total number of people in the precinct. The data also contain the variables \verb#whit.ei#, \verb#black.ei#, and \verb#hisp.ei#, which have the proportion of whites, blacks, and hispanics in each precinct.
+
+We might be interested in doing a 2x2 analysis on the non-white vs. white turnout in each precinct. We could use \verb#ei# to complete this analysis, as we did above:
+
+<<echo=TRUE>>=
+data(eiRxCsample)
+dbuf = ei("t","x","n",data=eiRxCsample)
+dbufsim = ei.sim(dbuf)
+@
+
+However, we might be interested in visualizing the amount of information we are getting from each different ethnic group.  We might be interested in whether blacks turn out to vote differently from hispanics, even though we have grouped them together in our 2x2 analysis as "non-whites".  To do this, we can use \verb#eiRxCplot#.
+
+\begin{figure}[Ht]
+\begin{center}
+<<results=tex,echo=FALSE>>= 
+pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
+eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"), data=eiRxCsample,
+groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White
+Turnout", xaxis="Non-white", yaxis="White")
+invisible(dev.off())
+@
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{eiRxCplot} 
+\end{center}
+\caption{Visualizing RxC information in a 2x2 Analysis}
+\label{fig:eiRxC}
+\end{figure}
+
+
+\clearpage
 \section{Reference to EI Functions}
 \include{Rd/ei}
 \include{Rd/eiread}
