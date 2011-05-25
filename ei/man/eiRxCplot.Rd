@@ -1,5 +1,5 @@
-\name{eiRxCplot.ei}
-\alias{eiRxCplot.ei}
+\name{eiRxCplot}
+\alias{eiRxCplot}
 
 \title{
   Plotting Ecological Inference Estimates with eiRxC information
@@ -8,7 +8,8 @@
  
 }
 \usage{
-eiRxCplot(ei.object, groups, data, groupnames=groups, threshold=.65, random=FALSE,prop=.15,title="EI RxC Plot",
+eiRxCplot(ei.object, groups, data, groupnames=groups, 
+threshold=.65, random=FALSE,prop=.15,title="EI RxC Plot",
 xaxis="betab",yaxis="betaw",  estimates=TRUE, legendpos=c(.69,1))
 }
 
@@ -49,7 +50,7 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 data(eiRxCsample)
 dbuf <- ei("t","x","n",data=eiRxCsample)
 dbufsim <- ei.sim(dbuf)
-eiRxCplot(dbuf, groups=c("black.ei", "whit.ei", "hisp.ei"), data=eiRxCsample,
+eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"), data=eiRxCsample,
 groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White
 Turnout", xaxis="Non-white", yaxis="White")
 }
