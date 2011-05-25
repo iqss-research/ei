@@ -427,7 +427,7 @@ dbuf = ei("t","x","n",data=eiRxCsample)
 dbufsim = ei.sim(dbuf)
 @
 
-\noindent However, we might be interested in visualizing the amount of information we are getting from each different demographic group.  We might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as ``non-whites".  To do this, we can use \verb#eiRxCplot#. 
+\noindent However, \verb#eiRxCplot# allows us to also visualize the amount of information in our analysis that comes from each different demographic group.  We might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as ``non-whites".  To do this, we can use \verb#eiRxCplot#. 
 
 <<echo=TRUE, eval=FALSE>>=
 eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
@@ -446,7 +446,7 @@ invisible(dev.off())
 \label{fig:eiRxC}
 \end{figure}
 
-\noindent \verb#eiRxCplot# plots the same tomography plot that can be plotted using the command \verb#plot(dbuf)#, but also includes RxC information by coloring precincts that have over a certain threshold of one demographic group. For example, in Figure 6, we see that precincts that are more than 65\% black (colored in red) are very informative and have a non-white turnout rate of between 20\% and 60\%. There are fewer precincts that are more than 65\% hispanic (colored in blue), and these precincts have a non-white turnout rate between 0\% and 20\%.  Therefore, the \verb#eiRxCplot# tells us two things. First our results for non-white turnout are mainly driven by majority black precincts, rather than majority hispanic precincts. Second, black turnout in this district is generally higher than hispanic turnout. Even though our analysis does not distinguish between black and hispanic groups, we can understand the eiRxC dynamic simply from the \verb#eiRxCplot#.
+\noindent \verb#eiRxCplot# plots the same tomography plot that can be plotted using the command \verb#plot(dbuf)#, but also includes RxC information by coloring precincts that have over a certain threshold of one demographic group. For example, in Figure 6, we see that precincts that are more than 65\% black (colored in red) are very informative and have a non-white turnout rate of between 20\% and 60\%. There are fewer precincts that are more than 65\% hispanic (colored in blue), and these precincts have a non-white turnout rate between 0\% and 20\%.  As a result, the \verb#eiRxCplot# tells us two things. First, our results for non-white turnout are mainly driven by majority black precincts, rather than majority hispanic precincts. Second, black turnout in this district is generally higher than hispanic turnout. Even though our analysis does not distinguish between black and hispanic groups,\verb#eiRxCplot# gives us a lot of information about the eiRxC dynamic within the district.
 
 \clearpage
 \section{Reference to EI Functions}
