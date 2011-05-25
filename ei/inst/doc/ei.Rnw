@@ -427,8 +427,7 @@ dbuf = ei("t","x","n",data=eiRxCsample)
 dbufsim = ei.sim(dbuf)
 @
 
-\noindent However, \verb#eiRxCplot# allows us to also visualize the amount of information in our analysis that comes from each different demographic group.  We might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as ``non-whites".  To do this, we can use \verb#eiRxCplot#. 
-
+\noindent However,we might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as ``non-whites".  To visualize information in our analysis that comes from each different demographic group, we can use \verb#eiRxCplot#. 
 <<echo=TRUE, eval=FALSE>>=
 eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
 @
