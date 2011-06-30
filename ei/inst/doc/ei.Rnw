@@ -61,7 +61,8 @@
     University (Institute for Quantitative Social Sciences, 1737
     Cambridge Street, Harvard University, Cambridge MA 02138;
     http://GKing.Harvard.Edu, King@Harvard.Edu, 617-500-7570.} \and
-  Margaret Roberts \thanks{Department of Government, 1737 Cambridge Street, Harvard University, Cambrdige MA 02138}}
+  Margaret Roberts \thanks{Ph.D.\ Candidate, Department of Government,
+    1737 Cambridge Street, Harvard University, Cambrdige MA 02138}}
 
 \begin{document}
 
@@ -83,23 +84,21 @@ aggregate data. It implements the statistical procedures, diagnostics,
 and graphics from the book, \textbf{A Solution to the Ecological
   Inference Problem: Reconstructing Individual Behavior from Aggregate
   Data} (Princeton: Princeton University Press, 1997), by Gary King.
-See \url{http://gking.harvard.edu/eicamera/kinroot.html}.\\
-
-\noindent Except where indicated, all references to page, section, chapter, 
+See \url{http://gking.harvard.edu/eicamera/kinroot.html}. Except where
+indicated, all references to page, section, chapter,
 table, and figure numbers in this document refer to the book.\\
 
-\noindent Ecological inference is the process of using aggregate (i.e.,
-``ecological'') data to infer discrete individual-level relationships
-of interest when individual-level data are not available.  Ecological
-inferences are required in political science research when
-individual-level surveys are unavailable (e.g., local or comparative
-electoral politics), unreliable (racial politics), insufficient
-(political geography), or infeasible (political history).  They are
-also required in numerous areas of major significance in public policy
-(e.g., for applying the Voting Rights Act) and other academic
-disciplines ranging from epidemiology and marketing to sociology and
-quantitative history. Most researchers using aggregate data have
-encountered some form of the ecological inference problem.\\
+\noindent Ecological inference is the process of using aggregate
+(i.e., ``ecological'') data to infer discrete individual-level
+relationships of interest when individual-level data are not
+available.  Ecological inferences are required in political science
+research when individual-level surveys are unavailable (e.g., local or
+comparative electoral politics), unreliable (racial politics),
+insufficient (political geography), or infeasible (political history).
+They are also required in public policy (e.g., for applying the Voting
+Rights Act) and other academic disciplines ranging from epidemiology
+and marketing to sociology and quantitative history. Most researchers
+using aggregate data have encountered some form of the ecological inference problem.\\
 
 \noindent Because the ecological inference problem is caused by the lack of
 individual-level information, no method of ecological inference,
@@ -109,10 +108,11 @@ include more available information, diagnostics to evaluate when
 assumptions need to be modified, easy methods of modifying the
 assumptions, and uncertainty estimates for quantities of interest.  We
 recommend reviewing Chapter 16 while using this program for actual
-research.
+research.  Model dependence defines ecological inference when going
+anywhere beyond the bounds and tomography plots.
 
 		
-\section[Overview: R-commands to run the application]{{\tt Overview}: R-commands to run the application}
+\section[Overview: R-commands]{{\tt Overview}: R-commands}
 \label{commands}
 
 In this section we describe the basic commands in \verb#EI#.  For this
@@ -324,7 +324,8 @@ invisible(dev.off())
 @
 \includegraphics[width=7.5in, height=2.5in,   viewport=0 0 1400 395,clip]{tomogplot2} 
 \end{center}
-\caption{Tomography Plots: Point Estimates and Confidence Intervals}
+\caption{Tomography Plots: Point Estimates (left) and Confidence
+  Intervals (right)}
 \label{fig:tomog2}
 \end{figure}
 
@@ -364,7 +365,8 @@ invisible(dev.off())
 @
 \includegraphics[width=8.5in, height=2.5in,   viewport=0 0 1400 395,clip]{betas} 
 \end{center}
-\caption{Plots with Distribution of Point Estimates for $\beta_i^b$ and $\beta_i^w$}
+\caption{Plots with Distribution of Point Estimates for $\beta_i^b$
+  (left) and $\beta_i^w$ (right), for all $i$}
 \label{fig:betas}
 \end{figure}
 
