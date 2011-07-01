@@ -1,0 +1,477 @@
+\SweaveOpts{results=hide,prefix.string=vigpics/EI}
+%\include{zinput}
+\documentclass[11pt,oneside,letterpaper,titlepage]{article}
+%\usepackage[notref]{showkeys} % [notref]
+\usepackage{Rd/Rd}
+\usepackage{Rd/Sweave}
+\usepackage{Rd/upquote}
+
+\usepackage[reqno]{amsmath}
+\usepackage{natbib}
+\usepackage{graphicx
+}
+\usepackage{graphics}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{stmaryrd}
+\usepackage{bbm}
+\usepackage{epsf}
+%\usepackage{psfig}
+%\usepackage{wcolor}
+\usepackage{textcomp} % for \texttrademark
+\usepackage{makeidx}
+
+\usepackage{verbatim}
+% \usepackage{epsf}
+\usepackage{url}
+\usepackage{html}
+\usepackage{dcolumn}
+\usepackage{longtable}
+%\usepackage{vmargin}
+%\topmargin=1in
+% === margin and formatting ===
+\usepackage{setspace}
+\usepackage{fullpage}
+\usepackage{caption}
+
+\def\fp#1{\mathbbm{#1}}
+
+%\setpapersize{USletter}
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+%\pagestyle{myheadings}
+\htmladdtonavigation{
+  \htmladdnormallink{%
+    \htmladdimg{http://gking.harvard.edu/pics/home.gif}}
+  {http://gking.harvard.edu/}}
+\newcommand{\hlink}{\htmladdnormallink}
+
+\bodytext{ BACKGROUND="http://gking.harvard.edu/pics/temple.jpg"}
+\setcounter{tocdepth}{3}
+
+
+
+%\VignetteIndexEntry{Non-parametric estimation of Ecological Inference}
+%\VignetteDepends{ei,mvtnorm}
+%\VignetteKeyWords{model,non-parametric, ecological}
+%\VignettePackage{ei}
+
+\title{EI: A(n R) Program for Ecological Inference} \author{Gary King
+  \thanks{Albert J. Weatherhead III University Professor, Harvard
+    University (Institute for Quantitative Social Sciences, 1737
+    Cambridge Street, Harvard University, Cambridge MA 02138;
+    http://GKing.Harvard.Edu, King@Harvard.Edu, 617-500-7570.} \and
+  Margaret Roberts \thanks{Ph.D.\ Candidate, Department of Government,
+    1737 Cambridge Street, Harvard University, Cambrdige MA 02138}}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+<<beforepkgs, echo=FALSE>>=
+ before<-search()
+ ind <- grep("[a-z A-Z]+:ei",before)
+ if(!length(ind) > 0) library(ei)
+@
+\include{ei.toc}
+
+\section[Introduction: Ecological Inference]{{\tt Introduction}: Ecological Inference}
+\label{intro}
+
+This program provides a method of inferring individual behavior from
+aggregate data. It implements the statistical procedures, diagnostics,
+and graphics from the book, \textbf{A Solution to the Ecological
+  Inference Problem: Reconstructing Individual Behavior from Aggregate
+  Data} (Princeton: Princeton University Press, 1997), by Gary King.
+See \url{http://gking.harvard.edu/eicamera/kinroot.html}. Except where
+indicated, all references to page, section, chapter,
+table, and figure numbers in this document refer to the book.\\
+
+\noindent Ecological inference is the process of using aggregate
+(i.e., ``ecological'') data to infer discrete individual-level
+relationships of interest when individual-level data are not
+available.  Ecological inferences are required in political science
+research when individual-level surveys are unavailable (e.g., local or
+comparative electoral politics), unreliable (racial politics),
+insufficient (political geography), or infeasible (political history).
+They are also required in public policy (e.g., for applying the Voting
+Rights Act) and other academic disciplines ranging from epidemiology
+and marketing to sociology and quantitative history. Most researchers
+using aggregate data have encountered some form of the ecological inference problem.\\
+
+\noindent Because the ecological inference problem is caused by the lack of
+individual-level information, no method of ecological inference,
+including that estimated by this program, will always produce accurate
+results.  However, potential difficulties are reduced by models that
+include more available information, diagnostics to evaluate when
+assumptions need to be modified, easy methods of modifying the
+assumptions, and uncertainty estimates for quantities of interest.  We
+recommend reviewing Chapter 16 while using this program for actual
+research.  Model dependence defines ecological inference when going
+anywhere beyond the bounds and tomography plots.
+
+		
+\section[Overview: R-commands]{{\tt Overview}: R-commands}
+\label{commands}
+
+In this section we describe the basic commands in \verb#EI#.  For this
+purpose, and without loss of generality, we use the running example
+from the book portrayed in Table 2.3 (page 31). This example uses the
+fraction of the voting age population who are black ($ X_i$), the
+fraction turning out to vote ($ T_i$), and the number of voting age
+people ($ {N_i}$) in each precinct ( $ i=1,\ldots,p$) to infer the
+fraction of blacks who vote ($ \beta_i^b$) and the fraction of whites
+who vote ($ \beta_i^w$), also in each precinct.  (For an extended
+example of \verb#EI#, refer to the user's guide below.)  As only five
+commands are required to use \verb#EI#, the program can be easily run
+interactively, or in batch mode as a regular R program.  An example of
+a sequence of these commands are as follows:
+
+<<echo=TRUE, eval=FALSE>>=
+dbuf <- ei("t","x","n",data=data)
+summary(dbuf)
+dbufsim <- ei.sim(dbuf)
+eiread(dbufsim, "betab","betaw")
+plot(dbufsim, "tomog","betab","betaw","xtfit")
+@
+
+\noindent In most applications, \verb#plot# and \verb#eiread# 
+would likely be run multiple times with different options chosen, and other commands would 
+be included with these five to read in the data (\verb#t#, \verb#x#, and \verb#n#).\\
+\newline
+ 
+\begin{itemize}
+\item{{\verb#ei#}: To run the main procedure}
+
+  Use the format, \verb#dbuf = ei("t","x","n",data=data)#, which takes three $
+  p\times 1$ vectors as inputs: \verb#t# (e.g. the fraction of the
+  voting age population turning out to vote); \verb#x# (e.g. the
+  fraction of the voting age population who are black); and \verb#n#
+  (e.g. the total number of people in the voting age population). The output of this
+  procedure is the list \verb#dbuf# (i.e. an output object of class
+  list called a ``data buffer'').  The data buffer includes the maximium likelihood estimates from the \verb#ei# procedure.  To simulate quantities of interest, then run \verb#dbufsim = ei.sim(dbuf)#. After running \verb#ei# and \verb#ei.sim#, it is a
+  good idea to save \verb#dbuf# and \verb#dbufsim#  on disk for further analysis.  The
+  output data buffer from \verb#ei# and \verb#ei.sim# includes a large variety of
+  different results useful for understanding the results of the
+  analysis. A minimal set of nonrepetitive information is stored in
+  this list (or data buffer), and a large variety of other information
+  can be easily computed from it. Fortunately, you do not need to know
+  whether the information
+  you request is stored or computed as both are treated the same.\\
+  \newline To extract information from the data buffer, three
+  procedures are available:
+
+\item{{\verb#summary#}: To obtain a general summary of district-level information}
+
+  \verb#summary(dbuf)# will produce aggregate information about the
+  \verb#ei# results.  If you have only run \verb#ei#, \verb#summary# will summarize the maximum likelihood estimates.  If you have run \verb#ei.sim#, \verb#summary# will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values
+  specified for the prior.
+
+\item{{\verb#plot#}: To graph relevant information}
+
+  For graphics, use \verb#plot(dbuf, "name")#;, where \verb#dbuf# is
+  the ei.object that is the output of \verb#ei# or \verb#ei.sim#, and name can be any number
+  of a long list of ready-made graphs.  For example,
+  \verb#plot(dbuf,"tomog")# will plot a tomography graph, and
+  \verb#plot(dbuf,"xt")# will display a scattercross graph. Any number
+  of graphs can be selected in plot for output.  For example,
+  \verb#plot(dbuf,"tomog","xt")# will produce both a tomography graph
+  and a scattercross graph.
+
+  Some of the plots can be produced after estimating the maximum likelihood estimates using \verb#ei#, but before simulating quantities of interest with \verb#ei.sim#. These initial plots can be useful in determining which priors to include. However, for some plots, \verb#plot# will need the simulated quantities of interest.  These plots only run on data buffers from \verb#ei.sim#. 
+  
+\item{{\verb#eiread#}: To obtain relevant information and numerical results}
+
+  For numerical information, use \verb#v <- eiread(dbuf, "name")#,
+  where \verb#v# is the item extracted, \verb#dbuf# is the data buffer
+  output from \verb#ei# or \verb#ei.sim#, and name can be any of a list of output
+  possibilities. For example, \verb#eiread(dbufsim, "betab")# will give a
+  vector of point estimates of $ \beta_i^b$,
+  \verb#eiread(dbufsim, "ci80w")# will give 80\% confidence intervals for
+  $ \beta_i^w$.  Any number of items can be selected for output.  For
+  example, \verb#eiread(dbufsim, "betab", "ci80b")# will produce a list
+  of the point estimates and 80\% confidence intervals for $
+  \beta_i^b$.
+
+\end{itemize}
+
+\section{User's Guide: An Example}
+
+We now show how to use \verb#EI# through a simple example. We use data
+on voter registration and racial background of people from 268
+counties in four Southern U.S. States: Florida, Louisiana, and South
+Carolina.  These are the same data used in Chapter 10. The data
+include the total voting age population in each county (\verb#n#), the
+proportion of the population in each county who are black (\verb#x#),
+and the proportion of the population in each county who are registered
+to vote (\verb#t#).  The proportion of whites registered can be
+computed by (\verb#1-x#). You can load the data into R using the
+command
+
+<<echo=TRUE>>=
+library(ei)
+data(matproii)
+@
+
+\noindent The statistical goal is to estimate the fraction of blacks registered ($\beta_i^b$) and the fraction of whites registered ($\beta_i^w$) in each county. These quantities of interest are generally unknown.  However, \verb#EI# also includes an option that allows the user to assess the reliability of the \verb#EI# algorithm when the true quantities of interest are known. To illustrate the use of this ``truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (\verb#tw#). 
+
+\subsection{The Basic EI Algorithm}
+
+To begin, we perform ecological inference by calling the function
+\verb#ei#. \verb#ei# first computes and maximizes a likelihood
+distribution based on the inputed data. Then we use the function \verb#ei.sim# to estimate county-level
+quantities of interest based on the possible values, or ``bounds", for
+each county and the overall likelihood distribution.  \\ \newline To
+run this algorithm, at a minimum we need to have three vectors.  Two
+vectors, \verb#t# and \verb#x#, contain the aggregate known
+information about the counties of interest.  In this example, \verb#t#
+is the proportion of voters registered in each county, and \verb#x# is
+the proportion of blacks in each county.  These two vectors contain
+aggregate information, since we are interested in the proportion of
+voters in each country who are black.  The last vector we need is
+\verb#n#, the number of people of interest in each county.  In this
+example, \verb#n# is the number of people of voting age.\\ \newline We
+proceed by performing ecological inference without covariates on the
+data:
+
+<<echo=TRUE>>=
+dbuf = ei("t","x","n",data=matproii)
+dbufsim = ei.sim(dbuf)
+@
+
+\noindent When the data argument is included, the arguments \verb#"t","x","n"# refer to names of the variables in the dataset and therefore must be strings. If the data argument is not specified, \verb#ei(t,x,n)# can be used where \verb#t,x# and \verb#n# are the vectors containing the data. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string that refers to the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string that refers to the name of the covariate in the dataset.\\
+\newline
+Next, we use \verb#summary(dbuf)#and \verb#summary(dbufsim)# to obtain general information about the estimation. 
+
+<<echo=TRUE, eval=FALSE>>=
+summary(dbufsim)
+@
+
+\begin{verbatim}
+Erho = 0.5 , Esigma = 0.5 , Ebeta = 0.5 , N = 268 , Resamp = 4
+
+Maximum likelihood results in scale of estimation (and se's)
+    Bb0    Bw0    sigB    sigW    rho Zb Zw
+ 1.2670 1.9348 -1.1151 -1.3272 1.6051  0  0
+ 0.2786 0.2764  0.2096  0.1616 0.3096  0  0
+
+Untruncated psi's
+     BB     BW    SB     SW    RHO
+ 0.9604 1.1264 0.327 0.2672 0.9202
+
+Truncated psi's (ultimate scale)
+     BB     BW     SB     SW    RHO
+ 0.6199 0.8261 0.1972 0.1418 0.7867
+
+Aggregate Bounds
+       betab  betaw
+lower 0.2125 0.7025
+upper 0.9754 0.9200
+
+Estimates of Aggregate Quantities of Interest
+     mean     sd
+Bb 0.5691 0.0137
+Bw 0.8183 0.0039
+\end{verbatim}
+
+\noindent The \verb#summary# function provides basic information about the ecological inference estimation, the maximum likelihood estimates on three scales, and an overall summary of the quantities of interest.  First, it reports the values of the priors used in ecological inference (\verb#Erho, Esigma, Ebeta#).  It also reports the number of counties in the dataset (\verb#N#), as well as the number of importance sampling iterations required to produce estimates of the quantities of interest (\verb#resamp#).  \\
+\newline
+When summary is used on a \verb#ei.sim# object, \verb#summary# produces information both about the maximum likelihood estimates and the quantities of interest.  First, it provides the maximum likelihood estimates in the scale of estimation. Next, it provides the values of the MLEs when they are transformed into an untruncated bivariate normal distribution.  These estimates provide information about the location of the highest density of estimates for the proportion of blacks who are registered to vote and the proportion of whites who are registered to vote.  Last, it provides the values of the MLEs on the ultimate truncated bivariate normal scale.  These estimates are an unweighted average of the fraction of blacks and whites registered to vote over all the counties in the sample.  In this example, the \verb#EI# algorithm predicts that the unweighted average of the proportion of blacks registered to vote across counties is 0.57 and the unweighted average of the proportion of whites registered to vote is 0.82.\\
+\newline
+Finally, \verb#summary# produces information on aggregrate quantities of interest.  The aggregate bounds are the mean of the bounds on the proportions of black and white voters, weighted by the population in each county.  The aggregate quantities of interest are the weighted mean of the proportion of registered blacks and the proportion of registered whites in each county.  In this example the weighted average proportion of blacks who are registered is 0.57, and the weighted average proportion of whites who are registered is 0.82.  
+
+\subsection{Extracting Quantities of Interest}
+
+\verb#eiread# extracts quantities of interest in a list format from the object \verb#dbuf#.  For example, 
+
+<<echo=TRUE>>=
+bb.out <- eiread(dbufsim, "betab", "sbetab")
+@
+
+\noindent extracts the point estimates and estimated standard deviations for $\beta_i^b$, the estimates of the proportion of registered blacks in each county.  The user can then use \verb#bb.out$betab# to obtain a vector of the point estimates for $\beta_i^b$, and \verb#bb.out$sbetab# to obtain a vector of the standard devations for $\beta_i^b$.  \\
+\newline
+\verb#eiread()# takes any number of arguments to extract any number of quantities of interest from the data buffer.  \verb#?eiread# can be used to find a list of quantities of interest that are available in \verb#EI#.  Among the most useful arguments are \verb#"betab"# and \verb#"betaw"#, which report the point estimates; \verb#"sbetab"# and \verb#"sbetaw"#, which report the standard deviations of the point estimates; and \verb#"CI80b# and \verb#"CI80w"#, which report the confidence intervals of the point estimates.  
+
+\subsection{Plotting in EI}
+
+Plotting \verb#EI# output is extremely useful for understanding the results of the ecological inference algorithm and diagnosing problems with estimation.  First, we graph a tomography plot of the data (Figure 1).
+
+<<echo=TRUE,eval=FALSE>>=
+plot(dbuf, "tomog")
+@
+
+\begin{figure}[h]
+\begin{center}
+<<results=tex,echo=FALSE>>= 
+pdf("tomogplot.pdf", width=6, height=6, pointsize=10)
+plot(dbuf, "tomog")
+invisible(dev.off())
+@
+\includegraphics[width=3in, height=3in,   viewport=0 0 420 395,clip]{tomogplot} 
+\end{center}
+\caption{Tomography Plot with ML Contours}
+\label{fig:tomog}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{center}
+<<results=tex,echo=FALSE>>= 
+pdf("tomogplot2.pdf", width=14, height=6, pointsize=10)
+plot(dbufsim, "tomogE", "tomogCI")
+invisible(dev.off())
+@
+\includegraphics[width=7.5in, height=2.5in,   viewport=0 0 1400 395,clip]{tomogplot2} 
+\end{center}
+\caption{Tomography Plots: Point Estimates (left) and Confidence
+  Intervals (right)}
+\label{fig:tomog2}
+\end{figure}
+
+\noindent Each line on the map represents the possible values for $\beta_i^b$ and $\beta_i^w$ for one county.  The contour lines identify the portion of the lines that have the highest probability of containing the true estimates of $\beta_i^b$ and $\beta_i^w$.  These contour lines provide information about the overall pattern of registration.  Note that the area with highest probability is in the upper right-hand corner, where the proportion of whites registered is between $0.75$ and $1$ and the proportion of blacks registered is between $0.5$ and $1$.  Further, we see that the lines are clustered in the upper half of the figure, indicating that the possible values of $\beta_i^w$ will have a lower variance than the possible values of $\beta_i^b$.\\
+\newline
+Figure 2 is a double plot of the point estimates and their confidence intervals.  To compute this, we call plot to generate two graphs: a tomography plot with the point estimates generated from the algorithm, and a tomography plot with 80\% confidence intervals on the point estimate.  
+
+<<echo=TRUE,eval=FALSE>>=
+plot(dbufsim, "tomogE","tomogCI")
+@
+
+\noindent This plot is useful to visualize the actual estimates and confidence intervals for each county.  We can see that the point estimates and confidence intervals are clustered in the same area as the contours from the previous plot.  Further, the point estimates and confidence intervals only fall on the lines that indicate the possible values of $\beta_i^b$ and $\beta_i^w$.\\
+\newline
+Figure 3 shows plots that indicate the distribution of $\beta_i^b$ and $\beta_i^w$. To produce these plots, run:
+
+<<echo=TRUE,eval=FALSE>>=
+plot(dbufsim, "betab","betaw")
+@
+
+\noindent Density plots are useful to visualize the location and uncertainty of the point estimates.  The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s $\beta_i^b$ and $\beta_i^w$.  You can see that the variance of the point estimates from $\beta_i^b$ is much higher than the variance of point estimates from $\beta_i^w$. \\ 
+\newline
+Figure 4 portrays the results of the \verb#EI# algorithm by plotting the proportion of blacks in each country by the proportion of registered voters in each county.  To produce this plot, use:
+
+<<echo=TRUE,eval=FALSE>>=
+plot(dbufsim, "xtfit")
+@
+
+\noindent The circles around each of the points in this plot are proportional to the population of each county.  The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80\% confidence interval around the regression line.  The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.  
+
+
+\begin{figure}[h]
+\begin{center}
+<<results=tex,echo=FALSE>>= 
+pdf("betas.pdf", width=14, height=6, pointsize=10)
+plot(dbufsim, "betab", "betaw")
+invisible(dev.off())
+@
+\includegraphics[width=8.5in, height=2.5in,   viewport=0 0 1400 395,clip]{betas} 
+\end{center}
+\caption{Plots with Distribution of Point Estimates for $\beta_i^b$
+  (left) and $\beta_i^w$ (right), for all $i$}
+\label{fig:betas}
+\end{figure}
+
+
+\begin{figure}[h]
+\begin{center}
+<<results=tex,echo=FALSE>>= 
+pdf("xtfit.pdf", width=6, height=6, pointsize=10)
+plot(dbufsim, "xtfit")
+invisible(dev.off())
+@
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 400,clip]{xtfit} 
+\end{center}
+\caption{X and T Scatterplot with E(T|X) and 80\% CIs}
+\label{fig:xtfit}
+\end{figure}
+
+\pagebreak
+\noindent Finally, if we have data on the true proportions of registered blacks and registered whites in each county, as we do in this dataset, we can use plots in \verb#EI# to assess how well the algorithm works on the given data.  To do this, rerun the \verb#ei# algorithm, adding the truth vectors, \verb#tb# and \verb#tw# as the truth argument.
+
+<<echo=TRUE>>=
+truth = cbind(matproii$tb,matproii$tw)
+dbuf = ei("t","x","n",data=matproii,truth=truth)
+dbufsim = ei.sim(dbuf)
+@
+
+\noindent Then use plot to compare the estimates of the \verb#EI# algorithm to the true proportions of white and black registered voters in each county.
+
+<<echo=TRUE, eval=FALSE>>=
+plot(dbufsim, "truth")
+@
+
+\noindent The ``truth" plot (Figure 5) has four components.  The top two figures have the posterior densities of the aggregate quantities of interest $B^b$ and $B^w$.  These densities tell us in what range the algorithm predicts that the point estimates lie.  For example, the density of $B^b$ is wider than the density of $B^w$, indicating that our estimates of $B^w$ lie in a smaller range than than our estimates of $B^b$.  The true aggregate values, computed from the \verb#truth# data we inputed, are indicated by the vertical bars.  The fact that the true $B^b$ and $B^w$ are within the densities we computed confirms that the model is did a good job at predicting the true proportions of registered white and black voters.\\
+\newline
+\noindent The bottom two figures in Figure 5 plot the estimated values of $\beta_i^b$ and $\beta_i^w$ against the true values.  The size of each of the circles plotted is proportional to the number of blacks in the county in the first graph and the number of whites in each county in the second graph. If the estimated values were exactly equal to the true values, all of the points would be on the $45^{\circ}$ line.  Because the points fall quite close to the $45^{\circ}$ and do not deviate from the line in a systematic way, we can see that the \verb#EI# algorithm predicts the point estimates quite well.
+
+\begin{figure}[Ht]
+\begin{center}
+<<results=tex,echo=FALSE>>= 
+pdf("truth2.pdf", width=6, height=6, pointsize=10)
+plot(dbufsim, "truth")
+invisible(dev.off())
+@
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{truth2} 
+\end{center}
+\caption{Comparing Estimates to the Truth at the County Level}
+\label{fig:truth}
+\end{figure}
+
+\clearpage
+
+\section{Plotting RxC Information: eiRxCplot}
+\noindent \verb#eiRxCplot# allows the user to include RxC information into the tomography plot in order to visualize the RxC dynamic in a 2x2 analysis. We illustrate this by using the data \verb#eiRxCsample# within the \verb#ei# package.  \verb#eiRxCsample# contains both demographic and turnout information for a district. The variable \verb#x# represents the proportion of non-whites in each precinct, the variable \verb#t# represents the proportion of people in each precinct that turned out to vote, and \verb#n# represents the total number of people in each precinct. The data also contain the variables \verb#whit.ei#, \verb#black.ei#, and \verb#hisp.ei#, which have the proportion of whites, blacks, and hispanics in each precinct.\\
+
+\noindent We might be interested in doing a 2x2 analysis to understand non-white vs. white turnout in each precinct. We could use \verb#ei# to run this analysis, as we did above:
+
+<<echo=TRUE>>=
+data(eiRxCsample)
+dbuf = ei("t","x","n",data=eiRxCsample)
+dbufsim = ei.sim(dbuf)
+@
+
+\noindent However,we might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as ``non-whites".  To visualize information in our analysis that comes from each different demographic group, we can use \verb#eiRxCplot#. 
+<<echo=TRUE, eval=FALSE>>=
+eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
+@
+
+\begin{figure}[h!]
+\begin{center}
+<<results=tex,echo=FALSE>>= 
+pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
+eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
+invisible(dev.off())
+@
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{eiRxCplot} 
+\end{center}
+\caption{Visualizing RxC information in a 2x2 Analysis}
+\label{fig:eiRxC}
+\end{figure}
+
+\noindent \verb#eiRxCplot# plots the same tomography plot that can be plotted using the command \verb#plot(dbuf)#, but also includes RxC information by coloring precincts that have over a certain threshold of one demographic group. For example, in Figure 6, we see that precincts that are more than 65\% black (colored in red) are very informative and have a non-white turnout rate of between 20\% and 60\%. There are fewer precincts that are more than 65\% hispanic (colored in blue), and these precincts have a non-white turnout rate between 0\% and 20\%.  As a result, the \verb#eiRxCplot# tells us two things. First, our results for non-white turnout are mainly driven by majority black precincts, rather than majority hispanic precincts. Second, black turnout in this district is generally higher than hispanic turnout. Even though our original analysis does not distinguish between black and hispanic groups, \verb#eiRxCplot# gives us a lot of information about the eiRxC dynamic within the district.
+
+\clearpage
+\section{Reference to EI Functions}
+\include{Rd/ei}
+\include{Rd/eiread}
+\include{Rd/plot.ei}
+\include{Rd/eiRxCplot}
+
+\bibliography{References}
+\label{bib}
+\begin{thebibliography}{6}
+
+\bibitem{gking}Gary King, \textsl{A Solution to the Ecological Inference Problem: 
+Reconstructing Individual Behaviour from Aggregate Data}, Princeton University Press (1997).
+
+\bibitem{harvardweb}Useful documentation also avalaible at \url{http://GKing.Harvard.Edu}.
+
+\bibitem{Rweb}For R language see \url{http://www.r-project.org}.
+
+\bibitem{statR}Venables, W.N.,and Ripley, B.D., \textsl{Statistics and Computing}, Springer (2002).
+
+
+\end{thebibliography}
+
+
+
+\end{document}
