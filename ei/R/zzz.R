@@ -204,10 +204,13 @@ if (Rfun==5){
   x <- ei.object$x
   t <- ei.object$t
   n <- ei.object$n
+  #Take out the bounds
   bounds <- bounds1(x,t,n)
   bbounds <- cbind(bounds[,1], bounds[,2])
   wbounds <- cbind(bounds[,4], bounds[,3])
+  #Number of precincts n
   n <- dim(bounds)[1]
+  #Plot
   plot(c(100,200), xlim=c(0,1), ylim=c(0,1), col="white",
        ylab="betaW", xlab="betaB", xaxs="i",yaxs="i",
        main="Tomography Plot")
@@ -218,7 +221,7 @@ if (Rfun==5){
 
 .tomogd <- function(x,t,n,title){
   bounds <- bounds1(x,t,n)
-  bbounds <- cbind(bounds[,1	], bounds[,2])
+  bbounds <- cbind(bounds[,1], bounds[,2])
   wbounds <- cbind(bounds[,4], bounds[,3])
   n <- dim(bounds)[1]
   plot(c(100,200), xlim=c(0,1), ylim=c(0,1),
@@ -289,6 +292,7 @@ if (Rfun==5){
    message("Error: This plot function requires an ei.sim object.")
   }
   if("betabs"%in% names(ei.object)){
+  #Only consider precincts that are heterogeneous
   ok <- !is.na(ei.object$betab)&!is.na(ei.object$betaw)
   x <- ei.object$x[ok]
   t <- ei.object$t[ok]
@@ -296,6 +300,7 @@ if (Rfun==5){
   betabs <- ei.object$betabs[ok,]
   betaws <- ei.object$betaws[ok,]
   .tomogd(x,t,n,"Tomography Plot with 80% CIs")
+  #Create confidence intervales
   betabcd <- apply(betabs,1,function(x) quantile(x, probs=c(.1,.9)))
   betawcd <- apply(betaws,1,function (x) quantile(x,probs=c(.1,.9)))
   n <- dim(betabcd)[2]
@@ -889,4 +894,552 @@ betaw", ylab="True betaw",cex=.1)
   return(coefs)
 }
 
+
+#Movie plots
+
+.movieD <- function(ei.object){
+  x <- ei.object$x
+  t <- ei.object$t
+  n <- ei.object$n
+  bounds <- bounds1(x,t,n)
+  bbounds <- cbind(bounds[,1], bounds[,2])
+  wbounds <- cbind(bounds[,4], bounds[,3])
+  n <- dim(bounds)[1]
+  plot(c(100,200), xlim=c(0,1), ylim=c(0,1), col="white",
+       ylab="betaW", xlab="betaB", xaxs="i",yaxs="i",
+       main="Tomography Plot")
+  input<-0
+  while(input!="s"){
+    input<-.tomogonce(input,last.input, ei.object)
+    last.input<-input
+    input<-.getinput()
+  }
+}
+.getinput <- function(){
+  readline("Hit <enter> for next observation, enter observation number, or hit <s> to stop: ")
+}
+
+.tomogonce <- function(input,last.input, ei.object){
+    x <- ei.object$x
+  t <- ei.object$t
+  n <- ei.object$n
+  bounds <- bounds1(x,t,n)
+  bbounds <- cbind(bounds[,1], bounds[,2])
+  wbounds <- cbind(bounds[,4], bounds[,3])
+  n <- dim(bounds)[1]
+  par(mfrow=c(1,1))
+  plot(c(100,200), xlim=c(0,1), ylim=c(0,1), col="white",
+       ylab="betaW", xlab="betaB", xaxs="i",yaxs="i",
+       main="Tomography Plot")
+  if(input==""){ #input is <enter>, plot next observation
+    last.input<-as.integer(last.input)
+    input<-last.input+1
+    for(i in 1:n){
+      lines(bbounds[i,], wbounds[i, ], col="yellow")
+    }  
+    lines(bbounds[input,], wbounds[input,], col="black")
+  }
+  else{ #input is observation number
+    input<-as.integer(input)
+    for(i in 1:n){
+      lines(bbounds[i,], wbounds[i,], col="yellow")
+    }
+    lines(bbounds[input,], wbounds[input,], col="black")
+  }
+  return(input)
+}
+
+#EI RxC Plots
+
+#########
+##Heat plot for the eiRxC case
+#########
+
+#form = formula
+#total = totals for each precinct
+#data = data
+#names = Names of groups in order: X-axis, Y-axis, Other
+#covariate = extra group or covariate to create colors in the plot for
+.heatplot <- function(dbuf){
+	require(sp)
+	form <- dbuf$formula
+    total <- dbuf$total
+    data <- dbuf$data
+    covariate <- NA
+	#Make the bounds
+	rows <- c(all.names(form)[6:(length(all.names(form)))])
+    names=rows
+    cols <- c(all.names(form)[3])
+    if(sum(data[,rows][,1]<1.1)==length(data[,rows][,1])){
+        data <- round(data*data[,total])
+}
+	#print(data[,cols])
+	bnds <- bounds(form, data=data,rows=rows, column =cols,threshold=0)
+
+	#Totals
+	dv <- data[, all.names(form)[3]]
+	#Assign other category
+	bndsoth <- bnds$bounds[[3]]
+	oth <- data[,all.names(form)[length(all.names(form))]]
+
+	#Assign x-axis category
+	bndsx <- bnds$bounds[[1]]
+	xcat <- data[,all.names(form)[6]]
+
+	#Assign y-axis category
+	bndsy <- bnds$bounds[[2]]
+	ycat <- data[,all.names(form)[7]]
+
+	#Minimums & Maximums
+	minx <- bndsx[,1]
+	miny <- bndsy[,1]
+	minoth <- bndsoth[,1]
+	maxx <- bndsx[,2]
+	maxy <- bndsy[,2]
+	maxoth <- bndsoth[,2]
+
+	#####
+	#Starting point when x is at minimum
+	##
+	#Holding x at its minimum, what are the bounds on y?
+	
+	#When x is at its minimum, the new dv and total are:
+	newdv <- dv - (minx*xcat)
+	newtot <- oth + ycat 
+	t <- newdv/newtot
+	y <- ycat/newtot
+	
+	#The new bounds on the y category are:
+
+	lby <- cbind(miny, (t - maxoth*oth/newtot)/(y))
+	lby[,2] <- ifelse(y==0, 0, lby[,2])
+	lowy <- apply(lby,1,max)
+	hby <- cbind((t-minoth*oth/newtot)/y,maxy)
+	highy <- apply(hby,1,min)
+
+	#####
+	#Starting point when x is at maximum
+	##
+	#Holding x at its maximum, what are the bounds on y?
+
+	#The new bounds on x are:
+	newtot <- oth + xcat
+	newdv <- dv - (miny*ycat)
+	x <- xcat/newtot
+	t <- newdv/newtot
+	lbx <- cbind(minx, (t-maxoth*oth/newtot)/x)
+	lbx[,2] <- ifelse(x==0, 0, lbx[,2])
+	lowx <- apply(lbx,1,max)
+	hbx <- cbind((t-minoth*oth/newtot)/x,maxx)
+	highx <- apply(hbx,1,min)
+
+	#Graph starting points
+	#High starting points
+	hstr <- cbind(minx, highy)
+	#High ending points
+	hend <- cbind(highx, miny)
+
+	#Low starting points
+	lstr <- cbind(minx, lowy)
+	lend <- cbind(lowx, miny)
+	if(!is.na(covariate)){
+		redg <- data[,covariate]/(oth-data[,covariate])/max(data[,covariate]/(oth-data[,covariate]))
+		blug <- 1-redg
+	}
+	if(is.na(covariate)){
+		redg <- rep(.5, length(minx))
+		blug <- rep(.5, length(minx))	
+	}
+
+	xl <- paste("Percent", names[1], "Vote Democrat")
+	yl <- paste("Percent", names[2], "Vote Democrat")
+	mn <- paste("Heat Plot in a 2x3 Table (", names[3], " Other Category)", sep="")
+
+
+
+
+ok <- !is.na(hstr[,2]) & !is.na(hend[,1])
+exp1 <- hstr[ok,2]>=maxy[ok]
+exp2 <- hend[ok,1]>=maxx[ok]
+exp3 <- lstr[ok,2]<=miny[ok]
+exp4 <- lend[ok,1]<=minx[ok]
+hstr <- hstr[ok,]
+hend <- hend[ok,]
+lstr <- lstr[ok,]
+lend <- lend[ok,]
+dv <- dv[ok]
+ycat <- ycat[ok]
+oth <- oth[ok]
+minoth <- minoth[ok]
+xcat <- xcat[ok]
+maxy <- maxy[ok]
+maxx <- maxx[ok]
+redg <- redg[ok]
+blug <- blug[ok]
+contourx <- seq(0,1,by=.01)
+contoury <- seq(0,1,by=.01)
+contourz <- matrix(0,nrow=length(contourx), ncol=length(contoury))
+for(i in 1:dim(hstr)[1]){
+	if((exp1[i] + exp2[i] + exp3[i] + exp4[i])==0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],lend[i,1],hend[i,1])
+		yaxs <- c(hstr[i,2], lstr[i,2],lend[i,2], hend[i,2])
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
+		#if(area>0 & !is.nan(area)){alpha = .5-.5*area}
+			if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		for(j in 1:length(as.vector(contourx))){
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+	}
+	}
+	if((exp1[i]==1) & (exp2[i])==0){
+		cut <- (dv[i]-(oth[i])*minoth[i])/xcat[i] - maxy[i]*ycat[i]/xcat[i]
+		kink1x <- c(cut)
+		kink1y <- c(maxy[i])
+		}
+	if((exp2[i]==1) & (exp1[i])==0){
+		cut <- (dv[i]-(oth[i])*minoth[i])/ycat[i] - maxx[i]*xcat[i]/ycat[i]
+		kink1x <- c(maxx[i])
+		kink1y <- c(cut)
+	}
+	if((exp2[i]==1 & exp1[i]==1)){
+		cut <- (dv[i]-(oth[i])*minoth[i])/ycat[i] - maxx[i]*xcat[i]/ycat[i]
+		cut2 <- (dv[i]-(oth[i])*minoth[i])/xcat[i] - maxy[i]*ycat[i]/xcat[i]
+		kink1x <- c(maxx[i], cut2)
+		kink1y <- c(cut, maxy[i])
+	}
+	if((exp3[i]==1) & (exp4[i])==0){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/xcat[i] - miny[i]*ycat[i]/xcat[i]
+		kink2x <- c(cut)
+		kink2y <- c(miny[i])
+		}
+	if((exp4[i]==1) & (exp3[i])==0){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/ycat[i] - minx[i]*xcat[i]/ycat[i]
+		kink2x <- c(minx[i])
+		kink2y <- c(cut)
+	}
+	if((exp3[i]==1 & exp4[i]==1)){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/ycat[i] - minx[i]*xcat[i]/ycat[i]
+		cut2 <- (dv[i]-(oth[i])*maxoth[i])/xcat[i] - miny[i]*ycat[i]/xcat[i]
+		kink2x <- c(minx[i], cut2)
+		kink2y <- c(cut, miny[i])
+	}
+	if((exp3[i] + exp4[i])==0 & (exp1[i] + exp2[i] + exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],lend[i,1],hend[i,1], kink1x)
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],lend[i,2], hend[i,2], kink1y)
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+	c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
+			if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}
+
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		for(j in 1:length(as.vector(contourx))){
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+	}
+		
+	}
+	if((exp1[i] + exp2[i])==0 & (exp1[i] + exp2[i] + exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],kink2x,lend[i,1],hend[i,1])
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],kink2y,lend[i,2], hend[i,2])
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
+			if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		for(j in 1:length(as.vector(contourx))){
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+	}	}
+	if((exp1[i] + exp2[i])!=0 & (exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],kink2x,lend[i,1],hend[i,1], kink1x)
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],kink2y,lend[i,2], hend[i,2], kink1y)
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
+		if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}	
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		for(j in 1:length(as.vector(contourx))){
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+	}
+	}
+	}
+	#cz <- heatplot(form, data$total.ei, data, c("White", "Hispanic", "Black"), .05, b=b)
+image(contourx[2:100], contoury[2:100], contourz[2:100,2:100], , col=sort(heat.colors(100), decreasing=T), xlab=xl, ylab=yl, main=mn)
+contour(contourx[2:100], contoury[2:100], contourz[2:100,2:100], nlevels=20, method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"))
+	}
+
+
+############
+##Bounds plot for eiRxC case
+############
+
+#form = formula
+#total = totals for each precinct
+#data = data
+#names = Names of groups in order: X-axis, Y-axis, Other
+#covariate = extra group or covariate to create colors in the plot for
+.bndplot <- function(dbuf){
+		require(sp)
+	form <- dbuf$formula
+    total <- dbuf$total
+    data <- dbuf$data
+    n <- nrow(data)
+    print(n)
+    covariate <- NA
+	#Make the bounds
+	rows <- c(all.names(form)[6:(length(all.names(form)))])
+    names=rows
+    cols <- c(all.names(form)[3])
+    if(sum(data[,rows][,1]<1.1)==length(data[,rows][,1])){
+        data <- round(data*data[,total])
+}
+	bnds <- bounds(form, data=data, rows=rows, column =cols,threshold=0)
+    
+	#Totals
+	dv <- data[, all.names(form)[3]]
+
+	#Assign other category
+	bndsoth <- bnds$bounds[[3]]
+	oth <- data[,all.names(form)[length(all.names(form))]]
+
+	#Assign x-axis category
+	bndsx <- bnds$bounds[[1]]
+	xcat <- data[,all.names(form)[6]]
+
+	#Assign y-axis category
+	bndsy <- bnds$bounds[[2]]
+	ycat <- data[,all.names(form)[7]]
+
+	#Minimums & Maximums
+	minx <- bndsx[,1]
+	miny <- bndsy[,1]
+	minoth <- bndsoth[,1]
+	maxx <- bndsx[,2]
+	maxy <- bndsy[,2]
+	maxoth <- bndsoth[,2]
+
+	#####
+	#Starting point when x is at minimum
+	##
+	#Holding x at its minimum, what are the bounds on y?
+	
+	#When x is at its minimum, the new dv and total are:
+	newdv <- dv - (minx*xcat)
+	newtot <- oth + ycat 
+	t <- newdv/newtot
+	y <- ycat/newtot
+	
+	#The new bounds on the y category are:
+	lby <- cbind(miny, (t - maxoth*oth/newtot)/(y))
+	lby[,2] <- ifelse(y==0, 0, lby[,2])
+	lowy <- apply(lby,1,max)
+	hby <- cbind((t-minoth*oth/newtot)/y,maxy)
+	highy <- apply(hby,1,min)
+
+	####
+	#Starting point when x is at maximum
+	##
+	#Holding x at its maximum, what are the bounds on y?
+	#The new bounds on x are:
+	newtot <- oth + xcat
+	newdv <- dv - (miny*ycat)
+	x <- xcat/newtot
+	t <- newdv/newtot
+	lbx <- cbind(minx, (t-maxoth*oth/newtot)/x)
+	lbx[,2] <- ifelse(x==0, 0, lbx[,2])
+	lowx <- apply(lbx,1,max)
+	hbx <- cbind((t-minoth*oth/newtot)/x,maxx)
+	highx <- apply(hbx,1,min)
+
+	###
+	#Graph starting points
+	####
+
+	#High starting points
+	hstr <- cbind(minx, highy)
+	#High ending points
+	hend <- cbind(highx, miny)
+
+	#Low starting points
+	lstr <- cbind(minx, lowy)
+	lend <- cbind(lowx, miny)
+	
+	#Colors for covariates
+	if(!is.na(covariate)){
+		redg <- data[,covariate]/(oth-data[,covariate])/max(data[,covariate]/(oth-data[,covariate]))
+		blug <- 1-redg
+	}
+	if(is.na(covariate)){
+		redg <- rep(.5, length(minx))
+		blug <- rep(.5, length(minx))	
+	}
+	
+	#Graph labels
+	xl <- paste("Percent", names[1], "Vote Democrat")
+	yl <- paste("Percent", names[2], "Vote Democrat")
+	mn <- paste("Tomography Plot in a 2x3 Table (", names[3], " Other Category)", sep="")
+	
+	#Initial plot
+	plot(c(0,0), xlim=c(0,1), ylim=c(0,1), xaxs="i", yaxs="i",xlab=xl, ylab=yl, col="white", main=mn)
+
+	#Only non-NA starting pts are OK
+	ok <- !is.na(hstr[,2]) & !is.na(hend[,1])
+	
+	#All different types of polygons
+	exp1 <- hstr[ok,2]>=maxy[ok]
+	exp2 <- hend[ok,1]>=maxx[ok]
+	exp3 <- lstr[ok,2]<=miny[ok]
+	exp4 <- lend[ok,1]<=minx[ok]
+	
+	#Subsets all the variables
+	hstr <- hstr[ok,]
+	hend <- hend[ok,]
+	lstr <- lstr[ok,]
+	lend <- lend[ok,]
+	dv <- dv[ok]
+	ycat <- ycat[ok]
+	oth <- oth[ok]
+	minoth <- minoth[ok]
+	xcat <- xcat[ok]
+	maxy <- maxy[ok]
+	maxx <- maxx[ok]
+	redg <- redg[ok]
+	blug <- blug[ok]
+	
+for(i in 1:dim(hstr)[1]){
+	#4 corner polygon
+	if((exp1[i] + exp2[i] + exp3[i] + exp4[i])==0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],lend[i,1],hend[i,1])
+		yaxs <- c(hstr[i,2], lstr[i,2],lend[i,2], hend[i,2])
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
+		#if(area>0 & !is.nan(area)){alpha = .5-.5*area}
+		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.83}
+		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		polygon(xaxs,yaxs, col=rgb(redg[i],0,blug[i],alpha=alpha), border=rgb(redg[i],0,blug[i],alpha=1), lty=2)
+	}
+	
+	#Create more corners
+	if((exp1[i]==1) & (exp2[i])==0){
+		cut <- (dv[i]-(oth[i])*minoth[i])/xcat[i] - maxy[i]*ycat[i]/xcat[i]
+		kink1x <- c(cut)
+		kink1y <- c(maxy[i])
+		}
+	if((exp2[i]==1) & (exp1[i])==0){
+		cut <- (dv[i]-(oth[i])*minoth[i])/ycat[i] - maxx[i]*xcat[i]/ycat[i]
+		kink1x <- c(maxx[i])
+		kink1y <- c(cut)
+	}
+	if((exp2[i]==1 & exp1[i]==1)){
+		cut <- (dv[i]-(oth[i])*minoth[i])/ycat[i] - maxx[i]*xcat[i]/ycat[i]
+		cut2 <- (dv[i]-(oth[i])*minoth[i])/xcat[i] - maxy[i]*ycat[i]/xcat[i]
+		kink1x <- c(maxx[i], cut2)
+		kink1y <- c(cut, maxy[i])
+	}
+	if((exp3[i]==1) & (exp4[i])==0){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/xcat[i] - miny[i]*ycat[i]/xcat[i]
+		kink2x <- c(cut)
+		kink2y <- c(miny[i])
+		}
+	if((exp4[i]==1) & (exp3[i])==0){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/ycat[i] - minx[i]*xcat[i]/ycat[i]
+		kink2x <- c(minx[i])
+		kink2y <- c(cut)
+	}
+	if((exp3[i]==1 & exp4[i]==1)){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/ycat[i] - minx[i]*xcat[i]/ycat[i]
+		cut2 <- (dv[i]-(oth[i])*maxoth[i])/xcat[i] - miny[i]*ycat[i]/xcat[i]
+		kink2x <- c(minx[i], cut2)
+		kink2y <- c(cut, miny[i])
+	}
+	
+	#Plot 5-sided polygon
+	if((exp3[i] + exp4[i])==0 & (exp1[i] + exp2[i] + exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],lend[i,1],hend[i,1], kink1x)
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],lend[i,2], hend[i,2], kink1y)
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+	c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
+		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.53}
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		polygon(xaxs,yaxs, col=rgb(redg[i],0,blug[i],alpha=alpha), border=rgb(redg[i],0,blug[i],alpha=1), lty=2)
+		
+	}
+	
+	#Another 5-sided polygon
+	if((exp1[i] + exp2[i])==0 & (exp1[i] + exp2[i] + exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],kink2x,lend[i,1],hend[i,1])
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],kink2y,lend[i,2], hend[i,2])
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.53}
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		polygon(xaxs,yaxs, col=rgb(redg[i],0,blug[i],alpha=alpha), border=rgb(redg[i],0,blug[i],alpha=1), lty=2)
+	}
+	
+	#Plot 6-sided polygons
+	if((exp1[i] + exp2[i])!=0 & (exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],kink2x,lend[i,1],hend[i,1], kink1x)
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],kink2y,lend[i,2], hend[i,2], kink1y)
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
+		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.53}	
+		if(area==0 | is.nan(area)){alpha=.05}
+		border = alpha 
+		polygon(xaxs,yaxs, col=rgb(redg[i],0,blug[i],alpha=alpha), border=rgb(redg[i],0,blug[i],alpha=1), lty=2)
+		}
+	}
+}
+
+
+	
 
