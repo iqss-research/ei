@@ -5,7 +5,39 @@
 
 #@Rfun specifies function used to calculate R in the likelihood
 
-ei <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
+  ei <- function(formula, total, Zb,Zw, data=NA, erho=.5, esigma=.5,
+               ebeta=.5, ealphab=NA, ealphaw=NA, truth=NA, covariate=NULL, lambda1=4, lambda2=2, covariate.prior.list=NULL, tune.list=NULL, start.list=NULL, sample=1000, thin=1, burnin=1000, verbose=0, ret.beta="r", ret.mcmc=TRUE, usrfun=NULL){
+    #Extract formula
+    dv <- terms.formula(formula)[[2]]
+    iv <- terms.formula(formula)[[3]]
+    t <- as.character(dv)
+    x <- as.character(iv)
+    n <- as.character(total)
+    
+    if(length(dv)==1){
+    print("Running 2x2 ei")
+    #If the table is two by two, use ei
+    dbuf <- tryCatch(tryCatch(ei.estimate(t,x, n,
+                        data=data, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth), error=function(x) ei(t,x,n,
+                                      data=data, erho=3,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)), error=function(x) ei.estimate(t,x,n,
+                                      data=data, erho=5,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth))
+    dbuf.sim <- ei.sim(dbuf)
+    return(dbuf.sim)
+  }
+
+    if(length(dv)>1){
+    print("Running eiRxC")
+    #If the table is RxC use eiRxC
+    dbuf <- ei.MD.bayes(formula, data=data, total=total, covariate=covariate, lambda1=lambda1, lambda2=lambda2, covariate.prior.list=covariate.prior.list, tune.list=tune.list, start.list=start.list, sample=sample, thin=thin, burnin=burnin, verbose=verbose, ret.beta=ret.beta, ret.mcmc=ret.mcmc, usrfun=usrfun)
+    dbuf$data <- data
+    dbuf$total <- n
+    dbuf$formula <- formula
+    return(dbuf)
+  }
+
+}
+
+ei.estimate <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
                ealphab=NA, ealphaw=NA, truth=NA, Rfun=2, precision=4){
 
 #Check to make sure data is not null
