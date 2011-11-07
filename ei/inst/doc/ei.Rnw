@@ -129,11 +129,11 @@ interactively, or in batch mode as a regular R program.  An example of
 a sequence of these commands are as follows:
 
 <<echo=TRUE, eval=FALSE>>=
-dbuf <- ei("t","x","n",data=data)
+formula = t ~ x
+dbuf <- ei(formula=formula,total="n",data=data)
 summary(dbuf)
-dbufsim <- ei.sim(dbuf)
-eiread(dbufsim, "betab","betaw")
-plot(dbufsim, "tomog","betab","betaw","xtfit")
+eiread(dbuf, "betab","betaw")
+plot(dbuf, "tomog","betab","betaw","xtfit")
 @
 
 \noindent In most applications, \verb#plot# and \verb#eiread# 
@@ -144,7 +144,7 @@ be included with these five to read in the data (\verb#t#, \verb#x#, and \verb#n
 \begin{itemize}
 \item{{\verb#ei#}: To run the main procedure}
 
-  Use the format, \verb#dbuf = ei("t","x","n",data=data)#, which takes three $
+  Use the format, \verb#dbuf = ei(formula,total="n",data=data)#, which takes three $
   p\times 1$ vectors as inputs: \verb#t# (e.g. the fraction of the
   voting age population turning out to vote); \verb#x# (e.g. the
   fraction of the voting age population who are black); and \verb#n#
@@ -236,8 +236,8 @@ proceed by performing ecological inference without covariates on the
 data:
 
 <<echo=TRUE>>=
-dbuf = ei("t","x","n",data=matproii)
-dbufsim = ei.sim(dbuf)
+formula = t ~ x
+dbuf = ei(formula=formula,total="n",data=matproii)
 @
 
 \noindent When the data argument is included, the arguments \verb#"t","x","n"# refer to names of the variables in the dataset and therefore must be strings. If the data argument is not specified, \verb#ei(t,x,n)# can be used where \verb#t,x# and \verb#n# are the vectors containing the data. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string that refers to the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string that refers to the name of the covariate in the dataset.\\
@@ -245,7 +245,7 @@ dbufsim = ei.sim(dbuf)
 Next, we use \verb#summary(dbuf)#and \verb#summary(dbufsim)# to obtain general information about the estimation. 
 
 <<echo=TRUE, eval=FALSE>>=
-summary(dbufsim)
+summary(dbuf)
 @
 
 \begin{verbatim}
@@ -286,7 +286,7 @@ Finally, \verb#summary# produces information on aggregrate quantities of interes
 \verb#eiread# extracts quantities of interest in a list format from the object \verb#dbuf#.  For example, 
 
 <<echo=TRUE>>=
-bb.out <- eiread(dbufsim, "betab", "sbetab")
+bb.out <- eiread(dbuf, "betab", "sbetab")
 @
 
 \noindent extracts the point estimates and estimated standard deviations for $\beta_i^b$, the estimates of the proportion of registered blacks in each county.  The user can then use \verb#bb.out$betab# to obtain a vector of the point estimates for $\beta_i^b$, and \verb#bb.out$sbetab# to obtain a vector of the standard devations for $\beta_i^b$.  \\
@@ -319,7 +319,7 @@ invisible(dev.off())
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("tomogplot2.pdf", width=14, height=6, pointsize=10)
-plot(dbufsim, "tomogE", "tomogCI")
+plot(dbuf, "tomogE", "tomogCI")
 invisible(dev.off())
 @
 \includegraphics[width=7.5in, height=2.5in,   viewport=0 0 1400 395,clip]{tomogplot2} 
@@ -334,7 +334,7 @@ invisible(dev.off())
 Figure 2 is a double plot of the point estimates and their confidence intervals.  To compute this, we call plot to generate two graphs: a tomography plot with the point estimates generated from the algorithm, and a tomography plot with 80\% confidence intervals on the point estimate.  
 
 <<echo=TRUE,eval=FALSE>>=
-plot(dbufsim, "tomogE","tomogCI")
+plot(dbuf, "tomogE","tomogCI")
 @
 
 \noindent This plot is useful to visualize the actual estimates and confidence intervals for each county.  We can see that the point estimates and confidence intervals are clustered in the same area as the contours from the previous plot.  Further, the point estimates and confidence intervals only fall on the lines that indicate the possible values of $\beta_i^b$ and $\beta_i^w$.\\
@@ -342,7 +342,7 @@ plot(dbufsim, "tomogE","tomogCI")
 Figure 3 shows plots that indicate the distribution of $\beta_i^b$ and $\beta_i^w$. To produce these plots, run:
 
 <<echo=TRUE,eval=FALSE>>=
-plot(dbufsim, "betab","betaw")
+plot(dbuf, "betab","betaw")
 @
 
 \noindent Density plots are useful to visualize the location and uncertainty of the point estimates.  The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s $\beta_i^b$ and $\beta_i^w$.  You can see that the variance of the point estimates from $\beta_i^b$ is much higher than the variance of point estimates from $\beta_i^w$. \\ 
@@ -350,7 +350,7 @@ plot(dbufsim, "betab","betaw")
 Figure 4 portrays the results of the \verb#EI# algorithm by plotting the proportion of blacks in each country by the proportion of registered voters in each county.  To produce this plot, use:
 
 <<echo=TRUE,eval=FALSE>>=
-plot(dbufsim, "xtfit")
+plot(dbuf, "xtfit")
 @
 
 \noindent The circles around each of the points in this plot are proportional to the population of each county.  The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80\% confidence interval around the regression line.  The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.  
@@ -375,7 +375,7 @@ invisible(dev.off())
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("xtfit.pdf", width=6, height=6, pointsize=10)
-plot(dbufsim, "xtfit")
+plot(dbuf, "xtfit")
 invisible(dev.off())
 @
 \includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 400,clip]{xtfit} 
@@ -389,14 +389,14 @@ invisible(dev.off())
 
 <<echo=TRUE>>=
 truth = cbind(matproii$tb,matproii$tw)
-dbuf = ei("t","x","n",data=matproii,truth=truth)
-dbufsim = ei.sim(dbuf)
+formula = t ~ x
+dbuf = ei(formula=formula,total="n",data=matproii,truth=truth)
 @
 
 \noindent Then use plot to compare the estimates of the \verb#EI# algorithm to the true proportions of white and black registered voters in each county.
 
 <<echo=TRUE, eval=FALSE>>=
-plot(dbufsim, "truth")
+plot(dbuf, "truth")
 @
 
 \noindent The ``truth" plot (Figure 5) has four components.  The top two figures have the posterior densities of the aggregate quantities of interest $B^b$ and $B^w$.  These densities tell us in what range the algorithm predicts that the point estimates lie.  For example, the density of $B^b$ is wider than the density of $B^w$, indicating that our estimates of $B^w$ lie in a smaller range than than our estimates of $B^b$.  The true aggregate values, computed from the \verb#truth# data we inputed, are indicated by the vertical bars.  The fact that the true $B^b$ and $B^w$ are within the densities we computed confirms that the model is did a good job at predicting the true proportions of registered white and black voters.\\
@@ -407,7 +407,7 @@ plot(dbufsim, "truth")
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("truth2.pdf", width=6, height=6, pointsize=10)
-plot(dbufsim, "truth")
+plot(dbuf, "truth")
 invisible(dev.off())
 @
 \includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{truth2} 
@@ -425,20 +425,20 @@ invisible(dev.off())
 
 <<echo=TRUE>>=
 data(eiRxCsample)
-dbuf = ei("t","x","n",data=eiRxCsample)
-dbufsim = ei.sim(dbuf)
+formula = t ~ x
+dbuf = ei(formula=formula,total="n",data=eiRxCsample)
 @
 
 \noindent However,we might be interested in whether black turnout is different from hispanic turnout, even though we have grouped them together in our 2x2 analysis as ``non-whites".  To visualize information in our analysis that comes from each different demographic group, we can use \verb#eiRxCplot#. 
 <<echo=TRUE, eval=FALSE>>=
-eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
+eiRxCplot(dbuf, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
 @
 
 \begin{figure}[h!]
 \begin{center}
 <<results=tex,echo=FALSE>>= 
 pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
-eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
+eiRxCplot(dbuf, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
 invisible(dev.off())
 @
 \includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{eiRxCplot} 

@@ -48,9 +48,9 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 }
 \examples{
 data(eiRxCsample)
-dbuf <- ei("t","x","n",data=eiRxCsample)
-dbufsim <- ei.sim(dbuf)
-eiRxCplot(dbufsim, groups=c("black.ei", "whit.ei", "hisp.ei"), data=eiRxCsample,
+formula = t ~ x
+dbuf <- ei(formula=formula, total="n",data=eiRxCsample)
+eiRxCplot(dbuf, groups=c("black.ei", "whit.ei", "hisp.ei"), data=eiRxCsample,
 groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White
 Turnout", xaxis="Non-white", yaxis="White")
 }
