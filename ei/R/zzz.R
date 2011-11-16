@@ -1057,7 +1057,6 @@ betaw", ylab="True betaw",cex=.1)
 
 
 
-
 ok <- !is.na(hstr[,2]) & !is.na(hend[,1])
 exp1 <- hstr[ok,2]>=maxy[ok]
 exp2 <- hend[ok,1]>=maxx[ok]
@@ -1076,8 +1075,8 @@ maxy <- maxy[ok]
 maxx <- maxx[ok]
 redg <- redg[ok]
 blug <- blug[ok]
-contourx <- seq(0,1,by=.01)
-contoury <- seq(0,1,by=.01)
+contourx <- seq(0,1,by=.001)
+contoury <- seq(0,1,by=.001)
 contourz <- matrix(0,nrow=length(contourx), ncol=length(contoury))
 for(i in 1:dim(hstr)[1]){
 	if((exp1[i] + exp2[i] + exp3[i] + exp4[i])==0){
@@ -1185,9 +1184,8 @@ for(i in 1:dim(hstr)[1]){
 	}
 	}
 	}
-	#cz <- heatplot(form, data$total.ei, data, c("White", "Hispanic", "Black"), .05, b=b)
-image(contourx[2:100], contoury[2:100], contourz[2:100,2:100], , col=sort(heat.colors(100), decreasing=T), xlab=xl, ylab=yl, main=mn)
-contour(contourx[2:100], contoury[2:100], contourz[2:100,2:100], nlevels=20, method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"))
+image(contourx[2:1000], contoury[2:1000], contourz[2:1000,2:1000], , col=sort(heat.colors(100), decreasing=T), xlab=xl, ylab=yl, main=mn)
+contour(contourx[2:1000], contoury[2:1000], contourz[2:1000,2:1000], nlevels=20, method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"))
 	}
 
 
@@ -1341,7 +1339,7 @@ for(i in 1:dim(hstr)[1]){
 		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
 		#if(area>0 & !is.nan(area)){alpha = .5-.5*area}
 		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.83}
-		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		if(area>0 & !is.nan(area)){alpha = min(.5/(area*(n)),1)}
 		if(area==0 | is.nan(area)){alpha=.05}
 		border = alpha 
 		polygon(xaxs,yaxs, col=rgb(redg[i],0,blug[i],alpha=alpha), border=rgb(redg[i],0,blug[i],alpha=1), lty=2)
@@ -1393,7 +1391,7 @@ for(i in 1:dim(hstr)[1]){
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
 		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
-		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		if(area>0 & !is.nan(area)){alpha = min(.5/(area*(n)),1)}
 		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.53}
 		if(area==0 | is.nan(area)){alpha=.05}
 		border = alpha 
@@ -1412,7 +1410,7 @@ for(i in 1:dim(hstr)[1]){
 		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
-		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		if(area>0 & !is.nan(area)){alpha = min(.5/(area*(n)),1)}
 		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.53}
 		if(area==0 | is.nan(area)){alpha=.05}
 		border = alpha 
@@ -1431,7 +1429,7 @@ for(i in 1:dim(hstr)[1]){
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
 		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
-		if(area>0 & !is.nan(area)){alpha = .5/(area*(n))}
+		if(area>0 & !is.nan(area)){alpha = min(.5/(area*(n)),1)}
 		#if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*.53}	
 		if(area==0 | is.nan(area)){alpha=.05}
 		border = alpha 
