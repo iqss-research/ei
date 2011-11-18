@@ -32,6 +32,7 @@
     dbuf$data <- data
     dbuf$total <- n
     dbuf$formula <- formula
+    class(dbuf) <- "ei"
     return(dbuf)
   }
 
