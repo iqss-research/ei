@@ -960,7 +960,7 @@ betaw", ylab="True betaw",cex=.1)
 #data = data
 #names = Names of groups in order: X-axis, Y-axis, Other
 #covariate = extra group or covariate to create colors in the plot for
-.heatplot <- function(dbuf){
+heatplot <- function(dbuf, refine=100){
 	require(sp)
 	form <- dbuf$formula
     total <- dbuf$total
@@ -1042,19 +1042,12 @@ betaw", ylab="True betaw",cex=.1)
 	#Low starting points
 	lstr <- cbind(minx, lowy)
 	lend <- cbind(lowx, miny)
-	if(!is.na(covariate)){
-		redg <- data[,covariate]/(oth-data[,covariate])/max(data[,covariate]/(oth-data[,covariate]))
-		blug <- 1-redg
-	}
-	if(is.na(covariate)){
-		redg <- rep(.5, length(minx))
-		blug <- rep(.5, length(minx))	
-	}
 
 	xl <- paste("Percent", names[1], "Vote Democrat")
 	yl <- paste("Percent", names[2], "Vote Democrat")
 	mn <- paste("Heat Plot in a 2x3 Table (", names[3], " Other Category)", sep="")
 
+plot(c(0,0), xlim=c(0,1), ylim=c(0,1), xaxs="i", yaxs="i",xlab=xl, ylab=yl, col="white", main=mn)
 
 
 ok <- !is.na(hstr[,2]) & !is.na(hend[,1])
@@ -1073,10 +1066,8 @@ minoth <- minoth[ok]
 xcat <- xcat[ok]
 maxy <- maxy[ok]
 maxx <- maxx[ok]
-redg <- redg[ok]
-blug <- blug[ok]
-contourx <- seq(0,1,by=.001)
-contoury <- seq(0,1,by=.001)
+contourx <- seq(0,1,by=1/refine)
+contoury <- seq(0,1,by=1/refine)
 contourz <- matrix(0,nrow=length(contourx), ncol=length(contoury))
 for(i in 1:dim(hstr)[1]){
 	if((exp1[i] + exp2[i] + exp3[i] + exp4[i])==0){
@@ -1087,13 +1078,9 @@ for(i in 1:dim(hstr)[1]){
 		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
-		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
-		#if(area>0 & !is.nan(area)){alpha = .5-.5*area}
-			if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}
-		if(area==0 | is.nan(area)){alpha=.05}
-		border = alpha 
 		for(j in 1:length(as.vector(contourx))){
-			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
+        
 	}
 	}
 	if((exp1[i]==1) & (exp2[i])==0){
@@ -1135,16 +1122,12 @@ for(i in 1:dim(hstr)[1]){
 		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
 		side1 <- c(xaxs,xaxs[1])
 		side2 <- c(yaxs,yaxs[1])
-	c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+	    c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
-		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
-			if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}
-
-		if(area==0 | is.nan(area)){alpha=.05}
-		border = alpha 
 		for(j in 1:length(as.vector(contourx))){
-			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
+         
 	}
 		
 	}
@@ -1158,12 +1141,8 @@ for(i in 1:dim(hstr)[1]){
 		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
-		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
-			if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}
-		if(area==0 | is.nan(area)){alpha=.05}
-		border = alpha 
 		for(j in 1:length(as.vector(contourx))){
-			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
 	}	}
 	if((exp1[i] + exp2[i])!=0 & (exp3[i] + exp4[i])!=0){
 		xaxs <- c(hstr[i,1],  lstr[i,1],kink2x,lend[i,1],hend[i,1], kink1x)
@@ -1175,17 +1154,93 @@ for(i in 1:dim(hstr)[1]){
 		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
-		#if(area>0 & !is.nan(area)){alpha = 1/(1+b*area)}
-		if(area>0 & !is.nan(area)){alpha = ((1-area)^(3)+.2)*99/120}	
-		if(area==0 | is.nan(area)){alpha=.05}
-		border = alpha 
 		for(j in 1:length(as.vector(contourx))){
-			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1,0)
+			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
 	}
 	}
 	}
-image(contourx[2:1000], contoury[2:1000], contourz[2:1000,2:1000], , col=sort(heat.colors(100), decreasing=T), xlab=xl, ylab=yl, main=mn)
-contour(contourx[2:1000], contoury[2:1000], contourz[2:1000,2:1000], nlevels=20, method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"))
+image(contourx[2:refine], contoury[2:refine], contourz[2:refine,2:refine], , col=sort(heat.colors(refine), decreasing=T), xlab=xl, ylab=yl, main=mn, xlim=c(0,1), add=T)
+for(i in 1:dim(hstr)[1]){
+	if((exp1[i] + exp2[i] + exp3[i] + exp4[i])==0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],lend[i,1],hend[i,1])
+		yaxs <- c(hstr[i,2], lstr[i,2],lend[i,2], hend[i,2])
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+        polygon(xaxs,yaxs, col=rgb(0,0,0,alpha=0), border="black", lty=1, lwd=.25)
+	}
+	if((exp1[i]==1) & (exp2[i])==0){
+		cut <- (dv[i]-(oth[i])*minoth[i])/xcat[i] - maxy[i]*ycat[i]/xcat[i]
+		kink1x <- c(cut)
+		kink1y <- c(maxy[i])
+		}
+	if((exp2[i]==1) & (exp1[i])==0){
+		cut <- (dv[i]-(oth[i])*minoth[i])/ycat[i] - maxx[i]*xcat[i]/ycat[i]
+		kink1x <- c(maxx[i])
+		kink1y <- c(cut)
+	}
+	if((exp2[i]==1 & exp1[i]==1)){
+		cut <- (dv[i]-(oth[i])*minoth[i])/ycat[i] - maxx[i]*xcat[i]/ycat[i]
+		cut2 <- (dv[i]-(oth[i])*minoth[i])/xcat[i] - maxy[i]*ycat[i]/xcat[i]
+		kink1x <- c(maxx[i], cut2)
+		kink1y <- c(cut, maxy[i])
+	}
+	if((exp3[i]==1) & (exp4[i])==0){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/xcat[i] - miny[i]*ycat[i]/xcat[i]
+		kink2x <- c(cut)
+		kink2y <- c(miny[i])
+		}
+	if((exp4[i]==1) & (exp3[i])==0){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/ycat[i] - minx[i]*xcat[i]/ycat[i]
+		kink2x <- c(minx[i])
+		kink2y <- c(cut)
+	}
+	if((exp3[i]==1 & exp4[i]==1)){
+		cut <- (dv[i]-(oth[i])*maxoth[i])/ycat[i] - minx[i]*xcat[i]/ycat[i]
+		cut2 <- (dv[i]-(oth[i])*maxoth[i])/xcat[i] - miny[i]*ycat[i]/xcat[i]
+		kink2x <- c(minx[i], cut2)
+		kink2y <- c(cut, miny[i])
+	}
+	if((exp3[i] + exp4[i])==0 & (exp1[i] + exp2[i] + exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],lend[i,1],hend[i,1], kink1x)
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],lend[i,2], hend[i,2], kink1y)
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+	    c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+        polygon(xaxs,yaxs, col=rgb(0,0,0,alpha=0), border="black", lty=1, lwd=.25)
+	}
+	if((exp1[i] + exp2[i])==0 & (exp1[i] + exp2[i] + exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],kink2x,lend[i,1],hend[i,1])
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],kink2y,lend[i,2], hend[i,2])
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+        polygon(xaxs,yaxs, col=rgb(0,0,0,alpha=0), border="black", lty=1, lwd=.25)
+	}
+	if((exp1[i] + exp2[i])!=0 & (exp3[i] + exp4[i])!=0){
+		xaxs <- c(hstr[i,1],  lstr[i,1],kink2x,lend[i,1],hend[i,1], kink1x)
+		xaxs <- ifelse(is.nan(xaxs), 0, xaxs)
+		yaxs <- c(hstr[i,2], lstr[i,2],kink2y,lend[i,2], hend[i,2], kink1y)
+		yaxs <- ifelse(is.nan(yaxs), 0, yaxs)
+		side1 <- c(xaxs,xaxs[1])
+		side2 <- c(yaxs,yaxs[1])
+		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
+		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
+		area <- abs(c1-c2)/2
+        polygon(xaxs,yaxs, col=rgb(0,0,0,alpha=0), border="black", lty=1, lwd=.225)
+	}
+	}
+#contour(contourx[2:refine], contoury[2:refine], contourz[2:refine,2:refine], nlevels=nrow(data), method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"), drawlabels=F)
 	}
 
 
