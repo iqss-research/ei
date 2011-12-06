@@ -235,7 +235,8 @@ example, \verb#n# is the number of people of voting age.\\ \newline We
 proceed by performing ecological inference without covariates on the
 data:
 
-<<echo=TRUE>>=
+%<<echo=TRUE>>=
+<<echo=TRUE, eval=FALSE>>=
 formula = t ~ x
 dbuf = ei(formula=formula,total="n",data=matproii)
 @
@@ -285,7 +286,7 @@ Finally, \verb#summary# produces information on aggregrate quantities of interes
 
 \verb#eiread# extracts quantities of interest in a list format from the object \verb#dbuf#.  For example, 
 
-<<echo=TRUE>>=
+<<echo=TRUE, eval=FALSE>>=
 bb.out <- eiread(dbuf, "betab", "sbetab")
 @
 
@@ -423,7 +424,7 @@ invisible(dev.off())
 
 \noindent We might be interested in doing a 2x2 analysis to understand non-white vs. white turnout in each precinct. We could use \verb#ei# to run this analysis, as we did above:
 
-<<echo=TRUE>>=
+<<echo=TRUE, eval=FALSE>>=
 data(eiRxCsample)
 formula = t ~ x
 dbuf = ei(formula=formula,total="n",data=eiRxCsample)
@@ -436,7 +437,7 @@ eiRxCplot(dbuf, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,grou
 
 \begin{figure}[h!]
 \begin{center}
-<<results=tex,echo=FALSE>>= 
+<<results=tex,echo=FALSE,eval=FALSE>>= 
 pdf("eiRxCplot.pdf", width=6, height=6, pointsize=10)
 eiRxCplot(dbuf, groups=c("black.ei", "whit.ei", "hisp.ei"),data=eiRxCsample,groupnames=c("Black", "White", "Hispanic"), title="Non-white vs. White Turnout", xaxis="Non-white", yaxis="White")
 invisible(dev.off())
