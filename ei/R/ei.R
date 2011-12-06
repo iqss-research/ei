@@ -5,7 +5,7 @@
 
 #@Rfun specifies function used to calculate R in the likelihood
 
-  ei <- function(formula, total, Zb,Zw, data=NA, erho=.5, esigma=.5,
+  ei <- function(formula, total, Zb=1,Zw=1, data=NA, erho=.5, esigma=.5,
                ebeta=.5, ealphab=NA, ealphaw=NA, truth=NA, simulate=TRUE,covariate=NULL, lambda1=4, lambda2=2, covariate.prior.list=NULL, tune.list=NULL, start.list=NULL, sample=1000, thin=1, burnin=1000, verbose=0, ret.beta="r", ret.mcmc=TRUE, usrfun=NULL){
     #Extract formula
     dv <- terms.formula(formula)[[2]]
@@ -18,15 +18,15 @@
     print("Running 2x2 ei")
 
     if(simulate==FALSE){
-    dbuf <- ei.estimate(t,x, n, data=data, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)
+    dbuf <- ei.estimate(t,x, n, data=data, Zb=Zb, Zw=Zw, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)
     return(dbuf)
 }
     if(simulate==TRUE){
     #If the table is two by two, use ei
     dbuf <- tryCatch(tryCatch(ei.estimate(t,x, n,
-                        data=data, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth), error=function(x) ei(t,x,n,
-                                      data=data, erho=3,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)), error=function(x) ei.estimate(t,x,n,
-                                      data=data, erho=5,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth))
+                        data=data, Zb=Zb, Zw=Zw, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth), error=function(x) ei(t,x,n,
+                                      data=data, Zb=Zb, Zw=Zw,erho=3,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)), error=function(x) ei.estimate(t,x,n,
+                                      data=data, Zb=Zb, Zw=Zw, erho=5,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth))
     dbuf.sim <- ei.sim(dbuf)
     return(dbuf.sim)
 }
