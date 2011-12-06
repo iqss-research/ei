@@ -304,7 +304,7 @@ plot(dbuf, "tomog")
 
 \begin{figure}[h]
 \begin{center}
-<<results=tex,echo=FALSE>>= 
+<<results=tex,echo=FALSE, eval=FALSE>>= 
 pdf("tomogplot.pdf", width=6, height=6, pointsize=10)
 plot(dbuf, "tomog")
 invisible(dev.off())
@@ -318,7 +318,7 @@ invisible(dev.off())
 
 \begin{figure}[h]
 \begin{center}
-<<results=tex,echo=FALSE>>= 
+<<results=tex,echo=FALSE, eval=FALSE>>= 
 pdf("tomogplot2.pdf", width=14, height=6, pointsize=10)
 plot(dbuf, "tomogE", "tomogCI")
 invisible(dev.off())
@@ -359,7 +359,7 @@ plot(dbuf, "xtfit")
 
 \begin{figure}[h]
 \begin{center}
-<<results=tex,echo=FALSE>>= 
+<<results=tex,echo=FALSE, eval=FALSE>>= 
 pdf("betas.pdf", width=14, height=6, pointsize=10)
 plot(dbufsim, "betab", "betaw")
 invisible(dev.off())
@@ -374,7 +374,7 @@ invisible(dev.off())
 
 \begin{figure}[h]
 \begin{center}
-<<results=tex,echo=FALSE>>= 
+<<results=tex,echo=FALSE, eval=FALSE>>= 
 pdf("xtfit.pdf", width=6, height=6, pointsize=10)
 plot(dbuf, "xtfit")
 invisible(dev.off())
@@ -388,7 +388,7 @@ invisible(dev.off())
 \pagebreak
 \noindent Finally, if we have data on the true proportions of registered blacks and registered whites in each county, as we do in this dataset, we can use plots in \verb#EI# to assess how well the algorithm works on the given data.  To do this, rerun the \verb#ei# algorithm, adding the truth vectors, \verb#tb# and \verb#tw# as the truth argument.
 
-<<echo=TRUE>>=
+<<echo=TRUE, eval=FALSE>>=
 truth = cbind(matproii$tb,matproii$tw)
 formula = t ~ x
 dbuf = ei(formula=formula,total="n",data=matproii,truth=truth)
@@ -406,7 +406,7 @@ plot(dbuf, "truth")
 
 \begin{figure}[Ht]
 \begin{center}
-<<results=tex,echo=FALSE>>= 
+<<results=tex,echo=FALSE, eval=FALSE>>= 
 pdf("truth2.pdf", width=6, height=6, pointsize=10)
 plot(dbuf, "truth")
 invisible(dev.off())
