@@ -960,22 +960,25 @@ betaw", ylab="True betaw",cex=.1)
 #data = data
 #names = Names of groups in order: X-axis, Y-axis, Other
 #covariate = extra group or covariate to create colors in the plot for
-heatplot <- function(dbuf, refine=100){
+tomogRxC <- function(formula, data, total=NULL, refine=100){
 	require(sp)
-	form <- dbuf$formula
-    total <- dbuf$total
-    data <- dbuf$data
+    noinfocount = 0
+	form <- formula
+    ##total <- dbuf$total
+    #data <- dbuf$data
+    dvname <- terms.formula(formula)[[2]]
     covariate <- NA
 	#Make the bounds
 	rows <- c(all.names(form)[6:(length(all.names(form)))])
     names=rows
     cols <- c(all.names(form)[3])
-    if(sum(data[,rows][,1]<1.1)==length(data[,rows][,1])){
-        data <- round(data*data[,total])
-}
+#    if(sum(data[,rows][,1]<1.1)==length(data[,rows][,1])){
+#       data <- round(data*data[,total])
+#}
 	#print(data[,cols])
+    options(warn=-1)
 	bnds <- bounds(form, data=data,rows=rows, column =cols,threshold=0)
-
+    options(warn=0)
 	#Totals
 	dv <- data[, all.names(form)[3]]
 	#Assign other category
@@ -1043,9 +1046,9 @@ heatplot <- function(dbuf, refine=100){
 	lstr <- cbind(minx, lowy)
 	lend <- cbind(lowx, miny)
 
-	xl <- paste("Percent", names[1], "Vote Democrat")
-	yl <- paste("Percent", names[2], "Vote Democrat")
-	mn <- paste("Heat Plot in a 2x3 Table (", names[3], " Other Category)", sep="")
+	xl <- paste("Percent", names[1], dvname[2])
+	yl <- paste("Percent", names[2], dvname[2])
+	mn <- paste("Tomography Plot in a 2x3 Table (", names[3], " Other Category)", sep="")
 
 plot(c(0,0), xlim=c(0,1), ylim=c(0,1), xaxs="i", yaxs="i",xlab=xl, ylab=yl, col="white", main=mn)
 
@@ -1078,6 +1081,9 @@ for(i in 1:dim(hstr)[1]){
 		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
+        if(area==1){
+            noinfocount <- noinfocount+1
+        }
 		for(j in 1:length(as.vector(contourx))){
 			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
         
@@ -1125,6 +1131,9 @@ for(i in 1:dim(hstr)[1]){
 	    c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
+        if(area==1){
+            noinfocount <- noinfocount+1
+        }
 		for(j in 1:length(as.vector(contourx))){
 			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
          
@@ -1141,6 +1150,9 @@ for(i in 1:dim(hstr)[1]){
 		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
+        if(area==1){
+            noinfocount <- noinfocount+1
+        }
 		for(j in 1:length(as.vector(contourx))){
 			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
 	}	}
@@ -1154,6 +1166,9 @@ for(i in 1:dim(hstr)[1]){
 		c1 <- sum(side1[1:(length(side1)-1)]*side2[2:length(side2)])
 		c2 <- sum(side1[2:(length(side1))]*side2[1:(length(side2)-1)])
 		area <- abs(c1-c2)/2
+        if(area==1){
+            noinfocount <- noinfocount+1
+        }
 		for(j in 1:length(as.vector(contourx))){
 			contourz[j,] <- contourz[j,] + ifelse(point.in.polygon(rep(contourx[j], length(contourx)), contoury, xaxs, yaxs)==1,1+1/(.1+area),0)
 	}
@@ -1240,6 +1255,7 @@ for(i in 1:dim(hstr)[1]){
         polygon(xaxs,yaxs, col=rgb(0,0,0,alpha=0), border="black", lty=1, lwd=.225)
 	}
 	}
+message(paste("There are", noinfocount, "tomography polygons with no information"))
 #contour(contourx[2:refine], contoury[2:refine], contourz[2:refine,2:refine], nlevels=nrow(data), method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"), drawlabels=F)
 	}
 
