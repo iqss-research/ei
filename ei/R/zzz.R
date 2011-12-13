@@ -1258,7 +1258,7 @@ for(i in 1:dim(hstr)[1]){
 message(paste("There are", noinfocount, "tomography polygons with no information"))
 #contour(contourx[2:refine], contoury[2:refine], contourz[2:refine,2:refine], nlevels=nrow(data), method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"), drawlabels=F)
 par(xpd=NA)
-text(.8,-.18, paste("*There are", 34, "tomography polygons with no information"), cex=.75)
+text(.78,-.18, paste("*There are", noinfocount, "tomography polygons with no information"), cex=.75)
 par(xpd=FALSE)
 	}
 
