@@ -1048,7 +1048,7 @@ tomogRxC <- function(formula, data, total=NULL, refine=100){
 
 	xl <- paste("Percent", names[1], dvname[2])
 	yl <- paste("Percent", names[2], dvname[2])
-	mn <- paste("Tomography Plot in a 2x3 Table (", names[3], " Other Category)", sep="")
+	mn <- paste("Tomography Plot in a 2x3 Table (", names[3], " Other Category)*", sep="")
 
 plot(c(0,0), xlim=c(0,1), ylim=c(0,1), xaxs="i", yaxs="i",xlab=xl, ylab=yl, col="white", main=mn)
 
@@ -1257,6 +1257,9 @@ for(i in 1:dim(hstr)[1]){
 	}
 message(paste("There are", noinfocount, "tomography polygons with no information"))
 #contour(contourx[2:refine], contoury[2:refine], contourz[2:refine,2:refine], nlevels=nrow(data), method="simple", col="black", add=TRUE, vfont = c("sans serif", "plain"), drawlabels=F)
+par(xpd=NA)
+text(.8,-.18, paste("*There are", 34, "tomography polygons with no information"), cex=.75)
+par(xpd=FALSE)
 	}
 
 
