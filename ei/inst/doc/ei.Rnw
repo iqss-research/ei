@@ -83,10 +83,10 @@ This program provides a method of inferring individual behavior from
 aggregate data. It implements the statistical procedures, diagnostics,
 and graphics from the book, \textbf{A Solution to the Ecological
   Inference Problem: Reconstructing Individual Behavior from Aggregate
-  Data} (Princeton: Princeton University Press, 1997), by Gary King.
+  Data} (Princeton: Princeton University Press, 1997), by Gary King, and from Rosen, Jiang, King and Tanner (2001) ``Bayesian and Frequentist Inference for Ecological Inferece: The RxC Case." (\emph{Statistica Neerlandica, VOl. 55, nr.2, pp 134-156).
 See \url{http://gking.harvard.edu/eicamera/kinroot.html}. Except where
 indicated, all references to page, section, chapter,
-table, and figure numbers in this document refer to the book.\\
+table, and figure numbers in this document refer to the the first reference.\\
 
 \noindent Ecological inference is the process of using aggregate
 (i.e., ``ecological'') data to infer discrete individual-level
@@ -111,11 +111,12 @@ recommend reviewing Chapter 16 while using this program for actual
 research.  Model dependence defines ecological inference when going
 anywhere beyond the bounds and tomography plots.
 
-		
-\section[Overview: R-commands]{{\tt Overview}: R-commands}
+eiR is a unifed program that contains methods for both the 2x2 ecological inference case and the RxC case.  We will begin by explainig how to use eiR in the 2x2 case, and then move on the RxC code.		
+
+\section[Overview: 2x2 R-commands]{{\tt Overview}: R-commands}
 \label{commands}
 
-In this section we describe the basic commands in \verb#EI#.  For this
+In this section we describe the basic commands for 2x2 inference in \verb#EI#.  For this
 purpose, and without loss of generality, we use the running example
 from the book portrayed in Table 2.3 (page 31). This example uses the
 fraction of the voting age population who are black ($ X_i$), the
@@ -130,7 +131,7 @@ a sequence of these commands are as follows:
 
 <<echo=TRUE, eval=FALSE>>=
 formula = t ~ x
-dbuf <- ei(formula=formula,total="n",data=data)
+dbuf <- ei(formula=formula, total="n",data=data)
 summary(dbuf)
 eiread(dbuf, "betab","betaw")
 plot(dbuf, "tomog","betab","betaw","xtfit")
@@ -179,16 +180,16 @@ be included with these five to read in the data (\verb#t#, \verb#x#, and \verb#n
   \verb#plot(dbuf,"tomog","xt")# will produce both a tomography graph
   and a scattercross graph.
 
-  Some of the plots can be produced after estimating the maximum likelihood estimates using \verb#ei#, but before simulating quantities of interest with \verb#ei.sim#. These initial plots can be useful in determining which priors to include. However, for some plots, \verb#plot# will need the simulated quantities of interest.  These plots only run on data buffers from \verb#ei.sim#. 
+  Some of the plots can be produced after estimating the maximum likelihood estimates using \verb#ei#, but before simulating quantities of interest with \verb#ei.sim#. These initial plots can be useful in determining which priors to include, and the user can opt to choose not to simulate quantities of interest by selecting the option \verb#simulate=FALSE#. However, for some plots, \verb#plot# will need the simulated quantities of interest.  These plots only run on data buffers from \verb#ei.sim#. 
   
 \item{{\verb#eiread#}: To obtain relevant information and numerical results}
 
   For numerical information, use \verb#v <- eiread(dbuf, "name")#,
   where \verb#v# is the item extracted, \verb#dbuf# is the data buffer
-  output from \verb#ei# or \verb#ei.sim#, and name can be any of a list of output
-  possibilities. For example, \verb#eiread(dbufsim, "betab")# will give a
+  output from \verb#ei#, and name can be any of a list of output
+  possibilities. For example, \verb#eiread(dbuf, "betab")# will give a
   vector of point estimates of $ \beta_i^b$,
-  \verb#eiread(dbufsim, "ci80w")# will give 80\% confidence intervals for
+  \verb#eiread(dbuf, "ci80w")# will give 80\% confidence intervals for
   $ \beta_i^w$.  Any number of items can be selected for output.  For
   example, \verb#eiread(dbufsim, "betab", "ci80b")# will produce a list
   of the point estimates and 80\% confidence intervals for $
@@ -220,7 +221,7 @@ data(matproii)
 
 To begin, we perform ecological inference by calling the function
 \verb#ei#. \verb#ei# first computes and maximizes a likelihood
-distribution based on the inputed data. Then we use the function \verb#ei.sim# to estimate county-level
+distribution based on the inputed data, then estimates the county-level
 quantities of interest based on the possible values, or ``bounds", for
 each county and the overall likelihood distribution.  \\ \newline To
 run this algorithm, at a minimum we need to have three vectors.  Two
@@ -241,7 +242,7 @@ formula = t ~ x
 dbuf = ei(formula=formula,total="n",data=matproii)
 @
 
-\noindent When the data argument is included, the arguments \verb#"t","x","n"# refer to names of the variables in the dataset and therefore must be strings. If the data argument is not specified, \verb#ei(t,x,n)# can be used where \verb#t,x# and \verb#n# are the vectors containing the data. To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string that refers to the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string that refers to the name of the covariate in the dataset.\\
+\noindent To include a covariate on $\beta_i^b$ simply specify a covariate vector for the option \verb#Zb#, or a string that refers to the name of the covariate in the dataset.  Similarly, to include a covariate on $\beta_i^w$, specify a covariate vector for for the option \verb#Zw#, or a string that refers to the name of the covariate in the dataset.\\
 \newline
 Next, we use \verb#summary(dbuf)#and \verb#summary(dbufsim)# to obtain general information about the estimation. 
 
@@ -250,20 +251,20 @@ summary(dbuf)
 @
 
 \begin{verbatim}
-Erho = 0.5 , Esigma = 0.5 , Ebeta = 0.5 , N = 268 , Resamp = 4
+Erho = 0.5 , Esigma = 0.5 , Ebeta = 0.5 , N = 268 , Resamp = 35
 
 Maximum likelihood results in scale of estimation (and se's)
     Bb0    Bw0    sigB    sigW    rho Zb Zw
  1.2670 1.9348 -1.1151 -1.3272 1.6051  0  0
- 0.2786 0.2764  0.2096  0.1616 0.3096  0  0
+ 0.2775 0.2757  0.2132  0.1640 0.3120  0  0
 
 Untruncated psi's
-     BB     BW    SB     SW    RHO
- 0.9604 1.1264 0.327 0.2672 0.9202
+     BB     BW     SB     SW    RHO
+ 0.9758 1.1411 0.3325 0.2713 0.9082
 
 Truncated psi's (ultimate scale)
      BB     BW     SB     SW    RHO
- 0.6199 0.8261 0.1972 0.1418 0.7867
+ 0.6208 0.8259 0.2006 0.1425 0.7489
 
 Aggregate Bounds
        betab  betaw
@@ -272,13 +273,14 @@ upper 0.9754 0.9200
 
 Estimates of Aggregate Quantities of Interest
      mean     sd
-Bb 0.5691 0.0137
-Bw 0.8183 0.0039
+Bb 0.5714 0.0253
+Bw 0.8177 0.0072
+
 \end{verbatim}
 
 \noindent The \verb#summary# function provides basic information about the ecological inference estimation, the maximum likelihood estimates on three scales, and an overall summary of the quantities of interest.  First, it reports the values of the priors used in ecological inference (\verb#Erho, Esigma, Ebeta#).  It also reports the number of counties in the dataset (\verb#N#), as well as the number of importance sampling iterations required to produce estimates of the quantities of interest (\verb#resamp#).  \\
 \newline
-When summary is used on a \verb#ei.sim# object, \verb#summary# produces information both about the maximum likelihood estimates and the quantities of interest.  First, it provides the maximum likelihood estimates in the scale of estimation. Next, it provides the values of the MLEs when they are transformed into an untruncated bivariate normal distribution.  These estimates provide information about the location of the highest density of estimates for the proportion of blacks who are registered to vote and the proportion of whites who are registered to vote.  Last, it provides the values of the MLEs on the ultimate truncated bivariate normal scale.  These estimates are an unweighted average of the fraction of blacks and whites registered to vote over all the counties in the sample.  In this example, the \verb#EI# algorithm predicts that the unweighted average of the proportion of blacks registered to vote across counties is 0.57 and the unweighted average of the proportion of whites registered to vote is 0.82.\\
+\verb#summary# also produces information both about the maximum likelihood estimates and the quantities of interest.  First, it provides the maximum likelihood estimates in the scale of estimation. Next, it provides the values of the MLEs when they are transformed into an untruncated bivariate normal distribution.  These estimates provide information about the location of the highest density of estimates for the proportion of blacks who are registered to vote and the proportion of whites who are registered to vote.  Last, it provides the values of the MLEs on the ultimate truncated bivariate normal scale.  These estimates are an unweighted average of the fraction of blacks and whites registered to vote over all the counties in the sample.  In this example, the \verb#EI# algorithm predicts that the unweighted average of the proportion of blacks registered to vote across counties is 0.57 and the unweighted average of the proportion of whites registered to vote is 0.82.\\
 \newline
 Finally, \verb#summary# produces information on aggregrate quantities of interest.  The aggregate bounds are the mean of the bounds on the proportions of black and white voters, weighted by the population in each county.  The aggregate quantities of interest are the weighted mean of the proportion of registered blacks and the proportion of registered whites in each county.  In this example the weighted average proportion of blacks who are registered is 0.57, and the weighted average proportion of whites who are registered is 0.82.  
 
@@ -361,7 +363,7 @@ plot(dbuf, "xtfit")
 \begin{center}
 <<results=tex,echo=FALSE, eval=FALSE>>= 
 pdf("betas.pdf", width=14, height=6, pointsize=10)
-plot(dbufsim, "betab", "betaw")
+plot(dbuf, "betab", "betaw")
 invisible(dev.off())
 @
 \includegraphics[width=8.5in, height=2.5in,   viewport=0 0 1400 395,clip]{betas} 
@@ -419,7 +421,59 @@ invisible(dev.off())
 
 \clearpage
 
-\section{Plotting RxC Information: eiRxCplot}
+\section[Overview: eiRxC R-commands]{{\tt Overview}: R-commands}
+
+Although the 2x2 case is useful in many circumstances, eiR also allows users to expand beyond the 2x2 case and implement RxC models.  To do this, eiR contains the MCMC implementation of the multinomial-Dirichlet eiRxC model in Rosen, Jiang, King and Tanner (2001) ``Bayesian and Frequentist Inference for Ecological Inferece: The RxC Case." (\emph{Statistica Neerlandica, VOl. 55, nr.2, pp 134-156), and incorporates R code from eiPack (Olivia Lau, Ryan Moore and Mike Kellermann).  \\
+
+In this section we describe the basic commands needed for eiRxC.  Imagine that instead of a 2x2 table where the user aims to make influence on proportion of turnout for white and non-white, for example, the user instead wants to make inference for the proportion of turnout for white, black, and hispanic.  This is a 2x3 table because the resulting estimates from this table will include two estimates of percent turnout and no turnout for all three categories white, black and hispanic. 
+
+We use the data \verb#RxCdata# as a running example.  \verb#RxCdata# has variables for each of the five sides of the 2x3 table: \verb#t# is the number of people in each precinct who turned out to vote, \verb#not# is the number of people in each precinct that did not turn out to vote, \verb#whit# is the number of people who are white in the precinct, \verb#black# is the number of people who are black in the precinct, and \verb#hisp# is the number of people who are hispanic in the precinct. Note that, different that the 2x2 case, these are the numbers of people rather than proportions.  The user can include proportions if they want to, but then must include the argument \verb#total# for the the total number of people in the precinct.
+
+To begin, we load both \verb#eiPack# and the data from the \verb#eiR# library.
+<<echo=TRUE, eval=FALSE>>=
+library(eiPack)
+data(RxCdata)
+@
+
+The formula for the eiRxC case contains information on which variables go on each side of the table.  In this example, we have turnout and no turnout on one side of the table, and white, black and hispanic on the other side.  Therefore, our formula is:
+<<echo=TRUE, eval=FALSE>>=
+formula <- cbind(t, not) ~ cbind(whit, black, hisp)
+@
+
+We can call this formula using ei:
+<<echo=TRUE, eval=FALSE>>=
+dbuf = ei(formula, data=RxCdata)
+@
+
+The MCMC output for the $\beta$'s can be found in the list \verb#dbuf#.  \verb#dbuf$draws$Beta# is a matrix that contains the simulations for each of the $\beta$'s for each precinct.  Since there are 60 precincts in this dataset and 6 quantities of interest, the number of columns of \verb#dbuf$draws$Beta# is $60*6 = 360$.  We can analyze the MCMC output by picking out which $\beta$ we are interested at any given time.  For example, to look at the MCMC output for the estimated percent white turnout for the third precinct we can use the R code:
+
+<<echo=TRUE, eval=FALSE>>=
+out <- dbuf$draws$Beta[,"beta.whit.t.3"]
+summary(out)
+@
+\begin{verbatim}
+summary here
+\end{vertabim}
+
+We can also plot this MCMC output to assess convergence"
+<<echo=TRUE, eval=FALSE>>=
+plot(out)
+@
+
+Thus, from this output we can get the empirical mean and standard deviation of each of our quantities of interest.  The user can add in extra arguments to specify the number of simulations, burnin, or priors for this function.  For more information on this, see the documentation for \verb#eiPack# and the Rosen et al (2001) paper. 
+
+\section{eiRxC Tomography Plots: Assessing Model Dependence}
+
+While eiRxC models are helpful, the uncertainty estimates they produce are conditional on the model assumed. The key problem with ei models is not the sampling uncertainty in the statistical model, but the uncertainty associated with choosing a model, or model dependence. A summary of the deterministic information in the model is most useful to understand thse true amount of information in the data offer from which the model is obtaining its estimates. 
+
+While this has not been possible in the RxC case before, we have developed a method that can be used to plot 2x3 RxC problems and by extension examine model dependence in any RxC model.   
+
+In the 2x3 case, we can do this by 
+
+
+instead of being lines the bounds are polygons. For any single precinct, the 
+
+\section{Plotting RxC Information in a 2x2 analysis: eiRxCplot}
 \noindent \verb#eiRxCplot# allows the user to include RxC information into the tomography plot in order to visualize the RxC dynamic in a 2x2 analysis. We illustrate this by using the data \verb#eiRxCsample# within the \verb#ei# package.  \verb#eiRxCsample# contains both demographic and turnout information for a district. The variable \verb#x# represents the proportion of non-whites in each precinct, the variable \verb#t# represents the proportion of people in each precinct that turned out to vote, and \verb#n# represents the total number of people in each precinct. The data also contain the variables \verb#whit.ei#, \verb#black.ei#, and \verb#hisp.ei#, which have the proportion of whites, blacks, and hispanics in each precinct.\\
 
 \noindent We might be interested in doing a 2x2 analysis to understand non-white vs. white turnout in each precinct. We could use \verb#ei# to run this analysis, as we did above:
