@@ -13,7 +13,8 @@
 
 
 all:
-	/bin/sh ./makeDocs rbuild
-
-ei.pdf:
-	/bin/sh ./makeDocs rbuild
+	/usr/bin/R CMD Sweave ei.Rnw
+	pdflatex ei
+	bibtex ei
+	pdflatex ei
+	pdflatex ei
