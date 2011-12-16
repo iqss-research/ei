@@ -47,8 +47,8 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 }
 \examples{
 data(sample)
-dbuf <- ei("t","x","n",data=sample)
-plot(dbuf, "tomog")
-dbufsim <- ei.sim(dbuf)
+form <- t ~ x
+dbuf <- ei(form,total="n",data=sample)
+summary(dbuf)
 plot(dbufsim, "tomog", "betab", "betaw", "xtfit")
 }

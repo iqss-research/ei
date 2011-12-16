@@ -8,9 +8,8 @@ Ecological Inference Estimation
 \code{ei} is the main command in the package \code{EI}.  It gives observation-level estimates (and various related statistics) of \eqn{\beta_i^b} and \eqn{\beta_i^w} given variables \eqn{T_i} and \eqn{X_i} (\eqn{i=1,...,n}) in this accounting identity: \eqn{T_i=\beta_i^b*X_i + \beta_i^w*(1-X_i)}.  Results are stored in an \code{ei} object, that can be read with \code{summary()} or \code{eiread()} and graphed in \code{plot()}.
 }
 \usage{
-ei(t, x, n, Zb=1, Zw=1,data=NA, erho=.5, esigma=.5, ebeta=.5, ealphab=NA,
+ei(formula, total, data Zb=1, Zw=1,data=NA, erho=.5, esigma=.5, ebeta=.5, ealphab=NA,
  ealphaw=NA, truth=NA, precision=4)
-ei.sim(dbuf)
 }
 
 \arguments{
@@ -44,8 +43,7 @@ Gary King (1997). A Solution to the Ecological Inference Problem.  Princeton: Pr
 
 \examples{
 data(sample)
-dbuf <- ei("t","x","n",data=sample)
+form <- t ~ x
+dbuf <- ei(form,total="n",data=sample)
 summary(dbuf)
-dbufsim <- ei.sim(dbuf)
-summary(dbufsim)
 }
