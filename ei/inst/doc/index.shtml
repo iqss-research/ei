@@ -7,71 +7,52 @@
 
 <h1>EI: A(n R) Program for Ecological Inference</h1>
 
-<a href="http://gking.harvard.edu">Gary King</a> and 
-<a href="http://scholar.harvard.edu/mroberts">Margaret Roberts</a>
+<a href="/">Gary King</a>
 <br /><br />
 <!-- rbuild: replace 'Version:' '</b>' version -->
 <b>Version:0.041</b>
 
-<div style="float:left; width: 200px; margin: 1.5em;"><p> <img src=
-"votes_for_women.jpg" width="200px" /> <br /><small>Women in Portland
-advocating for the right to vote. William Ogburn and Inez Goltra's
-1919 study of voting behavior of newly enfranchised women in Oregon is
-among the first known studies explicitly recognizing the ecological
-inference problem.</small> </p><div style="clear:both;"></div></div>
+<p style="float:left; width: 160; margin: 1.5em;"> <img 
+src="./sei.gif" width="150" /> <br /><small><em>A Solution to the
+Ecological Inference Problem</em> Princeton University
+Press</small></p>
 
 <p>This program provides a method of inferring individual behavior
 from aggregate data. It implements the statistical procedures,
-diagnostics, and graphics from the book <a
-href="http://gking.harvard.edu/eicamera/kinroot.html">A Solution to
-the Ecological Inference Problem: Reconstructing Individual Behavior
-from Aggregate Data</a> (Princeton University Press, 1997),
-by Gary King.
+diagnostics, and graphics from the book A Solution to the Ecological
+Inference Problem: Reconstructing Individual Behavior from Aggregate
+Data (Princeton: Princeton University Press, 1997), by Gary King.
 </p>
   
 <ul> 
   <li>EI for R:</li>
-	<li>To install in Linux, sign on to R, and type:
-	    install.packages("ei",repos="http://r.iq.harvard.edu")  or 
+      <ul>      
+	<li>To install, sign on to R, and type:
+	    install.packages("ei",repos="http://gking.harvard.edu")  or 
 	    <!-- rbuild: replace 'ei_' '.tar.gz' version -->
-	    <a href="http://r.iq.harvard.edu/src/contrib/ei_2.4-6.tar.gz">download this file</a> and
-	    install yourself. To install on Mac or Windows, sign
-      on to R and type: install.packages("ei", type="source", repos="http://r.iq.harvard.edu").  </li> 
-<li> Note: to install locally on Windows, download the above file.  Enter the R GUI and change your working directory using setwd() to the directory where the file is located.  Then, use the command: install.packages("ei", type="source", repos=NULL).</li>
-	<li>For documentation, from R, type library(ei), and then ?ei,
-	    or download <a href="http://gking.harvard.edu/eiR/ei-documentation2.pdf">PDF</a></li>
-      
+	    <a href="/src/contrib/ei_2.4-6.tar.gz">download this file</a> and
+	    install yourself.</li>
+
+	<li>For documentation, from R, type library(cem), and then ?ei,
+	    or download <a href="docs/ei.pdf">PDF</a></li>
+      </ul>
       
   <li>EI for Gauss:  <a href="/ei">Click here</a></li>
     
 <li>Please send ALL questions, bugs, and requests to our mailing List
     (you must subscribe to send): <a
-    href="http://lists.gking.harvard.edu/index.cgi?info=ei"
+    href="http://lists.gking.harvard.edu/index.cgi?info=cem"
     target="gkingext">[Un]Subscribe</a>, or <a
-    href="http://lists.gking.harvard.edu/lists/ei_at_lists_gking_harvard_edu/"
+    href="http://lists.gking.harvard.edu/lists/cem_at_lists_gking_harvard_edu/"
     target="gkingext">Browse/Search Archives</a></li>
     
-<li><a href="/eiR/" target="ChangeDetectionWiz"
-    onClick="doChangeDetectionPopup()">Be notified automatically of eiR
+<li><a href="/cem/" target="ChangeDetectionWiz"
+    onClick="doChangeDetectionPopup()">Be notified automatically of cem
     updates</a></li>
     
 </ul>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<div style="clear: both"></div>
-<script language="Javascript">displayFooter()</script> 
 
 
-</BODY>
-
-
-
-
+<script language="Javascript">displayFooter()</script></BODY>
 </html>
-
+    
