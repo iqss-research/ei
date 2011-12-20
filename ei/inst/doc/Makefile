@@ -15,5 +15,3 @@
 all:
 	/usr/bin/R CMD Sweave ei.Rnw
 	pdflatex ei
-	pdflatex ei
-	pdflatex ei
