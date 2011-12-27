@@ -432,7 +432,9 @@ Although the 2x2 case is useful in many circumstances, eiR also allows users to 
 
 \noindent In this section we describe the basic commands needed for eiRxC.  Imagine that instead of a 2x2 table where the user aims to infer the proportion of whites and non-whites who turned out to vote, for example, the user instead wants to infer the percent of turnout for white, black, and hispanic.  This is a 2x3 table because the resulting estimates from this table will include two estimates (percent turnout and no turnout) for three categories of people (white, black and hispanic). \\
 
-\noindent We use the data \verb#RxCdata# as a running example.  \verb#RxCdata# has variables for each of the five sides of the 2x3 table: \verb#turnout# is the number of people in each precinct who turned out to vote, \verb#noturnout# is the number of people in each precinct that did not turn out to vote, \verb#white# is the number of people who are white in the precinct, \verb#black# is the number of people who are black in the precinct, and \verb#hisp# is the number of people who are hispanic in the precinct. Note that, different that the 2x2 case, these are the numbers of people rather than proportions.  The user can include proportions if they want to, but then must include the argument \verb#total# for the the total number of people in the precinct. \\
+\noindent We use the data \verb#RxCdata# as a running example.
+\verb#RxCdata# has variables for each of the five marginal variables
+for the 2x3 table: \verb#turnout# is the number of people in each precinct who turned out to vote, \verb#noturnout# is the number of people in each precinct that did not turn out to vote, \verb#white# is the number of people who are white in the precinct, \verb#black# is the number of people who are black in the precinct, and \verb#hisp# is the number of people who are hispanic in the precinct. Note that, different that the 2x2 case, these are the numbers of people rather than proportions.  The user can include proportions if they want to, but then must include the argument \verb#total# for the the total number of people in the precinct. \\
 
 \noindent To begin, we load the RxC data from the \verb#eiR# library.
 <<echo=TRUE, eval=FALSE>>=
@@ -494,11 +496,24 @@ plot(out)
 
 \section{eiRxC Tomography Plots: Assessing Model Dependence}
 
-While eiRxC models are helpful, the uncertainty estimates they produce are conditional on the model assumed. We argue that the most uncertainty in ei models is not the sampling uncertainty within the statistical model, but the uncertainty associated with choosing a model, or model dependence. A tomography plot that contains information about the possible values of the quantities of interest is therefore more useful than the model in understanding the true amount of information in the data from which the model is obtaining its estimates. \\
+While eiRxC model estimates are helpful, the uncertainty estimates
+they produce are --- like all ecological inference point estimates ---
+conditional on the model assumed. Yet, most of the actual scientific
+uncertainty in ei models does not stem from the sampling uncertainty
+given a statistical model, but rather the uncertainty associated with
+choosing a model --- what is known as model dependence
+\citep{KinZen06}. A tomography plot that contains information about
+the possible values of the quantities of interest is therefore more
+useful than the model in understanding the true amount of information
+in the data from which the model is obtaining its estimates.\\ 
 
-\noindent While this has not been possible in the RxC case before, we have developed a method that can be used to create tomography plots for 2x3 RxC problems and by extension examine model dependence in any RxC model. \\
+\noindent While this has not been available in the RxC case before, we
+have developed a method to creating and displaying tomography plots
+for 2x3 RxC problems and by extension examine model dependence in any
+RxC model.\\
 
-\noindent In the 2x3 case, we can do this by using the function \verb#tomogRxC#. Following the code above, using the \verb#RxCdata#,
+\noindent In the 2x3 case, we can do this by using the function
+\verb#tomogRxC#. Following the code above, using the \verb#RxCdata#,
 
 <<echo=TRUE, eval=FALSE>>=
 formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
@@ -516,7 +531,7 @@ tomogRxC(formula, RxCdata)
 
 \clearpage
 
-\noindent The quantity of interest percent hispanic turnout is left out of this tomography plot, since we can only graph two quantities of interest simulatneously.  However, if we reorganize the formula, putting white and hispanic first on the right hand side of the formula, we can create another tomography plot that expores the deterministic information for percent white turnout and percent hispanic turnout.
+\noindent The quantity of interest percent hispanic turnout is left out of this tomography plot, since we can only graph two quantities of interest simulataneously.  However, if we reorganize the formula, putting white and hispanic first on the right hand side of the formula, we can create another tomography plot that expores the deterministic information for percent white turnout and percent hispanic turnout.
 
 <<echo=TRUE, eval=FALSE>>=
 formula <- cbind(turnout, noturnout) ~ cbind(white, hisp, black)
