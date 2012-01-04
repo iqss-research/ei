@@ -3,8 +3,8 @@
 \documentclass[11pt,oneside,letterpaper,titlepage]{article}
 %\usepackage[notref]{showkeys} % [notref]
 \usepackage{Rd/Rd}
-\usepackage{Rd/Sweave}
-\usepackage{Rd/upquote}
+\usepackage{Sweave}
+\usepackage{upquote}
 
 \usepackage[reqno]{amsmath}
 \usepackage{natbib}
