@@ -490,7 +490,11 @@ plot(out)
 \caption{2x3 Tomography Plot: \% White Turnout and \% Black Turnout}
 \end{figure}
 
-\noindent From this output we can get the empirical mean and standard deviation of each of our quantities of interest.  The user can add in extra arguments to specify the number of simulations, burnin, or priors for this function.  For more information on this, see the documentation for \verb#eiPack# and the Rosen et al (2001) paper. 
+\noindent From this output we can get the empirical mean and standard
+deviation of each of our quantities of interest.  The user can add in
+extra arguments to specify the number of simulations, burnin, or
+priors for this function.  For more information on this, see the
+documentation for \verb#eiPack# and the Rosen et al (2001) paper.
 
 \clearpage
 
@@ -527,11 +531,29 @@ tomogRxC(formula, RxCdata)
 \caption{2x3 Tomography Plot: \% White Turnout and \% Black Turnout}
 \end{figure}
 
-\noindent Each of the polygons on the plot below represent all the possibile values in a given precinct for percent white turnout and percent black turnout. The plot follows what we call the Law of Conservation of Ink, where tomography polygons with more information (smaller polygons) are colored brighter than those with less information (larger polygons).  The colors on the plot are a heat map that are brighter when polygons overlap each other. The polygons in this particular district contain a lot of information about the percent white turnout, as the vast majority of the polygons only contain low values of percent white turnout, but they contain very little information about the percent black turnout, as most of the polygons seem to cover the entire range possible for percent black turnout.
+\noindent Each of the polygons on the plot below represent all the
+possibile values in a given precinct for percent white turnout and
+percent black turnout. The plot follows what we call the Law of
+Conservation of Ink, where tomography polygons with more information
+(smaller polygons) are colored brighter than those with less
+information (larger polygons).  The colors on the plot are a heat map
+that are brighter when polygons overlap each other. The polygons in
+this particular district contain a lot of information about the
+percent white turnout, as the vast majority of the polygons only
+contain low values of percent white turnout, but they contain very
+little information about the percent black turnout, as most of the
+polygons seem to cover the entire range possible for percent black
+turnout.
 
 \clearpage
 
-\noindent The quantity of interest percent hispanic turnout is left out of this tomography plot, since we can only graph two quantities of interest simulataneously.  However, if we reorganize the formula, putting white and hispanic first on the right hand side of the formula, we can create another tomography plot that expores the deterministic information for percent white turnout and percent hispanic turnout.
+\noindent The quantity of interest percent hispanic turnout is left
+out of this tomography plot, since we can only graph two quantities of
+interest simulataneously.  However, if we reorganize the formula,
+putting white and hispanic first on the right hand side of the
+formula, we can create another tomography plot that expores the
+deterministic information for percent white turnout and percent
+hispanic turnout.
 
 <<echo=TRUE, eval=FALSE>>=
 formula <- cbind(turnout, noturnout) ~ cbind(white, hisp, black)
