@@ -894,6 +894,54 @@ betaw", ylab="True betaw",cex=.1)
   return(coefs)
 }
 
+.movieD <- function(ei.object){
+  x <- ei.object$x
+  t <- ei.object$t
+  n <- ei.object$n
+  bounds <- bounds1(x,t,n)
+  bbounds <- cbind(bounds[,1], bounds[,2])
+  wbounds <- cbind(bounds[,4], bounds[,3])
+  n <- dim(bounds)[1]
+  plot(c(100,200), xlim=c(0,1), ylim=c(0,1), col="white",
+       ylab="betaW", xlab="betaB", xaxs="i",yaxs="i",
+       main="Tomography Plot")
+  input<-0
+  while(input!="s"){
+    input<-tomogonce(input,last.input)
+    last.input<-input
+    input<-getinput()
+  }
+}
+getinput <- function(){
+  readline("Hit <enter> for next observation, enter observation number, or hit <s> to stop: ")
+}
+
+.tomogonce <- function(input,last.input){
+  par(mfrow=c(1,1))
+  plot(c(100,200), xlim=c(0,1), ylim=c(0,1), col="white",
+       ylab="betaW", xlab="betaB", xaxs="i",yaxs="i",
+       main="Tomography Plot")
+  if(input==""){ #input is <enter>, plot next observation
+    last.input<-as.integer(last.input)
+    input<-last.input+1
+    for(i in 1:n){
+      lines(bbounds[i,], wbounds[i, ], col="yellow")
+    }  
+    lines(bbounds[input,], wbounds[input,], col="black")
+  }
+  else{ #input is observation number
+    input<-as.integer(input)
+    for(i in 1:n){
+      lines(bbounds[i,], wbounds[i,], col="yellow")
+    }
+    lines(bbounds[input,], wbounds[input,], col="black")
+  }
+  return(input)
+}
+
+
+
+
 
 #Movie plots
 
@@ -948,6 +996,70 @@ betaw", ylab="True betaw",cex=.1)
   }
   return(input)
 }
+
+
+
+movie <- function(ei.object){
+  ok <- !is.na(ei.object$betab)
+  betabs <- ei.object$betabs[ok,]
+  ok <- !is.na(ei.object$betaw)
+  betaws <- ei.object$betaws[ok,]
+
+  betab <- ei.object$betabs
+  betaw <- ei.object$betaws
+  
+ input<-1 #initialize at precinct 1
+ last.input<-0
+ while(input!="s"){
+    input<-postonce(input,last.input,betab,betaw,betabs,betaws)
+    last.input<-input
+    input<-getinput()
+ }
+
+getinput <- function(){
+  readline("Hit <enter> for next observation, enter observation number, or hit <s> to stop: ")
+}
+
+postonce<-function(input,last.input,betab,betaw,betabs,betaws){
+
+  if(input==""){ #input is <enter>, will plot next observation
+    last.input<-as.integer(last.input)
+    input<-last.input+1
+  }
+  else{ #input is observation number
+    input<-as.integer(input) 
+  }
+
+  par(mfrow=c(2,2), oma=c(0,0,2,0))
+
+  # plot posterior distribution of precinct parameters
+  plot(density(betab[input,]),
+    xlim=c(0,1),ylim=c(0,max(density(betab[input,])$y)+1),
+    yaxs="i",xaxs="i", main="Posterior Distribution of betaB",
+    xlab="Bb",ylab="Density")
+  lines(c(0,.25*(max(density(betab[input,])$y)+1)),lwd=3)
+  plot(density(betaw[input,]),
+    xlim=c(0,1),ylim=c(0,max(density(betaw[input,])$y)+1),
+    yaxs="i",xaxs="i", main="Posterior Distribution of betaW",
+    xlab="Bw",ylab="Density")
+  lines(c(0,.25*(max(density(betaw[input,])$y)+1)),lwd=3)
+  
+# plot simulated values of betaB and betaW of precinct
+  colors = runif(length(betabs),26,51)
+  plot(betabs[input,], betaws[input,], xlim=c(0,1), ylim=c(0,1),xaxs="i",
+    yaxs="i",main="Simulations of betaW and betaB",
+    ylab="betaW simulations", xlab="betaB simulations",
+    pch=20,col=colors,lty=2,cex=.25)
+
+  mtext(sprintf("Plots for Observation %d", input),line=0.5,outer=TRUE)
+
+return(input)
+
+}
+   
+}
+
+
 
 #EI RxC Plots
 
