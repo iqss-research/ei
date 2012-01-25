@@ -590,10 +590,10 @@ Here we see that even though the informative polygons indicate low values of per
 
 \clearpage
 \section{Reference to EI Functions}
-\include{Rd/ei.Rd}
-\include{Rd/eiread.Rd}
-\include{Rd/plot.ei.Rd}
-\include{Rd/eiRxCplot.Rd}
+\include{Rd/ei}
+\include{Rd/eiread}
+\include{Rd/plot.ei}
+\include{Rd/tomogRxC}
 
 \bibliography{References}
 \label{bib}
