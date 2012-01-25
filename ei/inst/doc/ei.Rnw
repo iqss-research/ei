@@ -487,7 +487,7 @@ plot(out)
 \begin{center}
 \includegraphics{MCMCplot.png} 
 \end{center}
-\caption{MCMC Output for %White Turnout in Precinct 3}
+\caption{MCMC Output for \% White Turnout in Precinct 3}
 \end{figure}
 
 \noindent From this output we can get the empirical mean and standard
