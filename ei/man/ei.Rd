@@ -16,7 +16,7 @@ ei(formula, total, id, data, Zb=1, Zw=1,data=NA, erho=.5, esigma=.5, ebeta=.5, e
 	\item{formula}{A formula of the form \eqn{t ~x} in the \eqn{2x2}
 	  case and \eqn{cbind(col1,col2,...) ~ cbind(row1,row2,...)} in
 	  the RxC case.}
-	\item{n}{`total' is the name of the variable in the dataset that
+	\item{total}{`total' is the name of the variable in the dataset that
 	  contains the number of individuals in each unit}
 	\item{id}{`id' is the nae of the variable in the dataset that
 	  identifies the precinct. Used for `movie' and `movieD' plot functions.}
@@ -26,7 +26,8 @@ the dataset}
 	\item{Zw}{
 \eqn{p} x \eqn{k^w} matrix of covariates or the name of covariates in
 the dataset}
-	\item{data}{optional data frame that if specified should contain \code{t},\code{x},\code{n}.  If using covariates and data is specified, data should also contain \code{Zb} and \code{Zw}.}
+	\item{data}{ data frame that contains the variables that
+	  correspond to formula.  If using covariates and data is specified, data should also contain \code{Zb} and \code{Zw}.}
 	\item{erho}{The standard deviation of the normal prior on \eqn{\phi_5} for the correlation. Default \eqn{=0.5}.}
 	\item{esigma}{The standard deviation of an underlying normal distribution, from which a half normal is constructed as a prior for both \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Default \eqn{= 0.5}}
 	\item{ebeta}{Standard deviation of the "flat normal" prior on \eqn{\breve{B}^b} and \eqn{\breve{B}^w}.  The flat normal prior is uniform within the unit square and dropping outside the square according to the normal distribution.  Set to zero for no prior. Setting to positive values probabilistically keeps the estimated mode within the unit square. Default\eqn{=0.5}}

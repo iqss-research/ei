@@ -9,9 +9,9 @@
 }
 \usage{
 tomogRxC(formula, data, total=NULL, refine=100)
-
+}
 \arguments{
-  \item{formula}{A formula of the form \code{cbind(col1, col2,...)~cbind(row1,row2,...)}
+  \item{formula}{A formula of the form \code{cbind(col1, col2,...)~cbind(row1,row2,...)}}
  \item{data}{data that contains the data that corresponds to the
 formula}
 \item{total}{`total' is the name of the variable in the dataset that
