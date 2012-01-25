@@ -312,11 +312,11 @@ plot(dbuf, "tomog")
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE, eval=FALSE>>= 
-pdf("tomogplot.pdf", width=6, height=6, pointsize=10)
+png("tomogplot.png", width=6, height=6, pointsize=10)
 plot(dbuf, "tomog")
 invisible(dev.off())
 @
-\includegraphics[width=3in, height=3in,   viewport=0 0 420 395,clip]{tomogplot} 
+\includegraphics[width=3in, height=3in,   viewport=0 0 420 395,clip]{tomogplot.png} 
 \end{center}
 \caption{Tomography Plot with ML Contours}
 \label{fig:tomog}
@@ -326,11 +326,11 @@ invisible(dev.off())
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE, eval=FALSE>>= 
-pdf("tomogplot2.pdf", width=14, height=6, pointsize=10)
+png("tomogplot2.png", width=14, height=6, pointsize=10)
 plot(dbuf, "tomogE", "tomogCI")
 invisible(dev.off())
 @
-\includegraphics[width=7.5in, height=2.5in,   viewport=0 0 1400 395,clip]{tomogplot2} 
+\includegraphics[width=7.5in, height=2.5in,   viewport=0 0 1400 395,clip]{tomogplot2.png} 
 \end{center}
 \caption{Tomography Plots: Point Estimates (left) and Confidence
   Intervals (right)}
@@ -367,11 +367,11 @@ plot(dbuf, "xtfit")
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE, eval=FALSE>>= 
-pdf("betas.pdf", width=14, height=6, pointsize=10)
+png("betas.png", width=14, height=6, pointsize=10)
 plot(dbuf, "betab", "betaw")
 invisible(dev.off())
 @
-\includegraphics[width=8.5in, height=2.5in,   viewport=0 0 1400 395,clip]{betas} 
+\includegraphics[width=8.5in, height=2.5in,   viewport=0 0 1400 395,clip]{betas.png} 
 \end{center}
 \caption{Plots with Distribution of Point Estimates for $\beta_i^b$
   (left) and $\beta_i^w$ (right), for all $i$}
@@ -382,11 +382,11 @@ invisible(dev.off())
 \begin{figure}[h]
 \begin{center}
 <<results=tex,echo=FALSE, eval=FALSE>>= 
-pdf("xtfit.pdf", width=6, height=6, pointsize=10)
+png("xtfit.png", width=6, height=6, pointsize=10)
 plot(dbuf, "xtfit")
 invisible(dev.off())
 @
-\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 400,clip]{xtfit} 
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 400,clip]{xtfit.png} 
 \end{center}
 \caption{X and T Scatterplot with E(T|X) and 80\% CIs}
 \label{fig:xtfit}
@@ -414,11 +414,11 @@ plot(dbuf, "truth")
 \begin{figure}[Ht]
 \begin{center}
 <<results=tex,echo=FALSE, eval=FALSE>>= 
-pdf("truth2.pdf", width=6, height=6, pointsize=10)
+png("truth2.png", width=6, height=6, pointsize=10)
 plot(dbuf, "truth")
 invisible(dev.off())
 @
-\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{truth2} 
+\includegraphics[width=2.75in, height=2.75in, viewport=0 0 420 395,clip]{truth2.png} 
 \end{center}
 \caption{Comparing Estimates to the Truth at the County Level}
 \label{fig:truth}
@@ -485,9 +485,9 @@ plot(out)
 
 \begin{figure}[Ht]
 \begin{center}
-\includegraphics{MCMCplot.pdf} 
+\includegraphics{MCMCplot.png} 
 \end{center}
-\caption{2x3 Tomography Plot: \% White Turnout and \% Black Turnout}
+\caption{MCMC Output for %White Turnout in Precinct 3}
 \end{figure}
 
 \noindent From this output we can get the empirical mean and standard
@@ -526,7 +526,7 @@ tomogRxC(formula, RxCdata)
 
 \begin{figure}[Ht]
 \begin{center}
-\includegraphics{whiteblackRxC.pdf} 
+\includegraphics{whiteblackRxC.png} 
 \end{center}
 \caption{2x3 Tomography Plot: \% White Turnout and \% Black Turnout}
 \end{figure}
@@ -562,7 +562,7 @@ tomogRxC(formula, RxCdata)
 
 \begin{figure}[Ht]
 \begin{center}
-\includegraphics{whitehispRxC.pdf} 
+\includegraphics{whitehispRxC.png} 
 \end{center}
 \caption{2x3 Tomography Plot: \% White Turnout and \% Hispanic Turnout}
 \end{figure}
@@ -580,13 +580,13 @@ tomogRxC(formula, RxCdata)
 
 \begin{figure}[Ht]
 \begin{center}
-\includegraphics{hispblackRxC.pdf} 
+\includegraphics{hispblackRxC.png} 
 \end{center}
 \caption{2x3 Tomography Plot: \% Hispanic Turnout and \% Black Turnout}
 \end{figure}
 
 
-Here we see that even though the informative polygons indicate low values of percent hispanic and black turnout, we have the least information about the intersection of percent black and hispanic turnout.  The polygons are spread all across the unit square space, indicating that the possible values for percent black and hispanic turnout spread over a large area.  In the bottom right hand corner, and on the R console, the tomography plot reports how many of the tomography polygons have no information, or how many tomography polygons cover the entire unit square.  Here we see that ther are 34 tomography polygons with no information, and since we onlyhave 60 precincts, this means that we have very little information for these quantities of interest. We might be more confident in the estimates for white turnout in this RxC analysis than for black and hispanic turnout.
+Here we see that even though the informative polygons indicate low values of percent hispanic and black turnout, we have the least information about the intersection of percent black and hispanic turnout. The polygons are spread all across the unit square space, indicating that the possible values for percent black and hispanic turnout spread over a large area.  In the bottom right hand corner, and on the R console, the tomography plot reports how many of the tomography polygons have no information, or how many tomography polygons cover the entire unit square.  Here we see that ther are 34 tomography polygons with no information, and since we onlyhave 60 precincts, this means that we have very little information for these quantities of interest. We might be more confident in the estimates for white turnout in this RxC analysis than for black and hispanic turnout.
 
 \clearpage
 \section{Reference to EI Functions}
