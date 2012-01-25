@@ -19,15 +19,20 @@
     print("Running 2x2 ei")
 
     if(simulate==FALSE){
-    dbuf <- ei.estimate(t,x, n, id,data=data, Zb=Zb, Zw=Zw, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)
+    dbuf <- ei.estimate(t,x, n,id=id,data=data, Zb=Zb, Zw=Zw, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)
     return(dbuf)
 }
     if(simulate==TRUE){
     #If the table is two by two, use ei
-    dbuf <- tryCatch(tryCatch(ei.estimate(t,x, n,
-                        data=data, Zb=Zb, Zw=Zw, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth), error=function(x) ei(t,x,n,
+    dbuf <- tryCatch(tryCatch(ei.estimate(t,x, n,id=id,
+                        data=data, Zb=Zb, Zw=Zw, erho=erho,
+                                          esigma=esigma, ebeta=ebeta,
+                                          ealphab=ealphab,
+                                          ealphaw=ealphaw,
+                                          truth=truth),
+                              error=function(x) ei(t,x,n, id=id,
                                       data=data, Zb=Zb, Zw=Zw,erho=3,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)), error=function(x) ei.estimate(t,x,n,
-                                      data=data, Zb=Zb, Zw=Zw, erho=5,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth))
+                                     id=id, data=data, Zb=Zb, Zw=Zw, erho=5,esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth))
     dbuf.sim <- ei.sim(dbuf)
     return(dbuf.sim)
 }
@@ -107,12 +112,12 @@ ei.estimate <- function(t,x,n,id,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.
   hessian <- solution$hessian[covs,covs]
   output <- list(solution$par, solution$hessian,hessian, erho, esigma,
                  ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
-                 truth,precision, covs, Rfun)
+                 truth,precision, covs, Rfun, id)
 
   names(output) <- c("phi", "hessian","hessianC",  "erho",
                      "esigma", "ebeta", "ealphab", "ealphaw", "numb",
                      "x", "t", "n", "Zb", "Zw",
-                     "truth", "precision", "covs", "Rfun")
+                     "truth", "precision", "covs", "Rfun", "id")
   class(output) <- "ei"
   return(output)
 }
@@ -133,6 +138,7 @@ ei.estimate <- function(t,x,n,id,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.
    Zb <- ei.object$Zb
    Zw <- ei.object$Zw
    truth <- ei.object$truth
+   id <- ei.object$id
    precision <- ei.object$precision
   #Begin Importance Sampling
   message("Importance Sampling..")
