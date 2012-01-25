@@ -999,7 +999,7 @@ getinput <- function(){
 
 
 
-movie <- function(ei.object){
+.movie <- function(ei.object){
   ok <- !is.na(ei.object$betab)
   betabs <- ei.object$betabs[ok,]
   ok <- !is.na(ei.object$betaw)
@@ -1011,16 +1011,16 @@ movie <- function(ei.object){
  input<-1 #initialize at precinct 1
  last.input<-0
  while(input!="s"){
-    input<-postonce(input,last.input,betab,betaw,betabs,betaws)
+    input<-.postonce(input,last.input,betab,betaw,betabs,betaws)
     last.input<-input
-    input<-getinput()
+    input<-.getinput()
  }
 
-getinput <- function(){
+.getinput <- function(){
   readline("Hit <enter> for next observation, enter observation number, or hit <s> to stop: ")
 }
 
-postonce<-function(input,last.input,betab,betaw,betabs,betaws){
+.postonce<-function(input,last.input,betab,betaw,betabs,betaws){
 
   if(input==""){ #input is <enter>, will plot next observation
     last.input<-as.integer(last.input)
