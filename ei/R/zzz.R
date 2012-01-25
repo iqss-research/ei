@@ -998,24 +998,6 @@ getinput <- function(){
 }
 
 
-
-.movie <- function(ei.object){
-  ok <- !is.na(ei.object$betab)
-  betabs <- ei.object$betabs[ok,]
-  ok <- !is.na(ei.object$betaw)
-  betaws <- ei.object$betaws[ok,]
-
-  betab <- ei.object$betabs
-  betaw <- ei.object$betaws
-  
- input<-1 #initialize at precinct 1
- last.input<-0
- while(input!="s"){
-    input<-.postonce(input,last.input,betab,betaw,betabs,betaws)
-    last.input<-input
-    input<-.getinput()
- }
-
 .getinput <- function(){
   readline("Hit <enter> for next observation, enter observation number, or hit <s> to stop: ")
 }
@@ -1056,6 +1038,23 @@ getinput <- function(){
 return(input)
 
 }
+
+.movie <- function(ei.object){
+  ok <- !is.na(ei.object$betab)
+  betabs <- ei.object$betabs[ok,]
+  ok <- !is.na(ei.object$betaw)
+  betaws <- ei.object$betaws[ok,]
+
+  betab <- ei.object$betabs
+  betaw <- ei.object$betaws
+  
+ input<-1 #initialize at precinct 1
+ last.input<-0
+ while(input!="s"){
+    input<-.postonce(input,last.input,betab,betaw,betabs,betaws)
+    last.input<-input
+    input<-.getinput()
+ }
    
 }
 

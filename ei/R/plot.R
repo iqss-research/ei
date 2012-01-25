@@ -10,7 +10,9 @@ plot.ei <- function(x, ...){
                         "betaw"=.betawd, "xt"=.xt, "xtc"=.xtc,
                         "xtfit"=.xtfit, "xtfitg"=.xtfitg,
                         "estsims"=.estsims, "boundXb"=.boundXb,
-                        "boundXw"=.boundXw, "truth"=.truthfn,"eiRxCtomog"=.bndplot, "movieD"=.movieD)
+                        "boundXw"=.boundXw,
+                        "truth"=.truthfn,"eiRxCtomog"=.bndplot,
+                        "movieD"=.movieD, "movie"=.movie)
   arguments <- list(...)
   results <- list()
   if (length(arguments)!=1) {row = round(length(arguments)/2+.1)
