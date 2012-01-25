@@ -5,7 +5,7 @@
 
 #@Rfun specifies function used to calculate R in the likelihood
 
-  ei <- function(formula, total=NULL, Zb=1,Zw=1, data=NA, erho=.5, esigma=.5,
+  ei <- function(formula, total=NULL, Zb=1,Zw=1, id=NULL, data=NA, erho=.5, esigma=.5,
                ebeta=.5, ealphab=NA, ealphaw=NA, truth=NA, simulate=TRUE,covariate=NULL, lambda1=4, lambda2=2, covariate.prior.list=NULL, tune.list=NULL, start.list=NULL, sample=1000, thin=1, burnin=1000, verbose=0, ret.beta="r", ret.mcmc=TRUE, usrfun=NULL){
     #Extract formula
     dv <- terms.formula(formula)[[2]]
@@ -13,12 +13,13 @@
     t <- as.character(dv)
     x <- as.character(iv)
     n <- as.character(total)
+    id <- as.character(id)
     
     if(length(dv)==1){
     print("Running 2x2 ei")
 
     if(simulate==FALSE){
-    dbuf <- ei.estimate(t,x, n, data=data, Zb=Zb, Zw=Zw, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)
+    dbuf <- ei.estimate(t,x, n, id,data=data, Zb=Zb, Zw=Zw, erho=erho, esigma=esigma, ebeta=ebeta, ealphab=ealphab, ealphaw=ealphaw, truth=truth)
     return(dbuf)
 }
     if(simulate==TRUE){
@@ -45,7 +46,7 @@
 
 }
 
-ei.estimate <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
+ei.estimate <- function(t,x,n,id,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
                ealphab=NA, ealphaw=NA, truth=NA, Rfun=2, precision=4){
 
 #Check to make sure data is not null
@@ -55,6 +56,7 @@ ei.estimate <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
     n <- data[[n]]
     if(is.character(Zb)) Zb <- data[[Zb]]
     if(is.character(Zw)) Zw <- data[[Zw]]
+    id <- data[[id]]
   }
   
   Zb <- as.matrix(Zb)
@@ -235,14 +237,14 @@ ei.estimate <- function(t,x,n,Zb=1,Zw=1, data=NA, erho=.5, esigma=.5, ebeta=.5,
                  sdbetab, sdbetaw, betab, betaw,resamp, erho, esigma,
                  ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
                  truth,
-                 precision)
+                 precision, id)
 
   names(output) <- c("phi", "hessian", "hessianC","psi", "betab", "betaw",
                      "sbetab",
                      "sbetaw", "betabs", "betaws", "resamp", "erho",
                      "esigma", "ebeta", "ealphab", "ealphaw", "numb",
                      "x", "t", "n", "Zb", "Zw",
-                     "truth", "precision")
+                     "truth", "precision", "id")
   class(output) <- "ei"
   return(output)
 }
