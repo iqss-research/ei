@@ -297,32 +297,38 @@ statistical information in the data. This enables us to evaluate
 directly how much information is available in the data and how much
 is imposed by the statistical model.
 
-One tomography plot is needed for each estimate in the corresponding
-table. For one example, the tomography plot below analyzes the
-information and uncertainty in the data and our analyses with respect
-to the percent of Whites (horizontally) and non-Whites (vertically)
-who vote for the Hispanic candidate in District 3, in each precinct.
-If this information were known for a precinct, it would appear in the
-plot as a single dot, and the set of precincts as a set of dots.
-Because of the secret ballot, we cannot know the exact point with
-precision; what the plot shows is that the information hidden from us
-by the secret ballot is directly quantifiable: it turns each
+One entire tomography plot is needed for each numerical estimate in
+the corresponding table. For one example, the tomography plot in
+Figure \ref{tomog} analyzes the information and uncertainty in the
+data and our analyses with respect to two unknowns: the percent of
+Whites (horizontally) and non-Whites (vertically) who vote for the
+Hispanic candidate in District 3, in each precinct.  If these two
+quantities were known for a precinct, they would appear in the plot as
+a single dot, and the set of precincts as a set of dots.  However,
+because of the secret ballot, we cannot know any of the exact points
+with precision; what the plot shows is that the information hidden
+from us by the secret ballot is directly quantifiable: it turns each
 precinct's dot into a line.  We can think of the dot as being smeared
 into a line. That smearing represents a loss of information, but much
 information is retained (and that is uniquely captured by our methods
-of ecological inference).
-
+of ecological inference).  In particular, we know for certain that the
+true point representing the percent of whites and non-whites who vote
+for the Hispanic candidate falls somewhere on the line; we do not know
+where on the basis of just the information from that precinct, but we
+know it must be on the line.
 \begin{figure}[htb]
 \begin{centering}
 \includegraphics[scale=.5]{pl_whitevote_h_3.png}
-\caption{This tomography plot displays the white vote for the Hispanic Candidate in 2010 Mine Inspector Election}
+\caption{This tomography plot displays the white vote for the Hispanic
+  Candidate in 2010 Mine Inspector Election}
 \end{centering}
 \label{tomog}
 \end{figure}
 
 For example, consider the bold green line in the plot. We know, based
-on the observed data, that the point in this plot (representing where
-the White and non-White vote share is) for this precinct must be some
+on the observed data from that precinct (the percent voting and the
+percent Hispanic), that the point in this plot (representing where the
+White and non-White vote share is) for this precinct must be some
 point on the line, but we do not know exactly where on the line this
 point falls. For this line, we know that the fraction of Whites that
 vote for the Hispanic candidate must fall somewhere between 0.16 (16
@@ -334,15 +340,17 @@ voting for the Hispanic candidate could be anywhere from 0\% to 100\%.
 That estimate is better than the method of ecological regression,
 which often gives answers outside that interval, but still we can see
 that this precinct is informative with respect only to Whites, not
-non-Whites. In this way, each line captures exactly what we do and do
-not know about the voting behavior in each precinct. Our statistical
-method uses all this available information. Lines that are relatively
-steep in this particular tomography plot, convey a lot of information
-about the percent of Whites that vote for the Hispanic candidate.
-Lines that are relatively flat convey a great deal of information
-about the percent of non-Whites voting for the Hispanic candidate.
-Lines that cut off the top right or bottom left corner of the plot are
-informative about both quantities.
+non-Whites. 
+
+In this way, each line on a tomography plot captures exactly what we
+do and do not know about the voting behavior in each precinct. Our
+statistical method uses all this available information. Lines that are
+relatively steep in this particular tomography plot, convey a lot of
+information about the percent of Whites that vote for the Hispanic
+candidate.  Lines that are relatively flat convey a great deal of
+information about the percent of non-Whites voting for the Hispanic
+candidate.  Lines that cut off the top right or bottom left corner of
+the plot are informative about both quantities.
 
 The tomography plots reflect what we know about the racial composition
 of each precinct. If a precinct contains more than 65\% of a
