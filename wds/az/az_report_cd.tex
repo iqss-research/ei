@@ -1,28 +1,76 @@
-\documentclass[12pt,draft]{scrartcl} 
-\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry} 
-\usepackage{booktabs}
-\usepackage{dcolumn}
-\usepackage{setspace}
-\usepackage{graphicx}
-\usepackage{fullpage}
-\usepackage{paralist}
-\usepackage{natbib}
-\usepackage{appendix}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{color}
+\documentclass[12pt]{article}
+%\usepackage{Rd,Sweave,upquote}
+\usepackage[reqno]{amsmath}
+\usepackage{natbib,amssymb,amsthm,graphicx,verbatim,url,verbatim}
+\usepackage[all]{xy}
+\usepackage{vmargin}
+\setpapersize{USletter}
+\topmargin=0in
 \usepackage{times}
-\usepackage{topcapt}
-\usepackage{booktabs}
-\usepackage{rotating}
-\usepackage{sectsty}
-\usepackage{morefloats}
-\usepackage{url}
-\usepackage[bookmarks]{hyperref}
-\sectionfont{\large}
-\subsectionfont{\normalsize}
-\subsubsectionfont{\small}
+\usepackage{dcolumn, booktabs}
+\usepackage[dvipsnames,usenames]{color}
+\usepackage{dcolumn}
+\newcolumntype{.}{D{.}{.}{-1}}\newcolumntype{d}[1]{D{.}{.}{#1}}
+%\usepackage[notref]{showkeys}
+%\usepackage{endfloat}
+
+\usepackage{color,setspace}
+\definecolor{spot}{rgb}{0.6,0,0}
+\usepackage[pdftex, bookmarksopen=true, bookmarksnumbered=true,
+  pdfstartview=FitH, breaklinks=true, urlbordercolor={0 1 0},
+  citebordercolor={0 0 1}, colorlinks=true, citecolor=spot, 
+  linkcolor=spot, urlcolor=spot,
+  pdfauthor={Gary King, Benjamin Schneer},
+  pdftitle={}]{hyperref}
+
+%squeeze
+% == spacing between sections and subsections
+%\usepackage[compact]{titlesec} 
+% keep floats on same page
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75} % keep < \topfraction
+
+\usepackage{soul}
+
+\usepackage{appendix}
+\usepackage{latexsym}
+\newtheorem{claim}{Claim}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{ass}{Assumption}
+\newtheorem{question}{Question}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newcommand{\bX}{\boldsymbol{X}}
+
+
+% \documentclass[12pt,draft]{article} 
+% \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry} 
+% \usepackage{booktabs}
+% \usepackage{dcolumn}
+% \usepackage{setspace}
+% \usepackage{graphicx}
+% \usepackage{fullpage}
+% \usepackage{paralist}
+% \usepackage{natbib}
+% \usepackage{appendix}
+% \usepackage{amsmath}
+% \usepackage{amsfonts}
+% \usepackage{amssymb}
+% \usepackage{color}
+% \usepackage{times}
+% \usepackage{topcapt}
+% \usepackage{booktabs}
+% \usepackage{rotating}
+% \usepackage{sectsty}
+% \usepackage{morefloats}
+% \usepackage{url}
+% \usepackage[bookmarks]{hyperref}
+% \sectionfont{\large}
+% \subsectionfont{\normalsize}
+% \subsubsectionfont{\small}
 
 \title{An Analysis of the Arizona Independent Redistricting Commission
   Congressional District Map}
@@ -72,7 +120,7 @@ seems straightforward to identify the candidate of choice of the
 Hispanic community and both new districts would seem to have the
 ability to elect these candidates.  We also find that it would be
 difficult, and unnecessary if it were possible, to draw districts more
-favorable to minorites.  We see no evidence of retrogression.
+favorable to minorities.  We see no evidence of retrogression.
 
 \section{Methodological Approach}
 \label{s:methods}
@@ -96,8 +144,8 @@ aggregated election results as well as population figures from the US
 Census.  We summarize here the methods of ecological inference we use.
 
 In 1953, two methods of ecological inference were introduced --- the
-method of bounds \citep{duncan1953} and ecological regression
-\citep{goodman1953}. A special case of the method of bounds is known
+method of bounds \citep{DunDav53} and ecological regression
+\citep{Goodman53}. A special case of the method of bounds is known
 as ``homogeneous precinct analysis,'' which had been used in many
 court cases: this approach seeks out ethnically homogeneous precincts
 (100\% black or 100\% white, or 100\% Hispanic) because for those
@@ -112,7 +160,7 @@ candidates in starkly different ways than the vast majority of the
 population who live in (at least partially) heterogeneous areas.  The
 method of bounds is more general than homogeneous precinct analysis
 because the former can also provide some information about
-heterogenous precincts; it does this in the form of ``bounds'' or
+heterogeneous precincts; it does this in the form of ``bounds'' or
 ranges into which the fraction of a minority group voting for a
 particular candidate must fall.
 
@@ -136,7 +184,7 @@ or $-54$\%.
 
 The method of bounds (or homogeneous precinct analysis) and ecological
 regression dominated the academic literature and courtroom expert
-testimony from 1953 until 1997 when \citeauthor{king1997}'s EI
+testimony from 1953 until 1997 when \citeauthor{King97}'s EI
 approach was introduced. This approach was the first to combine the
 deterministic information from the method of bounds with the
 statistical information from ecological regression into a single set
@@ -153,11 +201,11 @@ previous approach.
 Since EI was introduced, a variety of other methods have been
 developed in the academic literature, virtually all of which follow
 King's practice of including deterministic and statistical information
-in the same model.  For example, \citet{king2001} extends King's
+in the same model.  For example, \citet{RosJiaKin01} extends King's
 method to arbitrarily large numbers of ethnic groups and candidates;
 we use this method in our work as well as King's original method. Some
 of these other methods have been collected in the edited volume by
-\citet{king2004}.
+\citet{KinRosTan04b}.
 
 In practice, when we have data we can use to validate the methods,
 ecological regression and homogeneous precinct analysis tend to be
@@ -313,13 +361,13 @@ the appendix of this report.
 A natural question to ask when examining any set of proposed districts
 is whether it is possible to draw districts even more favorable to the
 minority community without disrupting other essential redistricting
-criteira, such as one-person-one-vote or maintaining communities of
+criteria, such as one-person-one-vote or maintaining communities of
 interest. Specifically, we might wish to ask how much would one have
 to change the composition of a given district in order to meet certain
 target thresholds in terms of electoral performance?  The best way to
 narrow uncertainty in answering a question like this is to actually
 draw a huge arrange of alternative redistricting plans and evaluate
-those.  The Commision has evaluated many other redistricting plans,
+those.  The Commission has evaluated many other redistricting plans,
 but given the nearly infinite number of possible districting plans
 that could be drawn and the nontrivial time and expense involved in
 drawing new plans, all possibilities can never be evaluated.  Thus, we
@@ -331,7 +379,7 @@ to change in order for the minority candidate of choice to gather 55\%
 (or any other given percentage) of the overall voting strength in the
 district.  To do this, we consider one minority district at a time and
 move minority or white voters between that district and its
-geographically adjacent districts.  In our verison, we assume that
+geographically adjacent districts.  In our version, we assume that
 district lines could be adjusted to draw specific types of voters into
 the districts of interest, no matter how strange the district lines.
 We thus ignore other redistricting criteria for this analysis.  Thus,
@@ -342,7 +390,7 @@ impossible to draw a stronger district (in the situation where a
 stronger district were desirable), then we can fairly confidently
 conclude that spending the time and money to draw new maps in an
 appropriate way that respects other crucial redistricting criteria
-would not wind up strengthing the district and so that possiiblity
+would not wind up strengthening the district and so that possibility
 could be ignored.
 
 We applied this approach to various actual plans and as the districts
@@ -350,7 +398,7 @@ improved, the measures that we propose here reflected that.  Now that
 the districts seem to have been improved as much as is feasible, it
 looks unlikely that they could be strengthened much further.
 
-A more detaild outline of our procedure as follows:
+A more detailed outline of our procedure as follows:
 
 \begin{enumerate}
 \item First, use the methods of ecological inference described above
@@ -406,7 +454,7 @@ large amount of data there is some degree of randomness in the
 electoral process. A candidate runs an especially good campaign; the
 weather makes it difficult for one candidate's supporters to get to
 the polls; an outside group runs an effective set of attach ads; A
-scandle hits one of the candidates; this is the stuff of politics and
+scandal hits one of the candidates; this is the stuff of politics and
 it is modeled in a well-known way as fundamental variability.
 Finally, \emph{model dependence} is the degree to which changes in
 modeling assumptions affect our estimates.  Models are required in
@@ -453,7 +501,7 @@ know it must be on the line.
 
 \begin{figure}[htb]
 \begin{centering}
-\includegraphics[scale=.5]{pl_whitevote_h_3.png}
+\includegraphics[scale=1]{figs/pl_whitevote_h_3.png}
 \caption{This tomography plot displays the white vote for the Hispanic
   Candidate in 2010 Mine Inspector Election}
 \end{centering}
@@ -568,7 +616,7 @@ also provides an easy graphical means of comparing racial polarization
 between the proposed and benchmark districts.
 \begin{figure}[p!h]
   \begin{centering}
-    \includegraphics[scale=.8]{cvap_cd_polarization.pdf}
+    \includegraphics[scale=.8]{figs/cvap_cd_polarization.pdf}
     \caption{CVAP Congressional Districts: Racial Polarized Voting}
   \end{centering}
   \label{cvap_cd_polarization}
@@ -623,7 +671,7 @@ retrogression along dimensions 1 and 2.
 
 \begin{figure}[p!h]
 \begin{centering}
-\includegraphics[scale=.8]{cvap_cd.pdf}
+\includegraphics[scale=.8]{figs/cvap_cd.pdf}
 \caption{CVAP Congressional Districts}
 \end{centering}
 \label{cvap_cd}
@@ -670,7 +718,7 @@ less than the 55\% threshold and so we envision what would occur if we
 added Hispanic voters to the district.
 \begin{figure}[p!h]
   \begin{centering}
-    \includegraphics[scale=.8]{cvap_cd_performance_ratio.pdf}
+    \includegraphics[scale=.8]{figs/cvap_cd_performance_ratio.pdf}
     \caption{CVAP Congressional Districts}
   \end{centering}
   \label{cvap_cd_performance_ratio}
@@ -709,7 +757,7 @@ efficiency, both districts are roughly equal.
 \phantomsection
 \addcontentsline{toc}{chapter}{References}
 %\bibliography{az_bib}
-\bibliography{az_bib,gk,gkpubs}
+\bibliography{gk,gkpubs}
 
 \clearpage
 \phantomsection
@@ -722,39 +770,39 @@ efficiency, both districts are roughly equal.
 \section{Ecological Inference Estimates: CVAP CD}
 \subsection{Proposed Map}
 
-\input{tables/smine_cvap_cd_3}
-\input{tables/smine_cvap_cd_7}
+\input{figs/smine_cvap_cd_3}
+\input{figs/smine_cvap_cd_7}
 
-\input{tables/pres04_cvap_cd_3}
-\input{tables/pres04_cvap_cd_7}
+\input{figs/pres04_cvap_cd_3}
+\input{figs/pres04_cvap_cd_7}
 
-\input{tables/pres08_cvap_cd_3}
-\input{tables/pres08_cvap_cd_7}
+\input{figs/pres08_cvap_cd_3}
+\input{figs/pres08_cvap_cd_7}
 
-\input{tables/sos06_cvap_cd_3}
-\input{tables/sos06_cvap_cd_7}
+\input{figs/sos06_cvap_cd_3}
+\input{figs/sos06_cvap_cd_7}
 
-\input{tables/sos10_cvap_cd_3}
-\input{tables/sos10_cvap_cd_7}
+\input{figs/sos10_cvap_cd_3}
+\input{figs/sos10_cvap_cd_7}
 
 \newpage
 \clearpage
 \subsection{Benchmark Map}
 
 
-\input{tables/smine_cvap_cd_4_benchmark}
-\input{tables/smine_cvap_cd_7_benchmark}
+\input{figs/smine_cvap_cd_4_benchmark}
+\input{figs/smine_cvap_cd_7_benchmark}
 
-\input{tables/pres04_cvap_cd_4_benchmark}
-\input{tables/pres04_cvap_cd_7_benchmark}
+\input{figs/pres04_cvap_cd_4_benchmark}
+\input{figs/pres04_cvap_cd_7_benchmark}
 
-\input{tables/pres08_cvap_cd_4_benchmark}
-\input{tables/pres08_cvap_cd_7_benchmark}
+\input{figs/pres08_cvap_cd_4_benchmark}
+\input{figs/pres08_cvap_cd_7_benchmark}
 
-\input{tables/sos06_cvap_cd_4_benchmark}
-\input{tables/sos06_cvap_cd_7_benchmark}
+\input{figs/sos06_cvap_cd_4_benchmark}
+\input{figs/sos06_cvap_cd_7_benchmark}
 
-\input{tables/sos10_cvap_cd_4_benchmark}
-\input{tables/sos10_cvap_cd_7_benchmark}
+\input{figs/sos10_cvap_cd_4_benchmark}
+\input{figs/sos10_cvap_cd_7_benchmark}
 
 \end{document}
