@@ -88,7 +88,8 @@ Benjamin Schneer\thanks{Ph.D.\ student, Institute for Quantitative Social
 
 \begin{document}
 \maketitle
-
+\tableofcontents
+\clearpage
 \doublespacing
 
 \section{Introduction}
@@ -184,8 +185,8 @@ or $-54$\%.
 
 The method of bounds (or homogeneous precinct analysis) and ecological
 regression dominated the academic literature and courtroom expert
-testimony from 1953 until 1997 when \citeauthor{King97}'s EI
-approach was introduced. This approach was the first to combine the
+testimony from 1953 until 1997 when the approach known as EI was
+introduced \citep{King97}. This approach was the first to combine the
 deterministic information from the method of bounds with the
 statistical information from ecological regression into a single set
 of estimates. Thus, it uses the statistical information from all
@@ -196,7 +197,7 @@ never produced by this methodology, and all information from all
 precincts are used in the analysis. Like any indirect method of
 revealing information that the secret ballot hides, EI is also
 uncertain to a degree, but it uses more information than any other
-previous approach. 
+previous approach.
 
 Since EI was introduced, a variety of other methods have been
 developed in the academic literature, virtually all of which follow
@@ -752,23 +753,15 @@ threshold of 55\% we would need to reduce the Hispanic share of the
 population in CD 7 by a larger amount than in CD 3. In terms of
 efficiency, both districts are roughly equal.
 
-\singlespace
-\bibliographystyle{apsr} 
-\bibsep=0in 
-\phantomsection
-\addcontentsline{toc}{chapter}{References}
-%\bibliography{az_bib}
-\bibliography{gk,gkpubs}
 
 \clearpage
 \phantomsection
-\addcontentsline{toc}{chapter}{Appendix}
-
+%\addcontentsline{toc}{section}{Appendix}
 \appendix
-\renewcommand*\appendixpagename{\section*{Appendix}}
-\appendixpage
+% \renewcommand*\appendixpagename{\section*{Appendix}}
+% \appendixpage
 
-\section{Ecological Inference Estimates: CVAP}
+\section{Appendix: CVAP-Based Ecological Inference Estimates}
 \subsection{Proposed Districts}
 
 \input{figs/smine_cvap_cd_3}
@@ -786,10 +779,9 @@ efficiency, both districts are roughly equal.
 \input{figs/sos10_cvap_cd_3}
 \input{figs/sos10_cvap_cd_7}
 
-\newpage
+%\newpage
 \clearpage
 \subsection{Benchmark Districts}
-
 
 \input{figs/smine_cvap_cd_4_benchmark}
 \input{figs/smine_cvap_cd_7_benchmark}
@@ -806,4 +798,10 @@ efficiency, both districts are roughly equal.
 \input{figs/sos10_cvap_cd_4_benchmark}
 \input{figs/sos10_cvap_cd_7_benchmark}
 
+\singlespace
+\bibliographystyle{apsr} 
+\bibsep=0in 
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliography{gk,gkpubs}
 \end{document}
