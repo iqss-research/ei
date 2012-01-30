@@ -2,8 +2,8 @@
 %âãÏÓ\r
 1 0 obj
 <<
-/CreationDate (D:20120126121358)
-/ModDate (D:20120126121358)
+/CreationDate (D:20120130110753)
+/ModDate (D:20120130110753)
 /Title (R Graphics Output)
 /Producer (R 2.13.1)
 /Creator (R)
@@ -590,7 +590,7 @@ BT
 ET
 BT
 /sRGB cs 1.000 0.000 0.000 scn
-/F2 1 Tf 8.00 0.00 -0.00 8.00 237.46 41.62 Tm (LDs that cannot reach 55% Threshold are in Red) Tj
+/F2 1 Tf 8.00 0.00 -0.00 8.00 237.46 41.62 Tm (CDs that cannot reach 55% Threshold are in Red) Tj
 ET
 Q
 endstream
