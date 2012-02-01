@@ -505,8 +505,7 @@ they produce are --- like all ecological inference point estimates ---
 conditional on the model assumed. Yet, most of the actual scientific
 uncertainty in ei models does not stem from the sampling uncertainty
 given a statistical model, but rather the uncertainty associated with
-choosing a model --- what is known as model dependence
-\citep{KinZen06}. A tomography plot that contains information about
+choosing a model --- what is known as model dependence (King and Zeng 2006). A tomography plot that contains information about
 the possible values of the quantities of interest is therefore more
 useful than the model in understanding the true amount of information
 in the data from which the model is obtaining its estimates.\\ 
@@ -602,6 +601,7 @@ Here we see that even though the informative polygons indicate low values of per
 \bibitem{gking}Gary King, \emph{A Solution to the Ecological Inference Problem: 
 Reconstructing Individual Behaviour from Aggregate Data}, Princeton University Press (1997).
 
+\bibitem{KinZen06} Gary King and Langche Zheng, ``The Dangers of Extreme Counterfactuals.'' \emph{Political Analysis}, 14:2, pp 131-159, 2006.
 \bibitem{lauetal} Lau et al, ``eiPack: Ecological Inference and Higher-Dimension Dtaa Management." \url{http://www.olivialau.org/software}.
 
 \bibitem{rosenetal} Rosen et al, ``Bayesian and Frequentist Inference for Ecological Inference: The RxC Case." \emph{Statistica Neerlandica}, 55:2, pp 134-156, 2001.
