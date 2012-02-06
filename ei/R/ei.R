@@ -5,7 +5,7 @@
 
 #@Rfun specifies function used to calculate R in the likelihood
 
-  ei <- function(formula, total=NULL, Zb=1,Zw=1, id=NULL, data=NA, erho=.5, esigma=.5,
+  ei <- function(formula, total=NULL, Zb=1,Zw=1, id=NA, data=NA, erho=.5, esigma=.5,
                ebeta=.5, ealphab=NA, ealphaw=NA, truth=NA, simulate=TRUE,covariate=NULL, lambda1=4, lambda2=2, covariate.prior.list=NULL, tune.list=NULL, start.list=NULL, sample=1000, thin=1, burnin=1000, verbose=0, ret.beta="r", ret.mcmc=TRUE, usrfun=NULL){
     #Extract formula
     dv <- terms.formula(formula)[[2]]
