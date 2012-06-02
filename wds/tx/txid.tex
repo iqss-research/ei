@@ -1,0 +1,220 @@
+\documentclass[12pt]{article}
+%\usepackage{Rd,Sweave,upquote}
+\usepackage[reqno]{amsmath}
+\usepackage{natbib,amssymb,amsthm,graphicx,verbatim,url,verbatim}
+\usepackage[all]{xy}
+\usepackage{vmargin}
+\setpapersize{USletter}
+\topmargin=0in
+\usepackage{times}
+\usepackage{dcolumn, booktabs}
+\usepackage[dvipsnames,usenames]{color}
+\usepackage{dcolumn}
+\newcolumntype{.}{D{.}{.}{-1}}\newcolumntype{d}[1]{D{.}{.}{#1}}
+%\usepackage[notref]{showkeys}
+%\usepackage{endfloat}
+
+\usepackage{color,setspace}
+\definecolor{spot}{rgb}{0.6,0,0}
+\usepackage[pdftex, bookmarksopen=true, bookmarksnumbered=true,
+  pdfstartview=FitH, breaklinks=true, urlbordercolor={0 1 0},
+  citebordercolor={0 0 1}, colorlinks=true, citecolor=spot, 
+  linkcolor=spot, urlcolor=spot,
+  pdfauthor={Gary King},
+  pdftitle={}]{hyperref}
+
+%squeeze
+% == spacing between sections and subsections
+%\usepackage[compact]{titlesec} 
+% keep floats on same page
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75} % keep < \topfraction
+
+\usepackage{soul}
+
+\usepackage{appendix}
+\usepackage{latexsym}
+\newtheorem{claim}{Claim}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem*{ass}{Assumption}
+\newtheorem{question}{Question}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+\newcommand{\bX}{\boldsymbol{X}}
+
+\title{Estimates of Racial Differences in the Percent of Citizens to
+  be Disenfranchised by the Texas Voter ID Law} \author{Gary
+  King\thanks{Alfred J.  Weatherhead III University Professor, Harvard
+    University, Institute for Quantitative Social Science, 1737
+    Cambridge Street, Cambridge MA 02138; http://GKing.harvard.edu,
+    king@harvard.edu, (617) 500-7570.}}
+
+%\date{January 25, 2011}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\clearpage
+\doublespacing
+
+\section{Introduction}
+
+The purpose of this report is to estimate the differential percentages
+of black, white, and Hispanic citizens of voting age who would be
+disenfranchised (not allowed to vote) solely because they do not meet
+the additional requirements of the new Texas Voter ID law.
+
+The report from the Department of Justice’s expert Stephen
+Ansolabehere examines the differential percentages of black, white,
+and Hispanic \emph{registered voters} who would be disenfranchised by
+the new law.  We supplement this information by attempting to estimate
+the broader percentages disenfranchised of \emph{all} those in each
+racial group who would have been eligible to vote without the new law,
+including those who had and had not voted previously.  We also use
+different assumptions and methods than Ansolabehere, the uncertainties
+of which are likely uncorrelated with those from his report.  The
+result is that the combination of the two reports should provide
+stronger inferences than either alone.
+
+\section{Background and Qualifications}
+
+I am the Albert J Weatherhead III University Professor at Harvard
+University, one of 24 with the designation of University Professor.  I
+have taught at Harvard since 1987 and before that at New York
+University.  I hold a Ph.D. from the University of Wisconsin.  I have
+been elected a member of six honorary societies (National Academy of
+Sciences 2010, American Statistical Association 2009, American
+Association for the Advancement of Science 2004, American Academy of
+Arts and Sciences 1998, Society for Political Methodology 2008, and
+American Academy of Political and Social Science 2004), and have won
+more than 30 ``best of'' awards for my articles, books, conference
+papers, and software, among others.  I have published more than 130
+journal articles, 15 open source software packages, and 8 books
+spanning most aspects of political methodology, several fields of
+political science, statistics, and other scholarly disciplines.  I
+have served on more than 30 editorial boards.  The statistical methods
+and software I developed are used extensively in litigation, academia,
+government, consulting, and private industry.  More information on me
+and copies of most of my work is available at
+\url{http://gking.harvard.edu}.
+
+I have been a expert witness or consultant (for governments and
+partisans on both sides) in many U.S.\ states for legislative
+redistricting and other matters.  Most recently, I was the expert for
+the Arizona Independent Redistricting Commission.  I filed an Amici
+Curiae brief in \emph{LULAC v. Perry} with three other scholars, which
+was discussed and positively evaluated in three of the Supreme Court's
+opinions, including the plurality decision.
+
+\section{Methodological Approach}\label{s:methods}
+
+In this section, we offer an overview of our methodological approach.
+We will attempt to estimate the percentage of blacks, whites,
+hispanics, and others who have valid voter identification, according
+to the new Texas Voter ID law.  
+
+From U.S.\ Census Data, we compute the percent of citizens' of voting
+age who are black, white, hispanic, or other in each zip code area in
+Texas.  Then from the State of Texas' driver's license database, we
+compute the number of citizens of voting age (of any race) who have
+valid identification, and from the combination of the two databases
+the percent of citizens of voting age who have a valid ID.  
+
+As there exists no data base to provide a complete cross-tabulation of
+these results at the individual level, we use methods of ecological
+inference --- which is the process of inferring from group level data
+to information about individuals.  We summarize here the methods of
+ecological inference we use.
+
+In 1953, two methods of ecological inference were introduced --- the
+method of bounds \citep{DunDav53} and ecological regression
+\citep{Goodman53}. A special case of the method of bounds is known as
+``homogeneous precinct analysis,'' which had been used in many court
+cases: this approach seeks out ethnically homogeneous precincts (100\%
+black or 100\% white, or 100\% Hispanic) because for those precincts
+we know for certain the behavior of interest (in this case the percent
+of those with a valid ID) of that one ethnic group.  The assumption
+behind this method is that the percent with an ID observed in
+homogeneous precincts is identical to that in other areas. The
+advantage of this method is that it yields completely certain
+information about some subgroups of citizens in some areas; the
+disadvantage is that the relatively few who live in racially
+homogeneous precincts may have starkly different proportions of IDs
+than the vast majority of the population who live in (at least
+partially) heterogeneous areas.  The method of bounds is more general
+than homogeneous precinct analysis because the former can also provide
+some information about heterogeneous precincts; it does this in the
+form of ``bounds'' or ranges into which the fraction of a minority
+group having IDs must fall.
+
+The second method of ecological inference --- ecological regression
+--- ignores the information revealed by the method of bounds and its
+special case of homogeneous precinct analysis. Instead, ecological
+regression uses statistical information across all precincts. For
+example, if we find in areas with more African Americans that fewer
+people have voter IDs, then we may be willing to infer that it is the
+African Americans who have fewer IDs. The advantage of this approach
+is that it uses some information from all precincts. The disadvantage
+is that the information can be misleading: For example, also
+consistent with the same evidence would be that the (perhaps poor)
+whites who live in areas with high African Americans concentrations
+are the ones with fewer IDs. In fact, as an indication of the common
+problems with this method, ecological regression, unlike the method of
+bounds, regularly gives impossible answers -- such as estimating the
+percent of Hispanics voting for the Democrats as 120\% or $-54$\%.
+
+The method of bounds (or homogeneous precinct analysis) and ecological
+regression dominated the academic literature and courtroom expert
+testimony from 1953 until 1997 when the approach known as EI was
+introduced \citep{King97}. This approach was the first to combine the
+deterministic information from the method of bounds with the
+statistical information from ecological regression into a single set
+of estimates. Thus, it uses the statistical information from all
+precincts, the certain information from homogeneous precincts, and
+other deterministic information known for certain from other precincts
+(given in the form of ranges of estimates).  Impossible estimates are
+never produced by this methodology, and all information from all
+precincts are used in the analysis. Like any indirect method of
+revealing information about individuals from aggregate data, EI is
+also uncertain to a degree, but it uses more information than other
+previous approaches.
+
+Since EI was introduced, a variety of other methods have been
+developed in the academic literature, virtually all of which follow
+the same practice of including deterministic and statistical
+information in the same model.  For example, \citet{RosJiaKin01}
+extend King's method to large numbers of ethnic groups and candidates;
+we use this method in our work as well as King's original method. Some
+of the other methods of ecological inference have been collected in the
+edited volume by \citet{KinRosTan04b}.
+
+In practice, when we have data we can use to validate the methods,
+ecological regression and homogeneous precinct analysis are often
+inaccurate in many situations. Studies have shown that uncertainty
+remains with King's and other subsequent methods --- which will always
+be the case because some information is lost in the process of
+aggregate --- but the estimates are usually superior. Differences
+among the new methods that include both deterministic and statistical
+information are, in comparison, relatively minor.
+
+In this case, we use these newer methods to give estimates of the
+proportion of each ethnic group that has a valid voter ID.  We also
+use King's ``tomography plots'' and other diagnostic methods that help
+us discern when adjustments in the methods need to be made, and how
+much uncertainty remains.
+
+The ecological inference methods in this case also have the advantage
+of avoiding any errors that may exist in matching voter registration files
+
+\section{Data}\label{s:data}
+
+\singlespace
+\bibliographystyle{apsr} 
+\bibsep=0in 
+%\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliography{gk,gkpubs}
+\end{document}
