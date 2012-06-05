@@ -216,55 +216,55 @@ have IDs, rather than only those who are presently registered.
 Although one cannot vote without being registered, in future elections
 those not registered now of course do have the choice of registering.
 
-\subsection{An Explication of Sample Ecological Inference Results}
+\section{Data}\label{s:data}
+
+\section{Results}\label{s:res}
+
+\subsection{An Explication of Ecological Inference Results}
 
 We used our approach to ecological inference to determine the extent
 of the disparity among racial groups in holding a valid form of voter identification. For each
 county in Texas, we estimated the proportion of whites, blacks, Hispanics,
 and others who held a drivers' license.\footnote{While we could have also used data on concealed hand gun permits
-(as this form of identification would also be considered valid at the polls), in practice only ??? people posess a
-permit to carry a concealed weapon but not a driver's license.} 
+(as this form of identification would also be considered valid at the polls), in practice only ??? people posess a permit to carry a concealed weapon but not a driver's license.} 
 
-To illustrate our approach, we describe the analysis for one of the several approaches we used (MORE DETAIL ON WHICH ONE).
-Thus, Table~\ref{vap_f3_ex} displays estimates of the proportion of
+Table~\ref{cvap_f3_ex} displays estimates of the proportion of
 each racial group that holds a valid driver's license in the state of Texas. Note that in each
 table the total population in the last column and the total license holders in
 the last row are {\it observed} while the internal cells are {\it estimated} 
 by our methodology. The bottom row labeled Total Pop
-gives the population license holding totals computed by aggregating over all counties in the state. 
-Similarly, the column labeled Total VAP lists the
+gives the license holder population totals computed by aggregating over all counties in the state. 
+Similarly, the column labeled Total CVAP lists the
 share of citizen voting age population comprised by each racial group
 in the state.  Again, this is calculated by simply aggregating over
 all counties in the state.
 
 \begin{table}[ht]
 \begin{center}
-\caption{\label{vap_f3_ex}Texas Driver's License Holders by Racial Group}
+\caption{\label{cvap_f3_ex}Texas Driver's License Holders by Racial Group}
 \begin{tabular}{lccc}
   \hline
-Racial Group & License & No License & Total VAP\\
+Racial Group & License & No License & Total CVAP\\
   \hline
-White & 0.83 & 0.17 & 0.46 \\ 
-Black & 0.83 & 0.17 & 0.11 \\ 
-Hispanic & 0.71 & 0.29 & 0.37 \\ 
-Other & 0.89 & 0.11 & 0.05 \\ 
-Total Pop & 0.79 & 0.21 &   \\ 
+White & 0.87 & 0.13 & 0.55 \\ 
+Black & 0.72 & 0.28 & 0.13 \\ 
+Hispanic & 0.76 & 0.24 & 0.28 \\ 
+Other & 0.85 & 0.15 & 0.04 \\ 
+Total Pop & 0.82 & 0.18 &   \\ 
    \hline
 \end{tabular}
 \end{center}
 \end{table}
 
 The internal cells in the table contain estimates from ecological
-inference. For example, we estimate that 83\% (0.83 in the table) of
-whites in Texas held valid driver's licenses and 17\%
+inference. For example, we estimate that 87\% (0.87 in the table) of
+whites in Texas held valid driver's licenses and 13\%
 of whites in Texas did not.
-Furthermore, we know that (according to the census data in use) whites made up 46\% of the state's
-total population (VAP).  Looking at the state as a whole, we
-observe that 79\% of people the voting age population held a driver's license. 
+Furthermore, we know that (according to the census data in use) whites made up 55\% of the state's
+citizen voting age population (CVAP).  Looking at the state as a whole, we
+observe that 82\% of citizens in the voting age population held a driver's license. 
 
-This example illustrates the method of analysis based on one out of several possible sets of assumptions.
-We conducted this form of analysis using several different sets of assumptions and using both the Voting Age Population (VAP)
-and Citizen Voting Age Population (CVAP).
+The comparison of interest is between the proportion of white license holders and license holders of other races.
 
 \subsection{Sources of Uncertainty}
 
@@ -325,9 +325,9 @@ know it must be on the line.
 
 \begin{figure}[htb]
 \begin{centering}
-\includegraphics[scale=1]{figs/VAP_f3_dl_white.png}
-\caption{\label{tomog}This tomography plot displays the white vs. non-white proportions of people
-living in Texas who hold a driver's license in Texas.}
+\includegraphics[scale=1]{figs/CVAP_f3_dl_white.png}
+\caption{\label{tomog}This tomography plot displays the white vs. non-white proportions of citizens (CVAP)
+living in Texas who hold a driver's license.}
 \end{centering}
 \end{figure}
 
@@ -337,8 +337,8 @@ percent White), that the point in this plot (representing where the
 White and non-White share of license holders is) for this county must be some
 point on the line, but we do not know exactly where on the line this
 point falls. For this line, we know that the fraction of Whites that
-hold a valid driver's license must fall somewhere between 0.59 (59
-percent) and 0.65 (65 percent). We get these numbers by projecting the
+hold a valid driver's license must fall somewhere between 0.5 (50
+percent) and 0.6 (60 percent). We get these numbers by projecting the
 line downwards to the horizontal axis. If instead we project the line
 to the left (vertical) axis, we can see that, for this particular
 county, the range of possible values for the percent of non-Whites
@@ -400,9 +400,7 @@ confidence intervals or standard errors, which assume the model is
 true and only summarize fundamental and estimation uncertainty.  Our
 appendix includes these plots.
 
-\section{Data}\label{s:data}
 
-\section{Results}\label{s:res}
 
 \singlespace
 \bibliographystyle{apsr} 
