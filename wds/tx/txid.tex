@@ -222,100 +222,57 @@ We used our approach to ecological inference to determine the extent
 of the disparity among racial groups in holding a valid form of voter identification. For each
 county in Texas, we estimated the proportion of whites, blacks, Hispanics,
 and others who held a drivers' license.\footnote{While we could have also used data on concealed hand gun permits
-(as this form of identification would also be considered valid at the polls), in practice only ### people posess a
-permit to carry a concealed weapon but not a driver's license.}
+(as this form of identification would also be considered valid at the polls), in practice only ??? people posess a
+permit to carry a concealed weapon but not a driver's license.} 
 
-To illustrate our approach, we describe the analysis for a single election occurring in a single congressional
-district.  Thus, Table~\ref{smine_cvap_cd_3_ex} displays estimates of
-how each racial group in the proposed Congressional District 3 voted
-in the 2010 election for Arizona Mine Inspector. Note that in each
-table the total population in the last column and the total votes in
+To illustrate our approach, we describe the analysis for one of the several approaches we used (MORE DETAIL ON WHICH ONE).
+Thus, Table~\ref{vap_f3_ex} displays estimates of the proportion of
+each racial group that holds a valid driver's license in the state of Texas. Note that in each
+table the total population in the last column and the total license holders in
 the last row are {\it observed} while the internal cells are {\it estimated} 
 by our methodology. The bottom row labeled Total Pop
-gives the population vote totals computed by aggregating over all VTDs
-in the district.  Similarly, the column labeled Total CVAP lists the
+gives the population license holding totals computed by aggregating over all counties in the state. 
+Similarly, the column labeled Total VAP lists the
 share of citizen voting age population comprised by each racial group
-in the district.  Again, this is calculated by simply aggregating over
-all VTDs in the district.
+in the state.  Again, this is calculated by simply aggregating over
+all counties in the state.
 
 \begin{table}[ht]
 \begin{center}
-\caption{\label{smine_cvap_cd_3_ex}Mine Inspector 2010 CD 3 (Proposed)}
-\begin{tabular}{lccccc}
+\caption{\label{vap_f3_ex}Texas Driver's License Holders by Racial Group}
+\begin{tabular}{lccc}
   \hline
-Racial Group & Turnout & D Vote & R Vote & S Vote & Total CVAP\\ 
+Racial Group & License & No License & Total VAP\\
   \hline
-White & 0.36 & 0.35 & 0.65 & 0.00 & 0.43 \\ 
-  Hispanic & 0.30 & 0.90 & 0.10 & 0.00 & 0.44 \\ 
-  Native American & 0.22 & 0.90 & 0.09 & 0.01 & 0.04 \\ 
-  Black & 0.13 & 0.50 & 0.48 & 0.02 & 0.05 \\ 
-  Other & 0.21 & 0.55 & 0.44 & 0.01 & 0.05 \\ 
-  Total Pop & 0.31 & 0.61 & 0.39 & 0.00 &  \\ 
+White & 0.83 & 0.17 & 0.46 \\ 
+Black & 0.83 & 0.17 & 0.11 \\ 
+Hispanic & 0.71 & 0.29 & 0.37 \\ 
+Other & 0.89 & 0.11 & 0.05 \\ 
+Total Pop & 0.79 & 0.21 &   \\ 
    \hline
 \end{tabular}
 \end{center}
 \end{table}
 
 The internal cells in the table contain estimates from ecological
-inference. For example, we estimate that 90\% (0.90 in the table) of
-Hispanic citizens in CD 3 voted for the Democratic Candidate and 10\%
-for the Republican candidate (and 0\% for any third party candidates).
-Furthermore, we know that Hispanics made up 44\% of the district's
-total population (CVAP) and we estimate that they turned out for the
-election at a rate of 30\%.  Looking at the district as a whole, we
-observe that the Democratic candidate received 61\% of the vote. 
+inference. For example, we estimate that 83\% (0.83 in the table) of
+whites in Texas held valid driver's licenses and 17\%
+of whites in Texas did not.
+Furthermore, we know that (according to the census data in use) whites made up 46\% of the state's
+total population (VAP).  Looking at the state as a whole, we
+observe that 79\% of people the voting age population held a driver's license. 
 
-%Thus, on the basis of the quantitative information from the 2010 Mine Inspector election in the proposed CD 3, the Democratic candidate
-%seems to be the candidate of choice for Hispanic voters and this
-%candidate comfortably carried the district despite the existence of
-%some level of polarized voting --- that is, lower support among white
-%voters who we estimate voted for the Democrat at a rate of only 35\%
-%compared to the Hispanics 90\%.
-
-%As an illustration of our method of analysis, we now describe how we determine the level of racially polarized voting as well as the ability to elect the candidate of choice for this district.
-
-To judge the level of racial polarization in CD 3, we examine the
-differences in the voting patterns of whites and Hispanics. In this
-district, we estimate that the Democratic candidate received 35\% of
-the vote among white voters; on the other hand, the Democrat received
-90\% of the vote among Hispanic voters. Because of this wide
-discrepancy, along with the fact that the majority of white voters
-preferred a different candidate than the majority of Hispanic voters,
-we conclude that racially polarized voting exists in CD 3 for this
-election.
-
-We now describe how we judge the level of support among the main
-minority for the candidate of choice, as well as whether the district
-as a whole is strong enough to elect this candidate. In CD 3 the
-expected candidate of choice is the Democratic candidate, who is also
-Hispanic. The data appear to confirm this hypothesis, as 90\% of
-Hispanic voters preferred the Democratic candidate. After confirming
-the level of support for the candidate of choice, we turn to the
-district wide support for this candidate. In this case, 61\% of all
-voters in proposed CD 3 voted for the candidate of choice. This level
-of support provides a comfortable margin of victory. Therefore, we
-conclude that Hispanics in proposed CD 3 have a clear candidate of
-choice and furthermore that the district as a whole demonstrates the
-ability to elect this candidate.
-
-This example illustrates the method of analysis for a single race in a
-single district. We conducted this form of analysis for each district
-in each election of interest. In the sections that follow, we use our
-estimates for each district and election to assess the level of racial
-polarization and ability to elect the candidate of choice.  The
-results presented here use the Citizen Voting Age Population (CVAP)
-totals. We present the same set of estimates using Voting Age
-Population (VAP) totals in the digital appendix.  We have included
-tables illustrating the estimates for each district and each race in
-the appendix of this report.
+This example illustrates the method of analysis based on one out of several possible sets of assumptions.
+We conducted this form of analysis using several different sets of assumptions and using both the Voting Age Population (VAP)
+and Citizen Voting Age Population (CVAP).
 
 \subsection{Sources of Uncertainty}
 
 There are several sources of uncertainty in ecological inference
 estimates including estimation uncertainty, fundamental uncertainty,
 and model dependence.  \emph{Estimation uncertainty} occurs because we
-have a limited set of observations (zip code areas) to use in
-estimating the disenfranchisement rates for each racial group votes.
+have a limited set of observations (counties) to use in
+estimating the disenfranchisement rates for each racial group's votes.
 \emph{Fundamental uncertainty} is the idea that even with a large
 amount of data there is some degree of randomness in the process of
 signing up to get a driver's license or ID.  A citizen's license
@@ -323,14 +280,14 @@ expires inadvertently, or they forget to sign up, or their name is
 typed into the database incorrectly, or racial group information is
 mis-estimated by the Census bureau; this is the stuff of measurement
 and human behavior and is modeled in a well-known way as fundamental
-variability.  Finally, \emph{model dependence} is the degree to which
+variability. Finally, \emph{model dependence} is the degree to which
 changes in modeling assumptions affect our estimates.  Models are
 required in ecological inference because some information is destroyed
 in the process of aggregation and kept from the analyst without having
 full information on every individual in the state.
 
 In different types of statistical problems, each of these sources of
-uncertainty can play difference roles and to differing degrees.
+uncertainty can play different roles and to differing degrees.
 Ecological inferences of course have all three sources of uncertainty,
 but it is the model dependence caused by having to estimate voter ID
 rates because all information is not in the public domain that
@@ -350,86 +307,84 @@ One entire tomography plot is needed for each numerical estimate in
 the corresponding table. For one example, the tomography plot in
 Figure \ref{tomog} analyzes the information and uncertainty in the
 data and our analyses with respect to two unknowns: the percent of
-Whites (horizontally) and non-Whites (vertically) who vote for the
-Hispanic candidate in District 3, in each precinct.  If these two
-quantities were known for a precinct, they would appear in the plot as
-a single dot, and the set of precincts as a set of dots.  However,
-because of the secret ballot, we cannot know any of the exact points
+Whites (horizontally) and non-Whites (vertically) who hold a driver's license in each county in Texas.
+If these two
+quantities were known for a county, they would appear in the plot as
+a single dot, and the set of counties as a set of dots.  However,
+because of the unreliable racial data in the driver's license database, we cannot know any of the exact points
 with precision; what the plot shows is that the information hidden
-from us by the secret ballot is directly quantifiable: it turns each
-precinct's dot into a line.  We can think of the dot as being smeared
+from us by the problems with the database is directly quantifiable: it turns each
+county's dot into a line.  We can think of the dot as being smeared
 into a line. That smearing represents a loss of information, but much
 information is retained (and that is uniquely captured by our methods
 of ecological inference).  In particular, we know for certain that the
-true point representing the percent of whites and non-whites who vote
-for the Hispanic candidate falls somewhere on the line; we do not know
-where on the basis of just the information from that precinct, but we
+true point representing the percent of whites and non-whites who hold a driver's license
+falls somewhere on the line; we do not know
+where on the basis of just the information from that county, but we
 know it must be on the line.
 
 \begin{figure}[htb]
 \begin{centering}
-\includegraphics[scale=1]{figs/pl_whitevote_h_3.png}
-\caption{\label{tomog}This tomography plot displays the white vote
-  for the Hispanic Candidate in 2010 Mine Inspector Election
-  (horizontally) by non-white vote for the same election (vertically)}
+\includegraphics[scale=1]{figs/VAP_f3_dl_white.png}
+\caption{\label{tomog}This tomography plot displays the white vs. non-white proportions of people
+living in Texas who hold a driver's license in Texas.}
 \end{centering}
 \end{figure}
 
-For example, consider the bold green line in the plot. We know, based
-on the observed data from that precinct (the percent voting and the
-percent Hispanic), that the point in this plot (representing where the
-White and non-White vote share is) for this precinct must be some
+For example, consider the bold red line in the plot. We know, based
+on the observed data from that county (the percent with a license and the
+percent White), that the point in this plot (representing where the
+White and non-White share of license holders is) for this county must be some
 point on the line, but we do not know exactly where on the line this
 point falls. For this line, we know that the fraction of Whites that
-vote for the Hispanic candidate must fall somewhere between 0.16 (16
-percent) and 0.23 (23 percent). We get these numbers by projecting the
+hold a valid driver's license must fall somewhere between 0.59 (59
+percent) and 0.65 (65 percent). We get these numbers by projecting the
 line downwards to the horizontal axis. If instead we project the line
 to the left (vertical) axis, we can see that, for this particular
-precinct, the range of possible values for the percent of non-Whites
-voting for the Hispanic candidate could be anywhere from 0\% to 100\%.
+county, the range of possible values for the percent of non-Whites
+holding a valid driver's license could be anywhere from 0\% to 100\%.
 That estimate is better than the method of ecological regression,
 which often gives answers outside that interval, but still we can see
-that this precinct is informative with respect only to Whites, not
+that this county is informative with respect only to Whites, not
 non-Whites. 
 
 In this way, each line on a tomography plot captures exactly what we
-do and do not know about the voting behavior in each precinct ---
+do and do not know about the proportion of people with driver's licenses in each county ---
 without any uncertainty (assuming only that the data are measured
 correctly). Our statistical method then uses all this available
 information as well as the statistical information from ecological
 regression. Lines that are relatively steep in this particular
 tomography plot convey a lot of information about the percent of
-Whites that vote for the Hispanic candidate.  Lines that are
+Whites that hold a valid driver's license.  Lines that are
 relatively flat convey a great deal of information about the percent
-of non-Whites voting for the Hispanic candidate.  Lines that cut off
+of non-Whites that hold a valid driver's license.  Lines that cut off
 the top right or bottom left corner of the plot are informative about
 both quantities.
 
 The tomography plots reflect what we know about the racial composition
-of each precinct. If a precinct contains more than 65\% of a
+of Texas. If a county contains more than 65\% of a
 particular racial group (which we use as an arbitrary cutoff for
 graphical clarity), then the line on the tomography plot that
 corresponds to that precinct is color coded to represent the majority
 group (see the legend in the plot). If no groups comprise 65\% or more
-of the precinct, then no color code is assigned.  
+of the county, then no color code is assigned.  
 
 Finally, the tomography plots also reflect the results of the
 ecological inference statistical estimation, that includes information
-on patterns across precincts. The point estimate (i.e., the exact
-point on the line that we estimate as the vote share for each group)
+on patterns across counties. The point estimate (i.e., the exact
+point on the line that we estimate as the proportion of each group with a valid driver's license)
 as well as the confidence intervals are colored yellow.  Taken
-together, these describe the overall estimate of how racial groups
-voted in the district as a whole. For example, in the tomography plot
-for District 3 in Figure \ref{tomog}, the mass of yellow in the top
-left means that our estimates indicate that whites voted for the
-Hispanic candidate at a substantially lower rate than did their
-non-white counterparts in the district.  
+together, these describe the overall estimate for the proportion of license holders in
+each racial group in Texas as a whole. For example, in the tomography plot
+for in Figure \ref{tomog}, the mass of yellow on the right means that our
+estimates indicate that whites held valid driver's licenses at a higher rate than did their
+non-white counterparts.  
 
 As importantly, the tomography plots convey the \emph{overall
   uncertainty} in the available data, and how our statistical
 estimator uses that information to produce an estimate.  In this
-particular example, the prevalence of flat lines near the top and
-steep lines near the left convey a great deal of information about
+particular example, the prevalence of flat lines on the upper half of the graph and
+steep lines near the right convey a great deal of information about
 where and what we are uncertain about.  The statistical estimator
 assumes that there is some relationship among all the precincts in a
 district, and so in all likelihood there exists a cluster of points on
@@ -443,10 +398,7 @@ numerical quantity to be estimated.  The uncertainty estimates here
 are far more informative and information rich than sampling based
 confidence intervals or standard errors, which assume the model is
 true and only summarize fundamental and estimation uncertainty.  Our
-appendix includes all such plots, calculated for all offices we
-analyzed, for VAP and CVAP, and for each district.
-
-
+appendix includes these plots.
 
 \section{Data}\label{s:data}
 
