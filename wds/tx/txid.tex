@@ -226,7 +226,7 @@ We used our approach to ecological inference to determine the extent
 of the disparity among racial groups in holding a valid form of voter identification. For each
 county in Texas, we estimated the proportion of whites, blacks, Hispanics,
 and others who held a drivers' license.\footnote{While we could have also used data on concealed hand gun permits
-(as this form of identification would also be considered valid at the polls), in practice only ??? people posess a permit to carry a concealed weapon but not a driver's license.} 
+(as this form of identification would also be considered valid at the polls), in practice only ??? people possess a permit to carry a concealed weapon but not a driver's license.} 
 
 Table~\ref{cvap_f3_ex} displays estimates of the proportion of
 each racial group that holds a valid driver's license in the state of Texas. Note that in each
@@ -246,27 +246,30 @@ all counties in the state.
   \hline
 Racial Group & License & No License & Total CVAP\\
   \hline
-White & 0.87 & 0.13 & 0.55 \\ 
-Black & 0.72 & 0.28 & 0.13 \\ 
-Hispanic & 0.76 & 0.24 & 0.28 \\ 
-Other & 0.85 & 0.15 & 0.04 \\ 
-Total Pop & 0.82 & 0.18 &   \\ 
+White & 0.855 & 0.145 & 0.551 \\ 
+Black & 0.781 & 0.219 & 0.129 \\ 
+Hispanic & 0.750 & 0.250 & 0.281 \\ 
+Other & 0.857 & 0.143 & 0.039 \\ 
+Total Pop & 0.816 & 0.184 &   \\ 
    \hline
+
 \end{tabular}
 \end{center}
 \end{table}
 
 The internal cells in the table contain estimates from ecological
-inference. For example, we estimate that 87\% (0.87 in the table) of
-whites in Texas held valid driver's licenses and 13\%
+inference. For example, we estimate that 85.5\% (0.855 in the table) of
+whites in Texas held valid driver's licenses and 14.5\%
 of whites in Texas did not.
 Furthermore, we know that (according to the census data in use) whites made up 55\% of the state's
 citizen voting age population (CVAP).  Looking at the state as a whole, we
-observe that 82\% of citizens in the voting age population held a driver's license. 
+observe that 81.6\% of citizens in the voting age population held a driver's license. 
 
-The comparison of interest is between the proportion of white license holders and license holders of other races.
+The comparison of interest is between the proportion of white license holders and license holders of other races. A simple difference in the estimated percentages suggests that white citizens were at least as likely to possess a valid license than any other racial group. In particular, we estimate that the share of white license holders is 7.4\% greater than among black citizens and 10.6\% greater than among Hispanic citizens. Furthermore, when calculating standard confidence intervals for the difference of these quantities, we find that the differences in license holding between whites and blacks as well as between whites and Hispanics do not overlap with zero.
 
-\subsection{Sources of Uncertainty}
+Based on these results, we conclude that Texas's voter identification law will have a disparate impact on black and Hispanic citizens as compared to white citizens because it will effectively disenfranchise a greater proportion of these groups as compared with white citizens.
+
+\subsection{Sources of Uncertainty in the Estimates}
 
 There are several sources of uncertainty in ecological inference
 estimates including estimation uncertainty, fundamental uncertainty,
@@ -325,7 +328,7 @@ know it must be on the line.
 
 \begin{figure}[htb]
 \begin{centering}
-\includegraphics[scale=1]{figs/CVAP_f3_dl_white.png}
+\includegraphics[scale=.75]{figs/CVAP_f3_dl_white_ex.png}
 \caption{\label{tomog}This tomography plot displays the white vs. non-white proportions of citizens (CVAP)
 living in Texas who hold a driver's license.}
 \end{centering}
@@ -375,10 +378,13 @@ on patterns across counties. The point estimate (i.e., the exact
 point on the line that we estimate as the proportion of each group with a valid driver's license)
 as well as the confidence intervals are colored yellow.  Taken
 together, these describe the overall estimate for the proportion of license holders in
-each racial group in Texas as a whole. For example, in the tomography plot
-for in Figure \ref{tomog}, the mass of yellow on the right means that our
+each racial group in Texas as a whole. In the tomography plot
+for Figure \ref{tomog}, the mass of yellow on the right means that our
 estimates indicate that whites held valid driver's licenses at a higher rate than did their
-non-white counterparts.  
+non-white counterparts. Even without making any inferences, the plot suggests that there
+a number of majority Hispanic counties (the horizontal lines clustered between 60\%-80\%) 
+in which citizens hold licenses at substantially lower
+rates than in the majority white counties (the vertical lines clustered at rates of over 75\%). 
 
 As importantly, the tomography plots convey the \emph{overall
   uncertainty} in the available data, and how our statistical
@@ -400,7 +406,9 @@ confidence intervals or standard errors, which assume the model is
 true and only summarize fundamental and estimation uncertainty.  Our
 appendix includes these plots.
 
+\subsection{Homogenous Counties}
 
+As an intuitive way to check the logic of the results presented without the use of statistical inference, we also compare the proportion of citizens who hold driver's licenses in the most homogenous white counties to the most homogenous Hispanic counties. We restrict the sample to the top 10\% Texas counties in terms of white share of the population and Hispanic share of the population. In the most homogenous white counties (those that are 88.9\% white or more), 83.1\% of citizens hold a driver's license; in the most homogenous Hispanic counties (those that are 58.1\% Hispanic or more), 73.0\% of citizens hold a driver's license.
 
 \singlespace
 \bibliographystyle{apsr} 
@@ -408,4 +416,45 @@ appendix includes these plots.
 %\phantomsection
 \addcontentsline{toc}{section}{References}
 \bibliography{gk,gkpubs}
+
+
+\appendix
+\renewcommand*\appendixpagename{\section*{Appendix}}
+\appendixpage
+
+\section{Tomography Plots}
+
+\begin{figure}[htb]
+\begin{centering}
+\includegraphics[scale=.75]{figs/CVAP_f3_dl_white.png}
+\caption{\label{tomog_white}This tomography plot displays the white vs. non-white proportions of citizens (CVAP)
+living in Texas who hold a driver's license.}
+\end{centering}
+\end{figure}
+
+
+\begin{figure}[htb]
+\begin{centering}
+\includegraphics[scale=.75]{figs/CVAP_f3_dl_black.png}
+\caption{\label{tomog_black}This tomography plot displays the black vs. non-black proportions of citizens (CVAP)
+living in Texas who hold a driver's license.}
+\end{centering}
+\end{figure}
+
+\begin{figure}[htb]
+\begin{centering}
+\includegraphics[scale=.75]{figs/CVAP_f3_dl_hispanic.png}
+\caption{\label{tomog_hispanic}This tomography plot displays the Hispanic vs. non-Hispanic proportions of citizens (CVAP)
+living in Texas who hold a driver's license.}
+\end{centering}
+\end{figure}
+
+
+\begin{figure}[htb]
+\begin{centering}
+\includegraphics[scale=.75]{figs/CVAP_f3_dl_other.png}
+\caption{\label{tomog_other}This tomography plot displays the other vs. non-other proportions of citizens (CVAP)
+living in Texas who hold a driver's license.}
+\end{centering}
+\end{figure}
 \end{document}
