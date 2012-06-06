@@ -21,7 +21,7 @@
   citebordercolor={0 0 1}, colorlinks=true, citecolor=spot, 
   linkcolor=spot, urlcolor=spot,
   pdfauthor={Gary King},
-  pdftitle={}]{hyperref}
+  pdftitle={Differential Racial Disenfranchisement induced by the Texas Voter ID Law}]{hyperref}
 
 %squeeze
 % == spacing between sections and subsections
@@ -45,12 +45,13 @@
 \newtheorem{definition}{Definition}
 \newcommand{\bX}{\boldsymbol{X}}
 
-\title{Estimates of Racial Differences in the Percent of Citizens to
-  be Disenfranchised by the Texas Voter ID Law} \author{Gary
-  King\thanks{Alfred J.  Weatherhead III University Professor, Harvard
-    University, Institute for Quantitative Social Science, 1737
-    Cambridge Street, Cambridge MA 02138; http://GKing.harvard.edu,
-    king@harvard.edu, (617) 500-7570.}}
+
+\title{Differential Racial Disenfranchisement induced by the Texas
+  Voter ID Law}\author{Gary King\thanks{Alfred J.  Weatherhead III
+      University Professor, Harvard University, Institute for
+      Quantitative Social Science, 1737 Cambridge Street, Cambridge MA
+      02138; http://GKing.harvard.edu, king@harvard.edu, (617)
+      500-7570.}}
 
 %\date{June 8, 2012}
 
@@ -72,12 +73,11 @@ Ansolabehere examines the differential percentages of black, white,
 and Hispanic \emph{registered voters} who would be disenfranchised by
 the new law.  We supplement this information by attempting to estimate
 the broader percentages disenfranchised of \emph{all} those in each
-racial group who would have been eligible to vote without the new law,
-including those who had and had not voted previously.  We also use
-different assumptions and methods than Ansolabehere, the uncertainties
-of which are likely uncorrelated with those from his report.  The
-result is that the combination of the two reports should provide
-stronger inferences than either alone.
+racial group who would have been eligible to vote without the new law.
+We also use different assumptions and methods than Ansolabehere, the
+uncertainties of which are likely uncorrelated with those from his
+report.  The result is that the combination of the two reports should
+provide stronger inferences than either alone.
 
 \section{Background and Qualifications}
 
@@ -95,26 +95,27 @@ papers, and software, among others.  I have published more than 130
 journal articles, 15 open source software packages, and 8 books
 spanning most aspects of political methodology, several fields of
 political science, statistics, and other scholarly disciplines.  I
-have served on more than 30 editorial boards.  The statistical methods
-and software I developed are used extensively in litigation, academia,
-government, consulting, and private industry.  More information on me
-and copies of most of my work is available at
-\url{http://gking.harvard.edu}.
+have served on the editorial boards of more than 30 scholarly
+journals.  The statistical methods and software I developed are used
+extensively in the litigation, academia, government, consulting, and
+private industry.  More information on me and copies of most of my
+work is available at \url{http://gking.harvard.edu}.
 
-I have been a expert witness or consultant (for governments and
-partisans on both sides) in many U.S.\ states for legislative
-redistricting and other matters.  Most recently, I was the expert for
-the Arizona Independent Redistricting Commission.  I filed an Amici
-Curiae brief in \emph{LULAC v. Perry} with three other scholars, which
-was discussed and positively evaluated in three of the Supreme Court's
-opinions, including the plurality decision.
+I have been an expert witness or consultant (for governments,
+partisans on both sides, and nonpartisan and bipartisan groups) in
+many U.S.\ states for legislative redistricting and other matters.
+Recently, I was an expert for the Arizona Independent Redistricting
+Commission.  I filed an Amici Curiae brief in \emph{LULAC v. Perry}
+with three other scholars, which was discussed in three of the Supreme
+Court's opinions, including the plurality decision.
 
 \section{Methodological Approach}\label{s:methods}
 
 In this section, we offer an overview of our methodological approach.
-We will attempt to estimate the percentage of blacks, whites,
-hispanics, and others who have valid voter identification, according
-to the new Texas Voter ID law.  
+We will attempt to estimate the percentage of black, white, hispanic,
+and other citizens of voting age who have valid voter identification,
+according to the new Texas Voter ID law.  Throughout, I was assisted
+by two graduate students working under my direction.
 
 From U.S.\ Census Data, we compute the percent of citizens' of voting
 age who are black, white, hispanic, or other in each county in
@@ -124,10 +125,10 @@ valid identification, and from the combination of the two databases
 the percent of citizens of voting age in each racial group who have a valid ID.  
 
 As there exists no data base to provide a complete cross-tabulation of
-these results at the individual level, we use methods of ecological
-inference --- which is the process of inferring from group level data
-to information about individuals.  We summarize here the methods of
-ecological inference we use.
+these results at the individual level, we use methods of ``ecological
+inference'' --- which is the process of inferring from group level
+data to information about individuals.  We summarize here the methods
+of ecological inference we use.
 
 In 1953, two methods of ecological inference were introduced --- the
 method of bounds \citep{DunDav53} and ecological regression
@@ -135,14 +136,15 @@ method of bounds \citep{DunDav53} and ecological regression
 ``homogeneous precinct analysis,'' which had been used in many court
 cases: this approach seeks out ethnically homogeneous precincts (100\%
 black or 100\% white, or 100\% Hispanic) because for those precincts
-we know for certain the behavior of interest (in this case the percent
-of those with a valid ID) of that one ethnic group.  The assumption
-behind this method is that the percent with an ID observed in
-homogeneous precincts is identical to that in other areas. The
-advantage of this method is that it yields completely certain
+we know for certain (i.e., up to the input data) the behavior of
+interest (in this case the percent of those with a valid ID) of that
+one ethnic group.  The assumption behind this method in inferring to
+the population for the entire state is that the percent with an ID
+observed in homogeneous precincts is identical to that in other areas.
+The advantage of this method is that it yields completely certain
 information about some subgroups of citizens in some areas; the
 disadvantage is that the relatively few who live in racially
-homogeneous precincts may have starkly different proportions of IDs
+homogeneous precincts may have different proportions of IDs
 than the vast majority of the population who live in (at least
 partially) heterogeneous areas.  The method of bounds is more general
 than homogeneous precinct analysis because the former can also provide
@@ -158,13 +160,14 @@ example, if we find in areas with more African Americans that fewer
 people have voter IDs, then we may be willing to infer that it is the
 African Americans who have fewer IDs. The advantage of this approach
 is that it uses some information from all precincts. The disadvantage
-is that the information can be misleading: For example, also
-consistent with the same evidence would be that the (perhaps poor)
-whites who live in areas with high African Americans concentrations
-are the ones with fewer IDs. In fact, as an indication of the common
-problems with this method, ecological regression, unlike the method of
-bounds, regularly gives impossible answers -- such as estimating the
-percent of Hispanics voting for the Democrats as 120\% or $-54$\%.
+is that the information can be misleading in a different way: For
+example, also consistent with the same evidence would be that the
+(perhaps poor) whites who live in areas with high African Americans
+concentrations are the ones with fewer IDs. In fact, as an indication
+of the common problems with this method, ecological regression, unlike
+the method of bounds, regularly gives impossible answers -- such as
+estimating the percent of Hispanics voting for the Democrats as 120\%
+or $-54$\%.
 
 The method of bounds (or homogeneous precinct analysis) and ecological
 regression dominated the academic literature and courtroom expert
@@ -183,31 +186,31 @@ also uncertain to a degree, but it uses more information than other
 previous approaches.
 
 Since EI was introduced, a variety of other methods have been
-developed in the academic literature, virtually all of which follow
-the same practice of including deterministic and statistical
-information in the same model.  For example, \citet{RosJiaKin01}
-extend King's method to large numbers of ethnic groups and candidates;
-we use this method in our work as well as King's original method. Some
-of the other methods of ecological inference have been collected in the
+developed in the academic literature, almost all of which follow the
+same practice of including deterministic and statistical information
+in the same model.  For example, \citet{RosJiaKin01} extend King's
+method to larger numbers of ethnic groups and candidates; we use this
+method in our work as well as King's original method. Some of the
+other methods of ecological inference have been collected in the
 edited volume by \citet{KinRosTan04b}.
 
 In practice, when we have data we can use to validate the methods,
-ecological regression and homogeneous precinct analysis are often
-inaccurate in many situations. Studies have shown that uncertainty
-remains with King's and other subsequent methods --- which will always
-be the case because some information is lost in the process of
-aggregate --- but the estimates are usually superior. Differences
-among the new methods that include both deterministic and statistical
-information are, in comparison, relatively minor.
+ecological regression and homogeneous precinct analysis can be
+inaccurate.  Studies have shown that uncertainty remains with King's
+and other subsequent methods --- which will always be the case because
+some information is lost in the process of aggregation --- but the
+estimates are usually superior. Differences among the new methods that
+include both deterministic and statistical information are, in
+comparison, relatively minor.
 
-In this case, we use these newer methods to give estimates of the
-proportion of each ethnic group that has a valid voter ID.  We also
-use King's ``tomography plots'' and other diagnostic methods that help
-us discern when adjustments in the methods need to be made, and how
-much uncertainty remains.
+In the present case, we use these newer methods to give estimates of
+the proportion of each ethnic group that has a valid voter ID.  We
+also use ``tomography plots'' and other diagnostic methods that help
+discern when adjustments in the methods need to be made, and how much
+uncertainty remains.
 
 The ecological inference methods we use here have the advantage of
-avoiding any error that may otherwise be introduced in matching voter
+avoiding error that may otherwise be introduced in matching voter
 registration files with the driver's license database and using the
 Catalyst data to ascertain the race of voters who do not have IDs (and
 so are not in the State Driver's license data base).  In addition, we
@@ -218,24 +221,58 @@ those not registered now of course do have the choice of registering.
 
 \section{Data}\label{s:data}
 \subsection{Data Sources}
-For our analysis we relied on the Texas Drivers License database (DL), 2010 Census data, 2006-2010 American Community Survey data, and projected population data from the Texas State Data Center.
-
-The Drivers License database was provided to us as of April 30, 2012.  From the files provided to us, we used the list of individuals, the administrative file and the issuances file.\footnote{Individuals: DPS.DL.person\_4digit\_social.20120430.txt, Admin: DPS.DL.admin\_status.20120430.txt, Issuances: DPS.DL.issuance.20120430.txt}
+For our analysis we relied on the Texas Drivers License database (DL),
+2010 Census data, 2006-2010 American Community Survey data, and
+projected population data from the Texas State Data Center.  The
+Drivers License database was provided to us as of April 30, 2012.
+From the files provided to us, we used the list of individuals, the
+administrative file and the issuances file.\footnote{Individuals:
+  DPS.DL.person\_4digit\_social.20120430.txt, Admin:
+  DPS.DL.admin\_status.20120430.txt, Issuances:
+  DPS.DL.issuance.20120430.txt}
 
 From the 2010 Census, we used "2010 Zip Code to County Relationship File" to match zip codes to counties.\footnote{\url{http://www.census.gov/geo/www/2010census/zcta_rel/zcta_county_rel_10.txt}}
 
 From the 2006-2010 American Community Survey, we used the Citizenship Voting Age Population (CVAP) Special Tabulation to estimate the percentage of individuals who are citizens of voting age within each county by ethnic group.\footnote{\url{http://www.census.gov/geo/www/2010census/zcta_rel/zcta_county_rel_10.txt}}
 
-Due to the rate of population growth in Texas, the 2010 Census data is insufficient for analyzing population relaitve to the April 30, 2012 Drivers License database.  As a result, we used 2012 Projected Population estimates from the Texas State Data Center.\footnote{\url{http://http://txsdc.utsa.edu/}.  We downloaded a spreadsheet of this data divided by county and age categories at \url{http://www.dshs.state.tx.us/chs/popdat/detailX.shtm}.}
+Due to the rate of population growth in Texas, the 2010 Census data is
+insufficient for analyzing population relaitve to the April 30, 2012
+Drivers License database.  As a result, we used 2012 Projected
+Population estimates from the Texas State Data
+Center.\footnote{\url{http://http://txsdc.utsa.edu/}.  We downloaded a
+  spreadsheet of this data divided by county and age categories at
+  \url{http://www.dshs.state.tx.us/chs/popdat/detailX.shtm}.}
 
 \subsection{Formatting and Cleaning the Drivers License Files}
-The Drivers License individuals file contained 25,985,424 records.  Many of these records corresponded to individuals who are deceased, have expired licenses, or do not reside in Texas.  This database also included duplicate records that needed to be identified and removed.
+The Drivers License individuals file contained 25,985,424 records.
+Many of these records corresponded to individuals who are deceased,
+have expired licenses, or do not reside in Texas.  This database also
+included duplicate records that needed to be identified and removed.
 
-We first deleted 287,225 records where the issuance file listed the individual as not possessing a state drivers' license or identification card.  We then removed 3,144,900 records where the license or identification card expired was listed in the issuance file as expired for more than two years.  We then removed 1,535,504 records where the license or identification was expired for less than two years but more than sixty days because the voter identification law allows for a grace period in which identification expired up to sixty days is accepted.\footnote{We used April 30, 2012, the date of the drivers license database we were provided, as the effective election date for our analysis.  Therefore, any license expired more than sixty days previous to April 30th was removed.}
+We first deleted 287,225 records where the issuance file listed the
+individual as not possessing a state drivers' license or
+identification card.  We then removed 3,144,900 records where the
+license or identification card expired was listed in the issuance file
+as expired for more than two years.  We then removed 1,535,504 records
+where the license or identification was expired for less than two
+years but more than sixty days because the voter identification law
+allows for a grace period in which identification expired up to sixty
+days is accepted.\footnote{We used April 30, 2012, the date of the
+  drivers license database we were provided, as the effective election
+  date for our analysis.  Therefore, any license expired more than
+  sixty days previous to April 30th was removed.}
 
-We then deleted 341,767 records where the individual was reported deceased in the administrative file.  We also deleted one additional record with the ambiguous status code of "DELETED" in the issuance file.
+We then deleted 341,767 records where the individual was reported
+deceased in the administrative file.  We also deleted one additional
+record with the status code of "DELETED" in the issuance file.
 
-These deletions left us with 20,676,027 records.  We then deleted 102,686 records where the permanent state of the individual was not Texas, 6 additional records with the permanent country was not the United States, and 138 records that were missing state, county and country information.  We deleted 481,524 records where the date of birth was after April 30, 1994, the cutoff date for turning eighteen if the election were held on April 30, 2012.
+These deletions left us with 20,676,027 records.  We then deleted
+102,686 records where the permanent state of the individual was not
+Texas, 6 additional records with the permanent country was not the
+United States, and 138 records that were missing state, county and
+country information.  We deleted 481,524 records where the date of
+birth was after April 30, 1994, the cutoff date for turning eighteen
+if the election were held on April 30, 2012.
 
 We converted all 9-digit zip codes to 5-digit zip codes.  Without complete 9-digit social security numbers, we were unable to identify and remove duplicates using SSNs.  We removed 496,894 duplicate records that shared first name, last name, date of birth, the last four digits of the social security number, and permanent 5-digit zip code with another record.  We retained the record with the higher record number in the Drivers License database.  The database then contained 19,594,779 records.
 
@@ -243,35 +280,58 @@ We converted all 9-digit zip codes to 5-digit zip codes.  Without complete 9-dig
 
 [We then restricted by citizenship.  We dropped XXX records where the individual was flagged as a non-citizen in the Drivers License database, and XXX records where citizenship was missing.] 
 
-\subsection{Collapsing by County and Merging Population Data}
-We collapsed the Drivers License database by permanent county and zip code.  For the set of records [XXX, once finalized] that included zip code but were missing county, we used the census zip code to county relationship file to match zip codes to counties.  For zip codes that are divided between multiple counties, we weighted the records by the percentage of the population of the zip code within each county, based on the 2010 census.\footnote{This weighting is based upon the assumption that while populations have changed since the 2010 census, population has changed uniformly within each individual zip code that is divided between multiple counties.  This calculation only applies to XXX individuals in the drivers license database.}
+\subsection{Aggregating by County and Merging Population Data}
+We collapsed the Drivers License database by permanent county and zip
+code.  For the set of records [XXX, once finalized] that included zip
+code but were missing county, we used the census zip code to county
+relationship file to match zip codes to counties.  For zip codes that
+are divided between multiple counties, we weighted the records by the
+percentage of the population of the zip code within each county, based
+on the 2010 census.\footnote{This weighting is based upon the
+  assumption that while populations have changed since the 2010
+  census, population has changed uniformly within each individual zip
+  code that is divided between multiple counties.  This calculation
+  only applies to XXX individuals in the drivers license database.}
 
-To estimate current Citizen Voting Age Population (CVAP), we calculated the percentage of all people who are citizens of voting age population by ethnic group for each county based on the 2006-2010 ACS Special Tabulation.  We then multiplied these rates by the total number of people of each ethnic group for each county to estimate CVAP by ethnic group.\footnote{This assumes that while populations have changed since the ACS, the percentage of CVAP for each ethnic group within each county has not changed.}  We merged this population data with the drivers license data to get the number of citizens with IDs and CVAP totals by ethnic group in each county.  We then calculated the percentage of CVAP with IDs and CVAP percentage by ethnic group.
+To estimate current Citizen Voting Age Population (CVAP), we
+calculated the percentage of all people who are citizens of voting age
+by ethnic group for each county based on the 2006-2010 ACS Special
+Tabulation.  We then multiplied these rates by the total number of
+people of each ethnic group for each county to estimate CVAP by ethnic
+group.\footnote{This assumes that while populations have changed since
+  the ACS, the percentage of CVAP for each ethnic group within each
+  county has not changed.}  We merged this population data with the
+drivers license data to get the number of citizens with IDs and CVAP
+totals by ethnic group in each county.  We then calculated the
+percentage of CVAP with IDs and CVAP percentage by ethnic group.
 
 \section{Results}\label{s:res}
 
 \subsection{An Explication of Ecological Inference Results}
 
 We used our approach to ecological inference to determine the extent
-of the disparity among racial groups in holding a valid form of voter identification. For each
-county in Texas, we estimated the proportion of whites, blacks, Hispanics,
-and others who held a drivers' license.\footnote{While we could have also used data on concealed hand gun permits
-(as this form of identification would also be considered valid at the polls), in practice only ??? people possess a permit to carry a concealed weapon but not a driver's license.} 
+of the disparity among racial groups in holding a valid form of voter
+identification. For each county in Texas, we estimated the proportion
+of whites, blacks, Hispanics, and others who held a drivers'
+license or ID.\footnote{While we could have also used data on concealed hand
+  gun permits (as this form of identification would also be considered
+  valid at the polls), in practice only ??? people possess a permit to
+  carry a concealed weapon but not a driver's license or ID.}
 
-Table~\ref{cvap_f3_ex} displays estimates of the proportion of
-each racial group that holds a valid driver's license in the state of Texas. Note that in each
-table the total population in the last column and the total license holders in
-the last row are {\it observed} while the internal cells are {\it estimated} 
-by our methodology. The bottom row labeled Total Pop
-gives the license holder population totals computed by aggregating over all counties in the state. 
-Similarly, the column labeled Total CVAP lists the
-share of citizen voting age population comprised by each racial group
-in the state.  Again, this is calculated by simply aggregating over
-all counties in the state.
+Table~\ref{cvap_f3_ex} displays estimates of the proportion of each
+racial group that holds a valid driver's license or ID in the state of
+Texas. Note that in each table the total population in the last column
+and the total license or ID holders in the last row are {\it observed} while
+the internal cells are {\it estimated} by our methodology. The bottom
+row labeled Total Pop gives the license or ID holder population totals
+computed by aggregating over all counties in the state.  Similarly,
+the column labeled Total CVAP lists the share of citizen voting age
+population comprised by each racial group in the state.  Again, this
+is calculated by simply aggregating over all counties in the state.
 
 \begin{table}[ht]
 \begin{center}
-\caption{\label{cvap_f3_ex}Texas Driver's License Holders by Racial Group}
+\caption{\label{cvap_f3_ex}Texas Driver's License or ID Holders by Racial Group}
 \begin{tabular}{lccc}
   \hline
 Racial Group & License & No License & Total CVAP\\
@@ -288,14 +348,25 @@ Total Pop & 0.816 & 0.184 &   \\
 \end{table}
 
 The internal cells in the table contain estimates from ecological
-inference. For example, we estimate that 85.5\% (0.855 in the table) of
-whites in Texas held valid driver's licenses and 14.5\%
-of whites in Texas did not.
-Furthermore, we know that (according to the census data in use) whites made up 55\% of the state's
-citizen voting age population (CVAP).  Looking at the state as a whole, we
-observe that 81.6\% of citizens in the voting age population held a driver's license. 
+inference. For example, we estimate that 85.5\% (0.855 in the table)
+of whites in Texas held valid driver's licenses or IDs and 14.5\% of
+whites in Texas did not.  Furthermore, we know that (according to the
+census data in use) whites made up 55.1\% of the state's citizen voting
+age population (CVAP).  Looking at the state as a whole, we observe
+that 81.6\% of citizens in the voting age population held a driver's
+license or ID.
 
-The comparison of interest is between the proportion of white license holders and license holders of other races. A simple difference in the estimated percentages suggests that white citizens were at least as likely to possess a valid license than any other racial group. In particular, we estimate that the share of white license holders is 7.4\% greater than among black citizens and 10.6\% greater than among Hispanic citizens. Furthermore, when calculating standard confidence intervals for the difference of these quantities, we find that the differences in license holding between whites and blacks as well as between whites and Hispanics do not overlap with zero.
+The comparison of interest is between the proportion of white license
+or ID holders and license or ID holders of other races. A simple
+difference in the estimated percentages suggests that white citizens
+were more likely to possess a valid license or ID than blacks or
+Hispanics. In particular, we estimate that the share of white license
+or ID holders is 7.4\% greater than among black citizens and 10.6\%
+greater than among Hispanic citizens. Furthermore, when calculating
+standard confidence intervals for the difference of these quantities,
+we find that the differences in license or ID holding between whites
+and blacks as well as between whites and Hispanics do not overlap
+zero.
 
 Based on these results, we conclude that Texas's voter identification law will have a disparate impact on black and Hispanic citizens as compared to white citizens because it will effectively disenfranchise a greater proportion of these groups as compared with white citizens.
 
@@ -303,58 +374,59 @@ Based on these results, we conclude that Texas's voter identification law will h
 
 There are several sources of uncertainty in ecological inference
 estimates including estimation uncertainty, fundamental uncertainty,
-and model dependence.  \emph{Estimation uncertainty} occurs because we
-have a limited set of observations (counties) to use in
-estimating the disenfranchisement rates for each racial group's votes.
-\emph{Fundamental uncertainty} is the idea that even with a large
-amount of data there is some degree of randomness in the process of
-signing up to get a driver's license or ID.  A citizen's license
-expires inadvertently, or they forget to sign up, or their name is
-typed into the database incorrectly, or racial group information is
-mis-estimated by the Census bureau; this is the stuff of measurement
-and human behavior and is modeled in a well-known way as fundamental
-variability. Finally, \emph{model dependence} is the degree to which
-changes in modeling assumptions affect our estimates.  Models are
-required in ecological inference because some information is destroyed
-in the process of aggregation and kept from the analyst without having
-full information on every individual in the state.
+and model dependence, conditional on the input data.  \emph{Estimation
+  uncertainty} occurs because we have a limited set of observations
+(counties) to use in estimating the disenfranchisement rates for each
+racial group's votes.  \emph{Fundamental uncertainty} is the idea that
+even with a large amount of data there is some degree of randomness in
+the process of signing up to get a driver's license or ID.  A
+citizen's license expires inadvertently, or they forget to sign up, or
+their name is typed into the database incorrectly, or racial group
+information is mis-estimated by the Census bureau; this is the stuff
+of measurement and human behavior and is modeled in a well-known way
+as fundamental variability. Finally, \emph{model dependence} is the
+degree to which changes in modeling assumptions affect our estimates.
+Models are required in ecological inference because some information
+is destroyed in the process of aggregation and kept from the analyst
+without having full information on every individual in the state.
 
 In different types of statistical problems, each of these sources of
 uncertainty can play different roles and to differing degrees.
 Ecological inferences of course have all three sources of uncertainty,
 but it is the model dependence caused by having to estimate voter ID
 rates because all information is not in the public domain that
-accounts for the overwhelming fraction of overall uncertainty.  Model
-dependence typically dwarfs the other two components. Thus, we tune
-our methods of assessing uncertainty to focusing on model dependence.
+accounts for most of the overall uncertainty.  Model dependence
+typically dwarfs the other two components. Thus, we tune our methods
+of assessing uncertainty to focusing on model dependence.
 
-To convey the degree of uncertainty in the estimates of turnout and
-vote share, we use ``tomography plots'' to accompany the tables.
+To convey the degree of this uncertainty, we use ``tomography plots''.
 These plots give all information in the data without making any
 statistical modeling assumptions, as well as summarizing the available
 statistical information in the data. This enables us to evaluate
-directly how much information is available in the data and how much
-is imposed by the statistical model.
+directly how much information is available in the data and how much is
+imposed by the statistical model.
 
-One entire tomography plot is needed for each numerical estimate in
-the corresponding table. For one example, the tomography plot in
-Figure \ref{tomog} analyzes the information and uncertainty in the
-data and our analyses with respect to two unknowns: the percent of
-Whites (horizontally) and non-Whites (vertically) who hold a driver's license in each county in Texas.
-If these two
-quantities were known for a county, they would appear in the plot as
-a single dot, and the set of counties as a set of dots.  However,
-because of the unreliable racial data in the driver's license database, we cannot know any of the exact points
-with precision; what the plot shows is that the information hidden
-from us by the problems with the database is directly quantifiable: it turns each
-county's dot into a line.  We can think of the dot as being smeared
-into a line. That smearing represents a loss of information, but much
-information is retained (and that is uniquely captured by our methods
-of ecological inference).  In particular, we know for certain that the
-true point representing the percent of whites and non-whites who hold a driver's license
-falls somewhere on the line; we do not know
-where on the basis of just the information from that county, but we
-know it must be on the line.
+One entire tomography plot is used for each numerical estimate in the
+corresponding table. For one example, the tomography plot in Figure
+\ref{tomog} analyzes the information and uncertainty in the data and
+our analyses with respect to two unknowns: the percent of Whites
+(horizontally) and non-Whites (vertically) who hold a driver's license
+or ID in each county in Texas.  If these two quantities were known for
+a county, they would appear in the plot as a single dot, and the set
+of counties as a set of dots.  However, because individual level
+census data is not available, and driver's license and census data are
+not available a the individual level in the same database, we cannot
+know any of the exact points with precision; what the plot shows is
+that the information hidden from us by the problems with the database
+is directly quantifiable: it turns each county's dot into a line.  We
+can think of the uncertainty in ecological inference as the dot as
+being smeared into a line. That smearing represents a loss of
+information, but much information is retained (and that is uniquely
+captured by our methods of ecological inference).  In particular, we
+know for certain that the true point representing the percent of
+whites and non-whites who hold a driver's license or ID falls
+somewhere on the line; we do not know where on the basis of just the
+information from that county, but we know it must be on the line.
 
 \begin{figure}[htb]
 \begin{centering}
@@ -364,69 +436,79 @@ living in Texas who hold a driver's license.}
 \end{centering}
 \end{figure}
 
-For example, consider the bold red line in the plot. We know, based
-on the observed data from that county (the percent with a license and the
+For example, consider the bold red line in the plot (which we
+highlight for expository purposes).  We know, based on the observed
+data from that county (the percent with a license or ID and the
 percent White), that the point in this plot (representing where the
-White and non-White share of license holders is) for this county must be some
-point on the line, but we do not know exactly where on the line this
-point falls. For this line, we know that the fraction of Whites that
-hold a valid driver's license must fall somewhere between 0.5 (50
-percent) and 0.6 (60 percent). We get these numbers by projecting the
-line downwards to the horizontal axis. If instead we project the line
-to the left (vertical) axis, we can see that, for this particular
-county, the range of possible values for the percent of non-Whites
-holding a valid driver's license could be anywhere from 0\% to 100\%.
-That estimate is better than the method of ecological regression,
-which often gives answers outside that interval, but still we can see
-that this county is informative with respect only to Whites, not
-non-Whites. 
+White and non-White share of license or ID holders is) for this county
+must be some point on the line, but we do not know exactly where on
+the line this point falls. For this line, we know that the fraction of
+Whites that hold a valid driver's license or ID must fall somewhere
+between 0.5 (50 percent) and 0.6 (60 percent). We get these numbers by
+projecting the line downwards to the horizontal axis. If instead we
+project the line to the left (vertical) axis, we can see that, for
+this particular county, the range of possible values for the percent
+of non-Whites holding a valid driver's license or ID could be anywhere
+from 0\% to 100\%.  That estimate is better than the method of
+ecological regression, which often gives answers outside that
+interval, but still we can see that this county is informative with
+respect only to Whites, not non-Whites.
 
 In this way, each line on a tomography plot captures exactly what we
-do and do not know about the proportion of people with driver's licenses in each county ---
-without any uncertainty (assuming only that the data are measured
-correctly). Our statistical method then uses all this available
-information as well as the statistical information from ecological
-regression. Lines that are relatively steep in this particular
-tomography plot convey a lot of information about the percent of
-Whites that hold a valid driver's license.  Lines that are
-relatively flat convey a great deal of information about the percent
-of non-Whites that hold a valid driver's license.  Lines that cut off
-the top right or bottom left corner of the plot are informative about
-both quantities.
+do and do not know about the proportion of people with driver's
+licenses or IDs in each county --- without any uncertainty (assuming
+only that the data from the State of Texas and the U.S.\ Census Bureau
+are measured correctly). Our statistical method then uses all this
+available information as well as the statistical information from
+ecological regression. Lines that are relatively steep in this
+particular tomography plot convey a lot of information about the
+percent of Whites who hold a valid driver's license or ID.  Lines that
+are relatively flat convey a great deal of information about the
+percent of non-Whites that hold a valid driver's license or ID.  Lines
+that cut off the top right or bottom left corner of the plot are
+informative about both quantities.
 
-The tomography plots reflect what we know about the racial composition
+The tomography plots also reflect what we know about the racial composition
 of Texas. If a county contains more than 65\% of a
 particular racial group (which we use as an arbitrary cutoff for
 graphical clarity), then the line on the tomography plot that
 corresponds to that precinct is color coded to represent the majority
 group (see the legend in the plot). If no groups comprise 65\% or more
-of the county, then no color code is assigned.  
+of the county, then the line is represented as black.
+
+Even without making any (ecological inference) modeling assumptions,
+we can see some aspects of the results and thus draw conclusions
+directly from the data.  The relatively flat blue lines, with high
+percentages of nonwhite populations cross the vertical axis above
+about 0.5 (percent nonwhite IDs).  However, the steep red lines, with
+high percentages of whites meet the horizontal above about 0.7.  This
+difference is clear evidence that nonwhites in these areas have lower
+rates of having valid drivers' licenses or IDs on average than
+whites.
 
 Finally, the tomography plots also reflect the results of the
 ecological inference statistical estimation, that includes information
-on patterns across counties. The point estimate (i.e., the exact
-point on the line that we estimate as the proportion of each group with a valid driver's license)
-as well as the confidence intervals are colored yellow.  Taken
-together, these describe the overall estimate for the proportion of license holders in
-each racial group in Texas as a whole. In the tomography plot
-for Figure \ref{tomog}, the mass of yellow on the right means that our
-estimates indicate that whites held valid driver's licenses at a higher rate than did their
-non-white counterparts. Even without making any inferences, the plot suggests that there
-a number of majority Hispanic counties (the horizontal lines clustered between 60\%-80\%) 
-in which citizens hold licenses at substantially lower
-rates than in the majority white counties (the vertical lines clustered at rates of over 75\%). 
+on patterns across counties. The point estimate (i.e., the exact point
+on the line that we estimate as the proportion of each group with a
+valid driver's license or ID) as well as the confidence intervals are
+colored yellow.  Taken together, these describe the overall estimate
+for the proportion of license or ID holders in each racial group in Texas as
+a whole. In the tomography plot for Figure \ref{tomog}, the mass of
+yellow on the right means that our estimates indicate that whites held
+valid driver's licenses or IDs at a higher rate than did their non-white
+counterparts.
 
 As importantly, the tomography plots convey the \emph{overall
   uncertainty} in the available data, and how our statistical
 estimator uses that information to produce an estimate.  In this
-particular example, the prevalence of flat lines on the upper half of the graph and
-steep lines near the right convey a great deal of information about
-where and what we are uncertain about.  The statistical estimator
-assumes that there is some relationship among all the precincts in a
-district, and so in all likelihood there exists a cluster of points on
-the plot somewhere such that when two lines cross or approach one
-another, the true points on each are close to each other on their
-respective lines.  
+particular example, the prevalence of flat lines on the upper half of
+the graph and steep lines near the right convey a great deal of
+information about where and what we are uncertain about.  The
+statistical estimator assumes that there is some relationship among
+all the precincts in a district, and so in all likelihood there exists
+a cluster of points on the plot somewhere such that when two lines
+cross or approach one another, the true points on each are close to
+each other on their respective lines.
 
 To appropriately and completely judge all sources of uncertainty in
 ecological inferences requires examining a plot like this for each
@@ -438,20 +520,28 @@ appendix includes these plots.
 
 \subsection{Homogenous Counties}
 
-As an intuitive way to check the logic of the results presented without the use of statistical inference, we also compare the proportion of citizens who hold driver's licenses in the most homogenous white counties to the most homogenous Hispanic counties. We restrict the sample to the top 10\% Texas counties in terms of white share of the population and Hispanic share of the population. In the most homogenous white counties (those that are 88.9\% white or more), 83.1\% of citizens hold a driver's license; in the most homogenous Hispanic counties (those that are 58.1\% Hispanic or more), 73.0\% of citizens hold a driver's license.
+As an intuitive way to check the logic of the results presented
+without the use of statistical inference, we also compare the
+proportion of citizens who hold driver's licenses or IDs in the most
+homogenous white counties to the most homogenous Hispanic counties. We
+restrict the sample to the top 10\% Texas counties in terms of white
+share of the population and Hispanic share of the population. In the
+most homogenous white counties (those that are 88.9\% white or more),
+83.1\% of citizens hold a driver's license or ID; in the most
+homogenous Hispanic counties (those that are 58.1\% Hispanic or more),
+73.0\% of citizens hold a driver's license or ID.
 
-\singlespace
-\bibliographystyle{apsr} 
-\bibsep=0in 
-%\phantomsection
-\addcontentsline{toc}{section}{References}
-\bibliography{gk,gkpubs}
+\section{Concluding Remarks}
 
-
+The evidence from this analysis clearly indicates that blacks and
+Hispanics have drivers' licenses or IDs at lower rates than whites.
+This is true regardless of whether we focus on nearly homogeneous
+districts, the purely data oriented analysis of the tomography plot,
+or the more encompassing ecological inference methodology used here.
+\clearpage
 \appendix
 \renewcommand*\appendixpagename{\section*{Appendix}}
 \appendixpage
-
 \section{Tomography Plots}
 
 \begin{figure}[htb]
@@ -487,4 +577,13 @@ living in Texas who hold a driver's license.}
 living in Texas who hold a driver's license.}
 \end{centering}
 \end{figure}
+
+\clearpage
+\singlespace
+\bibliographystyle{apsr} 
+\bibsep=0in 
+%\phantomsection
+\addcontentsline{toc}{section}{References}
+\bibliography{gk,gkpubs}
+
 \end{document}
