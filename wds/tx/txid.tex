@@ -68,7 +68,7 @@ of black, white, and Hispanic citizens of voting age who would be
 disenfranchised (not allowed to vote) solely because they do not meet
 the additional requirements of the new Texas Voter ID law.
 
-The report from the Department of Justice’s expert Stephen
+The report from the Department of Justice's expert Stephen
 Ansolabehere examines the differential percentages of black, white,
 and Hispanic \emph{registered voters} who would be disenfranchised by
 the new law.  We supplement this information by attempting to estimate
@@ -112,13 +112,13 @@ Court's opinions, including the plurality decision.
 \section{Methodological Approach}\label{s:methods}
 
 In this section, we offer an overview of our methodological approach.
-We will attempt to estimate the percentage of black, white, hispanic,
+We will attempt to estimate the percentage of black, white, Hispanic,
 and other citizens of voting age who have valid voter identification,
 according to the new Texas Voter ID law.  Throughout, I was assisted
 by two graduate students working under my direction.
 
-From U.S.\ Census Data, we compute the percent of citizens' of voting
-age who are black, white, hispanic, or other in each county in
+From U.S.\ Census Data, we compute the percent of citizens of voting
+age who are black, white, Hispanic, or other in each county in
 Texas.  Then from the State of Texas' driver's license database, we
 compute the number of citizens of voting age (of any race) who have
 valid identification, and from the combination of the two databases
@@ -221,10 +221,10 @@ those not registered now of course do have the choice of registering.
 
 \section{Data}\label{s:data}
 \subsection{Data Sources}
-For our analysis we relied on the Texas Drivers License database (DL),
+For our analysis we relied on the Texas Driver's License database (DL),
 2010 Census data, 2006-2010 American Community Survey data, and
 projected population data from the Texas State Data Center.  The
-Drivers License database was provided to us as of April 30, 2012.
+Driver's License database was provided to us as of April 30, 2012.
 From the files provided to us, we used the list of individuals, the
 administrative file and the issuances file.\footnote{Individuals:
   DPS.DL.person\_4digit\_social.20120430.txt, Admin:
@@ -237,20 +237,20 @@ From the 2006-2010 American Community Survey, we used the Citizenship Voting Age
 
 Due to the rate of population growth in Texas, the 2010 Census data is
 insufficient for analyzing population relaitve to the April 30, 2012
-Drivers License database.  As a result, we used 2012 Projected
+Driver's License database.  As a result, we used 2012 Projected
 Population estimates from the Texas State Data
 Center.\footnote{\url{http://http://txsdc.utsa.edu/}.  We downloaded a
   spreadsheet of this data divided by county and age categories at
   \url{http://www.dshs.state.tx.us/chs/popdat/detailX.shtm}.}
 
-\subsection{Formatting and Cleaning the Drivers License Files}
-The Drivers License individuals file contained 25,985,424 records.
+\subsection{Formatting and Cleaning the Driver's License Files}
+The Driver's License individuals file contained 25,985,424 records.
 Many of these records corresponded to individuals who are deceased,
 have expired licenses, or do not reside in Texas.  This database also
 included duplicate records that needed to be identified and removed.
 
 We first deleted 287,225 records where the issuance file listed the
-individual as not possessing a state drivers' license or
+individual as not possessing a state driver's license or
 identification card.  We then removed 3,144,900 records where the
 license or identification card expired was listed in the issuance file
 as expired for more than two years.  We then removed 1,535,504 records
@@ -258,7 +258,7 @@ where the license or identification was expired for less than two
 years but more than sixty days because the voter identification law
 allows for a grace period in which identification expired up to sixty
 days is accepted.\footnote{We used April 30, 2012, the date of the
-  drivers license database we were provided, as the effective election
+  driver's license database we were provided, as the effective election
   date for our analysis.  Therefore, any license expired more than
   sixty days previous to April 30th was removed.}
 
@@ -274,14 +274,14 @@ country information.  We deleted 481,524 records where the date of
 birth was after April 30, 1994, the cutoff date for turning eighteen
 if the election were held on April 30, 2012.
 
-We converted all 9-digit zip codes to 5-digit zip codes.  Without complete 9-digit social security numbers, we were unable to identify and remove duplicates using SSNs.  We removed 496,894 duplicate records that shared first name, last name, date of birth, the last four digits of the social security number, and permanent 5-digit zip code with another record.  We retained the record with the higher record number in the Drivers License database.  The database then contained 19,594,779 records.
+We converted all 9-digit zip codes to 5-digit zip codes.  Without complete 9-digit social security numbers, we were unable to identify and remove duplicates using SSNs.  We removed 496,894 duplicate records that shared first name, last name, date of birth, the last four digits of the social security number, and permanent 5-digit zip code with another record.  We retained the record with the higher record number in the Driver's License database.  The database then contained 19,594,779 records.
 
 [Additional information here on identifying duplicates with other methods, once finalized]
 
-[We then restricted by citizenship.  We dropped XXX records where the individual was flagged as a non-citizen in the Drivers License database, and XXX records where citizenship was missing.] 
+[We then restricted by citizenship.  We dropped XXX records where the individual was flagged as a non-citizen in the Driver's License database, and XXX records where citizenship was missing.] 
 
 \subsection{Aggregating by County and Merging Population Data}
-We collapsed the Drivers License database by permanent county and zip
+We collapsed the Driver's License database by permanent county and zip
 code.  For the set of records [XXX, once finalized] that included zip
 code but were missing county, we used the census zip code to county
 relationship file to match zip codes to counties.  For zip codes that
@@ -291,7 +291,7 @@ on the 2010 census.\footnote{This weighting is based upon the
   assumption that while populations have changed since the 2010
   census, population has changed uniformly within each individual zip
   code that is divided between multiple counties.  This calculation
-  only applies to XXX individuals in the drivers license database.}
+  only applies to XXX individuals in the driver's license database.}
 
 To estimate current Citizen Voting Age Population (CVAP), we
 calculated the percentage of all people who are citizens of voting age
@@ -301,7 +301,7 @@ people of each ethnic group for each county to estimate CVAP by ethnic
 group.\footnote{This assumes that while populations have changed since
   the ACS, the percentage of CVAP for each ethnic group within each
   county has not changed.}  We merged this population data with the
-drivers license data to get the number of citizens with IDs and CVAP
+driver's license data to get the number of citizens with IDs and CVAP
 totals by ethnic group in each county.  We then calculated the
 percentage of CVAP with IDs and CVAP percentage by ethnic group.
 
@@ -312,10 +312,10 @@ percentage of CVAP with IDs and CVAP percentage by ethnic group.
 We used our approach to ecological inference to determine the extent
 of the disparity among racial groups in holding a valid form of voter
 identification. For each county in Texas, we estimated the proportion
-of whites, blacks, Hispanics, and others who held a drivers'
+of whites, blacks, Hispanics, and others who held a driver's
 license or ID.\footnote{While we could have also used data on concealed hand
   gun permits (as this form of identification would also be considered
-  valid at the polls), in practice only ??? people possess a permit to
+  valid at the polls), in practice only 3,739 people possess a permit to
   carry a concealed weapon but not a driver's license or ID.}
 
 Table~\ref{cvap_f3_ex} displays estimates of the proportion of each
