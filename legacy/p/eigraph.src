@@ -1,0 +1,1765 @@
+/*
+**  This archive is part of the program EI
+**  (C) Copyright 1995-2001 Gary King
+**  All Rights Reserved.
+*/
+/*
+** call eigraph(dbuf,"name");
+**
+** graphs results taken from from EI output data buffer in format of "name",
+** with options listed below.  eiread() is used to extract information from 
+** dbuf.  Some options require extra information in dbuf (such as "truth")
+**
+** When used with ei2 data buffers, eigraph uses the mean posterior estimate
+** of x rather than the multiple imputations in x2.
+**
+** INPUTS:
+** dbuf     a data buffer, possibly created by ei()
+** name     a string with the name of the graph to produce
+**          chosen from this list below
+**
+** OUTPUT:
+** numeric code indicating the success or failure of the call
+**          0  call succeeded
+**         -1  failed because needed truth and truth was not present
+**         -2  failed because inputs were bad or because no such graph
+**  
+** OPTIONS for name (*=combined graphs)
+** tomogD    tomography plot with data only
+** tomog     tomography plot with ML contours
+** tomogP    tomography plot with mean posterior contours 
+** tomogE    tomography plot with estimated betaB,betaW points
+** tomogT    tomography plot with true betaB,betaW points
+** tomogCI   tomography plot with 80% confidence intervals
+** tomogCI95 tomography plot with 95% confidence intervals
+** tomogS   *tomog,tomogp,tomogCI,Tbivar(or estsims if truth isn't available)
+** nonpar    tomogD & nonparametric density est with contours and surface plot
+** xt        basic x by t graph
+** xtC       basic x by t graph with circles sized proportional to N
+**           or some other variable defined in _eigraph_circ
+** Xgraph    an X-graph with data plotted
+** XgraphC   an X-graph with data plotted with size prop'l to N
+** goodman   x by t plot with goodman's regression line plotted
+** xtfit     x by t plot with E(T|X) and cond'l 80% confidence intervals 
+** xtfitg    xtfit with goodman's regression line superimposed
+** fit      *xtfit and tomogP
+** fitT     *xtfit and tomogT
+** postB     density estimate of (weighted) district aggregate B^b
+** postW     density estimate of (weighted) district aggregate B^w
+** post     *postB and postW
+** betaB     density estimate of est'd betaB's with whiskers at point ests
+** betaW     density estimate of est'd betaW's with whiskers at point ests
+** beta     *betaB & betaW
+** results  *postB, postW, betaB, betaW
+** movie     posterior of betaW_i and betaW_i for each i; hit key to cont.
+** movieD    highlight individual lines on a tomography plot; hit key to cont. 
+** prectB    plot of estimated betaB_i by true betaB_i
+** prectW    plot of estimated betaW_i by true betaW_i
+** truth    *post, prectB, prectW (cf truth to ests at dist and pcnt level)
+** lines     xt plot with one ESTIMATED line per precinct
+** Tlines    xt plot with one TRUE line per precinct
+** bivar     ESTimated betaB by betaW
+** Tbivar    TRUE betaB by betaW
+** betabw   *lines,Tlines,bivar,Tbivar (Tlines,Tbivar if truth is available)
+** profile   profile posterior plot of elements of phi
+** profileR  profile plot of elements of phi for R function (based on cdfbvn)
+** ptileB    true percentile at which betaB falls by est'd betaB
+** ptileW    true percentile at which betaW falls by est'd betaW
+** ptile    *ptileB & ptileW
+** simsB     sims of betaB by true betaB
+** simsW     sims of betaW by true betaW
+** sims     *simsB & simsW
+** estsims   simulated betaB's by simulated betaW's
+** biasB     X by EST'd betaB
+** biasW     X by EST'd betaW
+** TbiasB    X by TRUE'd betaB
+** TbiasW    X by TRUE'd betaW
+** bias     *biasB, biasW, TbiasB, TbiasW
+** boundXB   X by bounds on betaB
+** boundXW   X by bounds on betaW
+** boundX   *boundXW and boundXW
+**
+** GLOBALS:
+** _eigraphC  = multiply by circle size to change sizes (>0)
+** _eigraph_Xlo = 0 low end of X graphs
+** _eigraph_Xhi = 1 high end of X graphs
+** _eigraph_Tlo = 0 low end of T graphs
+** _eigraph_Thi = 1 high end of T graphs
+** _eigraph_x  = "X"  xlabel for xt plots
+** _eigraph_t  = "T"  ylabel for xt plots
+** _eigraph_bb = "betaB" xlabel for bbXbw plots
+** _eigraph_bw = "betaW" ylabel for bbXbw plots
+** _eigraph_bblo = 0 low end for betaB plots
+** _eigraph_bbhi = 1 high end for betaB plots
+** _eigraph_bwlo = 0 low end for betaW plots
+** _eigraph_bwhi = 1 high end for betaW plots
+** _eigraph_loess = 1 show simulated and fitted loess for xtfit; 
+**                  0 fit only (default)
+** _eigraph_thick = add to line thickness parameter (default=1) 
+** _eigraph_bvsmth = bivariate density smoothing parameter (default=0.08)
+**             (this is stored in dbuf as 'bvsmth', but that value is not used
+**             to draw the contours under nonpar.)
+** _eigraph_eval = number of points to evaluate each side of nonparametric
+**               contour and surface plots (default=31)
+** _eigraph_dbuf = 0 don't do anything (default); 1 save inputs to contour
+**               plot routine as elements in a data buffer called _eigraph_dbuf
+**               (px, py, pz are the elements)
+** _eigraph_smpl = 1.  Set this to (0,1] to randomly select this fraction of
+**               observations to use in tomography plots.  This is useful if 
+**               p is so large that it is difficult to see patterns. 
+** _tomogClr =  { 12, 9, 10, 11, 13, 5 } colors for each contour drawn 
+** _tomogPct = {.5, .95}    percentage values at which to draw contours
+**           rows(_tomogClr) must be >= rows(_tomogPct)
+** _EIMetaR = If dbuf is a meta-data buffer (_ei2_mta output from ei2),
+**          this global denotes which of the imputed data buffers stored
+**          in dbuf should be accessed when running this procedure (default=1).
+*/
+#include ei.ext;
+proc 1=eigraph(dbuf,str);
+  local x,t,psiu,bvap,wvap,tvap,a,b,c,circ,i,d,e,f,tt,z,o,betab,betaw,tst,n,p,
+  titl;
+
+  /* for ei2, pull out data buffer _eimetar from meta-data buffer */
+  /* for eimodels_def, print an error message and return the input buffer */
+  /* for eimodels_run, pull out data buffer from meta-data buffer for Model _eimetar */
+  /* for eimodels_ave, print an error message and return the input buffer */
+  if vin(dbuf,"titl");
+    titl=vread(dbuf,"titl");
+    if titl$=="*MDB* Meta-Data Buffer from 2nd Stage *MDB*";
+      dbuf=vread(dbuf,"dbuf"$+ftos(_eimetar,"*.*lf",1,0));
+    elseif titl$=="*MDB* Meta-Data Buffer from eimodels_def() *MDB*";
+      ?;
+      "eigraph: the output data buffer from eimodels_def cannot be";
+      "         used as an input of eigraph.";
+      "----- EIGRAPH Aborted -----";
+      ?;
+      retp(-2);
+    elseif titl$=="*MDB* Meta-Data Buffer from eimodels_run() *MDB*";
+      if vin(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
+        dbuf=vread(dbuf,"mod_r"$+ftos(_eimetar,"*.*lf",1,0));
+        ?; 
+        "eigraph for Model" _eimetar;
+        ?;
+      else;
+        ?;
+        "eigraph: Model " _eimetar " is not stored in this data buffer.";
+        "----- EIGRAPH Aborted -----";
+        ?;
+        retp(-2);
+      endif;
+    endif;
+  endif;
+
+  str=lower(str);
+  clear psiu,circ;
+
+  if vin(dbuf,"titl");
+    titl=vread(dbuf,"titl");
+    if titl$=="*DB* Data Buffer from eimodels_avg() *DB*";
+      let a=fit fitt profile profiler tomog tomogci tomogci95 tomogs xtfit xtfitg;
+      a=lower(a);
+      if in(str,a,0);
+         "eigraph: this option cannot be used for the output data buffer"; 
+         "         from eimodels_avg";
+         "----- EIGRAPH Aborted -----";
+         ?;
+         retp(-2);
+      endif;
+    endif;
+  endif;
+
+   
+  f=checkginputs(dbuf);
+  if f$/="";
+    #ifunix;
+    wincloseall;
+    #endif;
+    f;
+    retp(-2);
+  endif;
+  
+  if str$=="tomogd";			@ tomograph with data only  @
+    x=eiread(dbuf,"x");
+    t=eiread(dbuf,"t");
+    xlabel(_eigraph_bb);
+    ylabel(_eigraph_bw);
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    gosub setup;
+    f=rows(x);
+    i=sortind(rndu(f,1));
+    i=i[1:int(f*_eigraph_smpl)];
+    tst=eiread(dbuf,"_Eselect");
+    if scalone(tst);
+      tst=ones(f,1);
+    endif;
+    call tomog(x[i],t[i],_eigraph_psiu,tst[i]);
+    clearg _eigraph_psiu;
+    
+  elseif str$=="tomog";			@ tomography with ML contours  @
+    _eigraph_psiu=eiread(dbuf,"psiu");
+    eigraph(dbuf,"tomogd");
+    
+  elseif str$=="tomogp";		@ tomography with mean post contours @
+    _eigraph_psiu=eiread(dbuf,"mppsiu");
+    eigraph(dbuf,"tomogd");
+
+  elseif str$=="tomoge";		@ tomography w/ Estimated betab,betaw @
+    betab=eiread(dbuf,"betab");
+    betaw=eiread(dbuf,"betaw");
+    a=ones(rows(betab),1);
+    _psym=betab~betaw~8*a~_eigraphc*2*a~12*a~a~0*a;
+    eigraph(dbuf,"tomogd");
+    
+  elseif str$=="tomogt";		@ tomography w/ true betab,betaw @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+        wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    betab=eiread(dbuf,"truthb");
+    betaw=eiread(dbuf,"truthw");
+    a=ones(rows(betab),1);
+    _psym=betab~betaw~8*a~_eigraphc*2*a~12*a~a~0*a;
+    eigraph(dbuf,"tomogd");
+
+  elseif str$=="tomogci";		@ tomography with 80% conf intervals @
+    b=eiread(dbuf,"ci80bw");
+    if not(scalmiss(b));
+      graphgk;
+      _plineC=12;
+      _plineth=9+_eigraph_thick;
+      pline(missrv(b[.,1],0),missrv(b[.,4],0),
+            missrv(b[.,2],1),missrv(b[.,3],1));
+      a = eiread(dbuf,"bounds");
+      graphgk;
+      _plineth=0+_eigraph_thick;
+      pline(missrv(a[.,1],0),missrv(a[.,4],0),
+            missrv(b[.,1],1),missrv(b[.,4],1));
+      pline(missrv(b[.,2],0),missrv(b[.,3],0),
+            missrv(a[.,2],0),missrv(a[.,3],1));
+      xlabel(_eigraph_bb);
+      ylabel(_eigraph_bw);
+      xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+      ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+      _plotsiz={5,5};
+      _plctrl=-1;
+      gosub setup;
+      draw;
+    else;
+      eigraph(dbuf,"tomogd");
+    endif;
+
+  elseif str$=="tomogci95";		@ tomography with 95% conf intervals @
+    b=eiread(dbuf,"ci95bw");
+    if not(scalmiss(b));
+      graphgk;
+      _plineC=12;
+      _plineth=9+_eigraph_thick;
+      pline(missrv(b[.,1],0),missrv(b[.,4],0),
+            missrv(b[.,2],1),missrv(b[.,3],1));
+      a = eiread(dbuf,"bounds");
+      graphgk;
+      _plineth=0+_eigraph_thick;
+      pline(missrv(a[.,1],0),missrv(a[.,4],0),
+            missrv(b[.,1],1),missrv(b[.,4],1));
+      pline(missrv(b[.,2],0),missrv(b[.,3],0),
+            missrv(a[.,2],0),missrv(a[.,3],1));
+      xlabel(_eigraph_bb);
+      ylabel(_eigraph_bw);
+      xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+      ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+      _plotsiz={5,5};
+      _plctrl=-1;
+      gosub setup;
+      draw;
+    else;
+      eigraph(dbuf,"tomogd");
+    endif;
+
+  elseif str$=="tomogs";              @ tomog,tomogp,tomogCI,tomogT(or tomogE)@
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      if scalzero(eiread(dbuf,"_Enonpar"));
+	title("ML Contours");
+	eigraph(dbuf,"tomog");
+      endif;
+    nextwind;
+      if scalzero(eiread(dbuf,"_Enonpar"));
+	graphset;
+	title("Mean Posterior Contours");
+	eigraph(dbuf,"tomogp");
+      endif;
+    nextwind;
+      graphset;
+      title("80% Confidence Intervals");
+      eigraph(dbuf,"tomogci");
+    nextwind;
+      graphset;
+      if vin(dbuf,"truth");
+	title("True coordinates");
+	eigraph(dbuf,"Tbivar");
+      else;
+	title("Point estimates");
+	eigraph(dbuf,"estsims");
+      endif;
+    endwind;
+  
+  elseif str$=="nonpar";	@ tomogd & nonparametric contour & surface  @
+    x=eiread(dbuf,"x");
+    t=eiread(dbuf,"t");
+    if vin(dbuf,"_Eselect");
+      _Eselect=eiread(dbuf,"_Eselect");
+      if rows(_Eselect)==rows(x);
+	x=selif(x,_Eselect);
+	t=selif(t,_Eselect);
+      endif;
+    endif;
+    x=recode(x,(x.<_Enumtol)~(x.>(1-_Enumtol)),_Enumtol|(1-_Enumtol));
+    t=recode(t,(t.<_Enumtol)~(t.>(1-_Enumtol)),_Enumtol|(1-_Enumtol));
+    tt=seqase(0,1,_eigraph_eval);
+    o=ones(_eigraph_eval,1);
+    a=reshape(tt.*.o,_eigraph_eval,_eigraph_eval)';  @ px @
+    b=reshape(o.*.tt,_eigraph_eval,_eigraph_eval)';  @ py @
+    z=nonbiv(t,x,a,b);                               @ pz @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      graphset;
+      title("Tomography Lines");
+      eigraph(dbuf,"tomogd");
+      graphgk;
+    nextwind;
+      graphset;
+      _pdate="";
+      title("Nonparametric Surface");
+      zlabel("Scaled f(betaB,betaW)");
+      z=z./maxc(vec(z));
+      ztics(0,1,0.25,5);
+      if scalone(_eigraph_dbuf);
+	_eigraph_dbuf=vput("",tt',"px");
+	_eigraph_dbuf=vput(_eigraph_dbuf,tt,"py");
+	_eigraph_dbuf=vput(_eigraph_dbuf,z,"pz");
+      endif;
+      surface(tt',tt,z);
+    nextwind;
+      graphset;
+      xlabel(_eigraph_bb);
+      ylabel(_eigraph_bw);
+      xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+      ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+      title("Nonparametric Contours");
+      _plotsiz={5,5};
+      gosub setup;
+      _plev=seqa(.1,.1,9);
+      _pline=0;
+      contour(tt',tt,z);
+    endwind;
+    
+  elseif str$=="xtc";			@ basic x by t with sized circ's @ 
+    clearg _plctrl,_plotsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    x=eiread(dbuf,"x");
+    t=eiread(dbuf,"t");
+    xtics(_eigraph_Xlo,_eigraph_Xhi,(_eigraph_Xhi-_eigraph_Xlo)/4,5);
+    ytics(_eigraph_Tlo,_eigraph_Thi,(_eigraph_Thi-_eigraph_Tlo)/4,5);
+    xlabel(_eigraph_x);
+    ylabel(_eigraph_t);
+    if _eigraph_circ==0;
+      tvap=eiread(dbuf,"n");
+      _eigraph_circ=20*(tvap-minc(tvap)+1)./(1+maxc(tvap)-minc(tvap));
+      if stdc(tvap)<50;
+	_eigraph_circ=0.5*_eigraph_circ;
+      endif;
+    endif;
+    gosub setup;
+    call triple(x,t,_eigraph_circ*_eigraphC);
+    clearg _eigraph_circ;
+  
+  elseif str$=="xt";			@ basic x by t @
+    _eigraph_circ=.5;
+    eigraph(dbuf,"xtc");
+    
+  elseif str$=="xgraph";		@ X-graph  @
+    pline(0,0,1,1);
+    pline(0,1,1,0);
+    _eigraph_circ=.5;
+    eigraph(dbuf,"xtc");
+    
+  elseif str$=="xgraphc";		@ X-graph with sized circles  @
+    pline(0,0,1,1);
+    pline(0,1,1,0);
+    eigraph(dbuf,"xtc");
+
+  elseif str$=="goodman";		@ x by t plot w/ goodman's line @
+    b=eiread(dbuf,"goodman");
+    graphgk;
+    _plineth=6+_eigraph_thick;
+    _plinec=12;
+    pline(0,b[1,2],1,b[1,1]);
+    _eigraph_circ=.5;
+    eigraph(dbuf,"xtc");
+
+  elseif str$=="xtfit";			@ x by t with Exp and 80%CI's  @
+    b=eiread(dbuf,"expvarcis");
+    if not(scalmiss(b));  @ CI's drawn only if no Z's are specified @
+      graphgk;
+      _plineth=0+_eigraph_thick;
+      plines(b[.,1],b[.,3]);
+      _plineC=12;
+      plines(b[.,1],b[.,2]);
+      plines(b[.,1],b[.,4]);
+      if _eigraph_loess;
+	b=eiread(dbuf,"expvarci");
+	graphgk;
+	_plineth=0+_eigraph_thick;
+	plines(b[.,1],b[.,3]);
+	_plineC=12;
+	plines(b[.,1],b[.,2]);
+	plines(b[.,1],b[.,4]);
+      endif;
+    endif;
+    eigraph(dbuf,"xtc");
+  
+  elseif str$=="xtfitg";		@ xtfit with goodman's regression @
+    b=eiread(dbuf,"goodman");
+    graphgk;
+    _plinec=10;
+    _plineth=8+_eigraph_thick;
+    pline(0,b[1,2],1,b[1,1]);
+    eigraph(dbuf,"xtfit");
+
+  elseif str$=="fit";		        @ tomogp and xtfit @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"xtfit");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"tomogp");
+    endwind;
+
+  elseif str$=="fitt";		        @ tomog and mlfit  @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"xtfit");
+    nextwind;
+    if vin(dbuf,"truth");
+      graphset;
+      eigraph(dbuf,"tomogt");
+    endif;
+    endwind;
+
+  elseif str$=="profile";               @ profile plot of phi @
+    call profileit(dbuf,0);
+  
+  elseif str$=="profiler";               @ profile plot of R (cdfbvn) @
+    call profileit(dbuf,1);
+  
+  elseif str$=="postb";			@ posterior of dist agg B^b  @
+    a=eiread(dbuf,"abounds");
+    clearg _strt,_endd,_kern,_whiskr;
+    _strt=a[1,1];
+    _endd=a[2,1];
+    _kern="TN";
+    _whiskr=0;
+    if vin(dbuf,"truth");
+      b=eiread(dbuf,"aggtruth");
+      graphgk;
+      _plineth=8+_eigraph_thick;
+      pline(b[1],0,b[1],3);
+    endif;
+    clearg _output;
+    _output=0;
+    b=eiread(dbuf,"aggs");
+    {a,b}=dens(b[.,1]);
+    a=a[1]|a|a[rows(a)];
+    b=0|b|0;
+    ylabel("density, f(B^b)");
+    xlabel(_eigraph_bb);
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    gosub setup;
+    xy(listwis2(a,b));
+
+  elseif str$=="postw";			@ posterior of dist agg B^w  @
+    a=eiread(dbuf,"abounds");
+    clearg _strt,_endd,_kern,_whiskr;
+    _strt=a[1,2];
+    _endd=a[2,2];
+    _kern="TN";
+    _whiskr=0;
+    if vin(dbuf,"truth");
+      b=eiread(dbuf,"aggtruth");
+      graphgk;
+      _plineth=8+_eigraph_thick;
+      pline(b[2],0,b[2],3);
+    endif;
+    clearg _output;
+    _output=0;
+    b=eiread(dbuf,"aggs");
+    {a,b}=dens(b[.,2]);
+    a=a[1]|a|a[rows(a)];
+    b=0|b|0;
+    ylabel("density, f(B^w)");
+    xlabel(_eigraph_bw);
+    xtics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    gosub setup;
+    xy(listwis2(a,b));
+
+  elseif str$=="post";			@ posterior of dist aggs B^b B^w @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"postb");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"postw");
+    endwind;
+    
+  elseif str$=="betab";			@ density est of beta^b  @
+    clearg _strt,_endd,_kern;
+    _strt=0;
+    _endd=1;
+    _kern="TN";
+    clearg _output;
+    betaB=packr(eiread(dbuf,"betaB"));
+    {a,b}=dens(betaB);
+    o=ones(rows(betaB),1);
+    a=a[1]|a|a[rows(a)];
+    b=0|b|0;
+    _pline=o~ (o*6)~ betaB~ (o*0)~ betaB~ (o*(maxc(b)/15))~ o~ (o*15)~(o*0);  
+    ylabel("density across precincts, f(betaB)");
+    xlabel(_eigraph_bb);
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    gosub setup;
+    xy(listwis2(a,b));
+    
+  elseif str$=="betaw";			@ density est of beta^w  @
+    clearg _strt,_endd,_kern;
+    _strt=0;
+    _endd=1;
+    _kern="TN";
+    clearg _output;
+    betaW=packr(eiread(dbuf,"betaW"));
+    {a,b}=dens(betaW);
+    o=ones(rows(betaW),1);
+    a=a[1]|a|a[rows(a)];
+    b=0|b|0;
+    _pline=o~ (o*6)~ betaW~ (o*0)~ betaW~ (o*(maxc(b)/15))~ o~ (o*15)~(o*0);  
+    ylabel("density across precincts, f(betaW)");
+    xlabel(_eigraph_bw);
+    xtics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    gosub setup;
+    xy(listwis2(a,b));
+
+  elseif str$=="beta";			@ density est of betab and betaw @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"betab");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"betaw");
+    endwind;
+  
+  elseif str$=="results";   @ posterior of dist aggs B^b B^w, hist of beta's @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"postb");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"postw");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"betab");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"betaw");
+    endwind;
+    
+  elseif str$=="movie";	      @ moving picture of betaB and betaW densities  @
+    clearg _strt,_endd,_kern,_Esims;
+    _Esims=eiread(dbuf,"_Esims");
+    _strt=0;
+    _endd=1;
+    _kern="TN";
+    clearg _output;
+    x=eiread(dbuf,"x");
+    t=eiread(dbuf,"t");
+    n=eiread(dbuf,"n");
+    p=rows(x);
+    betaB=eiread(dbuf,"betaBs");
+    betaW=eiread(dbuf,"betaWs");
+    i=1;
+    do while i<=p;
+      c=betaB[i,.]';
+      d=betaW[i,.]';
+      graphclr;
+      begwind;
+      window(2,2,1);
+      setwind(1);
+        if not(ismiss(c|d));
+	  graphset;
+	  _plotsiz={5,5};
+	  xlabel(_eigraph_bb);
+	  ylabel(_eigraph_bw);
+	  title("Simulations");
+	  xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+	  ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+	  _plctrl=-1;
+	  gosub setup;
+	  _pdate="";
+	  xy(listwis2(c,d));
+	endif;
+      nextwind;
+        graphset;
+	if not(ismiss(d));
+	  _plotsiz={5,5};
+	  {a,b}=dens(d);
+	  o=ones(_Esims,1);
+	  a=a[1]|a|a[rows(a)];
+	  b=0|b|0;
+	  _pline=o~ (o*6)~ d~ (o*0)~ d~ (o*(maxc(b)/15))~ o~ (o*15)~(o*0);
+	  ylabel("density, f(betaW)");
+	  xlabel(_eigraph_bw);
+	  xtics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+	  gosub setup;
+	  _pdate="";
+	  xy(listwis2(a,b));
+	endif;
+      nextwind;
+	if not(ismiss(c));
+	  _plotsiz={5,5};
+	  {a,b}=dens(c);
+	  o=ones(_Esims,1);
+	  a=a[1]|a|a[rows(a)];
+	  b=0|b|0;
+	  _pline=o~ (o*6)~ c~ (o*0)~ c~ (o*(maxc(b)/15))~ o~ (o*15)~(o*0);
+	  ylabel("density, f(betaB)");
+	  xlabel(_eigraph_bb);
+	  xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+	  gosub setup;
+	  xy(listwis2(a,b));
+	endif;
+      nextwind;
+        graphset;
+	_pframe=0|0;
+	_paxes=0;
+	_pmsgstr="Observation = "$+ftos(i,"*.*lf",1,0);
+	_pmsgstr=_pmsgstr$+"\000X = "$+ftos(x[i],"*.*lf",7,4);
+	_pmsgstr=_pmsgstr$+"\000T = "$+ftos(t[i],"*.*lf",7,4);
+	_pmsgstr=_pmsgstr$+"\000N = "$+ftos(n[i],"*.*lf",1,0);
+	_pmsgctl=(1~3.0~.35~0~2~14~0)|
+	         (1~2.5~.35~0~2~14~0)|
+		 (1~2.0~.35~0~2~14~0)|
+		 (1~1.5~.35~0~2~14~0);
+	gosub setup;
+	_pdate="";
+	draw;
+      endwind;
+      clearg _graphwait;
+      graphno;
+      #ifunix;
+        printfl "Hit <CR> to continue, #<CR> for obs number #, S<CR> to stop";
+      #else;
+        printfl "Hit <CR> to continue, #<CR> for obs number #, S to stop";
+      #endif;
+      graphwait;
+      a=stof(_graphwait);
+      if lower(_graphwait)$=="s";
+	goto movieq;
+      elseif a>=1 and a<=p;
+	i=a;
+      else;
+	i=i+1;
+      endif;
+    endo;
+    movieq:
+    graphno;
+    
+  elseif str$=="movied";      @ pick out individual lines on tomography plot @
+    clearg _output;
+    x=eiread(dbuf,"x");
+    t=eiread(dbuf,"t");
+    n=eiread(dbuf,"n");
+    p=rows(x);
+    i=1;
+    do while i<=p;
+      graphclr;
+
+      title("Dark line is observation "$+ftos(i,"*.*lf",1,0));
+      xlabel(_eigraph_bb);
+      ylabel(_eigraph_bw);
+      xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+      ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+      gosub setup;
+      f=sortind(rndu(p,1));
+      f=f[1:int(p*_eigraph_smpl)];
+      tst=eiread(dbuf,"_Eselect");
+      if scalone(_Eselect);
+	tst=ones(p,1);
+      endif;
+      tst[i]=2;
+      call tomog(x[f],t[f],_eigraph_psiu,tst[f]);
+      clearg _eigraph_psiu;
+
+      graphno;
+      #ifunix;
+        printfl "Hit <CR> to continue, #<CR> for obs number #, S<CR> to stop";
+      #else;
+        printfl "Hit <CR> to continue, #<CR> for obs number #, S to stop";
+      #endif;
+      graphwait;
+      a=stof(_graphwait);
+      if lower(_graphwait)$=="s";
+	goto movieDq;
+      elseif a>=1 and a<=p;
+	i=a;
+      else;
+	i=i+1;
+      endif;
+    endo;
+    movieDq:
+    graphno;
+    
+  elseif str$=="prectb";		@ est by true of betaB_i  @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    a=eiread(dbuf,"betaB");
+    b=eiread(dbuf,"truthB");
+    xlabel("ESTIMATED "$+_eigraph_bb);
+    ylabel("TRUE "$+_eigraph_bb);
+    _plotsiz={5,5};
+    c=eiread(dbuf,"bvap");
+    c=_eigraphC*24.5*c/maxc(c);
+    graphgk;
+    pline(_eigraph_bblo,_eigraph_bblo,_eigraph_bbhi,_eigraph_bbhi);
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    d=eiread(dbuf,"ci80b");
+    e=meanc(packr(abs(d-a)));
+    _plinet=3;
+   pline(_eigraph_bblo,_eigraph_bblo+e[1],_eigraph_bbhi,_eigraph_bbhi+e[1]);
+   pline(_eigraph_bblo,_eigraph_bblo-e[2],_eigraph_bbhi,_eigraph_bbhi-e[2]);
+    gosub setup;
+    triple(a,b,c);
+    
+  elseif str$=="prectw";		@ est by true of betaW_i  @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    a=eiread(dbuf,"betaW");
+    b=eiread(dbuf,"truthW");
+    xlabel("ESTIMATED "$+_eigraph_bw);
+    ylabel("TRUE "$+_eigraph_bw);
+    _plotsiz={5,5};
+    c=eiread(dbuf,"wvap");
+    c=_eigraphC*24.5*c/maxc(c);
+    graphgk;
+    pline(_eigraph_bwlo,_eigraph_bwlo,_eigraph_bwhi,_eigraph_bwhi);
+    xtics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    d=eiread(dbuf,"ci80w");
+    e=meanc(packr(abs(d-a)));
+    graphgk;
+    _plineth=0+_eigraph_thick;
+    _plinet=3;
+    pline(_eigraph_bwlo,_eigraph_bwlo+e[1],_eigraph_bwhi,_eigraph_bwhi+e[1]);
+    pline(_eigraph_bwlo,_eigraph_bwlo-e[2],_eigraph_bwhi,_eigraph_bwhi-e[2]);
+    gosub setup;
+    triple(a,b,c);
+    
+  elseif str$=="truth";			@ compare truth to estimates @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"postb");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"postw");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"prectb");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"prectw");
+    endwind;
+
+  elseif str$=="lines";			@ xt with one EST'd per precinct  @
+    betab=eiread(dbuf,"betab");
+    betaw=eiread(dbuf,"betaw");
+    {betab,betaw}=listwis2(betab,betaw);
+    a=rows(betab);
+    z=zeros(a,1);
+    o=ones(a,1);
+    graphgk;
+    _plineth=0+_eigraph_thick;
+    pline(z,betaw,o,betab);
+    _eigraph_circ=1;
+    eigraph(dbuf,"xtc");
+    
+  elseif str$=="tlines";		@ xt with one TRUE line per precinct @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    betab=eiread(dbuf,"truthb");
+    betaw=eiread(dbuf,"truthw");
+    {betab,betaw}=listwis2(betab,betaw);
+    a=rows(betab);
+    z=zeros(a,1);
+    o=ones(a,1);
+    graphgk;
+    _plineth=0+_eigraph_thick;
+    pline(z,betaw,o,betab);
+    _eigraph_circ=1;
+    eigraph(dbuf,"xtc");
+
+  elseif str$=="bivar";			@ EST'd betab by betaw @
+    betaB=eiread(dbuf,"betab");
+    betaW=eiread(dbuf,"betaw");
+    xlabel(_eigraph_bb);
+    ylabel(_eigraph_bw);
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.5*_eigraphc;
+    pline(0,0,1,1);
+    gosub setup;
+    xy(listwis2(betaB,betaW));
+    
+  elseif str$=="tbivar";		@ TRUE betab by betaw @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    betaB=eiread(dbuf,"truthb");
+    betaW=eiread(dbuf,"truthw");
+    xlabel("TRUE "$+_eigraph_bb);
+    ylabel("TRUE "$+_eigraph_bw);
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.5*_eigraphc;
+    pline(0,0,1,1);
+    gosub setup;
+    xy(listwis2(betaB,betaW));
+    
+  elseif str$=="betabw";		@ lines,tlines,bivar,tbivar @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"lines");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"bivar");
+    if vin(dbuf,"truth");
+      nextwind;
+        graphset;
+	eigraph(dbuf,"tlines");
+      nextwind;
+        graphset;
+	eigraph(dbuf,"tbivar");
+    endif;
+    endwind;  
+
+  elseif str$=="ptileb";		@ true percentile for betaB @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    xlabel(_eigraph_bb);
+    ylabel("True Percentile");
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    ytics(0,1,0.25,5);
+    clearg _plotsiz;
+    _plotsiz={4.5,5};
+    pline(0,0.25,1,0.25);
+    pline(0,0.5,1,0.5);
+    pline(0,0.75,1,0.75);
+    betaB=eiread(dbuf,"betab");
+    a=eiread(dbuf,"truPtile");
+    bvap=eiread(dbuf,"bvap");
+    c=_eigraphC*24.5*bvap/maxc(bvap);
+    gosub setup;
+    triple(betab,a[.,1],c);
+
+  elseif str$=="ptilew";		@ true percentile for betaW @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    xlabel(_eigraph_bw);
+    ylabel("True Percentile");
+    xtics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    ytics(0,1,0.25,5);
+    clearg _plotsiz;
+    _plotsiz={4.5,5};
+    pline(0,0.25,1,0.25);
+    pline(0,0.5,1,0.5);
+    pline(0,0.75,1,0.75);
+    betaW=eiread(dbuf,"betaw");
+    a=eiread(dbuf,"truPtile");
+    wvap=eiread(dbuf,"wvap");
+    c=_eigraphC*24.5*wvap/maxc(wvap);
+    gosub setup;
+    triple(betaw,a[.,2],c);
+
+  elseif str$=="ptile";			@ ptileb & ptilew @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    begwind;
+    window(1,2,1);
+    setwind(1);
+      eigraph(dbuf,"ptileb");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"ptilew");
+    endwind;
+    
+  elseif str$=="simsb";			@ sims of betab by betab  @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.1*_eigraphc;
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    xlabel(_eigraph_bb$+" simulations");
+    ylabel(_eigraph_bb$+" TRUE");
+    betab=eiread(dbuf,"betabs");
+    a=eiread(dbuf,"truthb");
+    pline(0,0,1,1);
+    gosub setup;
+    xy(listwis2(betab,a));
+    
+  elseif str$=="simsw";			@ sims of betaw by betaw  @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.1*_eigraphc;
+    xtics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    xlabel(_eigraph_bw$+" simulations");
+    ylabel(_eigraph_bw$+" TRUE");
+    betaw=eiread(dbuf,"betaws");
+    a=eiread(dbuf,"truthw");
+    pline(0,0,1,1);
+    gosub setup;
+    xy(listwis2(betaw,a));
+    
+  elseif str$=="sims";			@ simsB & simsW @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"simsB");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"simsW");
+    endwind;
+
+  elseif str$=="estsims";		@ sim'd est betab by est betab  @
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.1*_eigraphc;
+    xtics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    xlabel(_eigraph_bb$+" simulations");
+    ylabel(_eigraph_bw$+" simulations");
+    betab=eiread(dbuf,"betabs");
+    betaw=eiread(dbuf,"betaws");
+    gosub setup;
+    xy(listwis2(betab,betaw));
+  
+  elseif str$=="biasb";			@ x by betaB @
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.3*_eigraphc;
+    xtics(_eigraph_Xlo,_eigraph_Xhi,(_eigraph_Xhi-_eigraph_Xlo)/4,5);
+    ytics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    xlabel(_eigraph_x);
+    ylabel("EST'd "$+_eigraph_bb);
+    x=eiread(dbuf,"x");
+    betab=eiread(dbuf,"betab");
+    a=eiread(dbuf,"eaggbias");
+    graphgk;
+    _plineth=0+_eigraph_thick;
+    pline(0,a[1,1],1,a[1,1]+a[2,1]);
+    gosub setup;
+    xy(listwis2(x,betab));
+    
+  elseif str$=="biasw";			@ x by betaW @
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.3*_eigraphc;
+    xtics(_eigraph_Xlo,_eigraph_Xhi,(_eigraph_Xhi-_eigraph_Xlo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    xlabel(_eigraph_x);
+    ylabel("EST'd "$+_eigraph_bw);
+    x=eiread(dbuf,"x");
+    betaw=eiread(dbuf,"betaw");
+    a=eiread(dbuf,"eaggbias");
+    graphgk;
+    _plineth=0+_eigraph_thick;
+    pline(0,a[3,1],1,a[3,1]+a[4,1]);
+    gosub setup;
+    xy(listwis2(x,betaw));
+    
+  elseif str$=="tbiasb";		@ x by true betaB @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.3*_eigraphc;
+    xtics(_eigraph_Xlo,_eigraph_Xhi,(_eigraph_Xhi-_eigraph_Xlo)/4,5);
+    ytics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    xlabel(_eigraph_x);
+    ylabel("TRUE "$+_eigraph_bb);
+    x=eiread(dbuf,"x");
+    betab=eiread(dbuf,"truthb");
+    a=eiread(dbuf,"aggbias");
+    graphgk;
+    _plineth=0+_eigraph_thick;
+    pline(0,a[1,1],1,a[1,1]+a[2,1]);
+    gosub setup;
+    xy(listwis2(x,betab));
+    
+  elseif str$=="tbiasw";		@ x by true betaW @
+    if not(vin(dbuf,"truth"));
+      #ifunix;
+      wincloseall;
+      #endif;
+      "ei: 'truth' must be stored first";
+      retp(-1);
+    endif;
+    clearg _plctrl,_plotsiz,_psymsiz;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.3*_eigraphc;
+    xtics(_eigraph_Xlo,_eigraph_Xhi,(_eigraph_Xhi-_eigraph_Xlo)/4,5);
+    ytics(_eigraph_bwlo,_eigraph_bwhi,(_eigraph_bwhi-_eigraph_bwlo)/4,5);
+    xlabel(_eigraph_x);
+    ylabel("TRUE "$+_eigraph_bw);
+    x=eiread(dbuf,"x");
+    betaw=eiread(dbuf,"truthw");
+    a=eiread(dbuf,"aggbias");
+    graphgk;
+    _plineth=0+_eigraph_thick;
+    pline(0,a[3,1],1,a[3,1]+a[4,1]);
+    gosub setup;
+    xy(listwis2(x,betaw));
+    
+  elseif str$=="bias";			@ biasB,biasW,TbiasB,TbiasW @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"biasB");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"biasW");
+    if vin(dbuf,"truth");
+      nextwind;
+        graphset;
+	eigraph(dbuf,"TbiasB");
+      nextwind;
+        graphset;
+	eigraph(dbuf,"TbiasW");
+    endif;
+    endwind;  
+
+  elseif str$=="boundxb";		@ x by bounds on betaB @
+    clearg _plctrl,_plotsiz,_psymsiz;
+    graphgk;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.3*_eigraphc;
+    xtics(_eigraph_Xlo,_eigraph_Xhi,(_eigraph_Xhi-_eigraph_Xlo)/4,5);
+    ytics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    xlabel(_eigraph_x);
+    ylabel("TRUE "$+_eigraph_bb);
+    x=eiread(dbuf,"x");
+    b=eiread(dbuf,"bounds");
+    pline(x,b[.,1],x,b[.,2]);
+    gosub setup;
+    draw;
+    
+  elseif str$=="boundxw";		@ x by bounds on betaW @
+    clearg _plctrl,_plotsiz,_psymsiz;
+    graphgk;
+    _plctrl=-1;
+    _plotsiz={5,5};
+    _psymsiz=.3*_eigraphc;
+    xtics(_eigraph_Xlo,_eigraph_Xhi,(_eigraph_Xhi-_eigraph_Xlo)/4,5);
+    ytics(_eigraph_bblo,_eigraph_bbhi,(_eigraph_bbhi-_eigraph_bblo)/4,5);
+    xlabel(_eigraph_x);
+    ylabel("TRUE "$+_eigraph_bw);
+    x=eiread(dbuf,"x");
+    b=eiread(dbuf,"bounds");
+    pline(x,b[.,3],x,b[.,4]);
+    gosub setup;
+    draw;
+    
+  elseif str$=="boundx";			@ boundXB boundXW @
+    begwind;
+    window(2,2,1);
+    setwind(1);
+      eigraph(dbuf,"boundXB");
+    nextwind;
+      graphset;
+      eigraph(dbuf,"boundXW");
+      if vin(dbuf,"truth");
+      nextwind;
+        graphset;
+	eigraph(dbuf,"boundXB");
+	_eigraphc=7;
+	eigraph(dbuf,"TbiasB");
+      nextwind;
+        graphset;
+	eigraph(dbuf,"boundXW");
+	_eigraphc=7;
+	eigraph(dbuf,"TbiasW");
+      endif;
+    endwind;  
+    
+  else;
+    #ifunix;
+    wincloseall;
+    #endif;
+    "eigraph: no such graph: ";;str;
+    retp(-2);
+  endif;
+
+  #ifdos;
+    ndpclex;
+  #endif;
+  retp(0);
+  
+  /* Graphics Setup Subroutine */
+  setup:
+  clearg _pdate,_pticout;
+  _pdate=eiread(dbuf,"titl")$+" ";
+  _pticout=1;
+  return;
+
+endp;
+
+
+/*
+    tomog(x,t,psiu,sel);
+**
+**  Ecological inference "tomography plot" 
+**  support proc for eigraph()
+**
+** INPUTS:
+** x = explanatory variable
+** t = outcome variable
+** psiu = 5x1 parameters of the untruncated bivariate normal, 
+**      = mean1|mean2|StanDev1|StanDev2|correlation;
+**        or 0 or missing to skip contours
+**      mean1 and mean1 can each be px1 vectors, in which case they will
+**      each be averaged before drawing ONE set of contours
+** sel = rows(x)x1 1 draw tomog line solid yellow, 0 to use dashed blue
+**                 2  draw very thick red
+**
+** OUTPUT:
+** draws lines defined by b1=(t/(1-x))-(x/(1-x))*b2, where b1,b2 are the
+**       the variables for the 2 axes and each \in[0,1]
+** also draws contour lines if psiu/=0 of the untruncated bivariate normal
+**       with parameters psiu, truncated to the unit square.  Contours are
+**       drawn so that 50% and 95% of the area within the unit square
+**       falls within the respective contours
+**
+** GLOBALS:
+** _tomogClr =  { 12, 9, 10, 11, 13, 5 }  colors for each contour.  
+** _tomogPct = {.5, .95}    percentage values at which to draw contours
+**           rows(_tomogClr) must be >= rows(_tomogPct)
+**
+** OUTPUT GLOBAL:
+** _tomogVals = values of parameter that gives 50% and 95% contours
+*/
+proc 0=tomog(x,t,psiu,sel);
+  local delb,bbw0,bbw1,bb,bw,sb,sw,rho,sb2,sw2,sbw,vc,tt,v,y,r,p,z,o,i,d,d1,d2,
+  z1,z2,omr,dist2,tomogC,bnds,sms,lB,uB,lW,uW,j,indx,ch;
+  clearg _plotsiz,_plctrl,_plinet,_plineth,_plineC;
+  if scalone(sel);
+    sel=x*0+1;
+  endif;
+  _plotsiz={5,5};
+  _plctrl=-1;
+  graphgk;
+  
+  /* draw lines */
+  {bnds,tt} = bounds1(t,x,1);
+  indx=seqa(1,1,rows(t));
+  if sumc(sel.==0)>0;                         @ dashed lines @
+    _plinet=3;
+    _plinec=9;
+    j=selif(indx,sel.==0);
+    pline(missrv(bnds[j,1],0),missrv(bnds[j,4],0),
+          missrv(bnds[j,2],1),missrv(bnds[j,3],1));
+    graphgk;
+  endif;
+  if sumc(sel.==2)>0;                         @ dark lines @
+    _plinec=12;
+    _plineth=14+_eigraph_thick;
+    j=selif(indx,sel.==2);
+    pline(missrv(bnds[j,1],0),missrv(bnds[j,4],0),
+          missrv(bnds[j,2],1),missrv(bnds[j,3],1));
+    graphgk;
+  endif;
+  if sumc(sel.==1)>0;                         @ regular straight lines @
+    j=selif(indx,sel.==1);
+    pline(missrv(bnds[j,1],0),missrv(bnds[j,4],0),
+    missrv(bnds[j,2],1),missrv(bnds[j,3],1));
+    graphgk;
+  endif;
+  
+  /* draw ellipses */
+  if not(scalzero(psiu)) and not(scalmiss(psiu));
+    r=rows(psiu);
+    p=(r-3)/2;
+    if (p*2+3)/=r;
+      #ifunix;
+      wincloseall;
+      #endif;
+      "tomog: problem with psiu";
+      retp;
+    endif;
+    Bb=meanc(psiu[1:p]);
+    Bw=meanc(psiu[p+1:2*p]);
+    if cols(_psym)==1;
+      _psym=bb~bw~_tomogClr[1]~5~13~1~0;		@ ellipse center @
+    else;
+      _psym=_psym|(bb~bw~_tomogClr[1]~5~13~1~0);
+    endif;
+    sb=psiu[r-2];
+    sw=psiu[r-1];
+    rho=psiu[r];
+    sb2=sb^2;
+    sw2=sw^2;
+    sbw=rho*sb*sw;
+    vc=(sb2~sbw)|(sbw~sw2);
+    tt=seqas(0,2*pi,1000);
+    tt=sin(tt)~cos(tt);
+    local oldt;
+    oldt = trapchk(1);
+    trap 1,1;
+    ch=chol(vc);
+    trap oldt,1;
+    if scalerr(ch);
+      ch=sechol(vc);
+    endif;
+    v=tt*ch;
+
+    /* decide on how far out to draw elipses */
+    bnds=(0~1)|(0~1);
+    sms=1000;
+    d=rndbtn(bb,bw,sb,sw,rho,bnds,sms);
+    d1=d[.,1];
+    d2=d[.,2];
+    z1=(d1-bb)./sb;
+    z2=(d2-bw)./sw;
+    omr=1-rho^2;
+    dist2=((z1^2+z2^2-2*rho*z1.*z2)./omr);
+    dist2=sortc(dist2,1);
+    clearg _tomogVals;
+    _tomogVals=_tomogPct;
+    for i (1, rows(_tomogPct), 1);
+      tomogC=sqrt(dist2[_tomogPct[i+0]*sms]);
+      _tomogVals[i+0]=tomogC;
+      x=bb+tomogC.*v[.,1];
+      y=bw+tomogC.*v[.,2];
+      _plineC=0;
+      _plineTh=19+_eigraph_thick;
+      plines(x,y);
+      _plineC=_tomogClr[i+0];
+      _plineTh=10+_eigraph_thick;
+      plines(x,y);
+    endfor;
+  endif;
+
+  /* put count of T=1 and T=0 at corners */
+  z=sumc(t.<_Enumtol);
+  if z>0;
+    _pmsgstr="T=0: "$+ftos(z,"*.*lf",1,0)$+"\000";
+    _pmsgctl=-.11~-.12~.1~0~1~10~0;
+  endif;
+  o=sumc(t.>(1-_Enumtol));
+  if o>0;
+    _pmsgstr=_pmsgstr$+" T=1: "$+ftos(o,"*.*lf",1,0);
+    if scalzero(_pmsgctl);
+      _pmsgctl=0.99~1.05~.1~0~1~10~0;
+    else;
+      _pmsgctl=_pmsgctl|(0.99~1.05~.1~0~1~10~0);
+    endif;
+  endif;
+  
+  draw;
+endp;
+
+/* KERNEL DENSITY ESTIMATION
+**
+**   Format:    {px,py}=dens(y);
+**
+**   input:     y = Nx1 vector
+**
+**   output:   plot of y (horizontally) by its est'd density f(y) (vertically).
+**             Whiskers are also plotted along horizontal axis for each datum
+**
+**              px = x coordinates for the plot (_pts x 1 vector)
+**              py = y coordinates for the plot (_pts x 1 vector)
+**
+**    Global values are as follows, and may be changed:
+**   _smth=0;         smoothing parameter>0. the larger, the more smoothing.
+**                    =0 for automatic calculation of density.
+**                    =-1 for automatic calculation for description.
+**
+**   _strt=0;         x axis minimum. (if _strt=_endd, set at min and max).
+**   _endd=0;         x axis maximum.
+**   _pts=100;        number of points to plot
+**   _whiskr=-1;      -1 = draw whiskers at 1/10th size;
+**                    >0 = draw whiskers at size _whiskr;
+**                     0 = do not draw whiskers
+**                    Whiskers are always drawn at y==0, so you may have to
+**                    use ytics to scale the y-axis.
+**   _jitter=0;       0=nothing extra. #=add # jitter to each
+**                      whisker if _whiskr/=0;.
+**
+**   let _kern=E;     kernel type. N=normal, E=Epanechnikov,
+**                                 B=biweight, T=triangular, R=rectangular
+**                                 TN=Doubly Truncated Normal
+**  for option _kern=="TN",
+**      _Tleft=_strt;   truncate distribution on left at _Tleft
+**      _Tright=_endd;  truncate distribution on right at _Tright
+**
+**   _output = 1;     1 = print density plot (default); 0 = do not print.
+*/
+@ Kernels @
+@ arguments of kernels: z=input value, m=mean, h=smoothing parameter _smth @
+proc kerneln(z,m,h);local res;z=(z-m)./h;      @ NORMAL kernel @
+    res=(1./sqrt(2*pi))*exp(-(1/2).*(z^2));retp(res);endp;
+proc kernelTN(z,m,h,Tleft,Tright);
+    local t,tl,res,tr,zz;zz=(z-m)./h;          @ TRUNCATED NORMAL kernel @
+    tl=(Tleft-m)./h; tr=(Tright-m)./h;
+    t=((z.>Tleft).and (z.<Tright));
+    res=t.*pdfn(zz)./(1-cdfn(tl)-(1-cdfn(tr)));
+    retp(res);endp;
+proc kernele(z,m,h);local a,res,t;z=(z-m)./h;  @ EPANECHNIKOV kernel @
+    t=(abs(z).<sqrt(5)); a=code(t,sqrt(5)|1);
+    res=t.*((3/4)*(1-(1/5).*(z^2))./a);retp(res);endp;
+proc kernelb(z,m,h);local a,res,t;z=(z-m)./h;  @ BIWEIGHT kernel @
+    t=(abs(z).<1);
+    res=t.*((15/16)*((1-(z^2))^2));retp(res);endp;
+proc kernelt(z,m,h);local a,res,t;z=(z-m)./h;  @ TRIANGULAR kernel @
+    t=(abs(z).<1);
+    res=t.*(1-abs(z));retp(res);endp;
+proc kernelr(z,m,h);local a,res,t;z=(z-m)./h;  @ RECTANGULAR kernel @
+    t=(abs(z).<1);
+    res=t.*0.5;retp(res);endp;
+
+@ creates two nx1 vectors to plot @
+proc (2)=density(y,strt,endd,pts,h,kerna,Tleft,Tright);
+    local i,t,px,py;    local kern:proc;
+    kerna=upper(kerna);
+    px=seqas(strt,endd,pts);    
+    py=px;
+    format /rdn 4,0;
+    "Kernel Density Estimation";
+    "Calculating ";;pts;;" Points: ";;
+    for i (1, pts, 1);
+        if     (kerna$=="N"); t=kernelN(py[i+0,1],y,h)./h;
+        elseif (kerna$=="E"); t=kernelE(py[i+0,1],y,h)./h;
+        elseif (kerna$=="B"); t=kernelB(py[i+0,1],y,h)./h;
+        elseif (kerna$=="T"); t=kernelT(py[i+0,1],y,h)./h;
+        elseif (kerna$=="R"); t=kernelR(py[i+0,1],y,h)./h;
+        elseif (kerna$=="TN");t=kernelTN(py[i+0,1],y,h,Tleft,Tright)./h;
+        else; errorlog "_kernel specified incorrectly";stop;endif;
+        py[i+0,1]=sumc( t )/rows(y);
+        if (i+0)==10*floor(i/10);(i+0);;endif;
+    endfor;
+    ?;retp(px,py);endp;
+
+@ Kernel Density Estimate; sets defaults, calls density, then xy @
+proc 2=dens(y);local strt,endd,h,kern,pts,px,py,smth,std,Tleft,Tright,os;
+    if cols(y)/=1; errorlog "Argument must be a column vector";end;endif;
+    strt=_strt;endd=_endd;
+    if     strt>endd;errorlog "error: _strt>_endd";end;
+    elseif strt==endd;strt=minc(y);endd=maxc(y);endif;
+    pts=int(_pts);
+    if pts<=2;errorlog "_pts must be greater than 2.  Try _pts=100;";endif;
+    smth=_smth;
+    if (smth<0).and(smth/=-1);errorlog "_smth must be -1 or > than 0";stop;
+    elseif smth==0; py=sortc(y,1);
+           std=minc((py[int(3*rows(py)/4)]-py[int(rows(py)/4)])/1.34|stdc(py));
+           smth=0.9*std*(rows(py)^(-0.2));
+    elseif smth==-1; py=sortc(y,1);
+           std=minc((py[int(3*rows(py)/4)]-py[int(rows(py)/4)])/1.34|stdc(py));
+           smth=0.9*std*(rows(py)^(-0.2))/2; endif;
+    kern=_kern;
+    Tleft=0;Tright=0;
+    if kern$=="TN";
+        if _Tleft==_Tright;  Tleft=strt;   Tright=endd;
+        else;                Tleft=_Tleft; Tright=_Tright; endif;
+    endif;
+    {px,py}=density(y,strt,endd,pts,smth,kern,Tleft,Tright);
+    std=rndu(rows(y),1)*_jitter-(_jitter/2);
+    y=y+std;
+    if _output==1;
+    if _whiskr==-1;
+        os=ones(rows(y),1);
+	_pline=os~ (os*6)~ y~ (os*0)~ y~ (os*(maxc(py)/15))~ os~ (os*15)~(os*0);
+        clear os;
+    elseif _whiskr>0;
+        os=ones(rows(y),1);
+        _pline=os~ (os*6)~ y~ (os*0)~ y~ (os*_whiskr)~ os~ (os*15)~(os*0);
+        clear os;
+    endif;
+        xy(px,py);
+        format/rd 5,4;
+        if rows(_smth)==1;?;"Smoothing Parameter: _smth=";;smth;endif;
+    endif;
+    retp(px,py);endp;
+
+/*
+    pline(xstart,ystart,xend,yend);
+**
+**
+*/
+proc 0=pline(xst,yst,xend,yend);
+  local res,o;
+  o=ones(rows(xst),1);
+  res=o*1~o*_plinet~xst~yst~xend~yend~o*1~o*_plineC~o*_plineth;
+  if _pline==0;
+    _pline=res;
+  elseif _plineRev;
+    _pline=res|_pline;
+  else;
+    _pline=_pline|res;
+  endif;
+endp;
+
+/*
+    call plines(x,y);
+**
+** for globals, see pline()
+*/
+proc 0=plines(x,y);
+  if rows(x)<2 or rows(y)<2 or rows(x)/=rows(y);
+    errorlog "plines: input error";
+    stop;  
+  endif;
+  pline(trimr(lag(x),1,0),trimr(lag(y),1,0),trimr(x,1,0),trimr(y,1,0));
+endp;
+
+/*  tst = checkginputs(dbuf);
+**  Check input globals to eigraph()
+**
+**  dbuf = EI data buffer
+**  tst = error message or null string if all is ok
+*/
+proc checkginputs(dbuf);
+  local a,b;
+  if rows(_eigraphC)/=1 or cols(_eigraphC)/=1 or type(_eigraphC)/=6;
+    retp("eigraph: _EIgraphC must be a numeric scalar");
+  endif;
+  if _eigraphC<=0;
+    retp("eigraph: _EIgraphC must be nonnegative");
+  endif;
+  
+  if rows(_eigraph_Xlo)/=1 or cols(_eigraph_Xlo)/=1 or type(_eigraph_Xlo)/=6;
+    retp("eigraph: _EIgraph_Xlo must be a numeric scalar");
+  endif;
+  if rows(_eigraph_Xhi)/=1 or cols(_eigraph_Xhi)/=1 or type(_eigraph_Xhi)/=6;
+    retp("eigraph: _EIgraph_Xhi must be a numeric scalar");
+  endif;
+  if _eigraph_Xhi<=_eigraph_Xlo;
+    retp("eigraph: _EIgraph_Xlo must be less than _EIgraph_Xhi");
+  endif;
+  
+  if rows(_eigraph_Tlo)/=1 or cols(_eigraph_Tlo)/=1 or type(_eigraph_Tlo)/=6;
+    retp("eigraph: _EIgraph_Tlo must be a numeric scalar");
+  endif;
+  if rows(_eigraph_Thi)/=1 or cols(_eigraph_Thi)/=1 or type(_eigraph_Thi)/=6;
+    retp("eigraph: _EIgraph_Thi must be a numeric scalar");
+  endif;
+  if _eigraph_Thi<=_eigraph_Tlo;
+    retp("eigraph: _EIgraph_Tlo must be less than _EIgraph_Thi");
+  endif;
+  
+  if type(_eigraph_x)/=13;
+    retp("eigraph: _EIgraph_x must be a string");
+  endif;
+  
+  if type(_eigraph_t)/=13;
+    retp("eigraph: _EIgraph_t must be a string");
+  endif;
+  
+  if type(_eigraph_bb)/=13;
+    retp("eigraph: _EIgraph_bb must be a string");
+  endif;
+
+  if type(_eigraph_bw)/=13;
+    retp("eigraph: _EIgraph_bw must be a string");
+  endif;
+  
+  if rows(_eigraph_bblo)/=1 or cols(_eigraph_bblo)/=1 
+    or type(_eigraph_bblo)/=6;
+    retp("eigraph: _EIgraph_bbLo must be a numeric scalar");
+  endif;
+  if rows(_eigraph_bbhi)/=1 or cols(_eigraph_bbhi)/=1 
+    or type(_eigraph_bbhi)/=6;
+    retp("eigraph: _EIgraph_bbHi must be a numeric scalar");
+  endif;
+  if _eigraph_bbhi<=_eigraph_bblo;
+    retp("eigraph: _EIgraph_bbHi must be greater than _EIgraph_bblo");
+  endif;
+  
+  if rows(_eigraph_bwlo)/=1 or cols(_eigraph_bwlo)/=1 
+    or type(_eigraph_bwlo)/=6;
+    retp("eigraph: _EIgraph_bwLo must be a numeric scalar");
+  endif;
+  if rows(_eigraph_bwhi)/=1 or cols(_eigraph_bwhi)/=1 
+    or type(_eigraph_bwhi)/=6;
+    retp("eigraph: _EIgraph_bwHi must be a numeric scalar");
+  endif;
+  if _eigraph_bwhi<=_eigraph_bwlo;
+    retp("eigraph: _EIgraph_bwHi must be greater than _EIgraph_bwlo");
+  endif;
+
+  if not(scalone(_eigraph_loess) or scalzero(_eigraph_loess));
+    retp("eigraph: _EIgraph_loess must be scalar 1 or 0");
+  endif;
+
+  if rows(_eigraph_thick)/=1 or cols(_eigraph_thick)/=1
+    or type(_eigraph_thick)/=6;
+    retp("eigraph: _EIgraph_thick must be scalar numeric");
+  endif;
+
+  if rows(_eigraph_bvsmth)/=1 or cols(_eigraph_bvsmth)/=1
+    or type(_eigraph_bvsmth)/=6;
+    retp("eigraph: _EIgraph_bvsmth must be scalar numeric");
+  endif;
+  if _eigraph_bvsmth<=0;
+    retp("eigraph: _eigraph_bvsmth must be positive");
+  endif;
+  
+  if rows(_eigraph_eval)/=1 or cols(_eigraph_eval)/=1
+    or type(_eigraph_eval)/=6;
+    retp("eigraph: _EIgraph_eval must be scalar numeric");
+  endif;
+  if _eigraph_eval<1;
+    retp("eigraph: _eigraph_eval must be > 1");
+  endif;
+  
+  if not(scalone(_eigraph_dbuf) or scalzero(_eigraph_dbuf));
+    retp("eigraph: _EIgraph_dbuf must be scalar 1 or 0");
+  endif;
+
+  if rows(_eigraph_smpl)/=1 or cols(_eigraph_smpl)/=1
+    or type(_eigraph_smpl)/=6;
+    retp("eigraph: _EIgraph_smpl must be scalar numeric");
+  endif;
+  if _eigraph_smpl<=0 or _eigraph_smpl>1;
+    retp("eigraph: _eigraph_smpl must be within the interval (0,1]");
+  endif;
+
+  if type(_tomogClr)/=6 or cols(_tomogClr)/=1;
+    retp("eigraph: _tomogClr must be a numeric vector");
+  endif;
+  
+  if type(_tomogPct)/=6 or cols(_tomogPct)/=1;
+    retp("eigraph: _tomogPct must be a numeric vector");
+  endif;
+  if sumc(_tomogPct.<0)>0 or sumc(_tomogPct.>1)>0;
+    retp("eigraph: elements of _tomogPct must be between 0 and 1");
+  endif;
+  if rows(_tomogClr)<rows(_tomogPct);
+    retp("eigraph: _tomogClr must have as many or more rows than _tomogPct");
+  endif;
+
+  if not(ismiss(_eigraph_pro));
+    a=eiread(dbuf,"ebounds");
+    if rows(_eigraph_pro)/=rows(a);
+      "rows(_eigraph_pro) must equal rows(ebounds) from eiread";
+    endif;
+    if cols(_eigraph_pro)/=cols(a);
+      "cols(_eigraph_pro) must equal cols(ebounds) from eiread";
+    endif;
+    if sumc(_eigraph_pro[.,2].<=_eigraph_pro[.,1])>0;
+      "In _eigraph_pro, Column 2 must be > Column 1";
+    endif;
+  endif;
+    
+  retp("");
+endp;
+
+/*
+** profileit(dbuf)
+**
+** Procedure to plot log-posterior function by each parameter, 
+** holding other parameter values at their MLE's.  Parameters
+** are plotted with range eiread(dbuf,"Ebounds") (CML bounds)
+** 
+** Input: dbuf = EI data buffer
+**        R    = 0 for log-posterior, 1 for just the R (cdfbvn) function
+** 
+** Outputs: Graphs for each Parameter.
+**
+** Global:  _eigraph_pro, replaces eiread(dbuf,"ebounds") for plotting
+**          default={.}, use ebounds.
+** 
+** Error Checking: Generates message if infinities are encountered, 
+** pushes negative (positive) infinities down (up) to -60,000 (60,000)
+**
+*/
+proc 0=profileit(dbuf,r);
+  local data,phi,vc,ebounds,v,lik,parms,rr,size,vect,pnames,in,
+  numpgs,rs,re,i,rawlik,min,max,x,zb,zw;
+  clearg _Erho,_Esigma,_Ebeta,_EalphaB,_EalphaW,_Eeta;
+  _Erho=eiread(dbuf,"_Erho");
+  _Esigma=eiread(dbuf,"_Esigma");
+  _Ebeta=eiread(dbuf,"_Ebeta");
+  _EalphaB=eiread(dbuf,"_EalphaB");
+  _EalphaW=eiread(dbuf,"_EalphaW");
+  _Eeta=eiread(dbuf,"_Eeta");
+  _EnumTol=eiread(dbuf,"_Enumtol");
+  Zb=eiread(dbuf,"Zb");
+  Zw=eiread(dbuf,"Zw");
+  x=eiread(dbuf,"x");
+  
+  data=eiread(dbuf,"DataSet");
+  phi=eiread(dbuf,"phi");
+  vc=eiread(dbuf,"VCphi");
+  pnames=eiread(dbuf,"ParNames");
+  v=diag(vc);
+  rr=rows(phi);
+  
+  if ismiss(_eigraph_pro);
+    ebounds=eiread(dbuf,"Ebounds");
+    min=ebounds[.,1];
+    max=ebounds[.,2];
+  else;  
+    min=_eigraph_pro[.,1];
+    max=_eigraph_pro[.,2];
+  endif;
+  
+  numpgs=ceil((rr-2)/9);	@number of pages of graphs@	
+  for k (1,numpgs,1);
+    "graphing page" k;
+    rs=9*(k-1)+1;
+    if k==numpgs;
+      re=rr-2;
+    else;
+      re=9*k;
+    endif;
+    
+    begwind;
+    window(3,3,0);
+    for i (rs,re,1);
+      vect=seqas(min[i],max[i],100);
+      size=rows(vect);
+      lik=ones(size,1);    
+      for j(1,size,1);
+        if i==1;
+	  parms=vect[j]|phi[i+1:rr];
+	else;
+	  parms=phi[1:i-1]|vect[j]|phi[i+1:rr];
+	endif;
+	
+	if r==0;
+	  lik[j]=sumc(packr(eiloglik(parms,data)));
+	else;
+	  lik[j]=sumc(packr(lncdfbvnu(eirepar(parms,Zb,Zw,x))));  
+	endif;
+      endfor;
+  
+    if i==1;
+      setwind(i);
+    else;
+      nextwind;
+    endif;
+        graphset;
+	graphgk;
+	pline(phi[i],-1e10,phi[i],maxc(lik));
+	ylabel("Log-posterior");
+	xlabel(pnames[i]);
+	xy(vect,lik);
+    if i==re;
+      endwind;
+    endif;
+
+  endfor;
+  endfor;
+endp;
