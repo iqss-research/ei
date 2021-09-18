@@ -1,0 +1,39 @@
+Package: ei
+Version: 1.3.4
+Date: 2021-08-27
+Title: Ecological Inference
+Description: Software accompanying Gary King's book: A Solution to the Ecological Inference Problem. (1997). Princeton University Press. ISBN 978-0691012407.
+Authors@R: c(
+    person("Gary", "King", email = "king@harvard.edu", role = "aut",
+           comment = c(ORCID = "0000-0002-5327-7631")),
+    person("Molly", "Roberts", email = "roberts8@fas.harvard.edu", role = c("cre", "aut"))
+    )
+Maintainer: James Honaker <zelig.zee@gmail.com>
+Depends: R (>= 2.5.0), eiPack
+Imports:
+    mvtnorm,
+    msm,
+    tmvtnorm,
+    ellipse,
+    plotrix,
+    MASS,
+    ucminf,
+    cubature,
+    mnormt,
+    sp,
+    ggplot2,
+    patchwork,
+    tibble,
+    dplyr,
+    latex2exp
+Suggests:
+    rmarkdown,
+    knitr,
+    rgl,
+    testthat (>= 3.0.0)
+License: GPL (>= 2)
+URL: http://gking.harvard.edu/eiR, http://gking.harvard.edu/eicamera/kinroot.html
+RoxygenNote: 7.1.1
+Encoding: UTF-8
+VignetteBuilder: knitr
+Config/testthat/edition: 3

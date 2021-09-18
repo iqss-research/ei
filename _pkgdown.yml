@@ -1,0 +1,12 @@
+template:
+  params:
+    bootswatch: cosmo
+reference:
+- title: "Functions"
+  desc: "ei Functions"
+- contents:
+  - lacks_concepts(c("data"))
+- title: "Data"
+  desc: "Included Data"
+- contents:
+  - has_concept("data")
