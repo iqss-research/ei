@@ -62,7 +62,7 @@ Replace base R plots with ggplots
 
 ### Testing
 
-- [ ] bounds1
+- [x] bounds1
 - [x] ei
 - [ ] ei.sim
 - [ ] eiread
