@@ -43,7 +43,6 @@ plot_tomogd <- function(x, t, n, title, lci = TRUE) {
   return(p)
 }
 
-
 #' @export
 plot_tomogl <- function(ei.object, lci = TRUE) {
   x <- ei.object$x
@@ -81,19 +80,6 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
   }
 
   .tomog3(bb, bw, sb, sw, rho)
-}
-
-.tomog3 <- function(bb, bw, sb, sw, rho) {
-  lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-    scale = c(sb, sw), centre = c(mean(bb), mean(bw)), level = .914
-  ),
-  col = "blue", lwd = 4
-  )
-  lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-    scale = c(sb, sw),
-    centre = c(mean(bb), mean(bw)), level = .35
-  ), col = "red", lwd = 4)
-  points(mean(bb), mean(bw), col = "pink", pch = 15)
 }
 
 
@@ -157,6 +143,7 @@ plot_tomog80CI <- function(ei.object) {
 
 #' @export
 plot_tomog95CI <- function() {
+  check_object(ei.object, "betabs")
 
 }
 
