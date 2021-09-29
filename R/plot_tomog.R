@@ -5,7 +5,7 @@ plot_tomog <- function(ei.object, title = "Tomography Plot with the Data", lci =
 
 plot_tomogd <- function(x, t, n, title, lci = TRUE) {
   # Take out the bounds
-  bounds <- bounds1(x, t, n)
+  bounds <- bounds(x, t, n)
 
   tb <- tibble::tibble(
     b_bounds = cbind(bounds[, 1], bounds[, 2]),
@@ -148,8 +148,15 @@ plot_tomog95CI <- function(ei.object) {
 
 
 #' @export
-plot_tomogE <- function() {
-
+plot_tomogE <- function(ei.object) {
+  points <- tomogE(ei.object)
+  plot_tomog(ei.object, title = "") +
+    geom_point(
+      data = points,
+      aes(x = betabm, y = betawm),
+      colour = "red"
+    ) -> p
+  return(p)
 }
 
 
