@@ -21,6 +21,8 @@ plot_tomogd <- function(x, t, n, title, lci = TRUE) {
     ggplot2::guides(color = "none") +
     ggplot2::coord_fixed() +
     ggplot2::labs(x = latex2exp::TeX("$\\beta_B$"), y = latex2exp::TeX("$\\beta_W$")) +
+    ggplot2::scale_x_continuous(expand = c(0, 0.01)) +
+    ggplot2::scale_y_continuous(expand = c(0, 0)) +
     theme_ei()
 
   if (lci) {
@@ -30,7 +32,7 @@ plot_tomogd <- function(x, t, n, title, lci = TRUE) {
         xend = b_bounds[, 2], yend = w_bounds[, 2],
         color = hcl(h = 30, c = 100, l = scale)
       )) +
-      ggplot2::scale_color_manual(values = hcl(h = 30, c = 100, l = scale))
+      ggplot2::scale_color_manual(values = hcl(h = 30, c = 100, l = tb$scale))
   } else {
     p <- p +
       ggplot2::geom_segment(aes(
@@ -40,6 +42,7 @@ plot_tomogd <- function(x, t, n, title, lci = TRUE) {
       color = "yellow"
       )
   }
+
   return(p)
 }
 
@@ -104,7 +107,7 @@ plot_tomog80CI <- function(ei.object) {
 
   tomo_res_bounds %>%
     mutate(length = sqrt((b_end - b_start)^2 + (w_end - w_start)^2)) %>%
-    mutate(inv_length = 1 / length) -> tomo_res_bounds
+    mutate(scale = ((length - min(length)) / (max(length) - min(length))) * 100) -> tomo_res_bounds
 
   b <- res_tomog80CI$betabcd %>% t()
   w <- res_tomog80CI$betawcd
@@ -119,14 +122,15 @@ plot_tomog80CI <- function(ei.object) {
 
   tomo_res_CI %>%
     mutate(length = sqrt((b_end - b_start)^2 + (w_end - w_start)^2)) %>%
-    mutate(inv_length = 1 / length) -> tomo_res_CI
+    mutate(scale = ((length - min(length)) / (max(length) - min(length))) * 100) -> tomo_res_CI
 
   ggplot() +
     geom_segment(
       data = tomo_res_bounds,
-      aes(x = b_start, y = w_start, xend = b_end, yend = w_end, alpha = inv_length),
+      aes(x = b_start, y = w_start, xend = b_end, yend = w_end, color = hcl(h = 30, c = 100, l = scale)),
       show.legend = FALSE
     ) +
+    scale_color_manual(values = hcl(h = 30, c = 100, l = tb$scale)) +
     # geom_segment(
     #   data = tomo_res_CI,
     #   aes(x = b_start, y = w_start, xend = b_end, yend = w_end),
