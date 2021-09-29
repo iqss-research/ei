@@ -14,18 +14,38 @@ tomog80CI <- function(ei.object) {
     n <- ei.object$n[ok]
     betabs <- ei.object$betabs[ok, ]
     betaws <- ei.object$betaws[ok, ]
-    # .tomogd(x,t,n,"Tomography Plot with 80% CIs",lci=F)
-    # Create confidence intervales
     betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(.1, .9)))
     betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(.1, .9)))
     n <- dim(betabcd)[2]
-    # for(i in 1:n){
-    # lines(betabcd[,i], sort(betawcd[,i],decreasing=T), col="red",
-    # lwd=3)
-    # }
     return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
   }
 }
+
+
+tomog95CI <- function(ei.object) {
+  if (!("betabs" %in% names(ei.object))) {
+    message("Error: This plot function requires an ei.sim object.")
+  }
+  if ("betabs" %in% names(ei.object)) {
+    ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
+    x <- ei.object$x[ok]
+    t <- ei.object$t[ok]
+    n <- ei.object$n[ok]
+    betabs <- ei.object$betabs[ok, ]
+    betaws <- ei.object$betaws[ok, ]
+    betabcd <- apply(betabs, 1, function(x) {
+      quantile(x,
+               probs = c(.025, .975)
+      )
+    })
+    betawcd <- apply(betaws, 1, function(x) {
+      quantile(x, probs = c(.025, .975))
+    })
+    n <- dim(betabcd)[2]
+    return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
+  }
+}
+
 
 tomogd <- function(x, t, n, title, lci = T) {
   bounds <- bounds1(x, t, n)
