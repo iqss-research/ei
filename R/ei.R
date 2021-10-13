@@ -131,6 +131,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
           ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, truth = truth
         )
       })
+
       dbuf.sim <- ei.sim(dbuf)
       return(dbuf.sim)
     }
@@ -173,9 +174,15 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   Zw <- as.matrix(Zw)
 
   # If there are no covariates, run simplest R function
-  if (dim(Zb)[1] == 1 & Zb[1, 1] == 1 & dim(Zw)[1] == 1 & Zw[1, 1] == 1) Rfun <- 5
-  if (dim(Zb)[1] == 1 & Zb[1, 1] == 1) Zb <- as.matrix(rep(1, length(x)))
-  if (dim(Zw)[1] == 1 & Zw[1, 1] == 1) Zw <- as.matrix(rep(1, length(x)))
+  if (dim(Zb)[1] == 1 & Zb[1, 1] == 1 & dim(Zw)[1] == 1 & Zw[1, 1] == 1) {
+    Rfun <- 5
+  }
+  if (dim(Zb)[1] == 1 & Zb[1, 1] == 1) {
+    Zb <- as.matrix(rep(1, length(x)))
+  }
+  if (dim(Zw)[1] == 1 & Zw[1, 1] == 1) {
+    Zw <- as.matrix(rep(1, length(x)))
+  }
 
   # Extract the number of covariates
   numb <- dim(Zb)[2]
@@ -185,10 +192,19 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   start <- c(0, 0, -1.2, -1.2, 0, rep(0, numb + numw))
 
   message("Maximizing likelihood")
-  solution <- ucminf(start, like,
-    y = t, x = x, n = n, Zb = Zb,
-    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun, hessian = 3
+  #set.seed(1)
+  #solution <- ucminf(start, like,
+  #  y = t, x = x, n = n, Zb = Zb,
+  #  Zw = Zw, numb = numb, erho = erho, esigma = esigma,
+  #  ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun, hessian = 3
+  #)
+  #set.seed(1)
+  solution <- optim(start, like,
+                     y = t, x = x, n = n, Zb = Zb,
+                     Zw = Zw, numb = numb, erho = erho, esigma = esigma,
+                     ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
+                     hessian = TRUE,
+                     method = 'BFGS'
   )
   # This didn't work
   # solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb,
