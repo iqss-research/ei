@@ -16,18 +16,19 @@ test_that("`ei()` 2x2", {
   expect_equal(dbuf_summary$N, 50)
   expect_equal(dbuf_summary$Resamp, 39)
 
-  expect_equal(dbuf_summary[[6]][1, 1], 1.581521, tolerance = 0.00001)
-  expect_equal(dbuf_summary[[6]][2, 5], 1.124315, tolerance = 0.00001)
+  expect_equal(dbuf_summary[[6]][1, 1], 1.227206, tolerance = 0.001)
+  expect_equal(dbuf_summary[[6]][2, 5], 0.6443656, tolerance = 0.001)
 
-  expect_equal(dbuf_summary[[7]][2], 1.397145, tolerance = 0.00001)
+  expect_equal(dbuf_summary[[7]][2], 1.780724, tolerance = 0.001)
 
-  expect_equal(dbuf_summary[[8]][3], 0.1889316, tolerance = 0.00001)
+  expect_equal(dbuf_summary[[8]][3], 0.1969008, tolerance = 0.1)
+  expect_lte(dbuf_summary[[8]][3] - 0.1969008, 0.01)
 
   expect_equal(dbuf_summary[[9]][1, 1], 0.2152043, tolerance = 0.00001)
   expect_equal(dbuf_summary[[9]][2, 2], 0.9507709, tolerance = 0.00001)
 
-  expect_equal(dbuf_summary[[10]][1, 1], 0.7029558, tolerance = 0.00001)
-  expect_equal(dbuf_summary[[10]][2, 2], 0.01764645, tolerance = 0.00001)
+  expect_equal(dbuf_summary[[10]][1, 1], 0.7756189, tolerance = 0.003)
+  expect_equal(dbuf_summary[[10]][2, 2], 0.03605435, tolerance = 0.003)
 })
 
 test_that("`ei()` RxC", {
