@@ -37,12 +37,13 @@ ei.sim <- function(ei.object) {
   precision <- ei.object$precision
   # Begin Importance Sampling
   cli::cli_progress_step("Beginning importance sampling.", spinner = TRUE)
+
   keep <- matrix(data = NA, ncol = (length(ei.object$phi)))
   resamp <- 0
   while (dim(keep)[1] < 100) {
     keep <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, 100, keep,
-      numb = numb, covs, erho, esigma,
-      ebeta, ealphab, ealphaw, Rfun
+                  numb = numb, covs, erho, esigma,
+                  ebeta, ealphab, ealphaw, Rfun
     )
     resamp <- resamp + 1
   }
@@ -60,8 +61,7 @@ ei.sim <- function(ei.object) {
   # Reparamterize
   Zb <- as.matrix(Zb)
   Zw <- as.matrix(Zw)
-  Bb0v <- as.matrix(Bb0v)
-  Bw0v <- as.matrix(Bw0v)
+
   mu1 <- mu[, 1] * (.25 + sd[, 1]^2) + .5 + t(as.matrix(apply(
     Zb, 2,
     function(x) x - mean(x)
@@ -137,8 +137,8 @@ ei.sim <- function(ei.object) {
       as.matrix(rep(1, dim(keep)[1])) %*% t(as.matrix(bounds[cT0, 3]))
   }
 
-  mbetab <- apply(betab, 1, mean)
-  mbetaw <- apply(betaw, 1, mean)
+  mbetab <- rowMeans(betab)
+  mbetaw <- rowMeans(betaw)
   sdbetab <- apply(betab, 1, sd)
   sdbetaw <- apply(betaw, 1, sd)
   output <- list(

@@ -6,13 +6,12 @@
 
 .samp <- function(t, x, n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
                   erho, esigma, ebeta, ealphab, ealphaw, Rfun) {
-  import1 <- NULL
 
   varcv2 <- solve(varcv) / 4
 
   draw <- rmvnorm(nsims, par[covs], varcv2)
-  varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv2, log = T)
+
+  phiv <- dmvnorm(draw, par[covs], varcv2, log = TRUE)
   zbmiss <- ifelse(covs[6] == FALSE, TRUE, FALSE)
   zwmiss <- ifelse(covs[(6 + numb)] == FALSE, TRUE, FALSE)
   if (zbmiss == TRUE & zwmiss == FALSE) {
@@ -24,15 +23,10 @@
   if (zbmiss == TRUE & zwmiss == TRUE) {
     draw <- cbind(draw, rep(1, nsims), rep(1, nsims))
   }
-  # for(i in 1:nsims){
-  # import1[i] <- -like(as.vector(draw[i,]),
-  # t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta,
-  # ealphab, ealphaw, Rfun) - phiv[i]
-  # }
 
   # Calculates importance ratio
-  import1 <- apply(as.matrix(1:nsims), 1, function(i) {
-    -like(as.vector(draw[i, ]), t, x, n, Zb, Zw,
+  import1 <- sapply(1:nsims, function(i) {
+    -like(draw[i, ], t, x, n, Zb, Zw,
       numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
     ) - phiv[i]
   })
@@ -44,8 +38,7 @@
   # print(mean(is.finite(ir)))
   tst <- ifelse(is.finite(ir), ir > runif(1, 0, 1), FALSE)
   # print(sum(tst))
-  keep <- rbind(keep, draw[tst, ])
-  return(keep)
+  rbind(keep, draw[tst, ])
 }
 
 # @sub -- indeces to create R for
