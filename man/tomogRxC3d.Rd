@@ -73,7 +73,6 @@ tomogRxC3d(formula, RxCdata,
   total = NULL, lci = TRUE, estimates = TRUE, ci = TRUE, transparency = .5,
   light = FALSE, rotate = FALSE
 )
-
 }
 \references{
 Gary King (1997). A Solution to the Ecological Inference

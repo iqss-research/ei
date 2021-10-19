@@ -9,7 +9,7 @@ For more information, see here: https://gking.harvard.edu/eir
 
 
 # EI Package TODO:
-Last Updated: 2021.09.04
+Last Updated: 2021.10.19
 
 ## General (Big) Comments:
 
@@ -32,6 +32,7 @@ Last Updated: 2021.09.04
 - [ ] .samp rewrite in Rcpp
 - [ ] Add `print.ei` for `"ei"` class objects
 - [ ] Allowing users to extract values used in the plot for customization
+- [ ] Rename functions that start with `.` and use `@noRd` tag instead
 
 ### Input check
 

@@ -41,8 +41,8 @@ ei.sim <- function(ei.object) {
   resamp <- 0
   while (dim(keep)[1] < 100) {
     keep <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, 100, keep,
-                  numb = numb, covs, erho, esigma,
-                  ebeta, ealphab, ealphaw, Rfun
+      numb = numb, covs, erho, esigma,
+      ebeta, ealphab, ealphaw, Rfun
     )
     resamp <- resamp + 1
   }
@@ -103,9 +103,9 @@ ei.sim <- function(ei.object) {
     out <- NULL
     for (j in 1:length(x[ok])) {
       out[ok][j] <- rtnorm(1,
-                           mean = mbb[ok][j], sd = s[ok][j],
-                           lower = bounds[ok, ][j, 1],
-                           upper = bounds[ok, ][j, 2]
+        mean = mbb[ok][j], sd = s[ok][j],
+        lower = bounds[ok, ][j, 1],
+        upper = bounds[ok, ][j, 2]
       )
     }
     out[wh] <- NA

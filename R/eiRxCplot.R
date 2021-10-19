@@ -14,7 +14,7 @@ eiRxCplot <- function(ei.object, random = FALSE, groups, groupnames = groups,
   wbounds <- cbind(bounds[, 4], bounds[, 3])
   bounds3 <- na.omit(bounds)
   unan <- sum(bounds3[, 1] == bounds3[, 2] & bounds3[, 1] == bounds3[, 3] &
-                bounds3[, 1] == bounds3[, 4] & bounds3[, 1] == 1)
+    bounds3[, 1] == bounds3[, 4] & bounds3[, 1] == 1)
   n <- dim(bounds)[1]
 
   plot(c(100, 200),
@@ -80,5 +80,6 @@ eiRxCplot <- function(ei.object, random = FALSE, groups, groupnames = groups,
   }
   # if (random==TRUE) text(.85,.97,paste("Unanimous",unan))
   legend(legendpos[1], legendpos[2], c(groupnames, "Mixed", "CI of Estimates"),
-         col = c(cols, "black", "yellow"), lwd = 1)
+    col = c(cols, "black", "yellow"), lwd = 1
+  )
 }

@@ -84,7 +84,6 @@
 #' form <- t ~ x
 #' dbuf <- ei(form, total = "n", data = sample_ei)
 #' summary(dbuf)
-#'
 ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
                erho = .5, esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
                truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
@@ -102,9 +101,11 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   if (length(dv) == 1) {
     cli::cli_progress_step("Running 2x2 ei")
     if (simulate == FALSE) {
-      dbuf <- ei.estimate(t, x, n, id = id, data = data, Zb = Zb, Zw = Zw,
-                          erho = erho, esigma = esigma, ebeta = ebeta,
-                          ealphab = ealphab, ealphaw = ealphaw, truth = truth)
+      dbuf <- ei.estimate(t, x, n,
+        id = id, data = data, Zb = Zb, Zw = Zw,
+        erho = erho, esigma = esigma, ebeta = ebeta,
+        ealphab = ealphab, ealphaw = ealphaw, truth = truth
+      )
       return(dbuf)
     }
     if (simulate == TRUE) {
@@ -139,14 +140,15 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   if (length(dv) > 1) {
     print("Running eiRxC")
     # If the table is RxC use eiRxC
-    dbuf <- ei.MD.bayes(formula, data = data, total = total, covariate = covariate,
-                        lambda1 = lambda1, lambda2 = lambda2,
-                        covariate.prior.list = covariate.prior.list,
-                        tune.list = tune.list, start.list = start.list,
-                        sample = sample, thin = thin, burnin = burnin,
-                        verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
-                        usrfun = usrfun
-                        )
+    dbuf <- ei.MD.bayes(formula,
+      data = data, total = total, covariate = covariate,
+      lambda1 = lambda1, lambda2 = lambda2,
+      covariate.prior.list = covariate.prior.list,
+      tune.list = tune.list, start.list = start.list,
+      sample = sample, thin = thin, burnin = burnin,
+      verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
+      usrfun = usrfun
+    )
     dbuf$data <- data
     dbuf$total <- n
     dbuf$formula <- formula
@@ -191,19 +193,19 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   start <- c(0, 0, -1.2, -1.2, 0, rep(0, numb + numw))
 
   cli::cli_alert_info("Maximizing likelihood")
-  #set.seed(1)
-  #solution <- ucminf(start, like,
+  # set.seed(1)
+  # solution <- ucminf(start, like,
   #  y = t, x = x, n = n, Zb = Zb,
   #  Zw = Zw, numb = numb, erho = erho, esigma = esigma,
   #  ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun, hessian = 3
-  #)
-  #set.seed(1)
+  # )
+  # set.seed(1)
   solution <- optim(start, like,
-                     y = t, x = x, n = n, Zb = Zb,
-                     Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-                     ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
-                     hessian = TRUE,
-                     method = 'BFGS'
+    y = t, x = x, n = n, Zb = Zb,
+    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
+    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
+    hessian = TRUE,
+    method = "BFGS"
   )
   # This didn't work
   # solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb,

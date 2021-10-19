@@ -10,29 +10,34 @@ plot_tomogd <- function(x, t, n, title, lci = TRUE) {
     b_bounds = cbind(bounds[, 1], bounds[, 2]),
     w_bounds = cbind(bounds[, 4], bounds[, 3]),
     length = sqrt(abs(b_bounds[, 1] - b_bounds[, 2])^2 +
-                    abs(w_bounds[, 1] - w_bounds[, 2])^2),
+      abs(w_bounds[, 1] - w_bounds[, 2])^2),
     scale = ((length - min(length)) / (max(length) - min(length))) * 100
   )
 
   # Plot
   p <- tb %>%
     ggplot2::ggplot() +
-    ggplot2::guides(color = 'none') +
+    ggplot2::guides(color = "none") +
     ggplot2::coord_fixed() +
-    ggplot2::labs(x = latex2exp::TeX('$\\beta_B$'), y = latex2exp::TeX('$\\beta_W$')) +
+    ggplot2::labs(x = latex2exp::TeX("$\\beta_B$"), y = latex2exp::TeX("$\\beta_W$")) +
     theme_ei()
 
   if (lci) {
     p <- p +
-      ggplot2::geom_segment(aes(x = b_bounds[, 1], y = w_bounds[, 1],
-                                xend = b_bounds[, 2], yend = w_bounds[, 2],
-                                color = hcl(h = 30, c = 100, l = scale))) +
+      ggplot2::geom_segment(aes(
+        x = b_bounds[, 1], y = w_bounds[, 1],
+        xend = b_bounds[, 2], yend = w_bounds[, 2],
+        color = hcl(h = 30, c = 100, l = scale)
+      )) +
       ggplot2::scale_color_manual(values = hcl(h = 30, c = 100, l = scale))
   } else {
     p <- p +
-      ggplot2::geom_segment(aes(x = b_bounds[, 1], y = w_bounds[, 1],
-                                xend = b_bounds[, 2], yend = w_bounds[, 2]),
-                            color = 'yellow')
+      ggplot2::geom_segment(aes(
+        x = b_bounds[, 1], y = w_bounds[, 1],
+        xend = b_bounds[, 2], yend = w_bounds[, 2]
+      ),
+      color = "yellow"
+      )
   }
 
   p
@@ -64,12 +69,12 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
   rho <- vars[2 * length(x) + 3]
   .tomog3 <- function(bb, bw, sb, sw, rho) {
     lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                  scale = c(sb, sw),
-                  centre = c(mean(bb), mean(bw)), level = .914
+      scale = c(sb, sw),
+      centre = c(mean(bb), mean(bw)), level = .914
     ), col = "blue", lwd = 4)
     lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                  scale = c(sb, sw),
-                  centre = c(mean(bb), mean(bw)), level = .35
+      scale = c(sb, sw),
+      centre = c(mean(bb), mean(bw)), level = .35
     ), col = "red", lwd = 4)
     points(mean(bb), mean(bw), col = "pink", pch = 15)
   }
@@ -79,13 +84,13 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
 
 .tomog3 <- function(bb, bw, sb, sw, rho) {
   lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                scale = c(sb, sw), centre = c(mean(bb), mean(bw)), level = .914
+    scale = c(sb, sw), centre = c(mean(bb), mean(bw)), level = .914
   ),
   col = "blue", lwd = 4
   )
   lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                scale = c(sb, sw),
-                centre = c(mean(bb), mean(bw)), level = .35
+    scale = c(sb, sw),
+    centre = c(mean(bb), mean(bw)), level = .35
   ), col = "red", lwd = 4)
   points(mean(bb), mean(bw), col = "pink", pch = 15)
 }
