@@ -74,9 +74,9 @@
 #' @return TODO
 #'
 #' @examples
-#' data(sample)
+#' data(sample_ei)
 #' formula <- t ~ x
-#' dbuf <- ei(formula = formula, total = "n", data = sample)
+#' dbuf <- ei(formula = formula, total = "n", data = sample_ei)
 #' plot(dbuf, "tomog")
 #' plot(dbuf, "tomog", "betab", "betaw", "xtfit")
 plot.ei <- function(x, ...) {

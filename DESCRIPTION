@@ -9,7 +9,9 @@ Authors@R: c(
     person("Molly", "Roberts", email = "roberts8@fas.harvard.edu", role = c("cre", "aut"))
     )
 Maintainer: James Honaker <zelig.zee@gmail.com>
-Depends: R (>= 2.5.0), eiPack
+Depends: 
+    R (>= 2.10),
+    eiPack
 Imports:
     mvtnorm,
     msm,
@@ -33,7 +35,8 @@ Suggests:
     testthat (>= 3.0.0)
 License: GPL (>= 2)
 URL: http://gking.harvard.edu/eiR, http://gking.harvard.edu/eicamera/kinroot.html
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+LazyData: true
