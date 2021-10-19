@@ -114,8 +114,7 @@
   }
   ## THIS VERSION RELIES ON mvnprd FROM PACKAGE mvtnormpcs WHICH IS NOW ARCHIVED
   if (Rfun == 4) {
-    print("Option Rfun==4 is no longer possible")
-    stop()
+    cli::cli_abort("Option Rfun==4 is no longer possible")
     ##  for(i in 1:length(x[sub])){
     ##    qi <- mvnprd(A=upper[i,], B=lower[i,],
     ##                 BPD=c(rho,rho),INF=rep(2,2))$PROB
@@ -128,16 +127,11 @@
   }
 
   if (Rfun == 5) {
-    lower <- lower[1, ]
-    upper <- upper[1, ]
-    # qi <- pmvnorm(lower=lower, upper=upper, mean=mean, corr=corr)
-    qi <- sadmvn(lower = lower, upper = upper, mean = mean, varcov = corr)
-    qi <- ifelse(qi < 1 * 10^-14, 1 * 10^-14, qi)
+    qi <- sadmvn(lower = lower[1, ], upper = upper[1, ], mean = mean, varcov = corr)
+    qi[qi < 1e-14] <- 1e-14
     qi <- log(qi)
-    # if(is.na(qi)|abs(qi)==Inf) print ("R not real")
-    qi <- ifelse((is.na(qi) | abs(qi) == Inf), 999, qi)
-    out <- rep(qi, length(x[sub]))
-    return(out)
+    qi[is.na(qi) | abs(qi) == Inf] <- 999
+    return(rep(qi, length(x[sub])))
   }
 }
 
