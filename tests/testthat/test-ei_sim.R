@@ -24,6 +24,6 @@ test_that("ei.sim() works", {
     )
   )
 
-  expect_equal(mean(sims$sbetab), 0.1105136, tolerance = 0.001)
-  expect_equal(mean(sims$sbetaw), 0.05280262, tolerance = 0.001)
+  expect_equal(mean(sims$sbetab), 0.1142062, tolerance = 0.001)
+  expect_equal(mean(sims$sbetaw), 0.05460066, tolerance = 0.001)
 })
