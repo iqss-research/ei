@@ -34,8 +34,7 @@
   import1 <- apply(as.matrix(1:nsims), 1, function(i) {
     -like(as.vector(draw[i, ]), t, x, n, Zb, Zw,
       numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
-    )
-    -phiv[i]
+    ) - phiv[i]
   })
 
   ok <- !is.nan(import1)
@@ -149,57 +148,6 @@
   }
 }
 
-
-
-# @par - solution to likelihood maximization
-# @numb - number of covariates for bb
-# @covs - number of total parameters to estimate
-# @all the rest in documentation
-
-# Samp implements importance sampling
-
-.samp <- function(t, x, n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
-                  erho, esigma, ebeta, ealphab, ealphaw, Rfun) {
-  import1 <- NULL
-  varcv2 <- solve(varcv) / 4
-  draw <- rmvnorm(nsims, par[covs], varcv2)
-  varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv2, log = T)
-  # print("samp")
-  zbmiss <- ifelse(covs[6] == FALSE, TRUE, FALSE)
-  zwmiss <- ifelse(covs[(6 + numb)] == FALSE, TRUE, FALSE)
-  if (zbmiss == TRUE & zwmiss == FALSE) {
-    draw <- cbind(draw[, 1:5], rep(1, nsims), draw[, (5 + numb):sum(covs)])
-  }
-  if (zbmiss == FALSE & zwmiss == TRUE) {
-    draw <- cbind(draw, rep(1, nsims))
-  }
-  if (zbmiss == TRUE & zwmiss == TRUE) {
-    draw <- cbind(draw, rep(1, nsims), rep(1, nsims))
-  }
-  # for(i in 1:nsims){
-  # import1[i] <- -like(as.vector(draw[i,]),
-  # t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta,
-  # ealphab, ealphaw, Rfun) - phiv[i]
-  # }
-
-  # Calculates importance ratio
-  import1 <- apply(as.matrix(1:nsims), 1, function(i) {
-    -like(as.vector(draw[i, ]), t, x, n, Zb, Zw,
-      numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
-    )
-    -phiv[i]
-  })
-  ok <- !is.nan(import1)
-  lnir <- import1 - max(import1[ok])
-  ir <- NA
-  ir[ok] <- exp(lnir[ok])
-  # print(mean(is.finite(ir)))
-  tst <- ifelse(is.finite(ir), ir > runif(1, 0, 1), FALSE)
-  # print(sum(tst))
-  keep <- rbind(keep, draw[tst, ])
-  return(keep)
-}
 
 # @All arguments are values on the untruncated scale
 # This function reparameterizes to the truncated scale
