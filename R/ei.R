@@ -100,8 +100,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   id <- as.character(id)
 
   if (length(dv) == 1) {
-    print("Running 2x2 ei")
-
+    cli::cli_progress_step("Running 2x2 ei")
     if (simulate == FALSE) {
       dbuf <- ei.estimate(t, x, n, id = id, data = data, Zb = Zb, Zw = Zw,
                           erho = erho, esigma = esigma, ebeta = ebeta,
@@ -131,7 +130,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
           ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, truth = truth
         )
       })
-
+      cli::cli_progress_done()
       dbuf.sim <- ei.sim(dbuf)
       return(dbuf.sim)
     }
@@ -191,7 +190,7 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   # Starting values
   start <- c(0, 0, -1.2, -1.2, 0, rep(0, numb + numw))
 
-  message("Maximizing likelihood")
+  cli::cli_alert_info("Maximizing likelihood")
   #set.seed(1)
   #solution <- ucminf(start, like,
   #  y = t, x = x, n = n, Zb = Zb,

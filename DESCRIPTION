@@ -27,7 +27,8 @@ Imports:
     patchwork,
     tibble,
     dplyr,
-    latex2exp
+    latex2exp,
+    cli
 Suggests:
     rmarkdown,
     knitr,
