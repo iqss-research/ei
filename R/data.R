@@ -34,10 +34,6 @@ NULL
 #' @keywords datasets
 NULL
 
-
-
-
-
 #' Voter Transitions
 #'
 #' Aggregated data from 289 precincts in Fulton County, Georgia.  The variable
@@ -131,7 +127,7 @@ NULL
 #' A description for this dataset
 #'
 #'
-#' @name sample
+#' @name sample_ei
 #' @concept data
 #' @format A vector containing 141 observations.
 #' @references Gary King (1997). \emph{A Solution to the Ecological Inference

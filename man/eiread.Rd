@@ -46,9 +46,9 @@ TODO
 requested by the user.
 }
 \examples{
-data(sample)
+data(sample_ei)
 formula <- t ~ x
-dbuf <- ei(formula = formula, total = "n", data = sample)
+dbuf <- ei(formula = formula, total = "n", data = sample_ei)
 eiread(dbuf, "phi")
 eiread(dbuf, "betab", "betaw")
 

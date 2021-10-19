@@ -136,9 +136,9 @@ numerically using \code{summary(ei.object)}.  Quantities of interest can be
 calculated using \code{eiread(ei.object)}.
 }
 \examples{
-data(sample)
+data(sample_ei)
 form <- t ~ x
-dbuf <- ei(form, total = "n", data = sample)
+dbuf <- ei(form, total = "n", data = sample_ei)
 summary(dbuf)
 
 }

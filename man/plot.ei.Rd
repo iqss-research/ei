@@ -78,9 +78,9 @@ color of the line is a function of the length of the tomography line.  This
 can be passed as an argument and is used for ``tomogD'' and ``tomog'' plots.
 }
 \examples{
-data(sample)
+data(sample_ei)
 formula <- t ~ x
-dbuf <- ei(formula = formula, total = "n", data = sample)
+dbuf <- ei(formula = formula, total = "n", data = sample_ei)
 plot(dbuf, "tomog")
 plot(dbuf, "tomog", "betab", "betaw", "xtfit")
 }

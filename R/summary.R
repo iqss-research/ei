@@ -15,9 +15,9 @@
 #' Problem.  Princeton: Princeton University Press.
 #' @examples
 #'
-#' data(sample)
+#' data(sample_ei)
 #' formula <- t ~ x
-#' dbuf <- ei(formula = formula, total = "n", data = sample)
+#' dbuf <- ei(formula = formula, total = "n", data = sample_ei)
 #' print(summary(dbuf))
 summary.ei <- function(object, ...) {
   if ("psi" %in% names(object)) {
