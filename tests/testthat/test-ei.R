@@ -53,3 +53,16 @@ test_that("`ei()` RxC", {
   expect_equal(as.numeric(out_summary$statistics[1]), 0.4159187, tolerance = 0.00001)
   expect_equal(as.numeric(out_summary$statistics[3]), 0.001258285, tolerance = 0.00001)
 })
+
+test_that("`ei.estimate()` runs", {
+  suppressMessages({
+    dbuf <- ei(formula = t ~ x, total = "n", data = matproii[1:50, ], simulate = FALSE)
+  })
+
+  expect_equal(names(dbuf), c(
+    "phi", "hessian", "hessianC", "erho",
+    "esigma", "ebeta", "ealphab", "ealphaw", "numb",
+    "x", "t", "n", "Zb", "Zw",
+    "truth", "precision", "covs", "Rfun", "id"
+  ))
+})

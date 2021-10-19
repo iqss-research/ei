@@ -193,13 +193,7 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   start <- c(0, 0, -1.2, -1.2, 0, rep(0, numb + numw))
 
   cli::cli_alert_info("Maximizing likelihood")
-  # set.seed(1)
-  # solution <- ucminf(start, like,
-  #  y = t, x = x, n = n, Zb = Zb,
-  #  Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-  #  ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun, hessian = 3
-  # )
-  # set.seed(1)
+
   solution <- optim(start, like,
     y = t, x = x, n = n, Zb = Zb,
     Zw = Zw, numb = numb, erho = erho, esigma = esigma,
@@ -207,46 +201,21 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
     hessian = TRUE,
     method = "BFGS"
   )
-  # This didn't work
-  # solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb,
-  # Zw=Zw,numb=numb, erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T,
-  # Rfun=Rfun, method="BFGS")
-  # control=list(maxeval=10))
-  # print(solution$par)
-  # print(solution$convergence)
-  # solution <- genoud(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb,
-  # erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab
-  # =ealphab, ealphaw=ealphaw, nvars=5, starting.values=start)
-  # solution <- maxLik(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb,
-  # erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw,start=start)
-  # solution <- subplex(start, like, y=t, x=x, n=n, Zb=Zb,
-  # Zw=Zw,numb=numb, erho=erho,esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw)
-  # solution <- nlminb(start, like,y=t, x=x, n=n, Zb=Zb,
-  # Zw=Zw,numb=numb, erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, Rfun=Rfun,
-  # hessian=T)
-  #
 
   # Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian) == 0 |
     diag(solution$hessian) == 1, 0, 1))
   hessian <- solution$hessian[covs, covs]
   output <- list(
-    solution$par, solution$hessian, hessian, erho, esigma,
-    ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
-    truth, precision, covs, Rfun, id
+    phi = solution$par,
+    hessian = solution$hessian, hessianC = hessian,
+    erho = erho, esigma = esigma,
+    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, numb = numb,
+    x = x, t = t, n = n,
+    Zb = Zb, Zw = Zw,
+    truth = truth, precision = precision, covs = covs, Rfun = Rfun, id = id
   )
 
-  names(output) <- c(
-    "phi", "hessian", "hessianC", "erho",
-    "esigma", "ebeta", "ealphab", "ealphaw", "numb",
-    "x", "t", "n", "Zb", "Zw",
-    "truth", "precision", "covs", "Rfun", "id"
-  )
   class(output) <- "ei"
   return(output)
 }
