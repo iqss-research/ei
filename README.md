@@ -9,13 +9,13 @@ For more information, see here: https://gking.harvard.edu/eir
 
 
 # EI Package TODO:
-Last Updated: 2021.09.04
+Last Updated: 2021.10.19
 
 ## General (Big) Comments:
 
 - [ ] Use `cli` for progress reporting
 - [ ] Replace workhorse functions in `R/zzz.R` with Rcpp implementations
-- [ ] Use GitHub actions to auto-check the package on commit
+- [x] Use GitHub actions to auto-check the package on commit
 - [ ] Add testthat tests
 - [ ] Remove imports for single functions where possible
 
@@ -32,6 +32,7 @@ Last Updated: 2021.09.04
 - [ ] .samp rewrite in Rcpp
 - [ ] Add `print.ei` for `"ei"` class objects
 - [ ] Allowing users to extract values used in the plot for customization
+- [ ] Rename functions that start with `.` and use `@noRd` tag instead
 
 ### Input check
 
@@ -64,7 +65,7 @@ Replace base R plots with ggplots
 
 - [x] bounds1
 - [x] ei
-- [ ] ei.sim
+- [x] ei.sim
 - [ ] eiread
 - [ ] tomogRxC
 - [ ] tomogRxC3d
@@ -72,7 +73,7 @@ Replace base R plots with ggplots
 
 
 ### Data
-- [ ] rename sample (avoid overlaps with base:: functions)
+- [x] rename sample (avoid overlaps with base:: functions)
 
 
 ### Minor points

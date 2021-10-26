@@ -21,4 +21,4 @@ NULL
 ## usethis namespace: end
 NULL
 
-utils::globalVariables(c('b_bounds', 'w_bounds'))
+utils::globalVariables(c("b_bounds", "w_bounds"))

@@ -140,7 +140,6 @@ data(sample_ei)
 form <- t ~ x
 dbuf <- ei(form, total = "n", data = sample_ei)
 summary(dbuf)
-
 }
 \references{
 Gary King (1997). A Solution to the Ecological Inference

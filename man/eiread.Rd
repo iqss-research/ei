@@ -51,7 +51,6 @@ formula <- t ~ x
 dbuf <- ei(formula = formula, total = "n", data = sample_ei)
 eiread(dbuf, "phi")
 eiread(dbuf, "betab", "betaw")
-
 }
 \references{
 Gary King (1997). A Solution to the Ecological Inference

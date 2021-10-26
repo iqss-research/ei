@@ -36,7 +36,8 @@ ei.sim <- function(ei.object) {
   id <- ei.object$id
   precision <- ei.object$precision
   # Begin Importance Sampling
-  message("Importance Sampling..")
+  cli::cli_progress_step("Beginning importance sampling.", spinner = TRUE)
+
   keep <- matrix(data = NA, ncol = (length(ei.object$phi)))
   resamp <- 0
   while (dim(keep)[1] < 100) {
@@ -60,8 +61,7 @@ ei.sim <- function(ei.object) {
   # Reparamterize
   Zb <- as.matrix(Zb)
   Zw <- as.matrix(Zw)
-  Bb0v <- as.matrix(Bb0v)
-  Bw0v <- as.matrix(Bw0v)
+
   mu1 <- mu[, 1] * (.25 + sd[, 1]^2) + .5 + t(as.matrix(apply(
     Zb, 2,
     function(x) x - mean(x)
@@ -103,9 +103,9 @@ ei.sim <- function(ei.object) {
     out <- NULL
     for (j in 1:length(x[ok])) {
       out[ok][j] <- rtnorm(1,
-                           mean = mbb[ok][j], sd = s[ok][j],
-                           lower = bounds[ok, ][j, 1],
-                           upper = bounds[ok, ][j, 2]
+        mean = mbb[ok][j], sd = s[ok][j],
+        lower = bounds[ok, ][j, 1],
+        upper = bounds[ok, ][j, 2]
       )
     }
     out[wh] <- NA
@@ -137,26 +137,26 @@ ei.sim <- function(ei.object) {
       as.matrix(rep(1, dim(keep)[1])) %*% t(as.matrix(bounds[cT0, 3]))
   }
 
-  mbetab <- apply(betab, 1, mean)
-  mbetaw <- apply(betaw, 1, mean)
+  mbetab <- rowMeans(betab)
+  mbetaw <- rowMeans(betaw)
   sdbetab <- apply(betab, 1, sd)
   sdbetaw <- apply(betaw, 1, sd)
   output <- list(
-    ei.object$phi, ei.object$hessian, hessian, psi, mbetab, mbetaw,
-    sdbetab, sdbetaw, betab, betaw, resamp, erho, esigma,
-    ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
-    truth,
-    precision, id
+    phi = ei.object$phi,
+    hessian = ei.object$hessian,
+    hessianC = hessian, psi = psi,
+    betab = mbetab, betaw = mbetaw,
+    sbetab = sdbetab, sbetaw = sdbetaw,
+    betabs = betab, betaws = betaw,
+    resamp = resamp, erho = erho, esigma = esigma,
+    ebeta = ebeta, ealphab = ealphab,
+    ealphaw = ealphaw, numb = numb,
+    x = x, t = t, n = n,
+    Zb = Zb, Zw = Zw,
+    truth = truth,
+    precision = precision, id = id
   )
 
-  names(output) <- c(
-    "phi", "hessian", "hessianC", "psi", "betab", "betaw",
-    "sbetab",
-    "sbetaw", "betabs", "betaws", "resamp", "erho",
-    "esigma", "ebeta", "ealphab", "ealphaw", "numb",
-    "x", "t", "n", "Zb", "Zw",
-    "truth", "precision", "id"
-  )
   class(output) <- "ei"
   return(output)
 }

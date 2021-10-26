@@ -6,13 +6,12 @@
 
 .samp <- function(t, x, n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
                   erho, esigma, ebeta, ealphab, ealphaw, Rfun) {
-  import1 <- NULL
 
   varcv2 <- solve(varcv) / 4
 
   draw <- rmvnorm(nsims, par[covs], varcv2)
-  varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv2, log = T)
+
+  phiv <- dmvnorm(draw, par[covs], varcv2, log = TRUE)
   zbmiss <- ifelse(covs[6] == FALSE, TRUE, FALSE)
   zwmiss <- ifelse(covs[(6 + numb)] == FALSE, TRUE, FALSE)
   if (zbmiss == TRUE & zwmiss == FALSE) {
@@ -24,18 +23,12 @@
   if (zbmiss == TRUE & zwmiss == TRUE) {
     draw <- cbind(draw, rep(1, nsims), rep(1, nsims))
   }
-  # for(i in 1:nsims){
-  # import1[i] <- -like(as.vector(draw[i,]),
-  # t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta,
-  # ealphab, ealphaw, Rfun) - phiv[i]
-  # }
 
   # Calculates importance ratio
-  import1 <- apply(as.matrix(1:nsims), 1, function(i) {
-    -like(as.vector(draw[i, ]), t, x, n, Zb, Zw,
-          numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
-    )
-    - phiv[i]
+  import1 <- sapply(1:nsims, function(i) {
+    -like(draw[i, ], t, x, n, Zb, Zw,
+      numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
+    ) - phiv[i]
   })
 
   ok <- !is.nan(import1)
@@ -45,8 +38,7 @@
   # print(mean(is.finite(ir)))
   tst <- ifelse(is.finite(ir), ir > runif(1, 0, 1), FALSE)
   # print(sum(tst))
-  keep <- rbind(keep, draw[tst, ])
-  return(keep)
+  rbind(keep, draw[tst, ])
 }
 
 # @sub -- indeces to create R for
@@ -69,7 +61,7 @@
         corr = corr
       )
     }
-    out <- vector(mode = 'list', length = length(x[sub]))
+    out <- vector(mode = "list", length = length(x[sub]))
 
     for (i in 1:length(x[sub])) {
       out[[i]] <- makeR(i)
@@ -111,8 +103,8 @@
     fun <- function(x) dmvnorm(x, mean, corr)
     for (i in 1:length(x[sub])) {
       qi <- adaptIntegrate(fun,
-                           lowerLimit = lower[i, ],
-                           upperLimit = upper[i, ]
+        lowerLimit = lower[i, ],
+        upperLimit = upper[i, ]
       )$integral
       out[i] <- log(qi)
       # if(is.na(out[i])|abs(out[i]==Inf)) print("R not real")
@@ -122,8 +114,7 @@
   }
   ## THIS VERSION RELIES ON mvnprd FROM PACKAGE mvtnormpcs WHICH IS NOW ARCHIVED
   if (Rfun == 4) {
-    print("Option Rfun==4 is no longer possible")
-    stop()
+    cli::cli_abort("Option Rfun==4 is no longer possible")
     ##  for(i in 1:length(x[sub])){
     ##    qi <- mvnprd(A=upper[i,], B=lower[i,],
     ##                 BPD=c(rho,rho),INF=rep(2,2))$PROB
@@ -136,70 +127,14 @@
   }
 
   if (Rfun == 5) {
-    lower <- lower[1, ]
-    upper <- upper[1, ]
-    # qi <- pmvnorm(lower=lower, upper=upper, mean=mean, corr=corr)
-    qi <- sadmvn(lower = lower, upper = upper, mean = mean, varcov = corr)
-    qi <- ifelse(qi < 1 * 10^-14, 1 * 10^-14, qi)
+    qi <- sadmvn(lower = lower[1, ], upper = upper[1, ], mean = mean, varcov = corr)
+    qi[qi < 1e-14] <- 1e-14
     qi <- log(qi)
-    # if(is.na(qi)|abs(qi)==Inf) print ("R not real")
-    qi <- ifelse((is.na(qi) | abs(qi) == Inf), 999, qi)
-    out <- rep(qi, length(x[sub]))
-    return(out)
+    qi[is.na(qi) | abs(qi) == Inf] <- 999
+    return(rep(qi, length(x[sub])))
   }
 }
 
-
-
-# @par - solution to likelihood maximization
-# @numb - number of covariates for bb
-# @covs - number of total parameters to estimate
-# @all the rest in documentation
-
-# Samp implements importance sampling
-
-.samp <- function(t, x, n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
-                  erho, esigma, ebeta, ealphab, ealphaw, Rfun) {
-  import1 <- NULL
-  varcv2 <- solve(varcv) / 4
-  draw <- rmvnorm(nsims, par[covs], varcv2)
-  varcv3 <- solve(varcv2)
-  phiv <- dmvnorm(draw, par[covs], varcv2, log = T)
-  # print("samp")
-  zbmiss <- ifelse(covs[6] == FALSE, TRUE, FALSE)
-  zwmiss <- ifelse(covs[(6 + numb)] == FALSE, TRUE, FALSE)
-  if (zbmiss == TRUE & zwmiss == FALSE) {
-    draw <- cbind(draw[, 1:5], rep(1, nsims), draw[, (5 + numb):sum(covs)])
-  }
-  if (zbmiss == FALSE & zwmiss == TRUE) {
-    draw <- cbind(draw, rep(1, nsims))
-  }
-  if (zbmiss == TRUE & zwmiss == TRUE) {
-    draw <- cbind(draw, rep(1, nsims), rep(1, nsims))
-  }
-  # for(i in 1:nsims){
-  # import1[i] <- -like(as.vector(draw[i,]),
-  # t, x, n, Zb, Zw, numb=numb, erho, esigma, ebeta,
-  # ealphab, ealphaw, Rfun) - phiv[i]
-  # }
-
-  # Calculates importance ratio
-  import1 <- apply(as.matrix(1:nsims), 1, function(i) {
-    -like(as.vector(draw[i, ]), t, x, n, Zb, Zw,
-          numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
-    )
-    - phiv[i]
-  })
-  ok <- !is.nan(import1)
-  lnir <- import1 - max(import1[ok])
-  ir <- NA
-  ir[ok] <- exp(lnir[ok])
-  # print(mean(is.finite(ir)))
-  tst <- ifelse(is.finite(ir), ir > runif(1, 0, 1), FALSE)
-  # print(sum(tst))
-  keep <- rbind(keep, draw[tst, ])
-  return(keep)
-}
 
 # @All arguments are values on the untruncated scale
 # This function reparameterizes to the truncated scale
@@ -236,9 +171,9 @@
   scale <- ((length - min(length)) / (max(length) - min(length))) * 100
   # Plot
   plot(c(100, 200),
-       xlim = c(0, 1), ylim = c(0, 1),
-       col = "white", ylab = "betaW", xlab = "betaB", xaxs = "i",
-       yaxs = "i", main = title
+    xlim = c(0, 1), ylim = c(0, 1),
+    col = "white", ylab = "betaW", xlab = "betaB", xaxs = "i",
+    yaxs = "i", main = title
   )
   if (lci == T) {
     for (i in 1:n) {
@@ -263,9 +198,9 @@
   }
   scale <- ((length - min(length)) / (max(length) - min(length))) * 100
   plot(c(100, 200),
-       xlim = c(0, 1), ylim = c(0, 1),
-       col = "white", ylab = "betaW", xlab = "betaB", xaxs = "i",
-       yaxs = "i", main = title
+    xlim = c(0, 1), ylim = c(0, 1),
+    col = "white", ylab = "betaW", xlab = "betaB", xaxs = "i",
+    yaxs = "i", main = title
   )
   if (lci == T) {
     for (i in 1:n) {
@@ -304,12 +239,12 @@
   rho <- vars[2 * length(x) + 3]
   .tomog3 <- function(bb, bw, sb, sw, rho) {
     lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                  scale = c(sb, sw),
-                  centre = c(mean(bb), mean(bw)), level = .914
+      scale = c(sb, sw),
+      centre = c(mean(bb), mean(bw)), level = .914
     ), col = "blue", lwd = 4)
     lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                  scale = c(sb, sw),
-                  centre = c(mean(bb), mean(bw)), level = .35
+      scale = c(sb, sw),
+      centre = c(mean(bb), mean(bw)), level = .35
     ), col = "red", lwd = 4)
     points(mean(bb), mean(bw), col = "pink", pch = 15)
   }
@@ -328,13 +263,13 @@
 
 .tomog3 <- function(bb, bw, sb, sw, rho) {
   lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                scale = c(sb, sw), centre = c(mean(bb), mean(bw)), level = .914
+    scale = c(sb, sw), centre = c(mean(bb), mean(bw)), level = .914
   ),
   col = "blue", lwd = 4
   )
   lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-                scale = c(sb, sw),
-                centre = c(mean(bb), mean(bw)), level = .35
+    scale = c(sb, sw),
+    centre = c(mean(bb), mean(bw)), level = .35
   ), col = "red", lwd = 4)
   points(mean(bb), mean(bw), col = "pink", pch = 15)
 }
@@ -360,8 +295,8 @@
     n <- dim(betabcd)[2]
     for (i in 1:n) {
       lines(betabcd[, i], sort(betawcd[, i], decreasing = T),
-            col = "red",
-            lwd = 3
+        col = "red",
+        lwd = 3
       )
     }
   }
@@ -382,7 +317,7 @@
     .tomogd(x, t, n, "Tomography Plot with 95% CIs", lci = F)
     betabcd <- apply(betabs, 1, function(x) {
       quantile(x,
-               probs = c(.025, .975)
+        probs = c(.025, .975)
       )
     })
     betawcd <- apply(betaws, 1, function(x) {
@@ -391,8 +326,8 @@
     n <- dim(betabcd)[2]
     for (i in 1:n) {
       lines(betabcd[, i], sort(betawcd[, i], decreasing = T),
-            col = "red",
-            lwd = 3
+        col = "red",
+        lwd = 3
       )
     }
   }
@@ -473,8 +408,8 @@ Betaws")
     betabs <- ei.object$betabs[ok, ]
     betabm <- apply(betabs, 1, mean)
     plot(density(betabm),
-         xlim = c(0, 1), col = "green", xlab = "betaB",
-         ylab = "density across precincts, f(betaB)", main = "Density of
+      xlim = c(0, 1), col = "green", xlab = "betaB",
+      ylab = "density across precincts, f(betaB)", main = "Density of
 betaB"
     )
     vb <- as.vector(betabm)
@@ -494,8 +429,8 @@ betaB"
     betaws <- ei.object$betaws[ok, ]
     betawm <- apply(betaws, 1, mean)
     plot(density(betawm),
-         xlim = c(0, 1), col = "green", xlab = "betaW",
-         ylab = "density across precincts, f(betaW)", main = "Density of
+      xlim = c(0, 1), col = "green", xlab = "betaW",
+      ylab = "density across precincts, f(betaW)", main = "Density of
 betaW"
     )
     vw <- as.vector(betawm)
@@ -522,9 +457,9 @@ Scatterplot", ylab = "T", xlab = "X", pch = 20)
   n <- ei.object$n
   circ <- .04
   plot(x, t,
-       xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i", main = "X and T
+    xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i", main = "X and T
 Scatterplot with Population Density Circles", ylab = "T", xlab = "X",
-       pch = 20
+    pch = 20
   )
   minn <- min(n)
   maxn <- max(n)
@@ -595,9 +530,9 @@ Scatterplot with E(T|X) and 80% CIs", ylab = "T", xlab = "X", pch = 20)
     up <- .9
     circ <- .04
     plot(x, t,
-         xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i", main = "X and T
+      xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i", main = "X and T
 Scatterplot with E(T|X), 80% CIs, and Goodman", ylab = "T", xlab = "X",
-         pch = 20
+      pch = 20
     )
     minn <- min(n)
     maxn <- max(n)
@@ -648,10 +583,10 @@ Scatterplot with Goodman", ylab = "T", xlab = "X", pch = 20)
     betaws <- ei.object$betaws[ok, ]
     colors <- runif(length(betabs), 26, 51)
     plot(betabs, betaws,
-         xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
-         main = "Simulations of betaW and betaB", ylab = "betaW
+      xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
+      main = "Simulations of betaW and betaB", ylab = "betaW
 simulations", xlab = "betaB simulations", pch = 20, col = colors, lty = 2,
-         cex = .25
+      cex = .25
     )
   }
 }
@@ -666,9 +601,9 @@ simulations", xlab = "betaB simulations", pch = 20, col = colors, lty = 2,
   truebb <- ei.object$truth[, 1]
   bounds <- bounds1(x, t, n)
   plot(x, truebb,
-       xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
-       main = "Aggregation Bias for betaB", ylab = "True betab", xlab = "X",
-       pch = 20
+    xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
+    main = "Aggregation Bias for betaB", ylab = "True betab", xlab = "X",
+    pch = 20
   )
   for (i in 1:length(x)) {
     lines(c(x[i], x[i]), c(bounds[, 1][i], bounds[, 2][i]))
@@ -684,9 +619,9 @@ simulations", xlab = "betaB simulations", pch = 20, col = colors, lty = 2,
   truebw <- ei.object$truth[, 2]
   bounds <- bounds1(x, t, n)
   plot(x, truebw,
-       xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
-       main = "Aggregation Bias for betaW", ylab = "True betaw", xlab = "X",
-       pch = 20
+    xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
+    main = "Aggregation Bias for betaW", ylab = "True betaw", xlab = "X",
+    pch = 20
   )
   for (i in 1:length(x)) {
     lines(c(x[i], x[i]), c(bounds[, 3][i], bounds[, 4][i]))
@@ -713,24 +648,24 @@ simulations", xlab = "betaB simulations", pch = 20, col = colors, lty = 2,
   par(mfrow = c(2, 2))
   ag <- .aggs(ei.object)
   plot(density(ag[, 1]),
-       xlim = c(0, 1), ylim = c(0, max(density(ag[, 1])$y) + 1),
-       yaxs = "i", xaxs = "i", main = "Density of Bb Posterior & Truth",
-       xlab = "Bb", ylab = "Density"
+    xlim = c(0, 1), ylim = c(0, max(density(ag[, 1])$y) + 1),
+    yaxs = "i", xaxs = "i", main = "Density of Bb Posterior & Truth",
+    xlab = "Bb", ylab = "Density"
   )
   lines(c(truthbb, truthbb), c(0, .25 * (max(density(ag[, 1])$y) + 1)),
-        lwd = 3
+    lwd = 3
   )
   plot(density(ag[, 2]),
-       xlim = c(0, 1), ylim = c(0, max(density(ag[, 2])$y) + 1), yaxs = "i",
-       xaxs = "i", main = "Density of Bw Posterior & Truth",
-       xlab = "Bw", ylab = "Density"
+    xlim = c(0, 1), ylim = c(0, max(density(ag[, 2])$y) + 1), yaxs = "i",
+    xaxs = "i", main = "Density of Bw Posterior & Truth",
+    xlab = "Bw", ylab = "Density"
   )
   lines(c(truthbw, truthbw), c(0, .25 * (max(density(ag[, 2])$y) + 1)),
-        lwd = 3
+    lwd = 3
   )
   plot(betab, truebb,
-       xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
-       xlab = "Estimated betab", cex = .1, ylab = "True betab"
+    xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i",
+    xlab = "Estimated betab", cex = .1, ylab = "True betab"
   )
   minn <- min(x * n)
   maxn <- max(x * n)
@@ -745,7 +680,7 @@ simulations", xlab = "betaB simulations", pch = 20, col = colors, lty = 2,
   lines(c(0, 1), c(-low, 1 - low), lty = 2)
   lines(c(0, 1), c(high, 1 + high), lty = 2)
   plot(betaw, truebw,
-       xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i", xlab = "Estimated
+    xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i", xlab = "Estimated
 betaw", ylab = "True betaw", cex = .1
   )
   minn <- min(omx * n)
@@ -1000,9 +935,9 @@ plot_truth <- function(ei.object) {
   wbounds <- cbind(bounds[, 4], bounds[, 3])
   n <- dim(bounds)[1]
   plot(c(100, 200),
-       xlim = c(0, 1), ylim = c(0, 1), col = "white",
-       ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
-       main = "Tomography Plot"
+    xlim = c(0, 1), ylim = c(0, 1), col = "white",
+    ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
+    main = "Tomography Plot"
   )
   input <- 0
   while (input != "s") {
@@ -1018,9 +953,9 @@ getinput <- function() {
 .tomogonce <- function(input, last.input) {
   par(mfrow = c(1, 1))
   plot(c(100, 200),
-       xlim = c(0, 1), ylim = c(0, 1), col = "white",
-       ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
-       main = "Tomography Plot"
+    xlim = c(0, 1), ylim = c(0, 1), col = "white",
+    ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
+    main = "Tomography Plot"
   )
   if (input == "") { # input is <enter>, plot next observation
     last.input <- as.integer(last.input)
@@ -1054,9 +989,9 @@ getinput <- function() {
   wbounds <- cbind(bounds[, 4], bounds[, 3])
   n <- dim(bounds)[1]
   plot(c(100, 200),
-       xlim = c(0, 1), ylim = c(0, 1), col = "white",
-       ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
-       main = "Tomography Plot"
+    xlim = c(0, 1), ylim = c(0, 1), col = "white",
+    ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
+    main = "Tomography Plot"
   )
   input <- 0
   while (input != "s") {
@@ -1079,9 +1014,9 @@ getinput <- function() {
   n <- dim(bounds)[1]
   par(mfrow = c(1, 1))
   plot(c(100, 200),
-       xlim = c(0, 1), ylim = c(0, 1), col = "white",
-       ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
-       main = "Tomography Plot"
+    xlim = c(0, 1), ylim = c(0, 1), col = "white",
+    ylab = "betaW", xlab = "betaB", xaxs = "i", yaxs = "i",
+    main = "Tomography Plot"
   )
   if (input == "") { # input is <enter>, plot next observation
     last.input <- as.integer(last.input)
@@ -1117,25 +1052,25 @@ getinput <- function() {
 
   # plot posterior distribution of precinct parameters
   plot(density(betab[input, ]),
-       xlim = c(0, 1), ylim = c(0, max(density(betab[input, ])$y) + 1),
-       yaxs = "i", xaxs = "i", main = "Posterior Distribution of betaB",
-       xlab = "Bb", ylab = "Density"
+    xlim = c(0, 1), ylim = c(0, max(density(betab[input, ])$y) + 1),
+    yaxs = "i", xaxs = "i", main = "Posterior Distribution of betaB",
+    xlab = "Bb", ylab = "Density"
   )
   lines(c(0, .25 * (max(density(betab[input, ])$y) + 1)), lwd = 3)
   plot(density(betaw[input, ]),
-       xlim = c(0, 1), ylim = c(0, max(density(betaw[input, ])$y) + 1),
-       yaxs = "i", xaxs = "i", main = "Posterior Distribution of betaW",
-       xlab = "Bw", ylab = "Density"
+    xlim = c(0, 1), ylim = c(0, max(density(betaw[input, ])$y) + 1),
+    yaxs = "i", xaxs = "i", main = "Posterior Distribution of betaW",
+    xlab = "Bw", ylab = "Density"
   )
   lines(c(0, .25 * (max(density(betaw[input, ])$y) + 1)), lwd = 3)
 
   # plot simulated values of betaB and betaW of precinct
   colors <- runif(length(betabs), 26, 51)
   plot(betabs[input, ], betaws[input, ],
-       xlim = c(0, 1), ylim = c(0, 1), xaxs = "i",
-       yaxs = "i", main = "Simulations of betaW and betaB",
-       ylab = "betaW simulations", xlab = "betaB simulations",
-       pch = 20, col = colors, lty = 2, cex = .25
+    xlim = c(0, 1), ylim = c(0, 1), xaxs = "i",
+    yaxs = "i", main = "Simulations of betaW and betaB",
+    ylab = "betaW simulations", xlab = "betaB simulations",
+    pch = 20, col = colors, lty = 2, cex = .25
   )
 
   mtext(sprintf("Plots for Observation %d", input), line = 0.5, outer = TRUE)

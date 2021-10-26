@@ -26,7 +26,6 @@ relationships beta_b, beta_w, from known, observed, table marginals, x, t
 \examples{
 data(census1910)
 output <- bounds1(x = census1910$x, t = census1910$t, n = census1910$n)
-
 }
 \references{
 Gary King (1997). A Solution to the Ecological Inference

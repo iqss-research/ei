@@ -84,7 +84,6 @@
 #' form <- t ~ x
 #' dbuf <- ei(form, total = "n", data = sample_ei)
 #' summary(dbuf)
-#'
 ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
                erho = .5, esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
                truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
@@ -100,12 +99,13 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   id <- as.character(id)
 
   if (length(dv) == 1) {
-    print("Running 2x2 ei")
-
+    cli::cli_progress_step("Running 2x2 ei")
     if (simulate == FALSE) {
-      dbuf <- ei.estimate(t, x, n, id = id, data = data, Zb = Zb, Zw = Zw,
-                          erho = erho, esigma = esigma, ebeta = ebeta,
-                          ealphab = ealphab, ealphaw = ealphaw, truth = truth)
+      dbuf <- ei.estimate(t, x, n,
+        id = id, data = data, Zb = Zb, Zw = Zw,
+        erho = erho, esigma = esigma, ebeta = ebeta,
+        ealphab = ealphab, ealphaw = ealphaw, truth = truth
+      )
       return(dbuf)
     }
     if (simulate == TRUE) {
@@ -131,7 +131,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
           ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, truth = truth
         )
       })
-
+      cli::cli_progress_done()
       dbuf.sim <- ei.sim(dbuf)
       return(dbuf.sim)
     }
@@ -140,14 +140,15 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   if (length(dv) > 1) {
     print("Running eiRxC")
     # If the table is RxC use eiRxC
-    dbuf <- ei.MD.bayes(formula, data = data, total = total, covariate = covariate,
-                        lambda1 = lambda1, lambda2 = lambda2,
-                        covariate.prior.list = covariate.prior.list,
-                        tune.list = tune.list, start.list = start.list,
-                        sample = sample, thin = thin, burnin = burnin,
-                        verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
-                        usrfun = usrfun
-                        )
+    dbuf <- ei.MD.bayes(formula,
+      data = data, total = total, covariate = covariate,
+      lambda1 = lambda1, lambda2 = lambda2,
+      covariate.prior.list = covariate.prior.list,
+      tune.list = tune.list, start.list = start.list,
+      sample = sample, thin = thin, burnin = burnin,
+      verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
+      usrfun = usrfun
+    )
     dbuf$data <- data
     dbuf$total <- n
     dbuf$formula <- formula
@@ -191,61 +192,30 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   # Starting values
   start <- c(0, 0, -1.2, -1.2, 0, rep(0, numb + numw))
 
-  message("Maximizing likelihood")
-  #set.seed(1)
-  #solution <- ucminf(start, like,
-  #  y = t, x = x, n = n, Zb = Zb,
-  #  Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-  #  ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun, hessian = 3
-  #)
-  #set.seed(1)
+  cli::cli_alert_info("Maximizing likelihood")
+
   solution <- optim(start, like,
-                     y = t, x = x, n = n, Zb = Zb,
-                     Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-                     ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
-                     hessian = TRUE,
-                     method = 'BFGS'
+    y = t, x = x, n = n, Zb = Zb,
+    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
+    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
+    hessian = TRUE,
+    method = "BFGS"
   )
-  # This didn't work
-  # solution <- optim(start, like, y=t, x=x, n=n, Zb=Zb,
-  # Zw=Zw,numb=numb, erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, hessian=T,
-  # Rfun=Rfun, method="BFGS")
-  # control=list(maxeval=10))
-  # print(solution$par)
-  # print(solution$convergence)
-  # solution <- genoud(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb,
-  # erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab
-  # =ealphab, ealphaw=ealphaw, nvars=5, starting.values=start)
-  # solution <- maxLik(like, y=t, x=x, n=n, Zb=Zb, Zw=Zw,numb=numb,
-  # erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw,start=start)
-  # solution <- subplex(start, like, y=t, x=x, n=n, Zb=Zb,
-  # Zw=Zw,numb=numb, erho=erho,esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw)
-  # solution <- nlminb(start, like,y=t, x=x, n=n, Zb=Zb,
-  # Zw=Zw,numb=numb, erho=erho, esigma=esigma,
-  # ebeta=ebeta, ealphab =ealphab, ealphaw=ealphaw, Rfun=Rfun,
-  # hessian=T)
-  #
 
   # Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian) == 0 |
     diag(solution$hessian) == 1, 0, 1))
   hessian <- solution$hessian[covs, covs]
   output <- list(
-    solution$par, solution$hessian, hessian, erho, esigma,
-    ebeta, ealphab, ealphaw, numb, x, t, n, Zb, Zw,
-    truth, precision, covs, Rfun, id
+    phi = solution$par,
+    hessian = solution$hessian, hessianC = hessian,
+    erho = erho, esigma = esigma,
+    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, numb = numb,
+    x = x, t = t, n = n,
+    Zb = Zb, Zw = Zw,
+    truth = truth, precision = precision, covs = covs, Rfun = Rfun, id = id
   )
 
-  names(output) <- c(
-    "phi", "hessian", "hessianC", "erho",
-    "esigma", "ebeta", "ealphab", "ealphaw", "numb",
-    "x", "t", "n", "Zb", "Zw",
-    "truth", "precision", "covs", "Rfun", "id"
-  )
   class(output) <- "ei"
   return(output)
 }
