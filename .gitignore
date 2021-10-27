@@ -7,3 +7,6 @@ inst/doc
 /Meta/
 .DS_Store
 *.swp
+*.o
+*.so
+*.dll

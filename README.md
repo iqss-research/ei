@@ -13,7 +13,7 @@ Last Updated: 2021.10.19
 
 ## General (Big) Comments:
 
-- [ ] Use `cli` for progress reporting
+- [x] Use `cli` for progress reporting
 - [ ] Replace workhorse functions in `R/zzz.R` with Rcpp implementations
 - [x] Use GitHub actions to auto-check the package on commit
 - [ ] Add testthat tests
@@ -66,14 +66,14 @@ Replace base R plots with ggplots
 - [x] bounds1
 - [x] ei
 - [x] ei.sim
-- [ ] eiread
+- [x] eiread
 - [ ] tomogRxC
 - [ ] tomogRxC3d
 - [ ] plot
 
 
 ### Data
-- [x] rename sample (avoid overlaps with base:: functions)
+- [x] rename sample (avoid overlaps with `base::` functions)
 
 
 ### Minor points

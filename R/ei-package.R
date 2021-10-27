@@ -18,6 +18,8 @@ NULL
 
 ## usethis namespace: start
 #' @importFrom tibble tibble
+#' @useDynLib ei, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
 ## usethis namespace: end
 NULL
 
