@@ -124,7 +124,7 @@ plot_tomogd <- function(x, t, n, title, lci = TRUE) {
       )
   }
 
-  p
+  return(p)
 }
 
 
