@@ -38,14 +38,6 @@
 #' soledadartiz@@fas.harvard.edu..
 #' @references Gary King (1997). A Solution to the Ecological Inference
 #' Problem.  Princeton: Princeton University Press.
-#'
-#' @examples
-#' data(RxCdata)
-#' formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
-#' tomogRxC3d(formula, RxCdata,
-#'   total = NULL, lci = TRUE, estimates = TRUE, ci = TRUE, transparency = .5,
-#'   light = FALSE, rotate = FALSE
-#' )
 tomogRxC3d <- function(formula, data, total = NULL, lci = TRUE, estimates = FALSE,
                        ci = FALSE, level = .95, seed = 1234,
                        color = hcl(h = 30, c = 100, l = 60), transparency = .75,
