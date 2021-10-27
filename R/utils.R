@@ -27,3 +27,14 @@ repar <- function(Bb0, Bw0, sb0, sw0, rho0, Bb0v, Bw0v, Zb, Zw) {
 
   c(t(bb), t(bw), sb, sw, rho)
 }
+
+
+check_object <- function(obj, name, msg = "") {
+  if (!name %in% names(obj)) {
+    if (msg != "") {
+      stop(msg)
+    } else {
+      stop(paste0(name, " is missing."))
+    }
+  }
+}

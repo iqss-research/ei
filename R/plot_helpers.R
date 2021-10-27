@@ -1,3 +1,24 @@
+#
+# For plot_tomog*()
+#
+
+
+tomogd <- function(x, t, n, title, lci = T) {
+  bounds <- bounds1(x, t, n)
+  bbounds <- cbind(bounds[, 1], bounds[, 2])
+  wbounds <- cbind(bounds[, 4], bounds[, 3])
+  n <- dim(bounds)[1]
+  return(bounds)
+}
+
+bounds <- function(x, t, n) {
+  # Migrate bounds() later here?
+  #   Original package has `.bounds()` and `bounds1()`
+  return(bounds1(x, t, n))
+}
+
+
+
 plot_tomog <- function(ei.object, title = "Tomography Plot with the Data", lci = TRUE) {
   plot_tomogd(ei.object$x, ei.object$t, ei.object$n, title, lci)
 }
@@ -40,7 +61,7 @@ plot_tomogd <- function(x, t, n, title, lci = TRUE) {
       )
   }
 
-  p
+  return(p)
 }
 
 
