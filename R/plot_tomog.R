@@ -21,20 +21,20 @@ plot_tomg_options <- function(options) {
   # Check plot_tomog options
 
   # title
-  if (! "title" %in% names(options)) {
+  if (!"title" %in% names(options)) {
     options$title <- "Tomography Plot with the Data"
   }
 
   # color
-  if (! "color" %in% names(options)) {
+  if (!"color" %in% names(options)) {
     options$color <- TRUE
   }
-  if (! options$color %in% c(TRUE, FALSE)) {
+  if (!options$color %in% c(TRUE, FALSE)) {
     stop("`options$color` takes either TRUE or FALSE.")
   }
 
   # category
-  if (! "category" %in% names(options)) {
+  if (!"category" %in% names(options)) {
     options$category <- 0 # continuous
   }
 
@@ -43,40 +43,40 @@ plot_tomg_options <- function(options) {
   }
 
   # scale (which axis to use for scale)
-  if (! "scale" %in% names(options)) {
+  if (!"scale" %in% names(options)) {
     options$scale <- "length"
   }
 
-  if (! options$scale %in% c("length", "betab", "betaw")) {
+  if (!options$scale %in% c("length", "betab", "betaw")) {
     stop("Invalud value in `options$scale`.")
   }
 
   # scale_breaks: how to break scales
-  if (! "scale_breaks" %in% names(options)) {
+  if (!"scale_breaks" %in% names(options)) {
     options$scale_breaks <- "even"
   }
 
-  if (! options$scale_breaks %in% c("even", "quantile")) {
+  if (!options$scale_breaks %in% c("even", "quantile")) {
     stop("Invalud value in `options$scale_breaks`.")
   }
 
   # Confidence Interval
-  if (! "CI" %in% names(options)) {
+  if (!"CI" %in% names(options)) {
     options$CI <- NULL
   }
 
-  if (! is.null(options$CI) & is.numeric(options$CI)) {
-    if (! (options$CI > 0 & options$CI < 1)) {
+  if (!is.null(options$CI) & is.numeric(options$CI)) {
+    if (!(options$CI > 0 & options$CI < 1)) {
       stop("Invalud value in `options$CI`.")
     }
   }
 
   # Point estimate
-  if (! "points" %in% names(options)) {
+  if (!"points" %in% names(options)) {
     options$points <- FALSE
   }
 
-  if (! options$points %in% c(TRUE, FALSE)) {
+  if (!options$points %in% c(TRUE, FALSE)) {
     stop("`options$points` takes either TRUE or FALSE.")
   }
 
@@ -153,8 +153,8 @@ strata <- function(tb, q) {
   q_num <- length(q)
   tb$length_cat <- -1
   for (i in 2:q_num) {
-    display <- paste0(i-1, ": [", round(q[i-1], 2), ", ", round(q[i], 2), "]")
-    tb$length_cat <- ifelse(tb$length >= q[i-1] & tb$length <= q[i], display, tb$length_cat)
+    display <- paste0(i - 1, ": [", round(q[i - 1], 2), ", ", round(q[i], 2), "]")
+    tb$length_cat <- ifelse(tb$length >= q[i - 1] & tb$length <= q[i], display, tb$length_cat)
   }
   tb$length_cat <- factor(tb$length_cat)
   return(tb)
@@ -176,16 +176,16 @@ plot_length_cat <- function(tb, options) {
 
   # Categorical scale
   p <- p +
-  ggplot2::geom_segment(aes(
-    x = b_bounds[, 1], y = w_bounds[, 1],
-    xend = b_bounds[, 2], yend = w_bounds[, 2],
-    color = length_cat
-  )) +
-  ggplot2::scale_color_manual(
-    values = hcl(h = 30, c = 100, l = seq(1, 80, length.out = options$category + 1)),
-    # name = paste0("Length (", legend_name, ")")
-    name = legend_name
-  )
+    ggplot2::geom_segment(aes(
+      x = b_bounds[, 1], y = w_bounds[, 1],
+      xend = b_bounds[, 2], yend = w_bounds[, 2],
+      color = length_cat
+    )) +
+    ggplot2::scale_color_manual(
+      values = hcl(h = 30, c = 100, l = seq(1, 80, length.out = options$category + 1)),
+      # name = paste0("Length (", legend_name, ")")
+      name = legend_name
+    )
   return(p)
 }
 
@@ -216,7 +216,6 @@ plot_tomogd <- function(ei.object, options) {
 #' @import tibble
 #' @import dplyr
 plot_add_CI <- function(p, ei.object, options) {
-
   calc_CI <- function(ei.object, alpha) {
     # Only consider precincts that are heterogeneous
     ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
@@ -225,8 +224,8 @@ plot_add_CI <- function(p, ei.object, options) {
     n <- ei.object$n[ok]
     betabs <- ei.object$betabs[ok, ]
     betaws <- ei.object$betaws[ok, ]
-    betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(alpha/2, 1-alpha/2)))
-    betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(alpha/2, 1-alpha/2)))
+    betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
+    betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
     n <- dim(betabcd)[2]
     return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
   }
@@ -254,7 +253,6 @@ plot_add_CI <- function(p, ei.object, options) {
       color = "red", show.legend = FALSE
     ) -> p
   return(p)
-
 }
 
 #' @import magrittr
@@ -262,7 +260,6 @@ plot_add_CI <- function(p, ei.object, options) {
 #' @import tibble
 #' @import dplyr
 plot_add_points <- function(p, ei.object, options) {
-
   calc_points <- function(ei.object) {
     ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
     x <- ei.object$x[ok]
@@ -285,7 +282,6 @@ plot_add_points <- function(p, ei.object, options) {
     ) -> p
   return(p)
 }
-
 
 
 #' @export
