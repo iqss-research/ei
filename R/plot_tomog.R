@@ -1,23 +1,40 @@
 #' @export
-plot_tomog <- function(ei.object, title = "Tomography Plot with the Data", options = list()) {
+plot_tomog <- function(ei.object, options = list()) {
   options <- plot_tomg_options(options)
-  plot_tomogd(ei.object$x, ei.object$t, ei.object$n, title, options)
+
+  p <- plot_tomogd(ei.object, options)
+
+  if (!is.null(options$CI)) {
+    # Adding confidence interval
+    p <- plot_add_CI(p, ei.object, options)
+  }
+
+  if (options$points) {
+    # Adding point estimates
+    p <- plot_add_points(p, ei.object, options)
+  }
+
+  return(p)
 }
 
 plot_tomg_options <- function(options) {
   # Check plot_tomog options
 
-  # color
-  if (!"color" %in% names(options)) {
-    options$color <- TRUE
+  # title
+  if (! "title" %in% names(options)) {
+    options$title <- "Tomography Plot with the Data"
   }
 
-  if (!options$color %in% c(TRUE, FALSE)) {
-    stop("`options$color` is either TRUE or FALSE.")
+  # color
+  if (! "color" %in% names(options)) {
+    options$color <- TRUE
+  }
+  if (! options$color %in% c(TRUE, FALSE)) {
+    stop("`options$color` takes either TRUE or FALSE.")
   }
 
   # category
-  if (!"category" %in% names(options)) {
+  if (! "category" %in% names(options)) {
     options$category <- 0 # continuous
   }
 
@@ -26,12 +43,41 @@ plot_tomg_options <- function(options) {
   }
 
   # scale (which axis to use for scale)
-  if (!"scale" %in% names(options)) {
+  if (! "scale" %in% names(options)) {
     options$scale <- "length"
   }
 
-  if (!options$scale %in% c("length", "betab", "betaw")) {
+  if (! options$scale %in% c("length", "betab", "betaw")) {
     stop("Invalud value in `options$scale`.")
+  }
+
+  # scale_breaks: how to break scales
+  if (! "scale_breaks" %in% names(options)) {
+    options$scale_breaks <- "even"
+  }
+
+  if (! options$scale_breaks %in% c("even", "quantile")) {
+    stop("Invalud value in `options$scale_breaks`.")
+  }
+
+  # Confidence Interval
+  if (! "CI" %in% names(options)) {
+    options$CI <- NULL
+  }
+
+  if (! is.null(options$CI) & is.numeric(options$CI)) {
+    if (! (options$CI > 0 & options$CI < 1)) {
+      stop("Invalud value in `options$CI`.")
+    }
+  }
+
+  # Point estimate
+  if (! "points" %in% names(options)) {
+    options$points <- FALSE
+  }
+
+  if (! options$points %in% c(TRUE, FALSE)) {
+    stop("`options$points` takes either TRUE or FALSE.")
   }
 
   return(options)
@@ -115,12 +161,17 @@ strata <- function(tb, q) {
 }
 
 plot_length_cat <- function(tb, options) {
-  q <- quantile(tb$length, prob = seq(0, 1, length.out = options$category + 1))
+  if (options$scale_breaks == "even") {
+    q <- seq(min(tb$length), max(tb$length), length.out = options$category + 1)
+  } else {
+    q <- quantile(tb$length, prob = seq(0, 1, length.out = options$category + 1))
+  }
+
   p <- plot_tomogd_base(strata(tb, q), options)
   legend_name <- case_when(
     options$scale == "length" ~ latex2exp::TeX("Length (line)"),
-    options$scale == "betaw" ~ latex2exp::TeX("Length ($\\beta_W$)"),
-    options$scale == "betab" ~ latex2exp::TeX("Length ($\\beta_B$)")
+    options$scale == "betaw" ~ latex2exp::TeX("Bound ($\\beta_W$)"),
+    options$scale == "betab" ~ latex2exp::TeX("Bound ($\\beta_B$)")
   )
 
   # Categorical scale
@@ -138,9 +189,9 @@ plot_length_cat <- function(tb, options) {
   return(p)
 }
 
-plot_tomogd <- function(x, t, n, title, options) {
+plot_tomogd <- function(ei.object, options) {
   # Take out the bounds
-  bounds <- bounds(x, t, n)
+  bounds <- bounds(ei.object$x, ei.object$t, ei.object$n)
 
   tb <- tibble::tibble(
     b_bounds = cbind(bounds[, 1], bounds[, 2]),
@@ -159,6 +210,83 @@ plot_tomogd <- function(x, t, n, title, options) {
 
   return(p)
 }
+
+#' @import magrittr
+#' @import ggplot2
+#' @import tibble
+#' @import dplyr
+plot_add_CI <- function(p, ei.object, options) {
+
+  calc_CI <- function(ei.object, alpha) {
+    # Only consider precincts that are heterogeneous
+    ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
+    x <- ei.object$x[ok]
+    t <- ei.object$t[ok]
+    n <- ei.object$n[ok]
+    betabs <- ei.object$betabs[ok, ]
+    betaws <- ei.object$betaws[ok, ]
+    betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(alpha/2, 1-alpha/2)))
+    betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(alpha/2, 1-alpha/2)))
+    n <- dim(betabcd)[2]
+    return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
+  }
+
+  res_tomogCI <- calc_CI(ei.object, alpha = 1 - options$CI)
+  b <- res_tomogCI$betabcd %>% t()
+  w <- res_tomogCI$betawcd
+  w <- apply(w, 2, sort, decreasing = TRUE) %>% t()
+
+  bind_cols(
+    b %>%
+      as_tibble(.name_repair = ~ c("b_start", "b_end")),
+    w %>%
+      as_tibble(.name_repair = ~ c("w_start", "w_end"))
+  ) -> tomo_res_CI
+
+  tomo_res_CI %>%
+    mutate(length = sqrt((b_end - b_start)^2 + (w_end - w_start)^2)) %>%
+    mutate(scale = ((length - min(length)) / (max(length) - min(length))) * 100) -> tomo_res_CI
+
+  p +
+    geom_segment(
+      data = tomo_res_CI,
+      aes(x = b_start, y = w_start, xend = b_end, yend = w_end),
+      color = "red", show.legend = FALSE
+    ) -> p
+  return(p)
+
+}
+
+#' @import magrittr
+#' @import ggplot2
+#' @import tibble
+#' @import dplyr
+plot_add_points <- function(p, ei.object, options) {
+
+  calc_points <- function(ei.object) {
+    ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
+    x <- ei.object$x[ok]
+    t <- ei.object$t[ok]
+    n <- ei.object$n[ok]
+    betabs <- ei.object$betabs[ok, ]
+    betaws <- ei.object$betaws[ok, ]
+    betabm <- apply(betabs, 1, mean)
+    betawm <- apply(betaws, 1, mean)
+    return(tibble::tibble(betabm = betabm, betawm = betawm))
+  }
+
+  points <- calc_points(ei.object)
+
+  p +
+    geom_point(
+      data = points,
+      aes(x = betabm, y = betawm),
+      colour = "blue"
+    ) -> p
+  return(p)
+}
+
+
 
 #' @export
 plot_tomogl <- function(ei.object, lci = TRUE) {
@@ -197,80 +325,6 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
   }
 
   .tomog3(bb, bw, sb, sw, rho)
-}
-
-
-#' @import magrittr
-#' @import ggplot2
-#' @import tibble
-#' @import dplyr
-#' @importFrom rlang .data
-#' @export
-plot_tomog80CI <- function(ei.object) {
-  res_tomog80CI <- tomog80CI(ei.object)
-  b <- res_tomog80CI$betabcd %>% t()
-  w <- res_tomog80CI$betawcd
-  w <- apply(w, 2, sort, decreasing = TRUE) %>% t()
-
-  bind_cols(
-    b %>%
-      as_tibble(.name_repair = ~ c("b_start", "b_end")),
-    w %>%
-      as_tibble(.name_repair = ~ c("w_start", "w_end"))
-  ) -> tomo_res_CI
-
-  tomo_res_CI %>%
-    mutate(length = sqrt((b_end - b_start)^2 + (w_end - w_start)^2)) %>%
-    mutate(scale = ((length - min(length)) / (max(length) - min(length))) * 100) -> tomo_res_CI
-
-  plot_tomog(ei.object) +
-    geom_segment(
-      data = tomo_res_CI,
-      aes(x = b_start, y = w_start, xend = b_end, yend = w_end),
-      color = "red", show.legend = FALSE
-    ) -> p
-  return(p)
-}
-
-
-#' @export
-plot_tomog95CI <- function(ei.object) {
-  res_tomog95CI <- tomog95CI(ei.object)
-  b <- res_tomog95CI$betabcd %>% t()
-  w <- res_tomog95CI$betawcd
-  w <- apply(w, 2, sort, decreasing = TRUE) %>% t()
-
-  bind_cols(
-    b %>%
-      as_tibble(.name_repair = ~ c("b_start", "b_end")),
-    w %>%
-      as_tibble(.name_repair = ~ c("w_start", "w_end"))
-  ) -> tomo_res_CI
-
-  tomo_res_CI %>%
-    mutate(length = sqrt((b_end - b_start)^2 + (w_end - w_start)^2)) %>%
-    mutate(scale = ((length - min(length)) / (max(length) - min(length))) * 100) -> tomo_res_CI
-
-  plot_tomog(ei.object) +
-    geom_segment(
-      data = tomo_res_CI,
-      aes(x = b_start, y = w_start, xend = b_end, yend = w_end),
-      color = "red", show.legend = FALSE
-    ) -> p
-  return(p)
-}
-
-
-#' @export
-plot_tomogE <- function(ei.object) {
-  points <- tomogE(ei.object)
-  plot_tomog(ei.object, title = "") +
-    geom_point(
-      data = points,
-      aes(x = betabm, y = betawm),
-      colour = "red"
-    ) -> p
-  return(p)
 }
 
 
