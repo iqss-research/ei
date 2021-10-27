@@ -138,7 +138,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   }
 
   if (length(dv) > 1) {
-    print("Running eiRxC")
+    cli::cli_progress_step("Running eiRxC")
     # If the table is RxC use eiRxC
     dbuf <- ei.MD.bayes(formula,
       data = data, total = total, covariate = covariate,
@@ -153,7 +153,9 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     dbuf$total <- n
     dbuf$formula <- formula
     class(dbuf) <- "ei"
+    cli::cli_progress_done()
     return(dbuf)
+
   }
 }
 

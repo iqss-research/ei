@@ -25,11 +25,11 @@
   }
 
   # Calculates importance ratio
-  import1 <- sapply(1:nsims, function(i) {
+  import1 <- vapply(1:nsims, function(i) {
     -like(draw[i, ], t, x, n, Zb, Zw,
       numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
     ) - phiv[i]
-  })
+  }, 0)
 
   ok <- !is.nan(import1)
   lnir <- import1 - max(import1[ok])

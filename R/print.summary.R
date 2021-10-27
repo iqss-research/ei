@@ -14,7 +14,7 @@ print.summary <- function(x, ...) {
     }
   }
   if ("Resamp" %in% names(sum.object)) {
-    message(cat(
+    cli::cat_print(cat(
       names(top[[1]]), "=", top[[1]], ",", names(top[[2]]),
       "=", top[[2]], ",", names(top[[3]]), "=", top[[3]], ",",
       names(top[[4]]), "=", top[[4]], ",", names(top[[5]]), "=", top[[5]]
@@ -22,7 +22,7 @@ print.summary <- function(x, ...) {
   }
 
   if (!("Resamp" %in% names(sum.object))) {
-    message(cat(
+    cli::cat_print(cat(
       names(top[[1]]), "=", top[[1]], ",", names(top[[2]]),
       "=", top[[2]], ",", names(top[[3]]), "=", top[[3]], ",",
       names(top[[4]]), "=", top[[4]]
@@ -31,8 +31,7 @@ print.summary <- function(x, ...) {
   for (key in names(sum.object)) {
     val <- sum.object[[key]]
     if (!((is.character(val) || is.numeric(val)) && length(val) < 2)) {
-      message()
-      message(key)
+      cli::cat_print(key)
       print(floor(val * 10^dec) / (10^dec))
     }
   }

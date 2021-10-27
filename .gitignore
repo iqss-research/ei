@@ -8,3 +8,6 @@ inst/doc
 .DS_Store
 *.swp
 scratch/
+*.o
+*.so
+*.dll
