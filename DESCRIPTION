@@ -19,6 +19,7 @@ Imports:
     ellipse,
     plotrix,
     MASS,
+    magrittr,
     ucminf,
     cubature,
     mnormt,
