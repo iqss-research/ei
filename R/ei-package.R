@@ -9,7 +9,6 @@
 #' @importFrom cubature adaptIntegrate
 #' @importFrom mnormt sadmvn
 #' @importFrom sp point.in.polygon
-#' @importFrom ucminf ucminf
 #' @importFrom plotrix draw.circle
 #' @importFrom msm rtnorm
 #' @importFrom ggplot2 aes

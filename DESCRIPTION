@@ -9,7 +9,7 @@ Authors@R: c(
     person("Molly", "Roberts", email = "roberts8@fas.harvard.edu", role = c("cre", "aut"))
     )
 Maintainer: James Honaker <zelig.zee@gmail.com>
-Depends: 
+Depends:
     R (>= 2.10),
     eiPack
 Imports:
@@ -20,7 +20,6 @@ Imports:
     plotrix,
     MASS,
     magrittr,
-    ucminf,
     cubature,
     mnormt,
     sp,
@@ -43,5 +42,5 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 LazyData: true
-LinkingTo: 
+LinkingTo:
     Rcpp

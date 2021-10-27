@@ -12,9 +12,6 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   Bw0v <- param[(numb + 6):length(param)]
   sb <- exp(sb0)
   sw <- exp(sw0)
-  Zb <- as.matrix(Zb)
-  Zw <- as.matrix(Zw)
-  #cat(dim(Zw), '\n')
   bb <- Bb0 * (.25 + sb^2) + .5 + as.matrix(Zb - mean(Zb)) %*% as.matrix(Bb0v)
   bw <- Bw0 * (.25 + sw^2) + .5 + as.matrix(Zw - mean(Zw)) %*% as.matrix(Bw0v)
   rho <- (exp(2 * rho0) - 1) / (exp(2 * rho0) + 1)
