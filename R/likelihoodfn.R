@@ -14,10 +14,9 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   sw <- exp(sw0)
   Zb <- as.matrix(Zb)
   Zw <- as.matrix(Zw)
-  bb <- Bb0 * (.25 + sb^2) + .5 +
-    as.matrix(apply(Zb, 2, function(x) x - mean(x))) %*% as.matrix(Bb0v)
-  bw <- Bw0 * (.25 + sw^2) + .5 +
-    as.matrix(apply(Zw, 2, function(x) x - mean(x))) %*% as.matrix(Bw0v)
+  #cat(dim(Zw), '\n')
+  bb <- Bb0 * (.25 + sb^2) + .5 + as.matrix(Zb - mean(Zb)) %*% as.matrix(Bb0v)
+  bw <- Bw0 * (.25 + sw^2) + .5 + as.matrix(Zw - mean(Zw)) %*% as.matrix(Bw0v)
   rho <- (exp(2 * rho0) - 1) / (exp(2 * rho0) + 1)
   sigb2 <- sb^2
   sigw2 <- sw^2
