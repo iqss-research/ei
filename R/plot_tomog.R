@@ -1,3 +1,7 @@
+#' Visualizing EI
+#'
+#' @param ei.object The output of \code{ei()}
+#' @param options The list of options
 #' @export
 plot_tomog <- function(ei.object, options = list()) {
   options <- plot_tomg_options(options)
@@ -179,7 +183,7 @@ plot_length_cat <- function(tb, options) {
     ggplot2::geom_segment(aes(
       x = b_bounds[, 1], y = w_bounds[, 1],
       xend = b_bounds[, 2], yend = w_bounds[, 2],
-      color = length_cat
+      color = .data$length_cat
     )) +
     ggplot2::scale_color_manual(
       values = hcl(h = 30, c = 100, l = seq(1, 80, length.out = options$category + 1)),
@@ -196,7 +200,7 @@ plot_tomogd <- function(ei.object, options) {
   tb <- tibble::tibble(
     b_bounds = cbind(bounds[, 1], bounds[, 2]),
     w_bounds = cbind(bounds[, 4], bounds[, 3])
-  ) %>% plot_add_scale(., options)
+  ) %>% plot_add_scale(options)
 
 
   # Plot
@@ -214,6 +218,7 @@ plot_tomogd <- function(ei.object, options) {
 #' @import magrittr
 #' @import ggplot2
 #' @import tibble
+#' @importFrom rlang .data
 #' @import dplyr
 plot_add_CI <- function(p, ei.object, options) {
   calc_CI <- function(ei.object, alpha) {
@@ -243,13 +248,15 @@ plot_add_CI <- function(p, ei.object, options) {
   ) -> tomo_res_CI
 
   tomo_res_CI %>%
-    mutate(length = sqrt((b_end - b_start)^2 + (w_end - w_start)^2)) %>%
+    mutate(length = sqrt((.data$b_end - .data$b_start)^2 + (.data$w_end - .data$w_start)^2)) %>%
     mutate(scale = ((length - min(length)) / (max(length) - min(length))) * 100) -> tomo_res_CI
 
   p +
     geom_segment(
       data = tomo_res_CI,
-      aes(x = b_start, y = w_start, xend = b_end, yend = w_end),
+      aes(x = .data$b_start,
+          y = .data$w_start,
+          xend = .data$b_end, yend = .data$w_end),
       color = "red", show.legend = FALSE
     ) -> p
   return(p)
@@ -258,6 +265,7 @@ plot_add_CI <- function(p, ei.object, options) {
 #' @import magrittr
 #' @import ggplot2
 #' @import tibble
+#' @importFrom rlang .data
 #' @import dplyr
 plot_add_points <- function(p, ei.object, options) {
   calc_points <- function(ei.object) {
@@ -275,16 +283,15 @@ plot_add_points <- function(p, ei.object, options) {
   points <- calc_points(ei.object)
 
   p +
-    geom_point(
+    ggplot2::geom_point(
       data = points,
-      aes(x = betabm, y = betawm),
+      aes(x = .data$betabm, y = .data$betawm),
       colour = "blue"
     ) -> p
   return(p)
 }
 
 
-#' @export
 plot_tomogl <- function(ei.object, lci = TRUE) {
   x <- ei.object$x
   t <- ei.object$t
@@ -292,7 +299,7 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
   Zb <- ei.object$Zb
   Zw <- ei.object$Zw
   phi <- ei.object$phi
-  p <- plot_tomogd(x, t, n, "Tomography Plot with ML Contours", lci = lci)
+  # p <- plot_tomogd(x, t, n, "Tomography Plot with ML Contours", lci = lci)
   numb <- dim(Zb)[2]
   numw <- dim(Zw)[2]
   Bb0 <- phi[1]
@@ -324,7 +331,6 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
 }
 
 
-#' @export
 plot_tomogP2 <- function() {
 
 }

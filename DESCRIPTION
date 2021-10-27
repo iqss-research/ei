@@ -9,28 +9,29 @@ Authors@R: c(
     person("Molly", "Roberts", email = "roberts8@fas.harvard.edu", role = c("cre", "aut"))
     )
 Maintainer: James Honaker <zelig.zee@gmail.com>
-Depends: 
+Depends:
     R (>= 2.10),
     eiPack
 Imports:
-    mvtnorm,
-    msm,
-    tmvtnorm,
-    ellipse,
-    plotrix,
-    MASS,
-    magrittr,
-    ucminf,
-    cubature,
-    mnormt,
-    sp,
-    ggplot2,
-    patchwork,
-    tibble,
-    dplyr,
-    latex2exp,
     cli,
-    Rcpp
+    cubature,
+    dplyr,
+    ellipse,
+    ggplot2,
+    magrittr,
+    MASS,
+    mnormt,
+    msm,
+    mvtnorm,
+    latex2exp,
+    patchwork,
+    plotrix,
+    rlang,
+    Rcpp,
+    sp,
+    tibble,
+    tmvtnorm,
+    ucminf
 Suggests:
     rmarkdown,
     knitr,
@@ -43,5 +44,5 @@ Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 LazyData: true
-LinkingTo: 
+LinkingTo:
     Rcpp
