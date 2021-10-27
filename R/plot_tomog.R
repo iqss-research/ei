@@ -42,13 +42,13 @@ plot_tomg_options <- function(options) {
     stop("Invalid value in `options$category`")
   }
 
-  # scale (which axis to use for scale)
-  if (!"scale" %in% names(options)) {
-    options$scale <- "length"
+  # linecolor (which axis to use for linecolor)
+  if (!"linecolor" %in% names(options)) {
+    options$linecolor <- "length"
   }
 
-  if (!options$scale %in% c("length", "betab", "betaw")) {
-    stop("Invalud value in `options$scale`.")
+  if (!options$linecolor %in% c("length", "betab", "betaw")) {
+    stop("Invalud value in `options$linecolor`.")
   }
 
   # scale_breaks: how to break scales
@@ -121,7 +121,7 @@ plot_length_cont <- function(tb, options) {
 }
 
 plot_add_scale <- function(tb, options) {
-  if (options$scale == "length") {
+  if (options$linecolor == "length") {
     tb %>%
       mutate(
         length = sqrt(abs(b_bounds[, 1] - b_bounds[, 2])^2 +
@@ -130,7 +130,7 @@ plot_add_scale <- function(tb, options) {
       ) -> tb
   }
 
-  if (options$scale == "betab") {
+  if (options$linecolor == "betab") {
     tb %>%
       mutate(
         length = b_bounds[, 2] - b_bounds[, 1],
@@ -138,7 +138,7 @@ plot_add_scale <- function(tb, options) {
       ) -> tb
   }
 
-  if (options$scale == "betaw") {
+  if (options$linecolor == "betaw") {
     tb %>%
       mutate(
         length = w_bounds[, 1] - w_bounds[, 2],
@@ -169,9 +169,9 @@ plot_length_cat <- function(tb, options) {
 
   p <- plot_tomogd_base(strata(tb, q), options)
   legend_name <- case_when(
-    options$scale == "length" ~ latex2exp::TeX("Length (line)"),
-    options$scale == "betaw" ~ latex2exp::TeX("Bound ($\\beta_W$)"),
-    options$scale == "betab" ~ latex2exp::TeX("Bound ($\\beta_B$)")
+    options$linecolor == "length" ~ latex2exp::TeX("Length (line)"),
+    options$linecolor == "betaw" ~ latex2exp::TeX("Bound ($\\beta_W$)"),
+    options$linecolor == "betab" ~ latex2exp::TeX("Bound ($\\beta_B$)")
   )
 
   # Categorical scale
