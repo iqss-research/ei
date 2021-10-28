@@ -38,18 +38,24 @@ ei.sim <- function(ei.object) {
   # Begin Importance Sampling
   cli::cli_progress_step("Beginning importance sampling.", spinner = TRUE)
 
-  keep <- matrix(data = NA, ncol = (length(ei.object$phi)))
+  keep <- matrix(data = NA, nrow = 99, ncol = length(ei.object$phi))
   resamp <- 0
-  while (dim(keep)[1] < 100) {
-    keep <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, 100, keep,
+  cur_row <- 1 # 99 resamples
+  while (cur_row < 100) {
+    out_samp <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, 100, keep,
                   numb = numb, covs, erho, esigma,
                   ebeta, ealphab, ealphaw, Rfun
     )
+
+    if (!is.null(out_samp)) {
+      nro <- nrow(out_samp)
+      keep[cur_row:min(cur_row + nro - 1, 99), ] <- out_samp[1:min(nro, 100 - cur_row), ]
+      cur_row <- cur_row + nro
+    }
     resamp <- resamp + 1
   }
 
   # Extract values from importance sampling
-  keep <- keep[2:100, ]
   mu <- keep[, 1:2]
   sd <- keep[, 3:4]
   rho <- keep[, 5]

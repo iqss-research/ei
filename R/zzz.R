@@ -38,7 +38,8 @@
   # print(mean(is.finite(ir)))
   tst <- ifelse(is.finite(ir), ir > runif(1, 0, 1), FALSE)
   # print(sum(tst))
-  rbind(keep, draw[tst, ])
+  # rbind(keep, draw[tst, , drop = FALSE])
+  draw[tst, , drop = FALSE]
 }
 
 # @sub -- indeces to create R for
