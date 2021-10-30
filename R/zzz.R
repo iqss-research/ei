@@ -1151,7 +1151,7 @@ tomogRxC <- function(formula, data, total = NULL, refine = 100) {
   # }
   # print(data[,cols])
   options(warn = -1)
-  bnds <- bounds(form, data = data, rows = rows, column = cols, threshold = 0)
+  bnds <- eiPack::bounds(form, data = data, rows = rows, column = cols, threshold = 0)
   options(warn = 0)
   # Totals
   dv <- data[, all.names(form)[3]]
@@ -1459,7 +1459,7 @@ tomogRxC <- function(formula, data, total = NULL, refine = 100) {
   if (sum(data[, rows][, 1] < 1.1) == length(data[, rows][, 1])) {
     data <- round(data * data[, total])
   }
-  bnds <- bounds(form, data = data, rows = rows, column = cols, threshold = 0)
+  bnds <- eiPack::bounds(form, data = data, rows = rows, column = cols, threshold = 0)
 
   # Totals
   dv <- data[, all.names(form)[3]]

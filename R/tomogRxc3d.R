@@ -60,7 +60,7 @@ tomogRxC3d <- function(formula, data, total = NULL, lci = TRUE, estimates = FALS
   names <- rows
   cols <- c(all.names(form)[3])
   options(warn = -1)
-  bnds <- bounds(form, data = data, rows = rows, column = cols, threshold = 0)
+  bnds <- eiPack::bounds(form, data = data, rows = rows, column = cols, threshold = 0)
   options(warn = 0)
   # Totals
   dv <- data[, all.names(form)[3]]
