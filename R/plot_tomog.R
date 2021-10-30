@@ -195,7 +195,7 @@ plot_length_cat <- function(tb, options) {
 
 plot_tomogd <- function(ei.object, options) {
   # Take out the bounds
-  bounds <- bounds(ei.object$x, ei.object$t, ei.object$n)
+  bounds <- bounds1(ei.object$x, ei.object$t, ei.object$n)
 
   tb <- tibble::tibble(
     b_bounds = cbind(bounds[, 1], bounds[, 2]),
