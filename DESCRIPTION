@@ -20,7 +20,6 @@ Imports:
     ggplot2,
     magrittr,
     MASS,
-    mnormt,
     msm,
     mvtnorm,
     latex2exp,
@@ -30,8 +29,7 @@ Imports:
     Rcpp,
     sp,
     tibble,
-    tmvtnorm,
-    ucminf
+    tmvtnorm
 Suggests:
     rmarkdown,
     knitr,

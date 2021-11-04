@@ -17,11 +17,11 @@ test_that("`ei()` 2x2", {
   expect_equal(dbuf_summary$Resamp, 33)
 
   expect_equal(dbuf_summary[[6]][1, 1], 1.227206, tolerance = 0.001)
-  expect_equal(dbuf_summary[[6]][2, 5], 0.6443656, tolerance = 0.001)
+  expect_equal(dbuf_summary[[6]][2, 5], 0.6450481, tolerance = 0.001)
 
   expect_equal(dbuf_summary[[7]][2], 1.762994, tolerance = 0.001)
 
-  expect_equal(dbuf_summary[[8]][3], 0.01211547, tolerance = 0.01)
+  expect_equal(dbuf_summary[[8]][3], 0.01229979, tolerance = 0.01)
 
   expect_equal(dbuf_summary[[9]][1, 1], 0.2152043, tolerance = 0.00001)
   expect_equal(dbuf_summary[[9]][2, 2], 0.9507709, tolerance = 0.00001)

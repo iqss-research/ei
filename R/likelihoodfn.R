@@ -28,7 +28,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   enumtol <- .0001
   cT0 <- y < enumtol & homoindx == 0
   cT1 <- y > (1 - enumtol) & homoindx == 0
-  ok <- ifelse(homoindx == 0 & cT0 == 0 & cT1 == 0, T, F)
+  ok <- ifelse(homoindx == 0 & cT0 == 0 & cT1 == 0, TRUE, FALSE)
 
   # Compute likelihood for different categories
 
@@ -44,8 +44,8 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   bounds <- bounds1(x, y, n)
   s <- ifelse(vbb >= 0 & vbb != Inf & !is.na(vbb), sqrt(vbb), NaN)
   res <- NULL
-  b.s <- (bounds[ok, ][, 2] - ebb[ok]) / s[ok]
-  as <- (bounds[ok, ][, 1] - ebb[ok]) / s[ok]
+  b.s <- (bounds[ok, 2] - ebb[ok]) / s[ok]
+  as <- (bounds[ok, 1] - ebb[ok]) / s[ok]
   res[ok] <- log(pnorm(as, lower.tail = F) - pnorm(b.s, lower.tail = F))
   # res[ok] <- ifelse(abs(res[ok])==Inf, log(1*10^-15),res[ok])
   # res[ok] <- ifelse(abs(res[ok])==Inf, NaN,res[ok])

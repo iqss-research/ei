@@ -109,6 +109,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
       return(dbuf)
     }
     if (simulate == TRUE) {
+      # TODO clean this up to make it easier to work with.
       # If the table is two by two, use ei
       dbuf <- tryCatch(tryCatch(ei.estimate(t, x, n,
         id = id,

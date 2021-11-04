@@ -12,8 +12,8 @@
   draw <- rmvnorm(nsims, par[covs], varcv2)
 
   phiv <- dmvnorm(draw, par[covs], varcv2, log = TRUE)
-  zbmiss <- ifelse(covs[6] == FALSE, TRUE, FALSE)
-  zwmiss <- ifelse(covs[(6 + numb)] == FALSE, TRUE, FALSE)
+  zbmiss <- isFALSE(covs[6])
+  zwmiss <- isFALSE(covs[(6 + numb)])
   if (zbmiss == TRUE & zwmiss == FALSE) {
     draw <- cbind(draw[, 1:5], rep(1, nsims), draw[, (5 + numb):sum(covs)])
   }
@@ -51,6 +51,8 @@
   out <- NULL
   lower <- cbind(-bb[sub] / sb, -bw[sub] / sw)
   upper <- cbind(-bb[sub] / sb + 1 / sb, -bw[sub] / sw + 1 / sw)
+  #lower[!is.finite(lower)] <- -Inf
+  #upper[!is.finite(upper)] <- Inf
   mean <- c(0, 0)
   corr <- matrix(c(1, rho, rho, 1), nrow = 2)
 
@@ -79,9 +81,9 @@
   }
   if (Rfun == 2) {
     makeR <- function(i) {
-      qi <- sadmvn(
+      qi <- mvtnorm::pmvnorm(
         lower = lower[i, ], upper = upper[i, ], mean = mean,
-        varcov = corr
+        sigma = corr
       )
     }
     # out <- foreach(i = 1:length(x[sub]), .combine="c") %dopar% makeR(i)
@@ -128,7 +130,9 @@
   }
 
   if (Rfun == 5) {
-    qi <- sadmvn(lower = lower[1, ], upper = upper[1, ], mean = mean, varcov = corr)
+    #qi <- mnormt::sadmvn(lower = lower[1, ], upper = upper[1, ], mean = mean, varcov = corr)
+    qi <- mvtnorm::pmvnorm(lower = lower[1, ], upper = upper[1, ],
+                           mean = mean, sigma = corr)
     qi[qi < 1e-14] <- 1e-14
     qi <- log(qi)
     qi[is.na(qi) | abs(qi) == Inf] <- 999

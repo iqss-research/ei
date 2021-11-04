@@ -4,16 +4,20 @@
 \alias{ei.sim}
 \title{Simulate EI Solution via Importance Sampling}
 \usage{
-ei.sim(ei.object)
+ei.sim(ei.object, ndraws = 99, nsims = 100)
 }
 \arguments{
 \item{ei.object}{\code{ei} object}
+
+\item{ndraws}{integer. The number of draws.}
+
+\item{nsims}{integer. The number of simulations within each draw.}
 }
 \value{
 TODO
 }
 \description{
-Simulate EI solution via importance sampling
+Simulate EI Solution via Importance Sampling
 }
 \examples{
 data(sample_ei)

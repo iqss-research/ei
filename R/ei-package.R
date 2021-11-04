@@ -7,7 +7,6 @@
 #' @importFrom ellipse ellipse
 #' @importFrom mvtnorm dmvnorm rmvnorm pmvnorm
 #' @importFrom cubature adaptIntegrate
-#' @importFrom mnormt sadmvn
 #' @importFrom sp point.in.polygon
 #' @importFrom plotrix draw.circle
 #' @importFrom msm rtnorm

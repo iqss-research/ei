@@ -1,9 +1,9 @@
 #' Simulate EI Solution via Importance Sampling
 #'
-#' Simulate EI solution via importance sampling
-#'
-#'
 #' @param ei.object \code{ei} object
+#' @param ndraws integer. The number of draws.
+#' @param nsims integer. The number of simulations within each draw.
+#'
 #' @author Gary King <<email: king@@harvard.edu>> and Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>
 #' @references Gary King (1997). A Solution to the Ecological Inference
@@ -17,7 +17,7 @@
 #' form <- t ~ x
 #' ei_obj <- ei(form, total = "n", data = sample_ei, simulate = FALSE)
 #' sims <- ei.sim(ei_obj)
-ei.sim <- function(ei.object) {
+ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
   hessian <- ei.object$hessianC
   erho <- ei.object$erho
   esigma <- ei.object$esigma
@@ -38,18 +38,18 @@ ei.sim <- function(ei.object) {
   # Begin Importance Sampling
   cli::cli_progress_step("Beginning importance sampling.", spinner = TRUE)
 
-  keep <- matrix(data = NA, nrow = 99, ncol = length(ei.object$phi))
+  keep <- matrix(data = NA, nrow = ndraws, ncol = length(ei.object$phi))
   resamp <- 0
   cur_row <- 1 # 99 resamples
-  while (cur_row < 100) {
-    out_samp <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, 100, keep,
+  while (cur_row <= ndraws) {
+    out_samp <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, nsims, keep,
                   numb = numb, covs, erho, esigma,
                   ebeta, ealphab, ealphaw, Rfun
     )
 
     if (!is.null(out_samp)) {
       nro <- nrow(out_samp)
-      keep[cur_row:min(cur_row + nro - 1, 99), ] <- out_samp[1:min(nro, 100 - cur_row), ]
+      keep[cur_row:min(cur_row + nro - 1, ndraws), ] <- out_samp[1:min(nro, 1 + ndraws - cur_row), ]
       cur_row <- cur_row + nro
     }
     resamp <- resamp + 1
@@ -87,8 +87,8 @@ ei.sim <- function(ei.object) {
   rho <- psi[, (length(x) * 2 + 3)]
   omx <- 1 - x
   sbw <- rho * sb * sw
-  betab <- matrix(nrow = length(x), ncol = dim(keep)[1])
-  betaw <- matrix(nrow = length(x), ncol = dim(keep)[1])
+  betab <- matrix(nrow = length(x), ncol = nrow(keep))
+  betaw <- matrix(nrow = length(x), ncol = nrow(keep))
   homoindx <- ifelse(x == 0, 1, 0)
   homoindx <- ifelse(x == 1, 2, homoindx)
   enumtol <- .0001
@@ -97,7 +97,7 @@ ei.sim <- function(ei.object) {
   ok <- ifelse(homoindx == 0 & cT0 == 0 & cT1 == 0, T, F)
   wh <- homoindx == 1
   bl <- homoindx == 2
-  for (i in 1:dim(keep)[1]) {
+  for (i in 1:nrow(keep)) {
     sig2 <- sb[i]^2 * x^2 + sw[i]^2 * omx^2 + sbw[i] * 2 * x * omx
     omega <- sb[i]^2 * x + sbw[i] * omx
     eps <- t - (bb[i, ]) * x - (bw[i, ]) * omx
@@ -127,20 +127,20 @@ ei.sim <- function(ei.object) {
   }
 
   if (sum(wh) > 0) {
-    betaw[wh, ] <- as.matrix(rep(1, dim(keep)[1])) %*% t(as.matrix(t[wh]))
+    betaw[wh, ] <- as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(t[wh]))
   }
 
   if (sum(bl) > 0) {
-    betaw[bl, ] <- NA
-    # betaw[bl,] <- as.matrix(rep(1,dim(keep)[1]))%*%t(as.matrix(t[bl]))
+    #betaw[bl, ] <- NA
+    betaw[bl,] <- as.matrix(rep(1,nrow(keep)))%*%t(as.matrix(t[bl]))
   }
   if (sum(cT1) > 0) {
     betaw[cT1, ] <-
-      as.matrix(rep(1, dim(keep)[1])) %*% t(as.matrix(bounds[cT1, 3]))
+      as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(bounds[cT1, 3]))
   }
   if (sum(cT0) > 0) {
     betaw[cT0, ] <-
-      as.matrix(rep(1, dim(keep)[1])) %*% t(as.matrix(bounds[cT0, 3]))
+      as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(bounds[cT0, 3]))
   }
 
   mbetab <- rowMeans(betab)
