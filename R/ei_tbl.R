@@ -1,44 +1,68 @@
 ## Designed by Christopher T. Kenny
 ## Based on Cory McCartan's  betab,
 
+ei_tbl <- function() {
 
-new_ei_tbl <- function(data, x, t, n, phi, hessian, hessianC, psi,
-                       betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
-                       erho, esigma, ebta, ealphab, ealphw, numb,
-                       Zb, Zw, truth, precision, id = NULL) {
+}
+
+
+# helpers ----
+new_ei_tbl <- function(data, x = NULL, t = NULL, n = NULL, phi = NULL,
+                       hessian = NULL, hessianC = NULL, psi = NULL,
+                       betab = NULL, betaw = NULL, sbetab = NULL,
+                       sbetaw = NULL, betabs = NULL, betaws = NULL, resamp = NULL,
+                       erho = NULL, esigma = NULL, ebeta = NULL,
+                       ealphab = NULL, ealphw = NULL, numb = NULL,
+                       Zb = NULL, Zw = NULL, truth = NULL, precision = NULL,
+                       id = NULL) {
+  if (missing(data)) cli::cli_abort("`data` required for `new_ei_tbl`.")
+
   data <- reconstruct.ei_tbl(data)
-  attr(data, "x") <- x
-  attr(data, "t") <- t
-  attr(data, "n") <- n
-
-  #  phi
-  # hessian
-  # hessianC
-  # psi
-  # betab
-  #
-  #  betaw
-  # sbetab
-  # sbetaw
-  # betabs
-  # betaws
-  # resamp
-  #
-  #  erho
-  # esigma
-  # ebta
-  # ealphab
-  # ealphw
-  #
-  #  numb
-  # Zb
-  # Zw
-  # truth
-  # precision
-  id <- NULL
+  data <- add_ei_attr(data,  x, t, n, phi, hessian, hessianC, psi,
+                      betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
+                      erho, esigma, ebeta, ealphab, ealphw, numb,
+                      Zb, Zw, truth, precision, id)
 
   data
 }
+
+#' attr control
+#' @keywords internal
+#' @noRd
+add_ei_attr <- function(data, x, t, n, phi, hessian, hessianC, psi,
+                        betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
+                        erho, esigma, ebeta, ealphab, ealphw, numb,
+                        Zb, Zw, truth, precision, id) {
+
+  if (!is.null(x)) attr(data, "x") <- x
+  if (!is.null(t)) attr(data, "t") <- t
+  if (!is.null(n)) attr(data, "n") <- n
+  if (!is.null(phi)) attr(data, "phi") <- phi
+  if (!is.null(hessian)) attr(data, "hessian") <- hessian
+  if (!is.null(hessianC)) attr(data, "hessianC") <- hessianC
+  if (!is.null(psi)) attr(data, "psi") <- psi
+  if (!is.null(betab)) attr(data, "betab") <- betab
+  if (!is.null(betaw)) attr(data, "betaw") <- betaw
+  if (!is.null(sbetab)) attr(data, "sbetab") <- sbetab
+  if (!is.null(sbetaw)) attr(data, "sbetaw") <- sbetaw
+  if (!is.null(betabs)) attr(data, "betabs") <- betabs
+  if (!is.null(betaws)) attr(data, "betaws") <- betaws
+  if (!is.null(resamp)) attr(data, "resamp") <- resamp
+  if (!is.null(erho)) attr(data, "erho") <- erho
+  if (!is.null(esigma)) attr(data, "esigma") <- esigma
+  if (!is.null(ebeta)) attr(data, "ebeta") <- ebeta
+  if (!is.null(ealphab)) attr(data, "ealphab") <- ealphab
+  if (!is.null(ealphw)) attr(data, "ealphw") <- ealphw
+  if (!is.null(numb)) attr(data, "numb") <- numb
+  if (!is.null(Zb)) attr(data, "Zb") <- Zb
+  if (!is.null(Zw)) attr(data, "Zw") <- Zw
+  if (!is.null(truth)) attr(data, "truth") <- truth
+  if (!is.null(precision)) attr(data, "precision") <- precision
+  if (!is.null(id)) attr(data, "id") <- id
+
+  data
+}
+
 
 validate_ei_tbl <- function(data) {
   if (!is.data.frame(data)) {
@@ -47,6 +71,9 @@ validate_ei_tbl <- function(data) {
   if (!inherits(data, "ei_tbl")) {
     stop("Not a `ei_tbl` object")
   }
+
+  # check for necessary attributes:
+  # ex: stopifnot(!is.null(attr(data, "ndists")))
 
   data
 }
@@ -71,7 +98,12 @@ reconstruct.ei_tbl <- function(data, old) {
   }
 
   if (!missing(old)) {
-
+    others <- setdiff(names(attributes(old)), names(attributes(data)))
+    if (length(others) > 1) {
+      for (i in seq_len(length(others))) {
+        attr(data, others[i]) <- attr(old, others[i])
+      }
+    }
   }
 
   class(data) <- c("ei_tbl", classes)
@@ -85,3 +117,5 @@ reconstruct.ei_tbl <- function(data, old) {
 as_ei_tbl <- function(x) {
   reconstruct.ei_tbl(x)
 }
+
+
