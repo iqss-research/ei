@@ -105,7 +105,7 @@ plot_tomg_options <- function(options) {
   }
 
   # Posterior contours
-  if (! "contour_posterior" %in% names(options)) {
+  if (!"contour_posterior" %in% names(options)) {
     options$contour_posterior <- FALSE
   }
 
@@ -230,7 +230,6 @@ plot_tomog_base <- function(ei.object, options) {
     b_bounds = cbind(bounds[, 1], bounds[, 2]),
     w_bounds = cbind(bounds[, 4], bounds[, 3])
   ) %>% plot_add_scale(options)
-
 
   # Plot
   if (options$category == 0) {
@@ -372,7 +371,6 @@ plot_add_contourML <- function(p, ei.object, options) {
 
   return(p)
 }
-
 
 #' @import magrittr
 #' @import ggplot2
