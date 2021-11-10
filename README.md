@@ -49,8 +49,8 @@ Replace base R plots with ggplots
 - [x] .tomogP2 -> plot_tomog + option (contour_posterior)
 - [x] .betabd -> plot_density + option (betab)
 - [x] .betawd -> plot_density + option (betaw)
-- [ ] .xt -> plot_xt
-- [ ] .xtc -> plot_xtc
+- [x] .xt -> plot_xt
+- [x] .xtc -> plot_xtc
 - [ ] .xtfit -> plot_xtfit
 - [ ] .xtfitg -> plot_xtfitg
 - [ ] .estsims -> plot_estsims
