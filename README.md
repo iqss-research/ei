@@ -42,13 +42,13 @@ Last Updated: 2021.10.19
 Replace base R plots with ggplots
 
 - [x] .tomog -> plot_tomog
-- [x] .tomogl -> plot_tomog + option (ellipse)
+- [x] .tomogl -> plot_tomog + option (contour_ML)
 - [x] .tomog80CI -> plot_tomog + option (CI)
-- [x] .tomog95CI -> plot_tomog + option
-- [ ] .tomogE -> plot_tomogE
-- [ ] .tomogP2 -> plot_tomogP2
-- [ ] .betabd -> plot_betabd
-- [ ] .betawd -> plot_betawd
+- [x] .tomog95CI -> plot_tomog + option (CI)
+- [x] .tomogE -> plot_tomog + option (points)
+- [ ] .tomogP2 -> plot_tomog + option (contour_posterior)
+- [ ] .betabd -> plot_density + option (betab)
+- [ ] .betawd -> plot_density + option (betaw)
 - [ ] .xt -> plot_xt
 - [ ] .xtc -> plot_xtc
 - [ ] .xtfit -> plot_xtfit

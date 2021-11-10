@@ -18,10 +18,16 @@ plot_tomog <- function(ei.object, options = list()) {
     p <- plot_add_points(p, ei.object, options)
   }
 
-  if (options$ellipse) {
-    # Adding ellipses
-    p <- plot_add_ellipse(p, ei.object, options)
+  if (options$contour_ML) {
+    # Adding ML contours
+    p <- plot_add_contourML(p, ei.object, options)
   }
+
+  if (options$contour_posterior) {
+    # Adding posterior contours
+    p <- plot_add_contourPost(p, ei.object, options)
+  }
+
 
   return(p)
 }
@@ -89,13 +95,22 @@ plot_tomg_options <- function(options) {
     stop("`options$points` takes either TRUE or FALSE.")
   }
 
-  # Ellipse
-  if (!"ellipse" %in% names(options)) {
-    options$ellipse <- FALSE
+  # ML contours
+  if (!"contour_ML" %in% names(options)) {
+    options$contour_ML <- FALSE
   }
 
-  if (!options$ellipse %in% c(TRUE, FALSE)) {
-    stop("`options$ellipse` takes either TRUE or FALSE.")
+  if (!options$contour_ML %in% c(TRUE, FALSE)) {
+    stop("`options$contour_ML` takes either TRUE or FALSE.")
+  }
+
+  # Posterior contours
+  if (! "contour_posterior" %in% names(options)) {
+    options$contour_posterior <- FALSE
+  }
+
+  if (!options$contour_posterior %in% c(TRUE, FALSE)) {
+    stop("`options$contour_posterior` takes either TRUE or FALSE.")
   }
 
   return(options)
@@ -312,37 +327,7 @@ plot_add_points <- function(p, ei.object, options) {
 #' @import tibble
 #' @importFrom rlang .data
 #' @import dplyr
-plot_add_ellipse <- function(p, ei.object, options) {
-  calc_ellipse <- function(x, scale = c(1, 1), centre = c(0, 0), level = 0.95,
-                           t = sqrt(qchisq(level, 2)), which = c(1, 2), npoints = 350) {
-    # From R package `elli[se`
-    names <- c("x", "y")
-    if (is.matrix(x)) {
-      xind <- which[1]
-      yind <- which[2]
-      r <- x[xind, yind]
-      if (missing(scale)) {
-        scale <- sqrt(c(x[xind, xind], x[yind, yind]))
-        if (scale[1] > 0) r <- r / scale[1]
-        if (scale[2] > 0) r <- r / scale[2]
-      }
-      if (!is.null(dimnames(x)[[1]])) {
-        names <- dimnames(x)[[1]][c(xind, yind)]
-      }
-    } else {
-      r <- x
-    }
-    r <- min(max(r, -1), 1) # clamp to -1..1, in case of rounding errors
-    d <- acos(r)
-    a <- seq(0, 2 * pi, len = npoints)
-    res <- matrix(c(t * scale[1] * cos(a + d / 2) + centre[1], t * scale[2] *
-      cos(a - d / 2) + centre[2]), npoints, 2, dimnames = list(
-      NULL,
-      names
-    ))
-    return(tibble::as_tibble(res))
-  }
-
+plot_add_contourML <- function(p, ei.object, options) {
   x <- ei.object$x
   t <- ei.object$t
   n <- ei.object$n
@@ -367,17 +352,59 @@ plot_add_ellipse <- function(p, ei.object, options) {
 
   res_a <- calc_ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
     scale = c(sb, sw),
-    centre = c(mean(bb), mean(bw)), level = .914
+    centre = c(mean(bb), mean(bw)), level = 0.914
   ) %>% mutate(level = 0.914)
 
   res_b <- calc_ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
     scale = c(sb, sw),
-    centre = c(mean(bb), mean(bw)), level = .7
+    centre = c(mean(bb), mean(bw)), level = 0.7
   ) %>% mutate(level = 0.7)
 
   res_c <- calc_ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
     scale = c(sb, sw),
-    centre = c(mean(bb), mean(bw)), level = .35
+    centre = c(mean(bb), mean(bw)), level = 0.35
+  ) %>% mutate(level = 0.35)
+
+  p <- p +
+    geom_path(data = res_a, aes(x = x, y = y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_b, aes(x = x, y = y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_c, aes(x = x, y = y), colour = "#16a307", size = 1.5)
+
+  return(p)
+}
+
+
+#' @import magrittr
+#' @import ggplot2
+#' @import tibble
+#' @importFrom rlang .data
+#' @import dplyr
+plot_add_contourPost <- function(p, ei.object, options) {
+  # Checking the input
+  if (!"betabs" %in% names(ei.object)) {
+    stop("This plot function requires an ei.sim object.")
+  }
+
+  x <- ei.object$x
+  t <- ei.object$t
+  n <- ei.object$n
+  psi <- ei.object$psi
+  bbp <- psi[, 1:length(x)]
+  bwp <- psi[, (length(x) + 1):(2 * length(x))]
+  sbp <- psi[, 2 * length(x) + 1]
+  swp <- psi[, 2 * length(x) + 2]
+  rhop <- psi[, 2 * length(x) + 3]
+
+  res_a <- calc_ellipse(matrix(c(1, rhop, rhop, 1), nrow = 2),
+    scale = c(sbp, swp), centre = c(mean(bbp), mean(bwp)), level = 0.914
+  ) %>% mutate(level = 0.914)
+
+  res_b <- calc_ellipse(matrix(c(1, rhop, rhop, 1), nrow = 2),
+    scale = c(sbp, swp), centre = c(mean(bbp), mean(bwp)), level = 0.7
+  ) %>% mutate(level = 0.7)
+
+  res_c <- calc_ellipse(matrix(c(1, rhop, rhop, 1), nrow = 2),
+    scale = c(sbp, swp), centre = c(mean(bbp), mean(bwp)), level = 0.35
   ) %>% mutate(level = 0.35)
 
   p <- p +
