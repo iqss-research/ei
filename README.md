@@ -41,10 +41,10 @@ Last Updated: 2021.10.19
 ## Plotting
 Replace base R plots with ggplots
 
-- [ ] .tomog -> plot_tomog
-- [ ] .tomogl -> plot_tomogl
-- [ ] .tomog80CI -> plot_tomog80CI
-- [ ] .tomog95CI -> plot_tomog95CI
+- [x] .tomog -> plot_tomog
+- [x] .tomogl -> plot_tomog + option (ellipse)
+- [x] .tomog80CI -> plot_tomog + option (CI)
+- [x] .tomog95CI -> plot_tomog + option
 - [ ] .tomogE -> plot_tomogE
 - [ ] .tomogP2 -> plot_tomogP2
 - [ ] .betabd -> plot_betabd
