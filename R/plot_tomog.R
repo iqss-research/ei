@@ -6,7 +6,7 @@
 plot_tomog <- function(ei.object, options = list()) {
   options <- plot_tomg_options(options)
 
-  p <- plot_tomogd(ei.object, options)
+  p <- plot_tomog_base(ei.object, options)
 
   if (!is.null(options$CI)) {
     # Adding confidence interval
@@ -55,13 +55,13 @@ plot_tomg_options <- function(options) {
     stop("Invalud value in `options$linecolor`.")
   }
 
-  # scale_breaks: how to break scales
-  if (!"scale_breaks" %in% names(options)) {
-    options$scale_breaks <- "even"
+  # breaks: how to break scales
+  if (!"breaks" %in% names(options)) {
+    options$breaks <- "even"
   }
 
-  if (!options$scale_breaks %in% c("even", "quantile")) {
-    stop("Invalud value in `options$scale_breaks`.")
+  if (!options$breaks %in% c("even", "quantile")) {
+    stop("Invalud value in `options$breaks`.")
   }
 
   # Confidence Interval
@@ -165,7 +165,7 @@ strata <- function(tb, q) {
 }
 
 plot_length_cat <- function(tb, options) {
-  if (options$scale_breaks == "even") {
+  if (options$breaks == "even") {
     q <- seq(min(tb$length), max(tb$length), length.out = options$category + 1)
   } else {
     q <- quantile(tb$length, prob = seq(0, 1, length.out = options$category + 1))
@@ -193,7 +193,7 @@ plot_length_cat <- function(tb, options) {
   return(p)
 }
 
-plot_tomogd <- function(ei.object, options) {
+plot_tomog_base <- function(ei.object, options) {
   # Take out the bounds
   bounds <- bounds1(ei.object$x, ei.object$t, ei.object$n)
 
@@ -254,9 +254,11 @@ plot_add_CI <- function(p, ei.object, options) {
   p +
     geom_segment(
       data = tomo_res_CI,
-      aes(x = .data$b_start,
-          y = .data$w_start,
-          xend = .data$b_end, yend = .data$w_end),
+      aes(
+        x = .data$b_start,
+        y = .data$w_start,
+        xend = .data$b_end, yend = .data$w_end
+      ),
       color = "red", show.legend = FALSE
     ) -> p
   return(p)
@@ -299,7 +301,7 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
   Zb <- ei.object$Zb
   Zw <- ei.object$Zw
   phi <- ei.object$phi
-  # p <- plot_tomogd(x, t, n, "Tomography Plot with ML Contours", lci = lci)
+  # p <- plot_tomog_base(x, t, n, "Tomography Plot with ML Contours", lci = lci)
   numb <- dim(Zb)[2]
   numw <- dim(Zw)[2]
   Bb0 <- phi[1]
