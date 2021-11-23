@@ -12,6 +12,10 @@ plot_xt <- function(ei.object, options = list()) {
     p <- plot_add_fit(p, ei.object, options)
   }
 
+  if (options$goodman) {
+    p <- plot_add_goodman(p, ei.object, options)
+  }
+
   return(p)
 }
 
@@ -38,6 +42,14 @@ plot_xt_options <- function(options) {
 
   if (!(options$CI > 0 & options$CI < 1)) {
     stop("Use the appropriate value for CI")
+  }
+
+  if (!"goodman" %in% names(options)) {
+    options$goodman <- FALSE
+  }
+
+  if (!options$goodman %in% c(TRUE, FALSE)) {
+    stop("`options$goodman` takes either TRUE or FALSE.")
   }
 
   return(options)
@@ -106,3 +118,27 @@ plot_add_fit <- function(p, ei.object, options) {
 
   return(p)
 }
+
+
+#' @import ggplot2
+#' @import magrittr
+#' @importFrom rlang .data
+plot_add_goodman <- function(p, ei.object, options) {
+  t <- ei.object$t
+  x <- ei.object$x
+  fit <- lm(t ~ x)
+  dat <- tibble::tibble(
+    x = seq(0, 1, 0.1)
+  )
+  dat$y <- predict(fit, newdata = data.frame(x = dat$x))
+
+  p <- p +
+    geom_line(
+      data = dat, aes(x = x, y = y),
+      color = "#16a307"
+    )
+
+  return(p)
+}
+
+

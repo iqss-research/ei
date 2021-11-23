@@ -52,7 +52,7 @@ Replace base R plots with ggplots
 - [x] .xt -> plot_xt
 - [x] .xtc -> plot_xtc
 - [x] .xtfit -> plot_xtfit
-- [ ] .xtfitg -> plot_xtfitg
+- [x] .xtfitg -> plot_xtfitg
 - [ ] .estsims -> plot_estsims
 - [ ] .boundXb  -> plot_boundXb
 - [ ] .boundXw -> plot_boundXw
