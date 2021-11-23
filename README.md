@@ -37,6 +37,7 @@ Last Updated: 2021.10.19
 ### Input check
 
 - [ ] ei(): check the `total` argument
+- [ ] ei(): check the `truth` argument
 
 ## Plotting
 Replace base R plots with ggplots
