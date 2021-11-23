@@ -140,5 +140,3 @@ plot_add_goodman <- function(p, ei.object, options) {
 
   return(p)
 }
-
-
