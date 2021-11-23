@@ -18,7 +18,7 @@ bounds <- function(x, t, n) {
 }
 
 calc_ellipse <- function(x, scale = c(1, 1), centre = c(0, 0), level = 0.95,
-                          t = sqrt(qchisq(level, 2)), which = c(1, 2), npoints = 350) {
+                         t = sqrt(qchisq(level, 2)), which = c(1, 2), npoints = 350) {
   # From R package `elli[se`
   names <- c("x", "y")
   if (is.matrix(x)) {
