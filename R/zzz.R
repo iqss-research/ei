@@ -704,18 +704,6 @@ betaw", ylab = "True betaw", cex = .1
 }
 
 
-#' Plot Truth
-#'
-#' ggplot2 version of .truthfn
-#'
-#' @param ei.object
-#'
-#' @return ggplot
-#' @noRd
-plot_truth <- function(ei.object) {
-
-}
-
 # Functions for Quantities of Interest
 
 .betaB <- function(ei.object) {
@@ -787,31 +775,31 @@ plot_truth <- function(ei.object) {
   return(matrix(c(LAbetaB, UAbetaB, LAbetaW, UAbetaW), nrow = 2))
 }
 
-.aggs <- function(ei.object) {
-  if (!("betabs" %in% names(ei.object))) {
-    message("Error: This eiread function requires an ei.sim object.")
-  }
-  if ("betabs" %in% names(ei.object)) {
-    ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
-    x <- ei.object$x[ok]
-    t <- ei.object$t[ok]
-    n <- ei.object$n[ok]
-    betab <- ei.object$betabs[ok, ]
-    betaw <- ei.object$betaws[ok, ]
-    omx <- 1 - x
-    Nb <- n * x
-    Nw <- n * omx
-    Bbgg <- vector(mode = "numeric", length = dim(betab)[2])
-    for (i in 1:dim(betab)[2]) {
-      Bbgg[i] <- weighted.mean(betab[, i], Nb)
-    }
-    Bwgg <- vector(mode = "numeric", length = dim(betaw)[2])
-    for (i in 1:dim(betaw)[2]) {
-      Bwgg[i] <- weighted.mean(betaw[, i], Nw)
-    }
-    return(cbind(Bbgg, Bwgg))
-  }
-}
+# .aggs <- function(ei.object) {
+#   if (!("betabs" %in% names(ei.object))) {
+#     message("Error: This eiread function requires an ei.sim object.")
+#   }
+#   if ("betabs" %in% names(ei.object)) {
+#     ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
+#     x <- ei.object$x[ok]
+#     t <- ei.object$t[ok]
+#     n <- ei.object$n[ok]
+#     betab <- ei.object$betabs[ok, ]
+#     betaw <- ei.object$betaws[ok, ]
+#     omx <- 1 - x
+#     Nb <- n * x
+#     Nw <- n * omx
+#     Bbgg <- vector(mode = "numeric", length = dim(betab)[2])
+#     for (i in 1:dim(betab)[2]) {
+#       Bbgg[i] <- weighted.mean(betab[, i], Nb)
+#     }
+#     Bwgg <- vector(mode = "numeric", length = dim(betaw)[2])
+#     for (i in 1:dim(betaw)[2]) {
+#       Bwgg[i] <- weighted.mean(betaw[, i], Nw)
+#     }
+#     return(cbind(Bbgg, Bwgg))
+#   }
+# }
 
 .maggs <- function(ei.object) {
   if (!("betabs" %in% names(ei.object))) {

@@ -57,7 +57,7 @@ Replace base R plots with ggplots
 - [x] .estsims -> plot_sims
 - [x] .boundXb  -> plot_bound (Xb)
 - [x] .boundXw -> plot_bound (Xw)
-- [ ] .truthfn -> plot_truthfn
+- [x] .truthfn -> plot_truth
 - [ ] .bndplot -> plot_bndplot
 - [ ] .movieD -> plot_movieD
 - [ ] .movie -> plot_movie
