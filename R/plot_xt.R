@@ -67,7 +67,7 @@ plot_xt_base <- function(ei.object, options) {
   maxn <- max(points$n)
   points$scale <- (points$n - minn + 1) / (1 + maxn - minn)
 
-  p <- ggplot2::ggplot(points, aes(x = x, y = t)) +
+  p <- ggplot2::ggplot(points, aes(x = .data$x, y = .data$t)) +
     {
       if (!options$density) ggplot2::geom_point(shape = 21)
     } +
@@ -113,8 +113,8 @@ plot_add_fit <- function(p, ei.object, options) {
   )
 
   p <- p +
-    ggplot2::geom_ribbon(data = points, aes(y = et, ymin = lower, ymax = upper), fill = "blue", alpha = 0.25) +
-    ggplot2::geom_line(data = points, aes(x = x, y = et), color = "red")
+    ggplot2::geom_ribbon(data = points, aes(y = .data$et, ymin = .data$lower, ymax = .data$upper), fill = "blue", alpha = 0.25) +
+    ggplot2::geom_line(data = points, aes(x = .data$x, y = .data$et), color = "red")
 
   return(p)
 }
@@ -134,7 +134,7 @@ plot_add_goodman <- function(p, ei.object, options) {
 
   p <- p +
     geom_line(
-      data = dat, aes(x = x, y = y),
+      data = dat, aes(x = .data$x, y = .data$y),
       color = "#16a307"
     )
 

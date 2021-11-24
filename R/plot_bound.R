@@ -23,6 +23,8 @@ plot_bound_options <- function(options) {
   return(options)
 }
 
+
+#' @importFrom rlang .data
 plot_bound_base <- function(ei.object, options) {
   if (options$parameter == "betab") {
     x <- ei.object$x
@@ -68,11 +70,11 @@ plot_bound_base <- function(ei.object, options) {
   dat$lower <- 0
   dat$upper <- 0
 
-  p <- ggplot(res, aes(x = x, y = true, ymin = lower, ymax = upper)) +
+  p <- ggplot(res, aes(x = .data$x, y = .data$true, ymin = .data$lower, ymax = .data$upper)) +
     geom_point() +
     geom_linerange() +
     geom_line(
-      data = dat, aes(x = x, y = y),
+      data = dat, aes(x = .data$x, y = .data$y),
       linetype = "dashed"
     ) +
     coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +

@@ -365,9 +365,9 @@ plot_add_contourML <- function(p, ei.object, options) {
   ) %>% mutate(level = 0.35)
 
   p <- p +
-    geom_path(data = res_a, aes(x = x, y = y), colour = "#16a307", size = 1.5) +
-    geom_path(data = res_b, aes(x = x, y = y), colour = "#16a307", size = 1.5) +
-    geom_path(data = res_c, aes(x = x, y = y), colour = "#16a307", size = 1.5)
+    geom_path(data = res_a, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5)
 
   return(p)
 }
@@ -406,9 +406,9 @@ plot_add_contourPost <- function(p, ei.object, options) {
   ) %>% mutate(level = 0.35)
 
   p <- p +
-    geom_path(data = res_a, aes(x = x, y = y), colour = "#16a307", size = 1.5) +
-    geom_path(data = res_b, aes(x = x, y = y), colour = "#16a307", size = 1.5) +
-    geom_path(data = res_c, aes(x = x, y = y), colour = "#16a307", size = 1.5)
+    geom_path(data = res_a, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5)
 
   return(p)
 }

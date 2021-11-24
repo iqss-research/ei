@@ -39,7 +39,7 @@ plot_sims_base <- function(ei.object, options) {
     dat$color <- runif(nrow(dat), 26, 51)
   })
 
-  p <- ggplot(dat, aes(x = x, y = y, colour = factor(color))) +
+  p <- ggplot(dat, aes(x = .data$x, y = .data$y, colour = factor(.data$color))) +
     geom_point(size = 0.25, show.legend = FALSE) +
     coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
     labs(x = latex2exp::TeX("$\\beta_B$ simulations"), y = latex2exp::TeX("$\\beta_W$ simulations")) +
