@@ -29,6 +29,7 @@ Imports:
     Rcpp,
     sp,
     tibble,
+    tidyr,
     tmvtnorm
 Suggests:
     rmarkdown,

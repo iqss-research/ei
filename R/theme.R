@@ -8,4 +8,3 @@ theme_ei <- function(legend.position = "right") {
       legend.position = legend.position
     )
 }
-

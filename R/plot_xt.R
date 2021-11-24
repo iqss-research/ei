@@ -12,6 +12,10 @@ plot_xt <- function(ei.object, options = list()) {
     p <- plot_add_fit(p, ei.object, options)
   }
 
+  if (options$goodman) {
+    p <- plot_add_goodman(p, ei.object, options)
+  }
+
   return(p)
 }
 
@@ -40,6 +44,14 @@ plot_xt_options <- function(options) {
     stop("Use the appropriate value for CI")
   }
 
+  if (!"goodman" %in% names(options)) {
+    options$goodman <- FALSE
+  }
+
+  if (!options$goodman %in% c(TRUE, FALSE)) {
+    stop("`options$goodman` takes either TRUE or FALSE.")
+  }
+
   return(options)
 }
 
@@ -55,7 +67,7 @@ plot_xt_base <- function(ei.object, options) {
   maxn <- max(points$n)
   points$scale <- (points$n - minn + 1) / (1 + maxn - minn)
 
-  p <- ggplot2::ggplot(points, aes(x = x, y = t)) +
+  p <- ggplot2::ggplot(points, aes(x = .data$x, y = .data$t)) +
     {
       if (!options$density) ggplot2::geom_point(shape = 21)
     } +
@@ -101,8 +113,30 @@ plot_add_fit <- function(p, ei.object, options) {
   )
 
   p <- p +
-    ggplot2::geom_ribbon(data = points, aes(y = et, ymin = lower, ymax = upper), fill = "blue", alpha = 0.25) +
-    ggplot2::geom_line(data = points, aes(x = x, y = et), color = "red")
+    ggplot2::geom_ribbon(data = points, aes(y = .data$et, ymin = .data$lower, ymax = .data$upper), fill = "blue", alpha = 0.25) +
+    ggplot2::geom_line(data = points, aes(x = .data$x, y = .data$et), color = "red")
+
+  return(p)
+}
+
+
+#' @import ggplot2
+#' @import magrittr
+#' @importFrom rlang .data
+plot_add_goodman <- function(p, ei.object, options) {
+  t <- ei.object$t
+  x <- ei.object$x
+  fit <- lm(t ~ x)
+  dat <- tibble::tibble(
+    x = seq(0, 1, 0.1)
+  )
+  dat$y <- stats::predict(fit, newdata = data.frame(x = dat$x))
+
+  p <- p +
+    geom_line(
+      data = dat, aes(x = .data$x, y = .data$y),
+      color = "#16a307"
+    )
 
   return(p)
 }

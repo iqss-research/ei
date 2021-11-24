@@ -6,7 +6,6 @@
 
 .samp <- function(t, x, n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
                   erho, esigma, ebeta, ealphab, ealphaw, Rfun) {
-
   varcv2 <- solve(varcv) / 4
 
   draw <- rmvnorm(nsims, par[covs], varcv2)
@@ -51,8 +50,8 @@
   out <- NULL
   lower <- cbind(-bb[sub] / sb, -bw[sub] / sw)
   upper <- cbind(-bb[sub] / sb + 1 / sb, -bw[sub] / sw + 1 / sw)
-  #lower[!is.finite(lower)] <- -Inf
-  #upper[!is.finite(upper)] <- Inf
+  # lower[!is.finite(lower)] <- -Inf
+  # upper[!is.finite(upper)] <- Inf
   mean <- c(0, 0)
   corr <- matrix(c(1, rho, rho, 1), nrow = 2)
 
@@ -130,9 +129,11 @@
   }
 
   if (Rfun == 5) {
-    #qi <- mnormt::sadmvn(lower = lower[1, ], upper = upper[1, ], mean = mean, varcov = corr)
-    qi <- mvtnorm::pmvnorm(lower = lower[1, ], upper = upper[1, ],
-                           mean = mean, sigma = corr)
+    # qi <- mnormt::sadmvn(lower = lower[1, ], upper = upper[1, ], mean = mean, varcov = corr)
+    qi <- mvtnorm::pmvnorm(
+      lower = lower[1, ], upper = upper[1, ],
+      mean = mean, sigma = corr
+    )
     qi[qi < 1e-14] <- 1e-14
     qi <- log(qi)
     qi[is.na(qi) | abs(qi) == Inf] <- 999

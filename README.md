@@ -37,6 +37,7 @@ Last Updated: 2021.10.19
 ### Input check
 
 - [ ] ei(): check the `total` argument
+- [ ] ei(): check the `truth` argument
 
 ## Plotting
 Replace base R plots with ggplots
@@ -52,10 +53,10 @@ Replace base R plots with ggplots
 - [x] .xt -> plot_xt
 - [x] .xtc -> plot_xtc
 - [x] .xtfit -> plot_xtfit
-- [ ] .xtfitg -> plot_xtfitg
-- [ ] .estsims -> plot_estsims
-- [ ] .boundXb  -> plot_boundXb
-- [ ] .boundXw -> plot_boundXw
+- [x] .xtfitg -> plot_xtfitg
+- [x] .estsims -> plot_sims
+- [x] .boundXb  -> plot_bound (Xb)
+- [x] .boundXw -> plot_bound (Xw)
 - [ ] .truthfn -> plot_truthfn
 - [ ] .bndplot -> plot_bndplot
 - [ ] .movieD -> plot_movieD

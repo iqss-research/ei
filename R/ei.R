@@ -156,7 +156,6 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     class(dbuf) <- "ei"
     cli::cli_progress_done()
     return(dbuf)
-
   }
 }
 
