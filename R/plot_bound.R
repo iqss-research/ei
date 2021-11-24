@@ -31,7 +31,7 @@ plot_bound_base <- function(ei.object, options) {
     x <- ei.object$x
     t <- ei.object$t
     n <- ei.object$n
-    truebb <- ei.object$truth[,1]
+    truebb <- ei.object$truth[, 1]
     bounds <- bounds1(x, t, n)
 
     res <- tibble::tibble(
@@ -47,7 +47,7 @@ plot_bound_base <- function(ei.object, options) {
     x <- ei.object$x
     t <- ei.object$t
     n <- ei.object$n
-    truebw <- ei.object$truth[,2]
+    truebw <- ei.object$truth[, 2]
     bounds <- bounds1(x, t, n)
 
     res <- tibble::tibble(
@@ -86,4 +86,3 @@ plot_bound_base <- function(ei.object, options) {
 
   return(p)
 }
-

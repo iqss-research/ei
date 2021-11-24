@@ -46,4 +46,3 @@ calc_ellipse <- function(x, scale = c(1, 1), centre = c(0, 0), level = 0.95,
   ))
   return(tibble::as_tibble(res))
 }
-
