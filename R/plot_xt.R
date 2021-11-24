@@ -130,7 +130,7 @@ plot_add_goodman <- function(p, ei.object, options) {
   dat <- tibble::tibble(
     x = seq(0, 1, 0.1)
   )
-  dat$y <- predict(fit, newdata = data.frame(x = dat$x))
+  dat$y <- stats::predict(fit, newdata = data.frame(x = dat$x))
 
   p <- p +
     geom_line(

@@ -67,7 +67,7 @@ plot_bound_base <- function(ei.object, options) {
   dat <- tibble::tibble(
     x = seq(0, 1, 0.1)
   )
-  dat$y <- predict(fit, newdata = data.frame(x = dat$x))
+  dat$y <- stats::predict(fit, newdata = data.frame(x = dat$x))
   dat$lower <- 0
   dat$upper <- 0
 
