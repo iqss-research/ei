@@ -24,6 +24,7 @@ plot_bound_options <- function(options) {
 }
 
 
+#' @import ggplot2
 #' @importFrom rlang .data
 plot_bound_base <- function(ei.object, options) {
   if (options$parameter == "betab") {

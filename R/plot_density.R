@@ -23,6 +23,9 @@ plot_density_options <- function(options) {
   return(options)
 }
 
+
+#' @import ggplot2
+#' @importFrom rlang .data
 plot_density_base <- function(ei.object, options) {
   if (!"betabs" %in% names(ei.object)) {
     stop("This plot function requires an ei.sim object.")
@@ -40,7 +43,7 @@ plot_density_base <- function(ei.object, options) {
     x_label <- "$\\beta_W$"
   }
 
-  ggplot2::ggplot(betabm, aes(x = x)) +
+  ggplot2::ggplot(betabm, aes(x = .data$x)) +
     ggplot2::geom_density(color = "#16a307") +
     ggplot2::labs(
       x = latex2exp::TeX(x_label),
@@ -48,7 +51,7 @@ plot_density_base <- function(ei.object, options) {
     ) +
     ggplot2::geom_segment(
       data = betabm,
-      aes(x = x, y = 0, xend = x, yend = 0.25)
+      aes(x = .data$x, y = 0, xend = .data$x, yend = 0.25)
     ) +
     ggplot2::xlim(c(0, 1)) +
     theme_ei() -> p

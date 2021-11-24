@@ -31,10 +31,10 @@ plot_sims_base <- function(ei.object, options) {
     bind_cols(
       as_tibble(betabs, column_name = paste0("V", 1:ncol(betabs))) %>%
         tidyr::pivot_longer(everything()) %>%
-        rename(x = value),
+        rename(x = .data$value),
       as_tibble(betaws, column_name = paste0("V", 1:ncol(betaws))) %>%
         tidyr::pivot_longer(everything()) %>%
-        rename(y = value)
+        rename(y = .data$value)
     ) -> dat
     dat$color <- runif(nrow(dat), 26, 51)
   })
