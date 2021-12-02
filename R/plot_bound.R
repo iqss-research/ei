@@ -4,7 +4,6 @@
 #' @param options The list of options
 #' @export
 plot_bound <- function(ei.object, options = list()) {
-
   if ("hessian" %in% names(ei.object)) {
     # 2x2 case
     options <- plot_bound_options(options)

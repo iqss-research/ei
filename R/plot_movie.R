@@ -4,11 +4,9 @@
 #' @param options The list of options
 #' @export
 plot_movie <- function(ei.object, options = list()) {
-
   options <- plot_movie_options(options)
 
   plot_movie_base(ei.object, options)
-
 }
 
 
@@ -22,22 +20,22 @@ plot_movie_options <- function(options) {
 #' @import patchwork
 #' @importFrom rlang .data
 plot_movie_base <- function(ei.object, options) {
-
   text_size <- 15
   tomog_base <- plot_tomog_base(
-      ei.object,
-      options = plot_tomog_options(list(color = FALSE))
-    ) + ggtitle(latex2exp::TeX("Tomography Plot")) +
+    ei.object,
+    options = plot_tomog_options(list(color = FALSE))
+  ) + ggtitle(latex2exp::TeX("Tomography Plot")) +
     theme(text = ggplot2::element_text(family = "Times", size = text_size))
 
   ui <- fluidPage(
-    numericInput(inputId = "obsid",
-                "Observation ID", value = 1),
+    numericInput(
+      inputId = "obsid",
+      "Observation ID", value = 1
+    ),
     plotOutput(outputId = "plots")
   )
 
   server <- function(input, output) {
-
     output$plots <- renderPlot(height = 750, width = 750, {
       obsid <- input$obsid
 
@@ -87,9 +85,9 @@ plot_movie_base <- function(ei.object, options) {
       x <- ei.object$x
       t <- ei.object$t
       n <- ei.object$n
-      bounds <- bounds1(x,t,n)
-      bbounds <- cbind(bounds[,1], bounds[,2])
-      wbounds <- cbind(bounds[,4], bounds[,3])
+      bounds <- bounds1(x, t, n)
+      bbounds <- cbind(bounds[, 1], bounds[, 2])
+      wbounds <- cbind(bounds[, 4], bounds[, 3])
 
       p4 <- tomog_base +
         geom_segment(
@@ -101,10 +99,10 @@ plot_movie_base <- function(ei.object, options) {
         )
 
       layout <- c(
-        patchwork::area(1,1),
-        patchwork::area(1,2),
-        patchwork::area(2,1),
-        patchwork::area(2,2)
+        patchwork::area(1, 1),
+        patchwork::area(1, 2),
+        patchwork::area(2, 1),
+        patchwork::area(2, 2)
       )
       p <- patchwork::wrap_plots(p1, p2, p3, p4, design = layout)
       print(p)
@@ -113,4 +111,3 @@ plot_movie_base <- function(ei.object, options) {
 
   return(shinyApp(ui = ui, server = server))
 }
-
