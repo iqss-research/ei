@@ -28,7 +28,6 @@ plot_tomog <- function(ei.object, options = list()) {
     p <- plot_add_contourPost(p, ei.object, options)
   }
 
-
   return(p)
 }
 
