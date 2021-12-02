@@ -59,8 +59,8 @@ Replace base R plots with ggplots
 - [x] .boundXw -> plot_bound (Xw)
 - [x] .truthfn -> plot_truth
 - [x] .bndplot (for eiRxCtomog) -> plot_bound
-- [ ] .movie -> plot_movie
-- [ ] .movieD -> plot_movie + option (density)
+- [x] .movie -> plot_movie
+- [x] .movieD -> plot_movie
 - [ ] tomogRxC3d -> plot_tomog
 
 ### Testing

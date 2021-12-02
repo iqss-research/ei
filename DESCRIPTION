@@ -27,6 +27,7 @@ Imports:
     plotrix,
     rlang,
     Rcpp,
+    shiny,
     sp,
     tibble,
     tidyr,

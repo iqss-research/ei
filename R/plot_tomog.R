@@ -4,7 +4,7 @@
 #' @param options The list of options
 #' @export
 plot_tomog <- function(ei.object, options = list()) {
-  options <- plot_tomg_options(options)
+  options <- plot_tomog_options(options)
 
   p <- plot_tomog_base(ei.object, options)
 
@@ -31,7 +31,7 @@ plot_tomog <- function(ei.object, options = list()) {
   return(p)
 }
 
-plot_tomg_options <- function(options) {
+plot_tomog_options <- function(options) {
   # Check plot_tomog options
 
   # title
