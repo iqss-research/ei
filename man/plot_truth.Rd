@@ -4,7 +4,7 @@
 \alias{plot_truth}
 \title{Visualizing EI}
 \usage{
-plot_truth(ei.object)
+plot_truth(ei.object, options = list())
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
