@@ -4,7 +4,7 @@
 #' @param options The list of options
 #' @export
 plot_tomog <- function(ei.object, options = list()) {
-  options <- plot_tomg_options(options)
+  options <- plot_tomog_options(options)
 
   p <- plot_tomog_base(ei.object, options)
 
@@ -28,11 +28,10 @@ plot_tomog <- function(ei.object, options = list()) {
     p <- plot_add_contourPost(p, ei.object, options)
   }
 
-
   return(p)
 }
 
-plot_tomg_options <- function(options) {
+plot_tomog_options <- function(options) {
   # Check plot_tomog options
 
   # title
@@ -243,26 +242,26 @@ plot_tomog_base <- function(ei.object, options) {
   return(p)
 }
 
+calc_CI <- function(ei.object, alpha) {
+  # Only consider precincts that are heterogeneous
+  ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
+  x <- ei.object$x[ok]
+  t <- ei.object$t[ok]
+  n <- ei.object$n[ok]
+  betabs <- ei.object$betabs[ok, ]
+  betaws <- ei.object$betaws[ok, ]
+  betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
+  betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
+  n <- dim(betabcd)[2]
+  return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
+}
+
 #' @import magrittr
 #' @import ggplot2
 #' @import tibble
 #' @importFrom rlang .data
 #' @import dplyr
 plot_add_CI <- function(p, ei.object, options) {
-  calc_CI <- function(ei.object, alpha) {
-    # Only consider precincts that are heterogeneous
-    ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
-    x <- ei.object$x[ok]
-    t <- ei.object$t[ok]
-    n <- ei.object$n[ok]
-    betabs <- ei.object$betabs[ok, ]
-    betaws <- ei.object$betaws[ok, ]
-    betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
-    betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
-    n <- dim(betabcd)[2]
-    return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
-  }
-
   res_tomogCI <- calc_CI(ei.object, alpha = 1 - options$CI)
   b <- res_tomogCI$betabcd %>% t()
   w <- res_tomogCI$betawcd

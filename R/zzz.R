@@ -704,18 +704,6 @@ betaw", ylab = "True betaw", cex = .1
 }
 
 
-#' Plot Truth
-#'
-#' ggplot2 version of .truthfn
-#'
-#' @param ei.object
-#'
-#' @return ggplot
-#' @noRd
-plot_truth <- function(ei.object) {
-
-}
-
 # Functions for Quantities of Interest
 
 .betaB <- function(ei.object) {

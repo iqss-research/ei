@@ -57,10 +57,11 @@ Replace base R plots with ggplots
 - [x] .estsims -> plot_sims
 - [x] .boundXb  -> plot_bound (Xb)
 - [x] .boundXw -> plot_bound (Xw)
-- [ ] .truthfn -> plot_truthfn
-- [ ] .bndplot -> plot_bndplot
-- [ ] .movieD -> plot_movieD
-- [ ] .movie -> plot_movie
+- [x] .truthfn -> plot_truth
+- [x] .bndplot (for eiRxCtomog) -> plot_bound
+- [x] .movie -> plot_movie
+- [x] .movieD -> plot_movie
+- [ ] tomogRxC3d -> plot_tomog
 
 ### Testing
 
@@ -72,6 +73,8 @@ Replace base R plots with ggplots
 - [ ] tomogRxC3d
 - [ ] plot
 
+### Objects
+- [ ] methods for the `ei` object (differentiate `2x2` and `RxC`)
 
 ### Data
 - [x] rename sample (avoid overlaps with `base::` functions)
