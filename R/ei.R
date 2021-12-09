@@ -111,13 +111,19 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     if (simulate) {
       dbuf <- NULL
       i <- 1
-      while(i <= length(erho) & is.null(dbuf)) {
-        try({dbuf <- ei.estimate(t, x, n, id = id,
-                                 data = data, Zb = Zb, Zw = Zw, erho = erho[i],
-                                 esigma = esigma, ebeta = ebeta,
-                                 ealphab = ealphab, ealphaw = ealphaw,
-                                 truth = truth
-        )}, silent = TRUE)
+      while (i <= length(erho) & is.null(dbuf)) {
+        try(
+          {
+            dbuf <- ei.estimate(t, x, n,
+              id = id,
+              data = data, Zb = Zb, Zw = Zw, erho = erho[i],
+              esigma = esigma, ebeta = ebeta,
+              ealphab = ealphab, ealphaw = ealphaw,
+              truth = truth
+            )
+          },
+          silent = TRUE
+        )
         i <- i + 1
       }
       if (is.null(dbuf)) {
@@ -156,9 +162,9 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
 
   # Check to make sure data is not null
   if (!missing(data)) {
-    if (is.character(t))  t <- data[[t]]
-    if (is.character(x))  x <- data[[x]]
-    if (is.character(n))  n <- data[[n]]
+    if (is.character(t)) t <- data[[t]]
+    if (is.character(x)) x <- data[[x]]
+    if (is.character(n)) n <- data[[n]]
     if (is.character(Zb)) Zb <- data[[Zb]]
     if (is.character(Zw)) Zw <- data[[Zw]]
     if (is.character(id)) id <- data[[id]]

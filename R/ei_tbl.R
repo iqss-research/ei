@@ -13,10 +13,12 @@ new_ei_tbl <- function(data, x = NULL, t = NULL, n = NULL, phi = NULL,
   if (missing(data)) cli::cli_abort("`data` required for {.fn new_ei_tbl}.")
 
   data <- reconstruct.ei_tbl(data)
-  data <- add_ei_attr(data, x, t, n, phi, hessian, hessianC, psi,
-                      betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
-                      erho, esigma, ebeta, ealphab, ealphaw, numb,
-                      Zb, Zw, truth, precision, id, Rfun, covs)
+  data <- add_ei_attr(
+    data, x, t, n, phi, hessian, hessianC, psi,
+    betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
+    erho, esigma, ebeta, ealphab, ealphaw, numb,
+    Zb, Zw, truth, precision, id, Rfun, covs
+  )
 
   data
 }
@@ -28,7 +30,6 @@ add_ei_attr <- function(data, x, t, n, phi, hessian, hessianC, psi,
                         betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
                         erho, esigma, ebeta, ealphab, ealphaw, numb,
                         Zb, Zw, truth, precision, id, Rfun, covs) {
-
   if (!is.null(x)) attr(data, "x") <- x
   if (!is.null(t)) attr(data, "t") <- t
   if (!is.null(n)) attr(data, "n") <- n
@@ -85,7 +86,7 @@ reconstruct.ei_tbl <- function(data, old) {
   if (inherits(data, "grouped_df")) {
     classes <- c("grouped_df", classes)
   }
-  if (inherits(data, "rowwise_df")){
+  if (inherits(data, "rowwise_df")) {
     classes <- c("rowwise_df", classes)
   }
   if (inherits(data, "sf")) {
@@ -135,17 +136,19 @@ ei_as_ei_tbl <- function(ei.object) {
     id = ei.object$id
   )
 
-  ei <- new_ei_tbl(data = ei, x = "x", t = "t", n = "n",
-                    phi = ei.object$phi, hessian = ei.object$hessian,
-                    hessianC = ei.object$hessianC, psi = ei.object$psi,
-                    betab = "beta_b", betaw = "beta_w", sbetab = "s_beta_b",
-                    sbetaw = "s_beta_w", betabs = "beta_bs", betaws = "beta_ws",
-                    resamp = ei.object$resamp, erho = ei.object$erho,
-                    esigma = ei.object$esigma, ebeta = ei.object$ebeta,
-                    ealphab = ei.object$ealphab, ealphaw = ei.object$ealphaw,
-                    numb = ei.object$numb, Zb = "z_b", Zw = "z_w",
-                    truth = ei.object$truth, precision = ei.object$precision,
-                    id = ei.object$id)
+  ei <- new_ei_tbl(
+    data = ei, x = "x", t = "t", n = "n",
+    phi = ei.object$phi, hessian = ei.object$hessian,
+    hessianC = ei.object$hessianC, psi = ei.object$psi,
+    betab = "beta_b", betaw = "beta_w", sbetab = "s_beta_b",
+    sbetaw = "s_beta_w", betabs = "beta_bs", betaws = "beta_ws",
+    resamp = ei.object$resamp, erho = ei.object$erho,
+    esigma = ei.object$esigma, ebeta = ei.object$ebeta,
+    ealphab = ei.object$ealphab, ealphaw = ei.object$ealphaw,
+    numb = ei.object$numb, Zb = "z_b", Zw = "z_w",
+    truth = ei.object$truth, precision = ei.object$precision,
+    id = ei.object$id
+  )
 
   validate_ei_tbl(ei)
 }
@@ -159,4 +162,3 @@ ei_as_ei_tbl <- function(ei.object) {
 dplyr_reconstruct.ei_tbl <- function(data, template) {
   reconstruct.ei_tbl(data, template)
 }
-

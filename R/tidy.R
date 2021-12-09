@@ -65,7 +65,6 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
                 lambda2 = 2, covariate.prior.list = NULL, tune.list = NULL,
                 start.list = NULL, sample = 1000, thin = 1, burnin = 1000,
                 verbose = 0, ret.beta = "r", ret.mcmc = TRUE, usrfun = NULL) {
-
   x_name <- rlang::as_name(rlang::enquo(x))
   t_name <- rlang::as_name(rlang::enquo(t))
   n_name <- rlang::as_name(rlang::enquo(n))
@@ -81,13 +80,14 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
   cli::cli_progress_step("Running 2x2 ei")
   if (!simulate) {
     dbuf <- ei.estimate(t, x, n,
-                        id = id, data = data, Zb = Zb, Zw = Zw,
-                        erho = erho[1], esigma = esigma, ebeta = ebeta,
-                        ealphab = ealphab, ealphaw = ealphaw, truth = truth
+      id = id, data = data, Zb = Zb, Zw = Zw,
+      erho = erho[1], esigma = esigma, ebeta = ebeta,
+      ealphab = ealphab, ealphaw = ealphaw, truth = truth
     )
     cli::cli_progress_done()
     return(new_ei_tbl(
-      data, x = x_name, t = t_name, n = n_name,
+      data,
+      x = x_name, t = t_name, n = n_name,
       phi = dbuf$phi,
       hessian = dbuf$hessian, hessianC = dbuf$hessianC, psi = dbuf$psi,
       betab = dbuf$betab, betaw = dbuf$betaw, sbetab = dbuf$sbetab,
@@ -101,13 +101,19 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
   } else {
     dbuf <- NULL
     i <- 1
-    while(i <= length(erho) & is.null(dbuf)) {
-      try({dbuf <- ei.estimate(t, x, n, id = id,
-                          data = data, Zb = Zb, Zw = Zw, erho = erho[i],
-                          esigma = esigma, ebeta = ebeta,
-                          ealphab = ealphab, ealphaw = ealphaw,
-                          truth = truth
-      )}, silent = TRUE)
+    while (i <= length(erho) & is.null(dbuf)) {
+      try(
+        {
+          dbuf <- ei.estimate(t, x, n,
+            id = id,
+            data = data, Zb = Zb, Zw = Zw, erho = erho[i],
+            esigma = esigma, ebeta = ebeta,
+            ealphab = ealphab, ealphaw = ealphaw,
+            truth = truth
+          )
+        },
+        silent = TRUE
+      )
       i <- i + 1
     }
     if (is.null(dbuf)) {
@@ -116,7 +122,8 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
     dbuf.sim <- ei.sim(dbuf)
     cli::cli_progress_done()
     return(new_ei_tbl(
-      data, x = x_name, t = t_name, n = n_name,
+      data,
+      x = x_name, t = t_name, n = n_name,
       phi = dbuf.sim$phi,
       hessian = dbuf.sim$hessian, hessianC = dbuf.sim$hessianC, psi = dbuf.sim$psi,
       betab = dbuf.sim$betab, betaw = dbuf.sim$betaw, sbetab = dbuf.sim$sbetab,
@@ -215,18 +222,19 @@ ei_est <- function(data, t, x, n, id = seq_len(nrow(data)), Zb = NULL, Zw = NULL
   cli::cli_alert_info("Maximizing likelihood")
 
   solution <- optim(start, like,
-                    y = t, x = x, n = n, Zb = Zb,
-                    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-                    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
-                    hessian = TRUE,
-                    method = "BFGS"
+    y = t, x = x, n = n, Zb = Zb,
+    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
+    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
+    hessian = TRUE,
+    method = "BFGS"
   )
 
   # Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian) == 0 |
-                              diag(solution$hessian) == 1, 0, 1))
+    diag(solution$hessian) == 1, 0, 1))
   new_ei_tbl(
-    data, x = x_name, t = t_name, n = n_name,
+    data,
+    x = x_name, t = t_name, n = n_name,
     phi = solution$par,
     hessian = solution$hessian, hessianC = solution$hessian[covs, covs],
     erho = erho, esigma = esigma, ebeta = ebeta,
@@ -253,23 +261,23 @@ ei_est <- function(data, t, x, n, id = seq_len(nrow(data)), Zb = NULL, Zw = NULL
 ei_sim <- function(data, ndraws = 99, nsims = 100) {
   check_ei_types(data)
 
-  hessian <- attr(data, 'hessianC')
-  erho <- attr(data, 'erho')
-  esigma <- attr(data, 'esigma')
-  ebeta <- attr(data, 'ebeta')
-  ealphab <- attr(data, 'ealphab')
-  ealphaw <- attr(data, 'ealphaw')
-  numb <- attr(data, 'numb')
-  covs <- attr(data, 'covs')
-  Rfun <- attr(data, 'Rfun')
-  x <- data[[attr(data, 'x')]]
-  t <- data[[attr(data, 't')]]
-  n <- data[[attr(data, 'n')]]
-  Zb <- attr(data, 'z_b')
-  Zw <- attr(data, 'z_w')
-  truth <- attr(data, 'truth')
-  id <- attr(data, 'id')
-  precision <- attr(data, 'precision')
+  hessian <- attr(data, "hessianC")
+  erho <- attr(data, "erho")
+  esigma <- attr(data, "esigma")
+  ebeta <- attr(data, "ebeta")
+  ealphab <- attr(data, "ealphab")
+  ealphaw <- attr(data, "ealphaw")
+  numb <- attr(data, "numb")
+  covs <- attr(data, "covs")
+  Rfun <- attr(data, "Rfun")
+  x <- data[[attr(data, "x")]]
+  t <- data[[attr(data, "t")]]
+  n <- data[[attr(data, "n")]]
+  Zb <- attr(data, "z_b")
+  Zw <- attr(data, "z_w")
+  truth <- attr(data, "truth")
+  id <- attr(data, "id")
+  precision <- attr(data, "precision")
   # Begin Importance Sampling
   cli::cli_progress_step("Beginning importance sampling.", spinner = TRUE)
 
@@ -278,8 +286,8 @@ ei_sim <- function(data, ndraws = 99, nsims = 100) {
   cur_row <- 1 # 99 resamples
   while (cur_row <= ndraws) {
     out_samp <- .samp(t, x, n, Zb, Zw, attr(data, "phi"), hessian, nsims, keep,
-                      numb = numb, covs, erho, esigma,
-                      ebeta, ealphab, ealphaw, Rfun
+      numb = numb, covs, erho, esigma,
+      ebeta, ealphab, ealphaw, Rfun
     )
 
     if (!is.null(out_samp)) {
@@ -344,9 +352,9 @@ ei_sim <- function(data, ndraws = 99, nsims = 100) {
     out <- NULL
     for (j in 1:length(x[ok])) {
       out[ok][j] <- rtnorm(1,
-                           mean = mbb[ok][j], sd = s[ok][j],
-                           lower = bounds[ok, ][j, 1],
-                           upper = bounds[ok, ][j, 2]
+        mean = mbb[ok][j], sd = s[ok][j],
+        lower = bounds[ok, ][j, 1],
+        upper = bounds[ok, ][j, 2]
       )
     }
     out[wh] <- NA
@@ -366,8 +374,8 @@ ei_sim <- function(data, ndraws = 99, nsims = 100) {
   }
 
   if (sum(bl) > 0) {
-    #betaw[bl, ] <- NA
-    betaw[bl,] <- as.matrix(rep(1,nrow(keep)))%*%t(as.matrix(t[bl]))
+    # betaw[bl, ] <- NA
+    betaw[bl, ] <- as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(t[bl]))
   }
   if (sum(cT1) > 0) {
     betaw[cT1, ] <-

@@ -7,7 +7,6 @@ dplyr::filter
 #' @export
 #' @importFrom dplyr rename
 rename.ei_tbl <- function(.data, ...) {
-
   if (!requireNamespace("tidyselect", quietly = TRUE)) {
     cli::cli_abort("{.pkg tidyselect} required for tidy {.pkg ei} function. Run {.code install.packages('tidyselect')}.")
   }
@@ -26,11 +25,11 @@ rename.ei_tbl <- function(.data, ...) {
   n_loc <- match(n_name, names(.data))
   attr(.data, "n") <- ifelse(isTRUE(n_loc %in% loc), names(loc)[n_loc], n_name)
 
-  betab_name <-  attr(.data, "beta_b")
+  betab_name <- attr(.data, "beta_b")
   betab_loc <- match(betab_name, names(.data))
   attr(.data, "betab") <- ifelse(isTRUE(betab_loc %in% loc), names(loc)[betab_loc], betab_name)
 
-  betaw_name <-  attr(.data, "beta_w")
+  betaw_name <- attr(.data, "beta_w")
   betaw_loc <- match(betaw_name, names(.data))
   attr(.data, "betaw") <- ifelse(isTRUE(betaw_loc %in% loc), names(loc)[betaw_loc], betaw_name)
 
@@ -69,7 +68,7 @@ transmute.ei_tbl <- function(.data, ...) {
 
 #' @export
 #' @importFrom dplyr filter
-filter.ei_tbl <- function(.data, ..., .preserve=FALSE) {
+filter.ei_tbl <- function(.data, ..., .preserve = FALSE) {
   reconstruct.ei_tbl(NextMethod(), .data)
 }
 
