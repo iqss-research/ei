@@ -37,29 +37,31 @@ Last Updated: 2021.10.19
 ### Input check
 
 - [ ] ei(): check the `total` argument
+- [ ] ei(): check the `truth` argument
 
 ## Plotting
 Replace base R plots with ggplots
 
-- [ ] .tomog -> plot_tomog
-- [ ] .tomogl -> plot_tomogl
-- [ ] .tomog80CI -> plot_tomog80CI
-- [ ] .tomog95CI -> plot_tomog95CI
-- [ ] .tomogE -> plot_tomogE
-- [ ] .tomogP2 -> plot_tomogP2
-- [ ] .betabd -> plot_betabd
-- [ ] .betawd -> plot_betawd
-- [ ] .xt -> plot_xt
-- [ ] .xtc -> plot_xtc
-- [ ] .xtfit -> plot_xtfit
-- [ ] .xtfitg -> plot_xtfitg
-- [ ] .estsims -> plot_estsims
-- [ ] .boundXb  -> plot_boundXb
-- [ ] .boundXw -> plot_boundXw
-- [ ] .truthfn -> plot_truthfn
-- [ ] .bndplot -> plot_bndplot
-- [ ] .movieD -> plot_movieD
-- [ ] .movie -> plot_movie
+- [x] .tomog -> plot_tomog
+- [x] .tomogl -> plot_tomog + option (contour_ML)
+- [x] .tomog80CI -> plot_tomog + option (CI)
+- [x] .tomog95CI -> plot_tomog + option (CI)
+- [x] .tomogE -> plot_tomog + option (points)
+- [x] .tomogP2 -> plot_tomog + option (contour_posterior)
+- [x] .betabd -> plot_density + option (betab)
+- [x] .betawd -> plot_density + option (betaw)
+- [x] .xt -> plot_xt
+- [x] .xtc -> plot_xtc
+- [x] .xtfit -> plot_xtfit
+- [x] .xtfitg -> plot_xtfitg
+- [x] .estsims -> plot_sims
+- [x] .boundXb  -> plot_bound (Xb)
+- [x] .boundXw -> plot_bound (Xw)
+- [x] .truthfn -> plot_truth
+- [x] .bndplot (for eiRxCtomog) -> plot_bound
+- [x] .movie -> plot_movie
+- [x] .movieD -> plot_movie
+- [ ] tomogRxC3d -> plot_tomog
 
 ### Testing
 
@@ -71,6 +73,8 @@ Replace base R plots with ggplots
 - [ ] tomogRxC3d
 - [ ] plot
 
+### Objects
+- [ ] methods for the `ei` object (differentiate `2x2` and `RxC`)
 
 ### Data
 - [x] rename sample (avoid overlaps with `base::` functions)

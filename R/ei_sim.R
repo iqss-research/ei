@@ -43,8 +43,8 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
   cur_row <- 1 # 99 resamples
   while (cur_row <= ndraws) {
     out_samp <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, nsims, keep,
-                  numb = numb, covs, erho, esigma,
-                  ebeta, ealphab, ealphaw, Rfun
+      numb = numb, covs, erho, esigma,
+      ebeta, ealphab, ealphaw, Rfun
     )
 
     if (!is.null(out_samp)) {
@@ -131,8 +131,8 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
   }
 
   if (sum(bl) > 0) {
-    #betaw[bl, ] <- NA
-    betaw[bl,] <- as.matrix(rep(1,nrow(keep)))%*%t(as.matrix(t[bl]))
+    # betaw[bl, ] <- NA
+    betaw[bl, ] <- as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(t[bl]))
   }
   if (sum(cT1) > 0) {
     betaw[cT1, ] <-

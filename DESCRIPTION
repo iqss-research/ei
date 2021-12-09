@@ -27,8 +27,10 @@ Imports:
     plotrix,
     rlang,
     Rcpp,
+    shiny,
     sp,
     tibble,
+    tidyr,
     tmvtnorm
 Suggests:
     rmarkdown,

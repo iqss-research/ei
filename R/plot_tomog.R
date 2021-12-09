@@ -4,9 +4,9 @@
 #' @param options The list of options
 #' @export
 plot_tomog <- function(ei.object, options = list()) {
-  options <- plot_tomg_options(options)
+  options <- plot_tomog_options(options)
 
-  p <- plot_tomogd(ei.object, options)
+  p <- plot_tomog_base(ei.object, options)
 
   if (!is.null(options$CI)) {
     # Adding confidence interval
@@ -18,10 +18,20 @@ plot_tomog <- function(ei.object, options = list()) {
     p <- plot_add_points(p, ei.object, options)
   }
 
+  if (options$contour_ML) {
+    # Adding ML contours
+    p <- plot_add_contourML(p, ei.object, options)
+  }
+
+  if (options$contour_posterior) {
+    # Adding posterior contours
+    p <- plot_add_contourPost(p, ei.object, options)
+  }
+
   return(p)
 }
 
-plot_tomg_options <- function(options) {
+plot_tomog_options <- function(options) {
   # Check plot_tomog options
 
   # title
@@ -55,13 +65,13 @@ plot_tomg_options <- function(options) {
     stop("Invalud value in `options$linecolor`.")
   }
 
-  # scale_breaks: how to break scales
-  if (!"scale_breaks" %in% names(options)) {
-    options$scale_breaks <- "even"
+  # breaks: how to break scales
+  if (!"breaks" %in% names(options)) {
+    options$breaks <- "even"
   }
 
-  if (!options$scale_breaks %in% c("even", "quantile")) {
-    stop("Invalud value in `options$scale_breaks`.")
+  if (!options$breaks %in% c("even", "quantile")) {
+    stop("Invalud value in `options$breaks`.")
   }
 
   # Confidence Interval
@@ -84,6 +94,24 @@ plot_tomg_options <- function(options) {
     stop("`options$points` takes either TRUE or FALSE.")
   }
 
+  # ML contours
+  if (!"contour_ML" %in% names(options)) {
+    options$contour_ML <- FALSE
+  }
+
+  if (!options$contour_ML %in% c(TRUE, FALSE)) {
+    stop("`options$contour_ML` takes either TRUE or FALSE.")
+  }
+
+  # Posterior contours
+  if (!"contour_posterior" %in% names(options)) {
+    options$contour_posterior <- FALSE
+  }
+
+  if (!options$contour_posterior %in% c(TRUE, FALSE)) {
+    stop("`options$contour_posterior` takes either TRUE or FALSE.")
+  }
+
   return(options)
 }
 
@@ -93,7 +121,7 @@ plot_tomogd_base <- function(tb, options) {
     {
       if (options$category == 0) ggplot2::guides(color = "none")
     } +
-    ggplot2::coord_fixed() +
+    ggplot2::coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
     ggplot2::labs(x = latex2exp::TeX("$\\beta_B$"), y = latex2exp::TeX("$\\beta_W$")) +
     ggplot2::scale_x_continuous(expand = c(0, 0.01)) +
     ggplot2::scale_y_continuous(expand = c(0, 0)) +
@@ -165,7 +193,7 @@ strata <- function(tb, q) {
 }
 
 plot_length_cat <- function(tb, options) {
-  if (options$scale_breaks == "even") {
+  if (options$breaks == "even") {
     q <- seq(min(tb$length), max(tb$length), length.out = options$category + 1)
   } else {
     q <- quantile(tb$length, prob = seq(0, 1, length.out = options$category + 1))
@@ -193,7 +221,7 @@ plot_length_cat <- function(tb, options) {
   return(p)
 }
 
-plot_tomogd <- function(ei.object, options) {
+plot_tomog_base <- function(ei.object, options) {
   # Take out the bounds
   bounds <- bounds1(ei.object$x, ei.object$t, ei.object$n)
 
@@ -201,7 +229,6 @@ plot_tomogd <- function(ei.object, options) {
     b_bounds = cbind(bounds[, 1], bounds[, 2]),
     w_bounds = cbind(bounds[, 4], bounds[, 3])
   ) %>% plot_add_scale(options)
-
 
   # Plot
   if (options$category == 0) {
@@ -215,26 +242,26 @@ plot_tomogd <- function(ei.object, options) {
   return(p)
 }
 
+calc_CI <- function(ei.object, alpha) {
+  # Only consider precincts that are heterogeneous
+  ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
+  x <- ei.object$x[ok]
+  t <- ei.object$t[ok]
+  n <- ei.object$n[ok]
+  betabs <- ei.object$betabs[ok, ]
+  betaws <- ei.object$betaws[ok, ]
+  betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
+  betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
+  n <- dim(betabcd)[2]
+  return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
+}
+
 #' @import magrittr
 #' @import ggplot2
 #' @import tibble
 #' @importFrom rlang .data
 #' @import dplyr
 plot_add_CI <- function(p, ei.object, options) {
-  calc_CI <- function(ei.object, alpha) {
-    # Only consider precincts that are heterogeneous
-    ok <- !is.na(ei.object$betab) & !is.na(ei.object$betaw)
-    x <- ei.object$x[ok]
-    t <- ei.object$t[ok]
-    n <- ei.object$n[ok]
-    betabs <- ei.object$betabs[ok, ]
-    betaws <- ei.object$betaws[ok, ]
-    betabcd <- apply(betabs, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
-    betawcd <- apply(betaws, 1, function(x) quantile(x, probs = c(alpha / 2, 1 - alpha / 2)))
-    n <- dim(betabcd)[2]
-    return(list(x = x, t = t, n = n, betabcd = betabcd, betawcd = betawcd))
-  }
-
   res_tomogCI <- calc_CI(ei.object, alpha = 1 - options$CI)
   b <- res_tomogCI$betabcd %>% t()
   w <- res_tomogCI$betawcd
@@ -254,9 +281,11 @@ plot_add_CI <- function(p, ei.object, options) {
   p +
     geom_segment(
       data = tomo_res_CI,
-      aes(x = .data$b_start,
-          y = .data$w_start,
-          xend = .data$b_end, yend = .data$w_end),
+      aes(
+        x = .data$b_start,
+        y = .data$w_start,
+        xend = .data$b_end, yend = .data$w_end
+      ),
       color = "red", show.legend = FALSE
     ) -> p
   return(p)
@@ -291,15 +320,18 @@ plot_add_points <- function(p, ei.object, options) {
   return(p)
 }
 
-
-plot_tomogl <- function(ei.object, lci = TRUE) {
+#' @import magrittr
+#' @import ggplot2
+#' @import tibble
+#' @importFrom rlang .data
+#' @import dplyr
+plot_add_contourML <- function(p, ei.object, options) {
   x <- ei.object$x
   t <- ei.object$t
   n <- ei.object$n
   Zb <- ei.object$Zb
   Zw <- ei.object$Zw
   phi <- ei.object$phi
-  # p <- plot_tomogd(x, t, n, "Tomography Plot with ML Contours", lci = lci)
   numb <- dim(Zb)[2]
   numw <- dim(Zw)[2]
   Bb0 <- phi[1]
@@ -315,22 +347,67 @@ plot_tomogl <- function(ei.object, lci = TRUE) {
   sb <- vars[2 * length(x) + 1]
   sw <- vars[2 * length(x) + 2]
   rho <- vars[2 * length(x) + 3]
-  .tomog3 <- function(bb, bw, sb, sw, rho) {
-    lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-      scale = c(sb, sw),
-      centre = c(mean(bb), mean(bw)), level = .914
-    ), col = "blue", lwd = 4)
-    lines(ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
-      scale = c(sb, sw),
-      centre = c(mean(bb), mean(bw)), level = .35
-    ), col = "red", lwd = 4)
-    points(mean(bb), mean(bw), col = "pink", pch = 15)
-  }
 
-  .tomog3(bb, bw, sb, sw, rho)
+  res_a <- calc_ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
+    scale = c(sb, sw),
+    centre = c(mean(bb), mean(bw)), level = 0.914
+  ) %>% mutate(level = 0.914)
+
+  res_b <- calc_ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
+    scale = c(sb, sw),
+    centre = c(mean(bb), mean(bw)), level = 0.7
+  ) %>% mutate(level = 0.7)
+
+  res_c <- calc_ellipse(matrix(c(1, rho, rho, 1), nrow = 2),
+    scale = c(sb, sw),
+    centre = c(mean(bb), mean(bw)), level = 0.35
+  ) %>% mutate(level = 0.35)
+
+  p <- p +
+    geom_path(data = res_a, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5)
+
+  return(p)
 }
 
+#' @import magrittr
+#' @import ggplot2
+#' @import tibble
+#' @importFrom rlang .data
+#' @import dplyr
+plot_add_contourPost <- function(p, ei.object, options) {
+  # Checking the input
+  if (!"betabs" %in% names(ei.object)) {
+    stop("This plot function requires an ei.sim object.")
+  }
 
-plot_tomogP2 <- function() {
+  x <- ei.object$x
+  t <- ei.object$t
+  n <- ei.object$n
+  psi <- ei.object$psi
+  bbp <- psi[, 1:length(x)]
+  bwp <- psi[, (length(x) + 1):(2 * length(x))]
+  sbp <- psi[, 2 * length(x) + 1]
+  swp <- psi[, 2 * length(x) + 2]
+  rhop <- psi[, 2 * length(x) + 3]
 
+  res_a <- calc_ellipse(matrix(c(1, rhop, rhop, 1), nrow = 2),
+    scale = c(sbp, swp), centre = c(mean(bbp), mean(bwp)), level = 0.914
+  ) %>% mutate(level = 0.914)
+
+  res_b <- calc_ellipse(matrix(c(1, rhop, rhop, 1), nrow = 2),
+    scale = c(sbp, swp), centre = c(mean(bbp), mean(bwp)), level = 0.7
+  ) %>% mutate(level = 0.7)
+
+  res_c <- calc_ellipse(matrix(c(1, rhop, rhop, 1), nrow = 2),
+    scale = c(sbp, swp), centre = c(mean(bbp), mean(bwp)), level = 0.35
+  ) %>% mutate(level = 0.35)
+
+  p <- p +
+    geom_path(data = res_a, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
+    geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5)
+
+  return(p)
 }
