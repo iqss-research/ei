@@ -163,6 +163,7 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
     precision = precision, id = id
   )
 
+  cli::cli_progress_done()
   class(output) <- "ei"
   return(output)
 }

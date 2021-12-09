@@ -34,7 +34,8 @@ Suggests:
     rmarkdown,
     knitr,
     rgl,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tidyselect
 License: GPL (>= 2)
 URL: http://gking.harvard.edu/eiR, http://gking.harvard.edu/eicamera/kinroot.html
 RoxygenNote: 7.1.2

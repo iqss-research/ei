@@ -27,7 +27,7 @@
 #' formula.  If using covariates and data is specified, data should also
 #' contain \code{Zb} and \code{Zw}.
 #' @param erho The standard deviation of the normal prior on \eqn{\phi_5} for
-#' the correlation. Default \eqn{=0.5}.
+#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.
 #' @param esigma The standard deviation of an underlying normal distribution,
 #' from which a half normal is constructed as a prior for both
 #' \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Default \eqn{= 0.5}
@@ -109,29 +109,20 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
       return(dbuf)
     }
     if (simulate) {
-      # TODO clean this up to make it easier to work with.
-      # If the table is two by two, use ei
-      dbuf <- tryCatch(tryCatch(ei.estimate(t, x, n,
-        id = id,
-        data = data, Zb = Zb, Zw = Zw, erho = erho,
-        esigma = esigma, ebeta = ebeta,
-        ealphab = ealphab,
-        ealphaw = ealphaw,
-        truth = truth
-      ),
-      error = function(x) {
-        ei(t, x, n,
-          id = id,
-          data = data, Zb = Zb, Zw = Zw, erho = 3, esigma = esigma,
-          ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, truth = truth
-        )
+      dbuf <- NULL
+      i <- 1
+      while(i <= length(erho) & is.null(dbuf)) {
+        try({dbuf <- ei.estimate(t, x, n, id = id,
+                                 data = data, Zb = Zb, Zw = Zw, erho = erho[i],
+                                 esigma = esigma, ebeta = ebeta,
+                                 ealphab = ealphab, ealphaw = ealphaw,
+                                 truth = truth
+        )}, silent = TRUE)
+        i <- i + 1
       }
-      ), error = function(x) {
-        ei.estimate(t, x, n,
-          id = id, data = data, Zb = Zb, Zw = Zw, erho = 5, esigma = esigma,
-          ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, truth = truth
-        )
-      })
+      if (is.null(dbuf)) {
+        cli::cli_abort("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.")
+      }
       cli::cli_progress_done()
       dbuf.sim <- ei.sim(dbuf)
       return(dbuf.sim)

@@ -79,18 +79,14 @@ validate_ei_tbl <- function(data) {
 
 
 
-# 'template' is the old df
-#' @method dplyr_reconstruct ei_tbl
-#' @export
-dplyr_reconstruct.ei_tbl <- function(data, template) {
-  reconstruct.ei_tbl(data, template)
-}
-
 reconstruct.ei_tbl <- function(data, old) {
   classes <- c("tbl_df", "tbl", "data.frame")
 
   if (inherits(data, "grouped_df")) {
     classes <- c("grouped_df", classes)
+  }
+  if (inherits(data, "rowwise_df")){
+    classes <- c("rowwise_df", classes)
   }
   if (inherits(data, "sf")) {
     classes <- c("sf", classes)
@@ -141,3 +137,14 @@ ei_as_ei_tbl <- function(ei.object) {
 
   validate_ei_tbl(ei)
 }
+
+
+# dplyr internal stuff
+
+# 'template' is the old df
+#' @method dplyr_reconstruct ei_tbl
+#' @export
+dplyr_reconstruct.ei_tbl <- function(data, template) {
+  reconstruct.ei_tbl(data, template)
+}
+

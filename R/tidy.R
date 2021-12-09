@@ -67,8 +67,6 @@ ei_ <- function(data, x, t, total, Zb = NULL, Zw = NULL, id = NA,
       id = dbuf.sim$id
     ))
   }
-
-
 }
 
 
@@ -282,6 +280,7 @@ ei_sim <- function(data, ndraws = 99, nsims = 100) {
       z_b = Zb,
       z_w = Zw
     )
+  cli::cli_progress_done()
 
   new_ei_tbl(
     data, attr(data, "x"), attr(data, "t"), attr(data, "n"),
