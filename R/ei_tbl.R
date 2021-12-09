@@ -1,10 +1,5 @@
 ## Designed by Christopher T. Kenny
-## Based on Cory McCartan's  betab,
-
-ei_tbl <- function() {
-
-}
-
+## Based on Cory McCartan's redist objects
 
 # helpers ----
 new_ei_tbl <- function(data, x = NULL, t = NULL, n = NULL, phi = NULL,
@@ -12,16 +7,16 @@ new_ei_tbl <- function(data, x = NULL, t = NULL, n = NULL, phi = NULL,
                        betab = NULL, betaw = NULL, sbetab = NULL,
                        sbetaw = NULL, betabs = NULL, betaws = NULL, resamp = NULL,
                        erho = NULL, esigma = NULL, ebeta = NULL,
-                       ealphab = NULL, ealphw = NULL, numb = NULL,
+                       ealphab = NULL, ealphaw = NULL, numb = NULL,
                        Zb = NULL, Zw = NULL, truth = NULL, precision = NULL,
-                       id = NULL) {
-  if (missing(data)) cli::cli_abort("`data` required for `new_ei_tbl`.")
+                       id = NULL, Rfun = NULL, covs = NULL) {
+  if (missing(data)) cli::cli_abort("`data` required for {.fn new_ei_tbl}.")
 
   data <- reconstruct.ei_tbl(data)
-  data <- add_ei_attr(data,  x, t, n, phi, hessian, hessianC, psi,
+  data <- add_ei_attr(data, x, t, n, phi, hessian, hessianC, psi,
                       betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
-                      erho, esigma, ebeta, ealphab, ealphw, numb,
-                      Zb, Zw, truth, precision, id)
+                      erho, esigma, ebeta, ealphab, ealphaw, numb,
+                      Zb, Zw, truth, precision, id, Rfun, covs)
 
   data
 }
@@ -31,8 +26,8 @@ new_ei_tbl <- function(data, x = NULL, t = NULL, n = NULL, phi = NULL,
 #' @noRd
 add_ei_attr <- function(data, x, t, n, phi, hessian, hessianC, psi,
                         betab, betaw, sbetab, sbetaw, betabs, betaws, resamp,
-                        erho, esigma, ebeta, ealphab, ealphw, numb,
-                        Zb, Zw, truth, precision, id) {
+                        erho, esigma, ebeta, ealphab, ealphaw, numb,
+                        Zb, Zw, truth, precision, id, Rfun, covs) {
 
   if (!is.null(x)) attr(data, "x") <- x
   if (!is.null(t)) attr(data, "t") <- t
@@ -41,24 +36,26 @@ add_ei_attr <- function(data, x, t, n, phi, hessian, hessianC, psi,
   if (!is.null(hessian)) attr(data, "hessian") <- hessian
   if (!is.null(hessianC)) attr(data, "hessianC") <- hessianC
   if (!is.null(psi)) attr(data, "psi") <- psi
-  if (!is.null(betab)) attr(data, "betab") <- betab
-  if (!is.null(betaw)) attr(data, "betaw") <- betaw
-  if (!is.null(sbetab)) attr(data, "sbetab") <- sbetab
-  if (!is.null(sbetaw)) attr(data, "sbetaw") <- sbetaw
-  if (!is.null(betabs)) attr(data, "betabs") <- betabs
-  if (!is.null(betaws)) attr(data, "betaws") <- betaws
+  if (!is.null(betab)) attr(data, "beta_b") <- betab
+  if (!is.null(betaw)) attr(data, "beta_w") <- betaw
+  if (!is.null(sbetab)) attr(data, "s_beta_b") <- sbetab
+  if (!is.null(sbetaw)) attr(data, "s_beta_w") <- sbetaw
+  if (!is.null(betabs)) attr(data, "beta_bs") <- betabs
+  if (!is.null(betaws)) attr(data, "beta_ws") <- betaws
   if (!is.null(resamp)) attr(data, "resamp") <- resamp
   if (!is.null(erho)) attr(data, "erho") <- erho
   if (!is.null(esigma)) attr(data, "esigma") <- esigma
   if (!is.null(ebeta)) attr(data, "ebeta") <- ebeta
   if (!is.null(ealphab)) attr(data, "ealphab") <- ealphab
-  if (!is.null(ealphw)) attr(data, "ealphw") <- ealphw
+  if (!is.null(ealphaw)) attr(data, "ealphaw") <- ealphaw
   if (!is.null(numb)) attr(data, "numb") <- numb
-  if (!is.null(Zb)) attr(data, "Zb") <- Zb
-  if (!is.null(Zw)) attr(data, "Zw") <- Zw
+  if (!is.null(Zb)) attr(data, "z_b") <- Zb
+  if (!is.null(Zw)) attr(data, "z_w") <- Zw
   if (!is.null(truth)) attr(data, "truth") <- truth
   if (!is.null(precision)) attr(data, "precision") <- precision
   if (!is.null(id)) attr(data, "id") <- id
+  if (!is.null(id)) attr(data, "Rfun") <- Rfun
+  if (!is.null(id)) attr(data, "covs") <- covs
 
   data
 }
@@ -66,14 +63,16 @@ add_ei_attr <- function(data, x, t, n, phi, hessian, hessianC, psi,
 
 validate_ei_tbl <- function(data) {
   if (!is.data.frame(data)) {
-    stop("Not a data frame")
+    cli::cli_abort("Not a data frame.")
   }
   if (!inherits(data, "ei_tbl")) {
-    stop("Not a `ei_tbl` object")
+    cli::cli_abort("Not a {.cls ei_tbl} object.")
   }
 
   # check for necessary attributes:
-  # ex: stopifnot(!is.null(attr(data, "ndists")))
+  stopifnot(!is.null(attr(data, "x")))
+  stopifnot(!is.null(attr(data, "t")))
+  stopifnot(!is.null(attr(data, "n")))
 
   data
 }
@@ -84,7 +83,7 @@ validate_ei_tbl <- function(data) {
 #' @method dplyr_reconstruct ei_tbl
 #' @export
 dplyr_reconstruct.ei_tbl <- function(data, template) {
-  reconstruct_ei_tbl(data, template)
+  reconstruct.ei_tbl(data, template)
 }
 
 reconstruct.ei_tbl <- function(data, old) {
@@ -118,4 +117,27 @@ as_ei_tbl <- function(x) {
   reconstruct.ei_tbl(x)
 }
 
+ei_as_ei_tbl <- function(ei.object) {
+  ei <- tibble(
+    x = ei.object$x, t = ei.object$t, n = ei.object$n,
+    beta_b = ei.object$betab, beta_w = ei.object$betaw,
+    s_beta_b = ei.object$sbetab, s_beta_w = ei.object$sbetaw,
+    beta_bs = ei.object$betabs, beta_ws = ei.object$betaws,
+    z_b = ei.object$Zb, z_w = ei.object$Zw,
+    id = ei.object$id
+  )
 
+  ei <- new_ei_tbl(data = ei, x = "x", t = "t", n = "n",
+                    phi = ei.object$phi, hessian = ei.object$hessian,
+                    hessianC = ei.object$hessianC, psi = ei.object$psi,
+                    betab = "beta_b", betaw = "beta_w", sbetab = "s_beta_b",
+                    sbetaw = "s_beta_w", betabs = "beta_bs", betaws = "beta_ws",
+                    resamp = ei.object$resamp, erho = ei.object$erho,
+                    esigma = ei.object$esigma, ebeta = ei.object$ebeta,
+                    ealphab = ei.object$ealphab, ealphaw = ei.object$ealphaw,
+                    numb = ei.object$numb, Zb = "z_b", Zw = "z_w",
+                    truth = ei.object$truth, precision = ei.object$precision,
+                    id = ei.object$id)
+
+  validate_ei_tbl(ei)
+}

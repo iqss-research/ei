@@ -12,6 +12,7 @@
 #' @importFrom msm rtnorm
 #' @importFrom ggplot2 aes
 #' @importFrom dplyr %>% .data
+#' @importFrom rlang enquo eval_tidy
 NULL
 
 ## usethis namespace: start

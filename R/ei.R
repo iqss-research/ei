@@ -100,7 +100,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
 
   if (length(dv) == 1) {
     cli::cli_progress_step("Running 2x2 ei")
-    if (simulate == FALSE) {
+    if (!simulate) {
       dbuf <- ei.estimate(t, x, n,
         id = id, data = data, Zb = Zb, Zw = Zw,
         erho = erho, esigma = esigma, ebeta = ebeta,
@@ -108,7 +108,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
       )
       return(dbuf)
     }
-    if (simulate == TRUE) {
+    if (simulate) {
       # TODO clean this up to make it easier to work with.
       # If the table is two by two, use ei
       dbuf <- tryCatch(tryCatch(ei.estimate(t, x, n,
@@ -166,12 +166,12 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
 
   # Check to make sure data is not null
   if (!missing(data)) {
-    t <- data[[t]]
-    x <- data[[x]]
-    n <- data[[n]]
+    if (is.character(t))  t <- data[[t]]
+    if (is.character(x))  x <- data[[x]]
+    if (is.character(n))  n <- data[[n]]
     if (is.character(Zb)) Zb <- data[[Zb]]
     if (is.character(Zw)) Zw <- data[[Zw]]
-    id <- data[[id]]
+    if (is.character(id)) id <- data[[id]]
   }
 
   Zb <- as.matrix(Zb)
@@ -220,5 +220,5 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   )
 
   class(output) <- "ei"
-  return(output)
+  output
 }
