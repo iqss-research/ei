@@ -113,6 +113,18 @@ as_ei_tbl <- function(x) {
   reconstruct.ei_tbl(x)
 }
 
+#' Convert to `ei_tbl` objects
+#' @param ei.object list-based ei object to convert to tibble-based object
+#' @rdname ei_tbl
+#'
+#' @export
+#' @return ei_tbl object
+#'
+#' @examples
+#' data(sample_ei)
+#' form <- t ~ x
+#' dbuf <- ei(form, total = "n", data = sample_ei)
+#' dbuf <- ei_as_ei_tbl(dbuf)
 ei_as_ei_tbl <- function(ei.object) {
   ei <- tibble(
     x = ei.object$x, t = ei.object$t, n = ei.object$n,

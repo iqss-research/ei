@@ -2,6 +2,9 @@
 ## Based on Cory McCartan's redist objects and r-spatial's sf tibbles
 
 #' @export
+dplyr::filter
+
+#' @export
 #' @importFrom dplyr rename
 rename.ei_tbl <- function(.data, ...) {
 
@@ -33,15 +36,15 @@ rename.ei_tbl <- function(.data, ...) {
 
   sbetab_name <- attr(.data, "s_beta_b")
   sbetab_loc <- match(sbetab_name, names(.data))
-  attr(.data, "s_beta_b") <- ifelse(isTRUE(sbetab_loc %in% loc), names(loc)[s_beta_b_loc], sbetab_name)
+  attr(.data, "s_beta_b") <- ifelse(isTRUE(sbetab_loc %in% loc), names(loc)[sbetab_loc], sbetab_name)
 
   sbetaw_name <- attr(.data, "s_beta_w")
   sbetaw_loc <- match(sbetaw_name, names(.data))
-  attr(.data, "s_beta_w") <- ifelse(isTRUE(sbetaw_loc %in% loc), names(loc)[s_beta_w_loc], sbetaw_name)
+  attr(.data, "s_beta_w") <- ifelse(isTRUE(sbetaw_loc %in% loc), names(loc)[sbetaw_loc], sbetaw_name)
 
   betabs_name <- attr(.data, "beta_bs")
   betabs_loc <- match(betabs_name, names(.data))
-  attr(.data, "beta_bs") <- ifelse(isTRUE(betabs_loc %in% loc), names(loc)[beta_bs_loc], betabs_name)
+  attr(.data, "beta_bs") <- ifelse(isTRUE(betabs_loc %in% loc), names(loc)[betabs_loc], betabs_name)
 
   betaws_name <- attr(.data, "beta_ws")
   betaws_loc <- match(betaws_name, names(.data))
@@ -132,7 +135,7 @@ rowwise.ei_tbl <- function(x, ...) {
 
 rename_helper <- function(.data, attribute, loc) {
   a_name <- attr(.data, attribute)
-  a_loc <- match(x_name, names(.data))
+  a_loc <- match(a_name, names(.data))
   attr(.data, attribute) <- ifelse(isTRUE(a_loc %in% loc), names(loc)[a_loc], a_name)
   .data
 }

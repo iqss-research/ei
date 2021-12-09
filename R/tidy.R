@@ -1,4 +1,65 @@
-ei_ <- function(data, x, t, total, Zb = NULL, Zw = NULL, id = NA,
+#' Run (tidy) Ecological Inference Estimation and Simulation
+#'
+#' @param data data where `x`, `t`, `total`, `Zb`, `Zw` are found
+#' @param x <[`data-masking`][dplyr_data_masking]> column of subgroup proportions in data
+#' @param t <[`data-masking`][dplyr_data_masking]> column of turnout in data
+#' @param n <[`data-masking`][dplyr_data_masking]> column of total in data
+#' @param Zb <[`data-masking`][dplyr_tidy_select]> columns of covariates in data
+#' @param Zw <[`data-masking`][dplyr_tidy_select]> columns of covariates in data
+#' @param id <[`data-masking`][dplyr_data_masking]> column of unique ids in data
+#' @param erho The standard deviation of the normal prior on \eqn{\phi_5} for
+#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.
+#' @param esigma The standard deviation of an underlying normal distribution,
+#' from which a half normal is constructed as a prior for both
+#' \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Default \eqn{= 0.5}
+#' @param ebeta Standard deviation of the "flat normal" prior on
+#' \eqn{\breve{B}^b} and \eqn{\breve{B}^w}.  The flat normal prior is uniform
+#' within the unit square and dropping outside the square according to the
+#' normal distribution.  Set to zero for no prior. Setting to positive values
+#' probabilistically keeps the estimated mode within the unit square.
+#' Default\eqn{=0.5}
+#' @param ealphab cols(Zb) x 2 matrix of means (in the first column) and
+#' standard deviations (in the second) of an independent normal prior
+#' distribution on elements of \eqn{\alpha^b}.  If you specify Zb, you should
+#' probably specify a prior, at least with mean zero and some variance (default
+#' is no prior).  (See Equation 9.2, page 170, to interpret \eqn{\alpha^b}).
+#' @param ealphaw cols(Zw) x 2 matrix of means (in the first column) and
+#' standard deviations (in the second) of an independent normal prior
+#' distribution on elements of \eqn{\alpha^w}.  If you specify Zw, you should
+#' probably specify a prior, at least with mean zero and some variance (default
+#' is no prior).  (See Equation 9.2, page 170, to interpret \eqn{\alpha^w}).
+#' @param truth A length(t) x 2 matrix of the true values of the quantities of
+#' interest.
+#' @param simulate default = TRUE:see documentation in \code{eiPack} for
+#' options for RxC ei.
+#' @param covariate see documentation in \code{eiPack} for options for RxC ei.
+#' @param lambda1 default = 4:see documentation in \code{eiPack} for options
+#' for RxC ei.
+#' @param lambda2 default = 2:see documentation in \code{eiPack} for options
+#' for RxC ei.
+#' @param covariate.prior.list see documentation in \code{eiPack} for options
+#' for RxC ei.
+#' @param tune.list see documentation in \code{eiPack} for options for RxC ei.
+#' @param start.list see documentation in \code{eiPack} for options for RxC ei.
+#' @param sample default = 1000
+#' @param thin default = 1
+#' @param burnin default = 1000
+#' @param verbose default = 0:see documentation in \code{eiPack} for options
+#' for RxC ei.
+#' @param ret.beta default = "r": see documentation in \code{eiPack} for
+#' options for RxC ei.
+#' @param ret.mcmc default = TRUE: see documentation in \code{eiPack} for
+#' options for RxC ei.
+#' @param usrfun see documentation in \code{eiPack} for options for RxC ei.
+#'
+#' @concept tidy
+#' @return ei_tbl
+#' @export
+#'
+#' @examples
+#' data(sample_ei)
+#' dbuf <- ei_(sample_ei, x, t, n)
+ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
                 erho = c(.5, 3, 5), esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
                 truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
                 lambda2 = 2, covariate.prior.list = NULL, tune.list = NULL,
@@ -7,10 +68,10 @@ ei_ <- function(data, x, t, total, Zb = NULL, Zw = NULL, id = NA,
 
   x_name <- rlang::as_name(rlang::enquo(x))
   t_name <- rlang::as_name(rlang::enquo(t))
-  n_name <- rlang::as_name(rlang::enquo(total))
+  n_name <- rlang::as_name(rlang::enquo(n))
   x <- rlang::eval_tidy(rlang::enquo(x), data)
   t <- rlang::eval_tidy(rlang::enquo(t), data)
-  n <- rlang::eval_tidy(rlang::enquo(total), data)
+  n <- rlang::eval_tidy(rlang::enquo(n), data)
 
   Zb <- rlang::eval_tidy(rlang::enquo(Zb), data)
   Zw <- rlang::eval_tidy(rlang::enquo(Zw), data)
@@ -70,9 +131,52 @@ ei_ <- function(data, x, t, total, Zb = NULL, Zw = NULL, id = NA,
 }
 
 
+#' Run (tidy) Ecological Inference Estimation
+#'
+#' @param data data where `x`, `t`, `total`, `Zb`, `Zw` are found
+#' @param x <[`data-masking`][dplyr_data_masking]> column of subgroup proportions in data
+#' @param t <[`data-masking`][dplyr_data_masking]> column of turnout in data
+#' @param n <[`data-masking`][dplyr_data_masking]> column of total in data
+#' @param Zb <[`data-masking`][dplyr_tidy_select]> columns of covariates in data
+#' @param Zw <[`data-masking`][dplyr_tidy_select]> columns of covariates in data
+#' @param id <[`data-masking`][dplyr_data_masking]> column of unique ids in data
+#' @param erho The standard deviation of the normal prior on \eqn{\phi_5} for
+#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.
+#' @param esigma The standard deviation of an underlying normal distribution,
+#' from which a half normal is constructed as a prior for both
+#' \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Default \eqn{= 0.5}
+#' @param ebeta Standard deviation of the "flat normal" prior on
+#' \eqn{\breve{B}^b} and \eqn{\breve{B}^w}.  The flat normal prior is uniform
+#' within the unit square and dropping outside the square according to the
+#' normal distribution.  Set to zero for no prior. Setting to positive values
+#' probabilistically keeps the estimated mode within the unit square.
+#' Default\eqn{=0.5}
+#' @param ealphab cols(Zb) x 2 matrix of means (in the first column) and
+#' standard deviations (in the second) of an independent normal prior
+#' distribution on elements of \eqn{\alpha^b}.  If you specify Zb, you should
+#' probably specify a prior, at least with mean zero and some variance (default
+#' is no prior).  (See Equation 9.2, page 170, to interpret \eqn{\alpha^b}).
+#' @param ealphaw cols(Zw) x 2 matrix of means (in the first column) and
+#' standard deviations (in the second) of an independent normal prior
+#' distribution on elements of \eqn{\alpha^w}.  If you specify Zw, you should
+#' probably specify a prior, at least with mean zero and some variance (default
+#' is no prior).  (See Equation 9.2, page 170, to interpret \eqn{\alpha^w}).
+#' @param truth A length(t) x 2 matrix of the true values of the quantities of
+#' interest.
+#'
+#' @concept tidy
+#' @return ei_tbl
+#' @export
+#'
+#' @examples
+#' data(sample_ei)
+#' dbuf <- ei_est(sample_ei, x, t, n)
 ei_est <- function(data, t, x, n, id = seq_len(nrow(data)), Zb = NULL, Zw = NULL, erho = .5,
                    esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
-                   truth = NA, Rfun = 2, precision = 4) {
+                   truth = NA) {
+  # set unused args for future?
+  Rfun <- 2
+  precision <- 4
 
   x_name <- rlang::as_name(rlang::enquo(x))
   t_name <- rlang::as_name(rlang::enquo(t))
@@ -125,7 +229,6 @@ ei_est <- function(data, t, x, n, id = seq_len(nrow(data)), Zb = NULL, Zw = NULL
     data, x = x_name, t = t_name, n = n_name,
     phi = solution$par,
     hessian = solution$hessian, hessianC = solution$hessian[covs, covs],
-    resamp = resamp,
     erho = erho, esigma = esigma, ebeta = ebeta,
     ealphab = ealphab, ealphaw = ealphaw, numb = numb,
     Zb = Zb, Zw = Zw, truth = truth, precision = precision, covs = covs,
@@ -134,6 +237,19 @@ ei_est <- function(data, t, x, n, id = seq_len(nrow(data)), Zb = NULL, Zw = NULL
 }
 
 
+#' Run Ecological Inference Simulation
+#'
+#' @param data an `ei_tbl` object from `ei_est()`
+#' @param ndraws integer, default 99. The number of draws.
+#' @param nsims integer, default 10. The number of simulations with each draw.
+#'
+#' @concept tidy
+#' @return ei_tbl
+#' @export
+#'
+#' @examples
+#' data(sample_ei)
+#' dbuf <- ei_est(sample_ei, x, t, n) %>% ei_sim()
 ei_sim <- function(data, ndraws = 99, nsims = 100) {
   check_ei_types(data)
 
