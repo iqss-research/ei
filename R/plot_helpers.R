@@ -55,7 +55,7 @@ eiPack_bounds <- function(formula, data, rows, column, excluded = NULL,
     x[!x %in% y]
   }
 
-  D <- model.frame(formula, data = data)
+  D <- stats::model.frame(formula, data = data)
   G <- D[[2]]
   T <- D[[1]]
 
