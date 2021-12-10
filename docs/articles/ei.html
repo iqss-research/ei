@@ -70,7 +70,7 @@
 
       
 
-      </header><script src="ei_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
+      </header><script src="ei_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>EI: A(n R) Program for Ecological Inference</h1>
@@ -112,18 +112,18 @@
 <div id="summary-to-obtain-a-general-summary-of-district-level-information" class="section level3">
 <h3 class="hasAnchor">
 <a href="#summary-to-obtain-a-general-summary-of-district-level-information" class="anchor"></a><code>summary</code>: To obtain a general summary of district-level information</h3>
-<p><code><a href="https://rdrr.io/r/base/summary.html">summary(dbuf)</a></code> will produce aggregate information about the <code>ei</code> results. <code>summary</code> will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values specified for the prior.</p>
+<p><code>summary(dbuf)</code> will produce aggregate information about the <code>ei</code> results. <code>summary</code> will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values specified for the prior.</p>
 </div>
 <div id="plot-to-graph-relevant-information" class="section level3">
 <h3 class="hasAnchor">
 <a href="#plot-to-graph-relevant-information" class="anchor"></a><code>plot</code>: To graph relevant information</h3>
-<p>For graphics, use <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(dbuf, "name")</a></code>;, where <code>dbuf</code> is the ei.object that is the output of <code>ei</code> or <code>ei.sim</code>, and name can be any number of a long list of ready-made graphs. For example, <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(dbuf,"tomog")</a></code> will plot a tomography graph, and <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(dbuf,"xt")</a></code> will display a scattercross graph. Any number of graphs can be selected in plot for output. For example, <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(dbuf,"tomog","xt")</a></code> will produce both a tomography graph and a scattercross graph.</p>
+<p>For graphics, use <code>plot(dbuf, "name")</code>;, where <code>dbuf</code> is the ei.object that is the output of <code>ei</code> or <code>ei.sim</code>, and name can be any number of a long list of ready-made graphs. For example, <code>plot(dbuf,"tomog")</code> will plot a tomography graph, and <code>plot(dbuf,"xt")</code> will display a scattercross graph. Any number of graphs can be selected in plot for output. For example, <code>plot(dbuf,"tomog","xt")</code> will produce both a tomography graph and a scattercross graph.</p>
 <p>Some of the plots can be produced after estimating the maximum likelihood estimates using <code>ei</code>, but before simulating quantities of interest. These initial plots can be useful in determining which priors to include, and the user can opt to choose not to simulate quantities of interest by selecting the option <code>simulate = FALSE</code>. However, for some plots, <code>plot</code> will need the simulated quantities of interest, and therefore can only be plotted when simulate is set to the default, <code>TRUE</code>.</p>
 </div>
 <div id="eiread-to-obtain-relevant-information-and-numerical-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#eiread-to-obtain-relevant-information-and-numerical-results" class="anchor"></a><code>eiread</code>: To obtain relevant information and numerical results</h3>
-<p>For numerical information, use <code>v &lt;- eiread(dbuf, "name")</code>, where <code>v</code> is the item extracted, <code>dbuf</code> is the data buffer output from <code>ei</code>, and name can be any of a list of output possibilities. For example, <code><a href="../reference/eiread.html">eiread(dbuf, "betab")</a></code> will give a vector of point estimates of <span class="math inline">\(\beta_i^b\)</span>, <code><a href="../reference/eiread.html">eiread(dbuf, "ci80w")</a></code> will give 80% confidence intervals for <span class="math inline">\(\beta_i^w\)</span>. Any number of items can be selected for output. For example, <code><a href="../reference/eiread.html">eiread(dbuf, "betab", "ci80b")</a></code> will produce a list of the point estimates and 80% confidence intervals for $ _i^b$.</p>
+<p>For numerical information, use <code>v &lt;- eiread(dbuf, "name")</code>, where <code>v</code> is the item extracted, <code>dbuf</code> is the data buffer output from <code>ei</code>, and name can be any of a list of output possibilities. For example, <code>eiread(dbuf, "betab")</code> will give a vector of point estimates of <span class="math inline">\(\beta_i^b\)</span>, <code>eiread(dbuf, "ci80w")</code> will give 80% confidence intervals for <span class="math inline">\(\beta_i^w\)</span>. Any number of items can be selected for output. For example, <code>eiread(dbuf, "betab", "ci80b")</code> will produce a list of the point estimates and 80% confidence intervals for $ _i^b$.</p>
 </div>
 </div>
 <div id="users-guide-an-example" class="section level1">
@@ -133,20 +133,33 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://gking.harvard.edu/eiR">ei</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: eiPack</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'ei'</span>
+<span class="co">#&gt; The following object is masked from 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     filter</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">matproii</span><span class="op">)</span></code></pre></div>
 <p>The statistical goal is to estimate the fraction of blacks registered (<span class="math inline">\(\beta_i^b\)</span>) and the fraction of whites registered (<span class="math inline">\(\beta_i^w\)</span>) in each county. These quantities of interest are generally unknown. However, <code>ei</code> also includes an option that allows the user to assess the reliability of the <code>ei</code> algorithm when the true quantities of interest are known. To illustrate the use of this `<code>truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (</code>tw`).</p>
 <div id="the-basic-ei-algorithm" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-basic-ei-algorithm" class="anchor"></a>The Basic EI Algorithm</h2>
-<p>To begin, we perform ecological inference by calling the function <code>ei</code>. <code>ei</code> first computes and maximizes a likelihood distribution based on the inputed data, then estimates the county-level quantities of interest based on the possible values, or ``bounds", for each county and the overall likelihood distribution.</p>
+<p>To begin, we perform ecological inference by calling the function <code>ei</code>. <code>ei</code> first computes and maximizes a likelihood distribution based on the inputed data, then estimates the county-level quantities of interest based on the possible values, or ``bounds”, for each county and the overall likelihood distribution.</p>
 <p>To run this algorithm, at a minimum we need to have three vectors. Two vectors, <code>t</code> and <code>x</code>, contain the aggregate known information about the counties of interest. In this example, <code>t</code> is the proportion of voters registered in each county, and <code>x</code> is the proportion of blacks in each county. These two vectors contain aggregate information, since we are interested in the proportion of voters in each country who are black. The last vector we need is <code>n</code>, the number of people of interest in each county. In this example, <code>n</code> is the number of people of voting age.</p>
 <p>We proceed by performing ecological inference without covariates on the data:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">formula</span> <span class="op">&lt;-</span> <span class="va">t</span> <span class="op">~</span> <span class="va">x</span>
-<span class="va">dbuf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ei.html">ei</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, total <span class="op">=</span> <span class="st">"n"</span>, data <span class="op">=</span> <span class="va">matproii</span><span class="op">)</span>
-<span class="co">#&gt; [1] "Running 2x2 ei"</span>
-<span class="co">#&gt; Maximizing likelihood</span>
-<span class="co">#&gt; Importance Sampling..</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> t <span class="sc">~</span> x</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dbuf <span class="ot">&lt;-</span> <span class="fu">ei</span>(<span class="at">formula =</span> formula, <span class="at">total =</span> <span class="st">"n"</span>, <span class="at">data =</span> matproii)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>i Running 2x2 ei</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                 </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>i Maximizing likelihood</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; i Running 2x2 ei</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>v Running 2x2 ei [850ms]</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>\ Beginning importance sampling.</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>v Beginning importance sampling. [<span class="fl">3.3</span>s]</span></code></pre></div>
 <p>To include a covariate on <span class="math inline">\(\beta_i^b\)</span> simply specify a covariate vector for the option , or a string that refers to the name of the covariate in the dataset. Similarly, to include a covariate on <span class="math inline">\(\beta_i^w\)</span>, specify a covariate vector for for the option , or a string that refers to the name of the covariate in the dataset.</p>
 <p>Next, we use and  to obtain general information about the estimation.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -164,20 +177,20 @@
 <span class="co">#&gt; [1] 268</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $Resamp</span>
-<span class="co">#&gt; [1] 24</span>
+<span class="co">#&gt; [1] 17</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Maximum likelihood results in scale of estimation (and se's)`</span>
-<span class="co">#&gt;       Bb0       Bw0       sigB       sigW       rho Zb Zw</span>
-<span class="co">#&gt;  1.267096 1.9348588 -1.1150919 -1.3271231 1.6051353  0  0</span>
-<span class="co">#&gt;  0.276096 0.2746691  0.2133685  0.1644862 0.3125443  0  0</span>
+<span class="co">#&gt;        Bb0       Bw0       sigB       sigW       rho Zb0 Zw0</span>
+<span class="co">#&gt;  1.2671420 1.9349025 -1.1150678 -1.3270993 1.6051508   0   0</span>
+<span class="co">#&gt;  0.2845609 0.2825123  0.2138895  0.1645617 0.3144215   0   0</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Untruncated psi's`</span>
 <span class="co">#&gt;         BB       BW        SB        SW       RHO</span>
-<span class="co">#&gt;  0.9643408 1.127291 0.3354082 0.2644859 0.9150788</span>
+<span class="co">#&gt;  0.9955956 1.157984 0.3395215 0.2767654 0.9170337</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Truncated psi's (ultimate scale)`</span>
-<span class="co">#&gt;         BB        BW        SB        SW       RHO</span>
-<span class="co">#&gt;  0.6137839 0.8284676 0.2031211 0.1407738 0.7677757</span>
+<span class="co">#&gt;         BB        BW        SB       SW       RHO</span>
+<span class="co">#&gt;  0.6181168 0.8268754 0.1992868 0.142077 0.7668488</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Aggregate Bounds`</span>
 <span class="co">#&gt;           betab     betaw</span>
@@ -186,8 +199,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Estimates of Aggregate Quantities of Interest`</span>
 <span class="co">#&gt;         mean          sd</span>
-<span class="co">#&gt; Bb 0.5618070 0.023504324</span>
-<span class="co">#&gt; Bw 0.8204753 0.006698839</span>
+<span class="co">#&gt; Bb 0.5677554 0.021678710</span>
+<span class="co">#&gt; Bw 0.8187800 0.006178531</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $precision</span>
 <span class="co">#&gt; [1] 4</span>
@@ -204,14 +217,14 @@
 <p><code>eiread</code> extracts quantities of interest in a list format from the object <code>dbuf</code>. For example,</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bb.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/eiread.html">eiread</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"betab"</span>, <span class="st">"sbetab"</span><span class="op">)</span></code></pre></div>
-<p>extracts the point estimates and estimated standard deviations for <span class="math inline">\(\beta_i^b\)</span>, the estimates of the proportion of registered blacks in each county. The user can then use <code>bb.out$betab</code> to obtain a vector of the point estimates for <span class="math inline">\(\beta_i^b\)</span>, and <code>bb.out$sbetab</code> to obtain a vector of the standard devations for <span class="math inline">\(\beta_i^b\)</span>.<br><code><a href="../reference/eiread.html">eiread()</a></code> takes any number of arguments to extract any number of quantities of interest from the data buffer. <code><a href="../reference/eiread.html">?eiread</a></code> can be used to find a list of quantities of interest that are available in <code>ei</code>. Among the most useful arguments are <code>"betab"</code> and <code>"betaw"</code>, which report the point estimates; <code>"sbetab"</code> and <code>"sbetaw"</code>, which report the standard deviations of the point estimates; and <code>"CI80b</code> and <code>"CI80w"</code>, which report the confidence intervals of the point estimates.</p>
+<p>extracts the point estimates and estimated standard deviations for <span class="math inline">\(\beta_i^b\)</span>, the estimates of the proportion of registered blacks in each county. The user can then use <code>bb.out$betab</code> to obtain a vector of the point estimates for <span class="math inline">\(\beta_i^b\)</span>, and <code>bb.out$sbetab</code> to obtain a vector of the standard devations for <span class="math inline">\(\beta_i^b\)</span>.  <code><a href="../reference/eiread.html">eiread()</a></code> takes any number of arguments to extract any number of quantities of interest from the data buffer. <code><a href="../reference/eiread.html">?eiread</a></code> can be used to find a list of quantities of interest that are available in <code>ei</code>. Among the most useful arguments are <code>"betab"</code> and <code>"betaw"</code>, which report the point estimates; <code>"sbetab"</code> and <code>"sbetaw"</code>, which report the standard deviations of the point estimates; and <code>"CI80b</code> and <code>"CI80w"</code>, which report the confidence intervals of the point estimates.</p>
 </div>
 <div id="plotting-in-ei" class="section level2">
 <h2 class="hasAnchor">
 <a href="#plotting-in-ei" class="anchor"></a>Plotting in EI</h2>
 <p>Plotting <code>ei</code> output is extremely useful for understanding the results of the ecological inference algorithm and diagnosing problems with estimation. First, we graph a tomography plot of the data (Figure 1).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"tomog"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"tomog"</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="tomogplot.png" alt=""><p class="caption">Tomography Plot with ML Contours</p>
 </div>
@@ -220,14 +233,13 @@
 </div>
 <p>Each line on the map represents the possible values for <span class="math inline">\(\beta_i^b\)</span> and <span class="math inline">\(\beta_i^w\)</span> for one county. The contour lines identify the portion of the lines that have the highest probability of containing the true estimates of <span class="math inline">\(\beta_i^b\)</span> and <span class="math inline">\(\beta_i^w\)</span>. These contour lines provide information about the overall pattern of registration. Note that the area with highest probability is in the upper right-hand corner, where the proportion of whites registered is between <span class="math inline">\(0.75\)</span> and <span class="math inline">\(1\)</span> and the proportion of blacks registered is between <span class="math inline">\(0.5\)</span> and <span class="math inline">\(1\)</span>. Further, we see that the lines are clustered in the upper half of the figure, indicating that the possible values of <span class="math inline">\(\beta_i^w\)</span> will have a lower variance than the possible values of <span class="math inline">\(\beta_i^b\)</span>.  Figure 2 is a double plot of the point estimates and their confidence intervals. To compute this, we call plot to generate two graphs: a tomography plot with the point estimates generated from the algorithm, and a tomography plot with 80% confidence intervals on the point estimate.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"tomogE"</span>, <span class="st">"tomogCI"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"tomogE"</span>, <span class="st">"tomogCI"</span><span class="op">)</span></code></pre></div>
 <p>This plot is useful to visualize the estimates and confidence intervals for each county. We can see that the point estimates and confidence intervals are clustered in the same area as the contours from the previous plot. Further, the point estimates and confidence intervals only fall on the lines that indicate the possible values of <span class="math inline">\(\beta_i^b\)</span> and <span class="math inline">\(\beta_i^w\)</span>.  Figure 3 shows plots that indicate the distribution of <span class="math inline">\(\beta_i^b\)</span> and <span class="math inline">\(\beta_i^w\)</span>. To produce these plots, run:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"betab"</span>, <span class="st">"betaw"</span><span class="op">)</span></code></pre></div>
-<p>Density plots are useful to visualize the location and uncertainty of the point estimates. The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s <span class="math inline">\(\beta_i^b\)</span> and <span class="math inline">\(\beta_i^w\)</span>. You can see that the variance of the point estimates from <span class="math inline">\(\beta_i^b\)</span> is much higher than the variance of point estimates from <span class="math inline">\(\beta_i^w\)</span>.<br>
- Figure 4 portrays the results of the <code>ei</code> algorithm by plotting the proportion of blacks in each country by the proportion of registered voters in each county. To produce this plot, use:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"betab"</span>, <span class="st">"betaw"</span><span class="op">)</span></code></pre></div>
+<p>Density plots are useful to visualize the location and uncertainty of the point estimates. The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s <span class="math inline">\(\beta_i^b\)</span> and <span class="math inline">\(\beta_i^w\)</span>. You can see that the variance of the point estimates from <span class="math inline">\(\beta_i^b\)</span> is much higher than the variance of point estimates from <span class="math inline">\(\beta_i^w\)</span>.  Figure 4 portrays the results of the <code>ei</code> algorithm by plotting the proportion of blacks in each country by the proportion of registered voters in each county. To produce this plot, use:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"xtfit"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"xtfit"</span><span class="op">)</span></code></pre></div>
 <p>The circles around each of the points in this plot are proportional to the population of each county. The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80% confidence interval around the regression line. The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.</p>
 <div class="figure">
 <img src="betas.png" alt=""><p class="caption">Plots with Distribution of Point Estimates for <span class="math inline">\(\beta_i^b\)</span> (left) and <span class="math inline">\(\beta_i^w\)</span> (right), for all <span class="math inline">\(i\)</span></p>
@@ -237,17 +249,25 @@
 </div>
 <div style="page-break-after: always;"></div>
 <p>Finally, if we have data on the true proportions of registered blacks and registered whites in each county, as we do in this dataset, we can use plots in <code>ei</code> to assess how well the algorithm works on the given data. To do this, rerun the <code>ei</code> algorithm, adding the truth vectors,  and <code>tw</code> as the truth argument.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">matproii</span><span class="op">$</span><span class="va">tb</span>, <span class="va">matproii</span><span class="op">$</span><span class="va">tw</span><span class="op">)</span>
-<span class="va">formula</span> <span class="op">&lt;-</span> <span class="va">t</span> <span class="op">~</span> <span class="va">x</span>
-<span class="va">dbuf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ei.html">ei</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, total <span class="op">=</span> <span class="st">"n"</span>, data <span class="op">=</span> <span class="va">matproii</span>, truth <span class="op">=</span> <span class="va">truth</span><span class="op">)</span>
-<span class="co">#&gt; [1] "Running 2x2 ei"</span>
-<span class="co">#&gt; Maximizing likelihood</span>
-<span class="co">#&gt; Importance Sampling..</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>truth <span class="ot">&lt;-</span> <span class="fu">cbind</span>(matproii<span class="sc">$</span>tb, matproii<span class="sc">$</span>tw)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>formula <span class="ot">&lt;-</span> t <span class="sc">~</span> x</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dbuf <span class="ot">&lt;-</span> <span class="fu">ei</span>(<span class="at">formula =</span> formula, <span class="at">total =</span> <span class="st">"n"</span>, <span class="at">data =</span> matproii, <span class="at">truth =</span> truth)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>i Running 2x2 ei</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>                 </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>i Maximizing likelihood</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; i Running 2x2 ei</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>v Running 2x2 ei [690ms]</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>\ Beginning importance sampling.</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>v Beginning importance sampling. [<span class="fl">3.3</span>s]</span></code></pre></div>
 <p>Then use plot to compare the estimates of the <code>ei</code> algorithm to the true proportions of white and black registered voters in each county.</p>
 <p>TODO: set eval = TRUE</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"truth"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"truth"</span><span class="op">)</span></code></pre></div>
 <p>The “truth” plot (Figure 5) has four components. The top two figures have the posterior densities of the aggregate quantities of interest <span class="math inline">\(B^b\)</span> and <span class="math inline">\(B^w\)</span>. These densities tell us in what range the algorithm predicts that the point estimates lie. For example, the density of <span class="math inline">\(B^b\)</span> is wider than the density of <span class="math inline">\(B^w\)</span>, indicating that our estimates of <span class="math inline">\(B^w\)</span> lie in a smaller range than than our estimates of <span class="math inline">\(B^b\)</span>. The true aggregate values, computed from the  data we inputed, are indicated by the vertical bars. The fact that the true <span class="math inline">\(B^b\)</span> and <span class="math inline">\(B^w\)</span> are within the densities we computed confirms that the model is did a good job at predicting the true proportions of registered white and black voters.</p>
 <p>The bottom two figures in Figure 5 plot the estimated values of <span class="math inline">\(\beta_i^b\)</span> and <span class="math inline">\(\beta_i^w\)</span> against the true values. The size of each of the circles plotted is proportional to the number of blacks in the county in the first graph and the number of whites in each county in the second graph. If the estimated values were exactly equal to the true values, all of the points would be on the <span class="math inline">\(45^{\circ}\)</span> line. Because the points fall quite close to the <span class="math inline">\(45^{\circ}\)</span> and do not deviate from the line in a systematic way, we can see that the <code>ei</code> algorithm predicts the point estimates quite well.</p>
 <p>Comparing Estimates to the Truth at the County Level</p>
@@ -274,7 +294,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></code></pre></div>
 <p>We can also plot this MCMC output to assess convergence:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html">plot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="MCMCplot.png" alt=""><p class="caption">MCMC Output for % White Turnout in Precinct 3</p>
 </div>

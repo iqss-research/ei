@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting Ecological Inference Estimates — plot.ei • ei</title>
+<title>Convert to `ei_tbl` objects — as_ei_tbl • ei</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Plotting Ecological Inference Estimates — plot.ei" />
-<meta property="og:description" content="`plot' method for the class `ei'." />
+<meta property="og:title" content="Convert to `ei_tbl` objects — as_ei_tbl" />
+<meta property="og:description" content="Convert to `ei_tbl` objects" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -117,122 +117,50 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting Ecological Inference Estimates</h1>
+    <h1>Convert to `ei_tbl` objects</h1>
     
-    <div class="hidden name"><code>plot.ei.Rd</code></div>
+    <div class="hidden name"><code>ei_tbl.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>`plot' method for the class `ei'.</p>
+    <p>Convert to `ei_tbl` objects</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for ei</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>as_ei_tbl</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='fu'>ei_as_ei_tbl</span><span class='op'>(</span><span class='va'>ei.object</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An <code>ei</code> object from the function <code>ei</code>.</p></td>
+      <td><p>an object to be coerced</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>A list of options to return in graphs.  See values below.</p></td>
+      <th>ei.object</th>
+      <td><p>list-based ei object to convert to tibble-based object</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-<dt>tomogD</dt><dd><p>Tomography plot with the data only.  See Figure 5.1,
-page 81.</p></dd>
-<dt>tomog</dt><dd><p>Tomography plot with ML contours.  See Figure 10.2,
-page 204.</p></dd>
-<dt>tomogCI</dt><dd><p>Tomography plot with \(80\%\) confidence
-intervals.  Confidence intervals appear on the screen in red with the
-remainder of the tomography line in yellow.  The confidence interval portion
-is also printed thicker than the rest of the line.  See Figure 9.5, page
-179.</p></dd>
-<dt>tomogCI95</dt><dd><p>Tomography plot with \(95\%\) confidence intervals.
-Confidence intervals appear on the screen in red with the remainder of the
-tomography line in yellow.  The confidence interval portion is also printed
-thicker than the rest of the line.  See Figure 9.5, page 179.</p></dd>
-<dt>tomogE</dt><dd><p>Tomography plot with estimated mean posterior \(\beta_i^b\)
-and \(\beta_i^w\) points.</p></dd>
-<dt>tomogP</dt><dd><p>Tomography plot with mean
-posterior contours.</p></dd> <dt>betab</dt><dd><p>Density estimate (i.e., a smooth version
-of a histogram) of point estimates of \(\beta_i^b\)'s with whiskers.</p></dd>
-<dt>betaw</dt><dd><p>Density estimate (i.e., a smooth version of a histogram) of
-point estimates of \(\beta_i^w\)'s with whiskers.</p></dd>
-<dt>xt</dt><dd><p>Basic
-\(X_i\) by \(T_i\) scatterplot.</p></dd> <dt>xtc</dt><dd><p>Basic \(X_i\) by \(T_i\)
-scatterplot with circles sized proportional to \(N_i\).</p></dd>
-<dt>xtfit</dt><dd><p>\(X_i\) by \(T_i\) plot with estimated \(E(T_i|X_i)\) and
-conditional \(80\%\) confidence intervals.  See Figure 10.3, page 206.</p></dd>
-<dt>xtfitg</dt><dd><p><code>xtfit</code> with Goodman's regression line superimposed.</p></dd>
-<dt>estsims</dt><dd><p>All the simulated \(\beta_i^b\)'s by all the simulated
-\(\beta_i^w\)'s.  The simulations should take roughly the same shape of
-the mean posterior contours, except for those sampled from outlier
-tomography lines.</p></dd>
-<dt>boundXb</dt><dd><p>\(X_i\) by the bounds on \(\beta_i^b\)
-(each precinct appears as one vertical line), see the lines in the left
-graph in Figure 13.2, page 238.</p></dd>
-<dt>boundXw</dt><dd><p>\(X_i\) by the bounds on
-\(\beta_i^w\) (each precinct appears as one vertical line), see the lines
-in the right graph in Figure 13.2, page 238.</p></dd>
-<dt>truth</dt><dd><p>Compares truth to
-estimates at the district and precinct-level.  Requires <code>truth</code> in the
-<code>ei</code> object.  See Figures 10.4 (page 208) and 10.5 (page 210).</p></dd>
-<dt>movieD</dt><dd><p>For each observation, one tomography plot appears with the
-line for the particular observation darkened.  After the graph for each
-observation appears, the user can choose to view the next observation (hit
-return), jump to a specific observation number (type in the number and hit
-return), or stop (hit "s" and return).</p></dd>
-<dt>movie</dt><dd><p>For each observation,
-one page of graphics appears with the posterior distribution of
-\(\beta_i^b\) and \(\beta_i^w\) and a plot of the simulated values of
-\(\beta_i^b\) and \(\beta_i^w\) from the tomography line.  The user can
-choose to view the next observation (hit return), jump to a specific
-observation number (type in the number and hit return), or stop (hit ``s"
-and return).</p></dd>
-
-TODO
-
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Returns any of a set of possible graphical objects, mirroring those in the
-examples in King (1997).  Graphical option <code>lci</code> is a logical value
-specifying the use of the Law of Conservation of Ink, where the implicit
-information in the data is represented through color gradients, i.e. the
-color of the line is a function of the length of the tomography line.  This
-can be passed as an argument and is used for ``tomogD'' and ``tomog'' plots.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Gary King (1997). A Solution to the Ecological Inference
-Problem.  Princeton: Princeton University Press.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Gary King &lt;&lt;email: king@harvard.edu&gt;&gt; and Molly Roberts &lt;&lt;email:
-molly.e.roberts@gmail.com&gt;&gt;</p>
+    <p>ei_tbl object</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>sample_ei</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>formula</span> <span class='op'>&lt;-</span> <span class='va'>t</span> <span class='op'>~</span> <span class='va'>x</span></span>
-<span class='r-in'><span class='va'>dbuf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ei.html'>ei</a></span><span class='op'>(</span>formula <span class='op'>=</span> <span class='va'>formula</span>, total <span class='op'>=</span> <span class='st'>"n"</span>, data <span class='op'>=</span> <span class='va'>sample_ei</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>form</span> <span class='op'>&lt;-</span> <span class='va'>t</span> <span class='op'>~</span> <span class='va'>x</span></span>
+<span class='r-in'><span class='va'>dbuf</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ei.html'>ei</a></span><span class='op'>(</span><span class='va'>form</span>, total <span class='op'>=</span> <span class='st'>"n"</span>, data <span class='op'>=</span> <span class='va'>sample_ei</span><span class='op'>)</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>i</span> Running 2x2 ei</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span>                  </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>i</span> Maximizing likelihood</span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>i</span> Running 2x2 ei</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>v</span> Running 2x2 ei <span style='color: #B2B2B2;'>[240ms]</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>v</span> Running 2x2 ei <span style='color: #B2B2B2;'>[242ms]</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> \ Beginning importance sampling.</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>v</span> Beginning importance sampling. <span style='color: #B2B2B2;'>[2.1s]</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BB00;'>v</span> Beginning importance sampling. <span style='color: #B2B2B2;'>[2s]</span></span>
 <span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>dbuf</span>, <span class='st'>"tomog"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>dbuf</span>, <span class='st'>"tomog"</span>, <span class='st'>"betab"</span>, <span class='st'>"betaw"</span>, <span class='st'>"xtfit"</span><span class='op'>)</span></span>
-<span class='r-plt img'><img src='plot.ei-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='va'>dbuf</span> <span class='op'>&lt;-</span> <span class='fu'>ei_as_ei_tbl</span><span class='op'>(</span><span class='va'>dbuf</span><span class='op'>)</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting 2x3 Ecological Inference Estimates in 3 dimensions — tomogRxC3d • ei</title>
+<title>Run (tidy) Ecological Inference Estimation — ei_est • ei</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,9 +46,8 @@
 
 
 
-<meta property="og:title" content="Plotting 2x3 Ecological Inference Estimates in 3 dimensions — tomogRxC3d" />
-<meta property="og:description" content="A tomography plot in 3 dimensions for RxC Ecological Inference data and an
-estimated Ecological Inference model in RxC data." />
+<meta property="og:title" content="Run (tidy) Ecological Inference Estimation — ei_est" />
+<meta property="og:description" content="Run (tidy) Ecological Inference Estimation" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -118,112 +117,114 @@ estimated Ecological Inference model in RxC data." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting 2x3 Ecological Inference Estimates in 3 dimensions</h1>
+    <h1>Run (tidy) Ecological Inference Estimation</h1>
     
-    <div class="hidden name"><code>tomogRxC3d.Rd</code></div>
+    <div class="hidden name"><code>ei_est.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A tomography plot in 3 dimensions for RxC Ecological Inference data and an
-estimated Ecological Inference model in RxC data.</p>
+    <p>Run (tidy) Ecological Inference Estimation</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tomogRxC3d</span><span class='op'>(</span>
-  <span class='va'>formula</span>,
+    <pre class="usage"><span class='fu'>ei_est</span><span class='op'>(</span>
   <span class='va'>data</span>,
-  total <span class='op'>=</span> <span class='cn'>NULL</span>,
-  lci <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  estimates <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  ci <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  seed <span class='op'>=</span> <span class='fl'>1234</span>,
-  color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/grDevices/hcl.html'>hcl</a></span><span class='op'>(</span>h <span class='op'>=</span> <span class='fl'>30</span>, c <span class='op'>=</span> <span class='fl'>100</span>, l <span class='op'>=</span> <span class='fl'>60</span><span class='op'>)</span>,
-  transparency <span class='op'>=</span> <span class='fl'>0.75</span>,
-  light <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  rotate <span class='op'>=</span> <span class='cn'>TRUE</span>
+  <span class='va'>t</span>,
+  <span class='va'>x</span>,
+  <span class='va'>n</span>,
+  id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>data</span><span class='op'>)</span><span class='op'>)</span>,
+  Zb <span class='op'>=</span> <span class='cn'>NULL</span>,
+  Zw <span class='op'>=</span> <span class='cn'>NULL</span>,
+  erho <span class='op'>=</span> <span class='fl'>0.5</span>,
+  esigma <span class='op'>=</span> <span class='fl'>0.5</span>,
+  ebeta <span class='op'>=</span> <span class='fl'>0.5</span>,
+  ealphab <span class='op'>=</span> <span class='cn'>NA</span>,
+  ealphaw <span class='op'>=</span> <span class='cn'>NA</span>,
+  truth <span class='op'>=</span> <span class='cn'>NA</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>formula</th>
-      <td><p>A formula of the form <code>cbind(col1,
-col2,...)~cbind(row1,row2,...)</code></p></td>
-    </tr>
-    <tr>
       <th>data</th>
-      <td><p>data that contains the data that corresponds to the formula</p></td>
+      <td><p>data where `x`, `t`, `total`, `Zb`, `Zw` are found</p></td>
     </tr>
     <tr>
-      <th>total</th>
-      <td><p>`total' is the name of the variable in the dataset that
-contains the number of individuals in each unit</p></td>
+      <th>t</th>
+      <td><p>&lt;[`data-masking`][dplyr_data_masking]&gt; column of turnout in data</p></td>
     </tr>
     <tr>
-      <th>lci</th>
-      <td><p>logical value specifying the use of the Law of Conservation of
-Ink, where the implicit information in the data is represented through color
-gradients, i.e. the color of the plane is a function of the area of the
-tomography plane.</p></td>
+      <th>x</th>
+      <td><p>&lt;[`data-masking`][dplyr_data_masking]&gt; column of subgroup proportions in data</p></td>
     </tr>
     <tr>
-      <th>estimates</th>
-      <td><p>logical value specifying whether the point estimates of
-\(\beta\)'s are included for each observation on the tomography plot.</p></td>
+      <th>n</th>
+      <td><p>&lt;[`data-masking`][dplyr_data_masking]&gt; column of total in data</p></td>
     </tr>
     <tr>
-      <th>ci</th>
-      <td><p>logical value specifying whether the estimated confidence ellipse
-is included on the tomography plot.</p></td>
+      <th>id</th>
+      <td><p>&lt;[`data-masking`][dplyr_data_masking]&gt; column of unique ids in data</p></td>
     </tr>
     <tr>
-      <th>level</th>
-      <td><p>numeric value from 0 to 1 specifying the significance level of
-the confidence ellipse; eg. .95 refers to 95% confidence ellipse.</p></td>
+      <th>Zb</th>
+      <td><p>&lt;[`data-masking`][dplyr_tidy_select]&gt; columns of covariates in data</p></td>
     </tr>
     <tr>
-      <th>seed</th>
-      <td><p>seed value for model estimation.</p></td>
+      <th>Zw</th>
+      <td><p>&lt;[`data-masking`][dplyr_tidy_select]&gt; columns of covariates in data</p></td>
     </tr>
     <tr>
-      <th>color</th>
-      <td><p>color of tomography planes if lci=F.</p></td>
+      <th>erho</th>
+      <td><p>The standard deviation of the normal prior on \(\phi_5\) for
+the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.</p></td>
     </tr>
     <tr>
-      <th>transparency</th>
-      <td><p>numeric value from 0 to 1 specifying transparency of
-tomography planes; 0 is entirely transparent.</p></td>
+      <th>esigma</th>
+      <td><p>The standard deviation of an underlying normal distribution,
+from which a half normal is constructed as a prior for both
+\(\breve{\sigma}_b\) and \(\breve{\sigma}_w\). Default \(= 0.5\)</p></td>
     </tr>
     <tr>
-      <th>light</th>
-      <td><p>logical value specifying whether lights should be included in
-the rgl interface. The inclusion of lights will create shadows in the plot
-that may distort colors.</p></td>
+      <th>ebeta</th>
+      <td><p>Standard deviation of the "flat normal" prior on
+\(\breve{B}^b\) and \(\breve{B}^w\).  The flat normal prior is uniform
+within the unit square and dropping outside the square according to the
+normal distribution.  Set to zero for no prior. Setting to positive values
+probabilistically keeps the estimated mode within the unit square.
+Default\(=0.5\)</p></td>
     </tr>
     <tr>
-      <th>rotate</th>
-      <td><p>logical value specifying whether the plot will rotate for 20
-seconds.</p></td>
+      <th>ealphab</th>
+      <td><p>cols(Zb) x 2 matrix of means (in the first column) and
+standard deviations (in the second) of an independent normal prior
+distribution on elements of \(\alpha^b\).  If you specify Zb, you should
+probably specify a prior, at least with mean zero and some variance (default
+is no prior).  (See Equation 9.2, page 170, to interpret \(\alpha^b\)).</p></td>
+    </tr>
+    <tr>
+      <th>ealphaw</th>
+      <td><p>cols(Zw) x 2 matrix of means (in the first column) and
+standard deviations (in the second) of an independent normal prior
+distribution on elements of \(\alpha^w\).  If you specify Zw, you should
+probably specify a prior, at least with mean zero and some variance (default
+is no prior).  (See Equation 9.2, page 170, to interpret \(\alpha^w\)).</p></td>
+    </tr>
+    <tr>
+      <th>truth</th>
+      <td><p>A length(t) x 2 matrix of the true values of the quantities of
+interest.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>TODO</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>ei_tbl</p>
 
-    <p>Requires rgl package and rgl viewer.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Gary King (1997). A Solution to the Ecological Inference
-Problem.  Princeton: Princeton University Press.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Gary King &lt;&lt;email: king@harvard.edu&gt;&gt;; Molly Roberts &lt;&lt;email:
-molly.e.roberts@gmail.com&gt;&gt;; Soledad Prillaman &lt;&lt;email:
-soledadartiz@fas.harvard.edu..</p>
-
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>sample_ei</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>dbuf</span> <span class='op'>&lt;-</span> <span class='fu'>ei_est</span><span class='op'>(</span><span class='va'>sample_ei</span>, <span class='va'>x</span>, <span class='va'>t</span>, <span class='va'>n</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> <span style='color: #00BBBB;'>i</span> Maximizing likelihood</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

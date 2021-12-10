@@ -5,7 +5,11 @@ reference:
 - title: "Functions"
   desc: "ei Functions"
 - contents:
-  - lacks_concepts(c("data"))
+  - lacks_concepts(c("data", "tidy"))
+- title: "Tidy Workflow"
+  desc: "Alternative approach for a tidy workflow"
+- contents:
+  - has_concept("tidy")
 - title: "Data"
   desc: "Included Data"
 - contents:

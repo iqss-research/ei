@@ -84,19 +84,19 @@
 <div id="ei-package-todo" class="section level1">
 <h1 class="hasAnchor">
 <a href="#ei-package-todo" class="anchor"></a>EI Package TODO:</h1>
-<p>Last Updated: 2021.09.04</p>
+<p>Last Updated: 2021.10.19</p>
 <div id="general-big-comments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#general-big-comments" class="anchor"></a>General (Big) Comments:</h2>
 <ul class="task-list">
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 Use <code>cli</code> for progress reporting</li>
 <li>
 <input type="checkbox" disabled>
 Replace workhorse functions in <code>R/zzz.R</code> with Rcpp implementations</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 Use GitHub actions to auto-check the package on commit</li>
 <li>
 <input type="checkbox" disabled>
@@ -137,6 +137,9 @@ Add <code>print.ei</code> for <code>"ei"</code> class objects</li>
 <li>
 <input type="checkbox" disabled>
 Allowing users to extract values used in the plot for customization</li>
+<li>
+<input type="checkbox" disabled>
+Rename functions that start with <code>.</code> and use <code>@noRd</code> tag instead</li>
 </ul>
 </div>
 <div id="input-check" class="section level3">
@@ -146,6 +149,9 @@ Allowing users to extract values used in the plot for customization</li>
 <li>
 <input type="checkbox" disabled>
 ei(): check the <code>total</code> argument</li>
+<li>
+<input type="checkbox" disabled>
+ei(): check the <code>truth</code> argument</li>
 </ul>
 </div>
 </div>
@@ -155,78 +161,81 @@ ei(): check the <code>total</code> argument</li>
 <p>Replace base R plots with ggplots</p>
 <ul class="task-list">
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 .tomog -&gt; plot_tomog</li>
 <li>
-<input type="checkbox" disabled>
-.tomogl -&gt; plot_tomogl</li>
+<input type="checkbox" disabled checked>
+.tomogl -&gt; plot_tomog + option (contour_ML)</li>
 <li>
-<input type="checkbox" disabled>
-.tomog80CI -&gt; plot_tomog80CI</li>
+<input type="checkbox" disabled checked>
+.tomog80CI -&gt; plot_tomog + option (CI)</li>
 <li>
-<input type="checkbox" disabled>
-.tomog95CI -&gt; plot_tomog95CI</li>
+<input type="checkbox" disabled checked>
+.tomog95CI -&gt; plot_tomog + option (CI)</li>
 <li>
-<input type="checkbox" disabled>
-.tomogE -&gt; plot_tomogE</li>
+<input type="checkbox" disabled checked>
+.tomogE -&gt; plot_tomog + option (points)</li>
 <li>
-<input type="checkbox" disabled>
-.tomogP2 -&gt; plot_tomogP2</li>
+<input type="checkbox" disabled checked>
+.tomogP2 -&gt; plot_tomog + option (contour_posterior)</li>
 <li>
-<input type="checkbox" disabled>
-.betabd -&gt; plot_betabd</li>
+<input type="checkbox" disabled checked>
+.betabd -&gt; plot_density + option (betab)</li>
 <li>
-<input type="checkbox" disabled>
-.betawd -&gt; plot_betawd</li>
+<input type="checkbox" disabled checked>
+.betawd -&gt; plot_density + option (betaw)</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 .xt -&gt; plot_xt</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 .xtc -&gt; plot_xtc</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 .xtfit -&gt; plot_xtfit</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 .xtfitg -&gt; plot_xtfitg</li>
 <li>
-<input type="checkbox" disabled>
-.estsims -&gt; plot_estsims</li>
+<input type="checkbox" disabled checked>
+.estsims -&gt; plot_sims</li>
 <li>
-<input type="checkbox" disabled>
-.boundXb -&gt; plot_boundXb</li>
+<input type="checkbox" disabled checked>
+.boundXb -&gt; plot_bound (Xb)</li>
 <li>
-<input type="checkbox" disabled>
-.boundXw -&gt; plot_boundXw</li>
+<input type="checkbox" disabled checked>
+.boundXw -&gt; plot_bound (Xw)</li>
 <li>
-<input type="checkbox" disabled>
-.truthfn -&gt; plot_truthfn</li>
+<input type="checkbox" disabled checked>
+.truthfn -&gt; plot_truth</li>
 <li>
-<input type="checkbox" disabled>
-.bndplot -&gt; plot_bndplot</li>
+<input type="checkbox" disabled checked>
+.bndplot (for eiRxCtomog) -&gt; plot_bound</li>
 <li>
-<input type="checkbox" disabled>
-.movieD -&gt; plot_movieD</li>
-<li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 .movie -&gt; plot_movie</li>
+<li>
+<input type="checkbox" disabled checked>
+.movieD -&gt; plot_movie</li>
+<li>
+<input type="checkbox" disabled>
+tomogRxC3d -&gt; plot_tomog</li>
 </ul>
 <div id="testing" class="section level3">
 <h3 class="hasAnchor">
 <a href="#testing" class="anchor"></a>Testing</h3>
 <ul class="task-list">
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 bounds1</li>
 <li>
 <input type="checkbox" disabled checked>
 ei</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 ei.sim</li>
 <li>
-<input type="checkbox" disabled>
+<input type="checkbox" disabled checked>
 eiread</li>
 <li>
 <input type="checkbox" disabled>
@@ -239,13 +248,22 @@ tomogRxC3d</li>
 plot</li>
 </ul>
 </div>
+<div id="objects" class="section level3">
+<h3 class="hasAnchor">
+<a href="#objects" class="anchor"></a>Objects</h3>
+<ul class="task-list">
+<li>
+<input type="checkbox" disabled>
+methods for the <code>ei</code> object (differentiate <code>2x2</code> and <code>RxC</code>)</li>
+</ul>
+</div>
 <div id="data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#data" class="anchor"></a>Data</h3>
 <ul class="task-list">
 <li>
-<input type="checkbox" disabled>
-rename sample (avoid overlaps with base:: functions)</li>
+<input type="checkbox" disabled checked>
+rename sample (avoid overlaps with <code>base::</code> functions)</li>
 </ul>
 </div>
 <div id="minor-points" class="section level3">
