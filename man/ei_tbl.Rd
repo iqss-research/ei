@@ -26,3 +26,4 @@ form <- t ~ x
 dbuf <- ei(form, total = "n", data = sample_ei)
 dbuf <- ei_as_ei_tbl(dbuf)
 }
+\concept{tidy}

@@ -121,6 +121,7 @@ as_ei_tbl <- function(x) {
 #' @export
 #' @return ei_tbl object
 #'
+#' @concept tidy
 #' @examples
 #' data(sample_ei)
 #' form <- t ~ x
