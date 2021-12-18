@@ -8,8 +8,6 @@ plot_movie(ei.object)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
-
-\item{options}{The list of options}
 }
 \description{
 Visualizing EI (Shiny visualization)
