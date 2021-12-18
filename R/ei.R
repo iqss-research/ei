@@ -218,3 +218,11 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   class(output) <- "ei"
   output
 }
+
+
+#' @noRd
+#' @export
+print.ei <- function(x, ...)
+{
+  cat("ei object \n")
+}
