@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' data(census1910)
-#' output <- bounds1(x = census1910$x, t = census1910$t, n = census1910$n)
+#' output <- ei.bounds(x = census1910$x, t = census1910$t, n = census1910$n)
 ei.bounds <- function(x, t, n) {
   bounds1(x, t, n)
 }
