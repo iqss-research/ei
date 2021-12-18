@@ -1,11 +1,11 @@
-#' Visualizing EI
+#' Visualizing EI (Shiny visualization)
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
 #' @concept visualization
 #' @export
-plot_movie <- function(ei.object, options = list()) {
-  options <- plot_movie_options(options)
+plot_movie <- function(ei.object) {
+  options <- plot_movie_options(options = list())
 
   plot_movie_base(ei.object, options)
 }
@@ -77,7 +77,10 @@ plot_movie_base <- function(ei.object, options) {
         geom_point(size = 0.25, show.legend = FALSE) +
         coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
         ggtitle(latex2exp::TeX("Simulations of $\\beta_W$ and $\\beta_B$")) +
-        labs(x = latex2exp::TeX("$\\beta_B$ simulations"), y = latex2exp::TeX("$\\beta_W$ simulations")) +
+        labs(
+          x = latex2exp::TeX("$\\beta_B$ simulations"),
+          y = latex2exp::TeX("$\\beta_W$ simulations")
+        ) +
         scale_x_continuous(expand = c(0, 0.01)) +
         scale_y_continuous(expand = c(0, 0)) +
         theme_ei(text_size = text_size)

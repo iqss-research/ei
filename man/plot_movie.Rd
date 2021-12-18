@@ -2,9 +2,9 @@
 % Please edit documentation in R/plot_movie.R
 \name{plot_movie}
 \alias{plot_movie}
-\title{Visualizing EI}
+\title{Visualizing EI (Shiny visualization)}
 \usage{
-plot_movie(ei.object, options = list())
+plot_movie(ei.object)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
@@ -12,6 +12,6 @@ plot_movie(ei.object, options = list())
 \item{options}{The list of options}
 }
 \description{
-Visualizing EI
+Visualizing EI (Shiny visualization)
 }
 \concept{visualization}

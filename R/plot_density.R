@@ -1,10 +1,10 @@
-#' Visualizing EI
+#' Visualizing EI (density)
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
 #' @concept visualization
 #' @export
-plot_density <- function(ei.object, options = list()) {
+plot_density <- function(ei.object, options = list(parameter = "betab")) {
   options <- plot_density_options(options)
 
   p <- plot_density_base(ei.object, options)

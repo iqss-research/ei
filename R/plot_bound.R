@@ -1,10 +1,10 @@
-#' Visualizing EI
+#' Visualizing EI (bound)
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
 #' @concept visualization
 #' @export
-plot_bound <- function(ei.object, options = list()) {
+plot_bound <- function(ei.object, options = list(parameter = "betab")) {
   if ("hessian" %in% names(ei.object)) {
     # 2x2 case
     options <- plot_bound_options(options)

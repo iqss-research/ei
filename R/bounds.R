@@ -31,4 +31,3 @@ bounds1 <- function(x, t, n) {
   # TODO add our checks here in the future!
   bounds_cpp(x, t, n)
 }
-

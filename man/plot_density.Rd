@@ -2,9 +2,9 @@
 % Please edit documentation in R/plot_density.R
 \name{plot_density}
 \alias{plot_density}
-\title{Visualizing EI}
+\title{Visualizing EI (density)}
 \usage{
-plot_density(ei.object, options = list())
+plot_density(ei.object, options = list(parameter = "betab"))
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
@@ -12,6 +12,6 @@ plot_density(ei.object, options = list())
 \item{options}{The list of options}
 }
 \description{
-Visualizing EI
+Visualizing EI (density)
 }
 \concept{visualization}

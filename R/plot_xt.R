@@ -1,10 +1,10 @@
-#' Visualizing EI
+#' Visualizing EI (xt-plot)
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
 #' @concept visualization
 #' @export
-plot_xt <- function(ei.object, options = list()) {
+plot_xt <- function(ei.object, options = list(density = TRUE, fit = TRUE, CI = 0.8, goodman = FALSE)) {
   options <- plot_xt_options(options)
 
   p <- plot_xt_base(ei.object, options)

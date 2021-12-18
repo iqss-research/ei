@@ -1,11 +1,11 @@
-#' Visualizing EI
+#' Visualizing EI (with truth)
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
 #' @concept visualization
 #' @export
-plot_truth <- function(ei.object, options = list()) {
-  options <- plot_truth_options(options)
+plot_truth <- function(ei.object) {
+  options <- plot_truth_options(options = list())
 
   p <- plot_truth_base(ei.object, options)
 

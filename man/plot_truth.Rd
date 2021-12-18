@@ -2,9 +2,9 @@
 % Please edit documentation in R/plot_truth.R
 \name{plot_truth}
 \alias{plot_truth}
-\title{Visualizing EI}
+\title{Visualizing EI (with truth)}
 \usage{
-plot_truth(ei.object, options = list())
+plot_truth(ei.object)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
@@ -12,6 +12,6 @@ plot_truth(ei.object, options = list())
 \item{options}{The list of options}
 }
 \description{
-Visualizing EI
+Visualizing EI (with truth)
 }
 \concept{visualization}
