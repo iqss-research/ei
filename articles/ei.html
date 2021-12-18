@@ -145,10 +145,10 @@
 <span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt;  [36mℹ [39m Maximizing likelihood</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[896ms] [39m</span>
+<span id="cb3-6"><a href="#cb3-6"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[940ms] [39m</span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; </span></span>
 <span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; ⠙ Beginning importance sampling.</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[5.5s] [39m</span></span></code></pre></div>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[4.7s] [39m</span></span></code></pre></div>
 <p>To include a covariate on <span class="math inline">\(\beta_i^b\)</span> simply specify a covariate vector for the option , or a string that refers to the name of the covariate in the dataset. Similarly, to include a covariate on <span class="math inline">\(\beta_i^w\)</span>, specify a covariate vector for for the option , or a string that refers to the name of the covariate in the dataset.</p>
 <p>Next, we use and  to obtain general information about the estimation.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -166,7 +166,7 @@
 <span class="co">#&gt; [1] 268</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $Resamp</span>
-<span class="co">#&gt; [1] 37</span>
+<span class="co">#&gt; [1] 25</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Maximum likelihood results in scale of estimation (and se's)`</span>
 <span class="co">#&gt;        Bb0       Bw0       sigB       sigW       rho Zb0 Zw0</span>
@@ -174,12 +174,12 @@
 <span class="co">#&gt;  0.2845609 0.2825123  0.2138895  0.1645617 0.3144215   0   0</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Untruncated psi's`</span>
-<span class="co">#&gt;        BB       BW        SB        SW       RHO</span>
-<span class="co">#&gt;  1.002617 1.170877 0.3356592 0.2821695 0.9099891</span>
+<span class="co">#&gt;         BB       BW        SB        SW       RHO</span>
+<span class="co">#&gt;  0.9755346 1.141078 0.3329465 0.2717096 0.9140651</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Truncated psi's (ultimate scale)`</span>
 <span class="co">#&gt;         BB        BW        SB        SW       RHO</span>
-<span class="co">#&gt;  0.6222706 0.8252789 0.1976974 0.1436305 0.7396054</span>
+<span class="co">#&gt;  0.6188955 0.8265236 0.1995517 0.1419842 0.7628701</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Aggregate Bounds`</span>
 <span class="co">#&gt;           betab     betaw</span>
@@ -188,8 +188,8 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Estimates of Aggregate Quantities of Interest`</span>
 <span class="co">#&gt;         mean          sd</span>
-<span class="co">#&gt; Bb 0.5723184 0.025729759</span>
-<span class="co">#&gt; Bw 0.8174795 0.007333098</span>
+<span class="co">#&gt; Bb 0.5664073 0.023607345</span>
+<span class="co">#&gt; Bw 0.8191642 0.006728201</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $precision</span>
 <span class="co">#&gt; [1] 4</span>
@@ -245,10 +245,10 @@
 <span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
 <span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt;  [36mℹ [39m Maximizing likelihood</span></span>
 <span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[793ms] [39m</span>
+<span id="cb10-7"><a href="#cb10-7"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[814ms] [39m</span>
 <span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; </span></span>
 <span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; ⠙ Beginning importance sampling.</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[3.9s] [39m</span></span></code></pre></div>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[5.2s] [39m</span></span></code></pre></div>
 <p>Then use plot to compare the estimates of the <code>ei</code> algorithm to the true proportions of white and black registered voters in each county.</p>
 <p>TODO: set eval = TRUE</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">

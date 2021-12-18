@@ -3,7 +3,7 @@ pkgdown: 2.0.1
 pkgdown_sha: ~
 articles:
   ei: ei.html
-last_built: 2021-12-18T20:46Z
+last_built: 2021-12-18T20:54Z
 urls:
   reference: https://iqss-research.github.io/ei/reference
   article: https://iqss-research.github.io/ei/articles
