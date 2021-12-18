@@ -2,6 +2,7 @@
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
+#' @return a ggplot object
 #' @concept visualization
 #' @export
 plot_tomog <- function(ei.object, options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points = TRUE, contour_ML = FALSE, contour_posterior = FALSE)) {

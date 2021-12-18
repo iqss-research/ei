@@ -14,6 +14,9 @@ plot_xt(
 
 \item{options}{The list of options}
 }
+\value{
+a ggplot object
+}
 \description{
 Visualizing EI (xt-plot)
 }

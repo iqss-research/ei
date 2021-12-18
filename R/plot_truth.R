@@ -1,7 +1,7 @@
 #' Visualizing EI (with truth)
 #'
 #' @param ei.object The output of \code{ei()}
-#' @param options The list of options
+#' @return a ggplot object
 #' @concept visualization
 #' @export
 plot_truth <- function(ei.object) {

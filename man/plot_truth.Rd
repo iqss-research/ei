@@ -8,8 +8,9 @@ plot_truth(ei.object)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
-
-\item{options}{The list of options}
+}
+\value{
+a ggplot object
 }
 \description{
 Visualizing EI (with truth)

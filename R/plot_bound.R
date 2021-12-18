@@ -2,6 +2,7 @@
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
+#' @return a ggplot object
 #' @concept visualization
 #' @export
 plot_bound <- function(ei.object, options = list(parameter = "betab")) {
