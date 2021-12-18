@@ -19,8 +19,13 @@ reference:
   desc: "Included Data"
 - contents:
   - has_concept("data")
+- title: "Misc."
+  desc: "Additional functions"
+- contents:
+  - lacks_concepts(c("data", "tidy", "visualization", "deprecated"))
 - title: "Deprecated Functions"
   desc: "Functions that have been superceded by better tools"
 - contents:
   - has_concept("Deprecated")
+  - has_concept("deprecated")
 
