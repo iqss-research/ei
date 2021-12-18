@@ -19,11 +19,16 @@
 #' @references Gary King (1997). A Solution to the Ecological Inference
 #' Problem.  Princeton: Princeton University Press.
 #'
-#'
 #' @examples
 #' data(census1910)
 #' output <- bounds1(x = census1910$x, t = census1910$t, n = census1910$n)
+ei.bounds <- function(x, t, n) {
+  bounds1(x, t, n)
+}
+
+#' @noRd
 bounds1 <- function(x, t, n) {
   # TODO add our checks here in the future!
   bounds_cpp(x, t, n)
 }
+
