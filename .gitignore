@@ -11,3 +11,4 @@ scratch/
 *.o
 *.so
 *.dll
+docs

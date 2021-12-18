@@ -1,6 +1,7 @@
+url: https://iqss-research.github.io/ei/
 template:
-  params:
-    bootswatch: cosmo
+  bootstrap: 5
+  bootswatch: cosmo
 reference:
 - title: "Functions"
   desc: "ei Functions"
@@ -18,3 +19,4 @@ reference:
   desc: "Included Data"
 - contents:
   - has_concept("data")
+
