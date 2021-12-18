@@ -19,4 +19,8 @@ reference:
   desc: "Included Data"
 - contents:
   - has_concept("data")
+- title: "Deprecated Functions"
+  desc: "Functions that have been superceded by better tools"
+- contents:
+  - has_concept("Deprecated")
 
