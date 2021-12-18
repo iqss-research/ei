@@ -2,15 +2,17 @@
 % Please edit documentation in R/plot_truth.R
 \name{plot_truth}
 \alias{plot_truth}
-\title{Visualizing EI}
+\title{Visualizing EI (with truth)}
 \usage{
-plot_truth(ei.object, options = list())
+plot_truth(ei.object)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
-
-\item{options}{The list of options}
+}
+\value{
+a ggplot object
 }
 \description{
-Visualizing EI
+Visualizing EI (with truth)
 }
+\concept{visualization}

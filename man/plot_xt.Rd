@@ -2,15 +2,22 @@
 % Please edit documentation in R/plot_xt.R
 \name{plot_xt}
 \alias{plot_xt}
-\title{Visualizing EI}
+\title{Visualizing EI (xt-plot)}
 \usage{
-plot_xt(ei.object, options = list())
+plot_xt(
+  ei.object,
+  options = list(density = TRUE, fit = TRUE, CI = 0.8, goodman = FALSE)
+)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
 
 \item{options}{The list of options}
 }
-\description{
-Visualizing EI
+\value{
+a ggplot object
 }
+\description{
+Visualizing EI (xt-plot)
+}
+\concept{visualization}

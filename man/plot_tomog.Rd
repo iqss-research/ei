@@ -2,15 +2,23 @@
 % Please edit documentation in R/plot_tomog.R
 \name{plot_tomog}
 \alias{plot_tomog}
-\title{Visualizing EI}
+\title{Visualizing EI (tomography plot)}
 \usage{
-plot_tomog(ei.object, options = list())
+plot_tomog(
+  ei.object,
+  options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points =
+    TRUE, contour_ML = FALSE, contour_posterior = FALSE)
+)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
 
 \item{options}{The list of options}
 }
-\description{
-Visualizing EI
+\value{
+a ggplot object
 }
+\description{
+Visualizing EI (tomography plot)
+}
+\concept{visualization}

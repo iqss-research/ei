@@ -72,6 +72,7 @@
 #'
 #' @export
 #' @return TODO
+#' @concept deprecated
 #'
 #' @examples
 #' data(sample_ei)
@@ -80,6 +81,12 @@
 #' plot(dbuf, "tomog")
 #' plot(dbuf, "tomog", "betab", "betaw", "xtfit")
 plot.ei <- function(x, ...) {
+  lifecycle::deprecate_warn(
+    when = "2.0.0",
+    what = "plot()",
+    details = c(i = "Please check our reference for new functions: https://iqss-research.github.io/ei/reference/index.html")
+  )
+
   ei.object <- x
   lci.function.list <- list("tomogD" = .tomog, "tomog" = .tomogl) # Fix for passing lci value
   function.list <- list(

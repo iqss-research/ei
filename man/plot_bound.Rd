@@ -2,15 +2,19 @@
 % Please edit documentation in R/plot_bound.R
 \name{plot_bound}
 \alias{plot_bound}
-\title{Visualizing EI}
+\title{Visualizing EI (bound)}
 \usage{
-plot_bound(ei.object, options = list())
+plot_bound(ei.object, options = list(parameter = "betab"))
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
 
 \item{options}{The list of options}
 }
-\description{
-Visualizing EI
+\value{
+a ggplot object
 }
+\description{
+Visualizing EI (bound)
+}
+\concept{visualization}

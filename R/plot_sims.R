@@ -1,10 +1,11 @@
-#' Visualizing EI
+#' Visualizing EI (simulation)
 #'
 #' @param ei.object The output of \code{ei()}
-#' @param options The list of options
+#' @return a ggplot object
+#' @concept visualization
 #' @export
-plot_sims <- function(ei.object, options = list()) {
-  options <- plot_sims_options(options)
+plot_sims <- function(ei.object) {
+  options <- plot_sims_options(options = list())
 
   p <- plot_sims_base(ei.object, options)
 
@@ -29,10 +30,16 @@ plot_sims_base <- function(ei.object, options) {
 
   suppressMessages({
     bind_cols(
-      as_tibble(betabs, column_name = paste0("V", 1:ncol(betabs))) %>%
+      as_tibble(
+        betabs,
+        .name_repair = ~ paste0("V", 1:ncol(betabs))
+      ) %>%
         tidyr::pivot_longer(everything()) %>%
         rename(x = .data$value),
-      as_tibble(betaws, column_name = paste0("V", 1:ncol(betaws))) %>%
+      as_tibble(
+        betaws,
+        .name_repair = ~ paste0("V", 1:ncol(betaws))
+      ) %>%
         tidyr::pivot_longer(everything()) %>%
         rename(y = .data$value)
     ) -> dat

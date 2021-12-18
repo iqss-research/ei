@@ -2,15 +2,17 @@
 % Please edit documentation in R/plot_sims.R
 \name{plot_sims}
 \alias{plot_sims}
-\title{Visualizing EI}
+\title{Visualizing EI (simulation)}
 \usage{
-plot_sims(ei.object, options = list())
+plot_sims(ei.object)
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
-
-\item{options}{The list of options}
+}
+\value{
+a ggplot object
 }
 \description{
-Visualizing EI
+Visualizing EI (simulation)
 }
+\concept{visualization}
