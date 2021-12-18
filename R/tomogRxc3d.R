@@ -31,6 +31,7 @@
 #' seconds.
 #'
 #' @export
+#' @concept deprecated
 #' @return TODO
 #'
 #' @author Gary King <<email: king@@harvard.edu>>; Molly Roberts <<email:

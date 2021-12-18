@@ -2,6 +2,7 @@
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options
+#' @concept visualization
 #' @export
 plot_truth <- function(ei.object, options = list()) {
   options <- plot_truth_options(options)

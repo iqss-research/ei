@@ -72,6 +72,7 @@
 #'
 #' @export
 #' @return TODO
+#' @concept deprecated
 #'
 #' @examples
 #' data(sample_ei)

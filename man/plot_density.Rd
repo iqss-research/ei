@@ -14,3 +14,4 @@ plot_density(ei.object, options = list())
 \description{
 Visualizing EI
 }
+\concept{visualization}

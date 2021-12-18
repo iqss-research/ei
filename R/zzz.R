@@ -1126,6 +1126,7 @@ getinput <- function() {
 #' data(RxCdata)
 #' formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
 #' tomogRxC(formula, data = RxCdata)
+#' @concept deprecated
 #' @export tomogRxC
 tomogRxC <- function(formula, data, total = NULL, refine = 100) {
   # require(sp)  Now specified as Import
