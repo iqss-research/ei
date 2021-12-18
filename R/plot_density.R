@@ -35,23 +35,23 @@ plot_density_base <- function(ei.object, options) {
   if (options$parameter == "betab") {
     ok <- !is.na(ei.object$betab)
     betabs <- ei.object$betabs[ok, ]
-    betabm <- tibble::tibble(x = apply(betabs, 1, mean))
+    beta <- tibble::tibble(x = apply(betabs, 1, mean))
     x_label <- "$\\beta_B$"
   } else {
     ok <- !is.na(ei.object$betaw)
     betaws <- ei.object$betaws[ok, ]
-    betawm <- apply(betaws, 1, mean)
+    beta <- tibble::tibble(x = apply(betaws, 1, mean))
     x_label <- "$\\beta_W$"
   }
 
-  ggplot2::ggplot(betabm, aes(x = .data$x)) +
+  ggplot2::ggplot(beta, aes(x = .data$x)) +
     ggplot2::geom_density(color = "#16a307") +
     ggplot2::labs(
       x = latex2exp::TeX(x_label),
       y = latex2exp::TeX("Density acrross precincts")
     ) +
     ggplot2::geom_segment(
-      data = betabm,
+      data = beta,
       aes(x = .data$x, y = 0, xend = .data$x, yend = 0.25)
     ) +
     ggplot2::xlim(c(0, 1)) +

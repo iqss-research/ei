@@ -30,10 +30,14 @@ plot_sims_base <- function(ei.object, options) {
 
   suppressMessages({
     bind_cols(
-      as_tibble(betabs, column_name = paste0("V", 1:ncol(betabs))) %>%
+      as_tibble(
+        betabs, .name_repair = ~paste0("V", 1:ncol(betabs))
+      ) %>%
         tidyr::pivot_longer(everything()) %>%
         rename(x = .data$value),
-      as_tibble(betaws, column_name = paste0("V", 1:ncol(betaws))) %>%
+      as_tibble(
+        betaws, .name_repair = ~paste0("V", 1:ncol(betaws))
+      ) %>%
         tidyr::pivot_longer(everything()) %>%
         rename(y = .data$value)
     ) -> dat
