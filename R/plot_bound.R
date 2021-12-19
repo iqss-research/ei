@@ -19,10 +19,9 @@
 #' suppressMessages({
 #'   ei_resRxC <- ei(formula, data = RxCdata)
 #' })
-#' plot_bound(ei_resRxC, options = list(parameter = "betab"))
-#' plot_bound(ei_resRxC, options = list(parameter = "betaw"))
+#' plot_bound(ei_resRxC)
 #' @export
-plot_bound <- function(ei.object, options = list(parameter = "betab")) {
+plot_bound <- function(ei.object, options = list()) {
   if ("hessian" %in% names(ei.object)) {
     # 2x2 case
     options <- plot_bound_options(options)

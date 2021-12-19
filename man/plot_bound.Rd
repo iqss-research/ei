@@ -4,7 +4,7 @@
 \alias{plot_bound}
 \title{Visualizing EI (bound)}
 \usage{
-plot_bound(ei.object, options = list(parameter = "betab"))
+plot_bound(ei.object, options = list())
 }
 \arguments{
 \item{ei.object}{The output of \code{ei()}}
@@ -32,7 +32,6 @@ formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
 suppressMessages({
   ei_resRxC <- ei(formula, data = RxCdata)
 })
-plot_bound(ei_resRxC, options = list(parameter = "betab"))
-plot_bound(ei_resRxC, options = list(parameter = "betaw"))
+plot_bound(ei_resRxC)
 }
 \concept{visualization}
