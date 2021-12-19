@@ -4,6 +4,13 @@
 #' @param options The list of options
 #' @return a ggplot object
 #' @concept visualization
+#' @examples
+#' data(matproii)
+#' suppressMessages({
+#'   ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+#' })
+#' plot_tomog(ei_res)
+#' plot_tomog(ei_res, options = list(points = FALSE, CI = 0.8))
 #' @export
 plot_tomog <- function(ei.object, options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points = TRUE, contour_ML = FALSE, contour_posterior = FALSE)) {
   options <- plot_tomog_options(options)
@@ -89,7 +96,7 @@ plot_tomog_options <- function(options) {
 
   # Point estimate
   if (!"points" %in% names(options)) {
-    options$points <- FALSE
+    options$points <- TRUE
   }
 
   if (!options$points %in% c(TRUE, FALSE)) {

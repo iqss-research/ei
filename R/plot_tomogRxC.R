@@ -7,9 +7,12 @@
 #'
 #' @return a ggplot object
 #' @concept visualization
+#' @examples
+#' data(RxCdata)
+#' formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
+#' plot_tomogRxC(formula, RxCdata)
 #' @export
 plot_tomogRxC <- function(formula, data, total = NULL) {
-
   p <- plot_tomogRxC_base(formula, data, total)
 
   return(p)

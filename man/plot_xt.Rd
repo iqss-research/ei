@@ -20,4 +20,12 @@ a ggplot object
 \description{
 Visualizing EI (xt-plot)
 }
+\examples{
+data(matproii)
+suppressMessages({
+  ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+})
+plot_xt(ei_res)
+plot_xt(ei_res, options = list(CI = 0.95, goodman = TRUE))
+}
 \concept{visualization}

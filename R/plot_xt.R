@@ -4,6 +4,13 @@
 #' @param options The list of options
 #' @return a ggplot object
 #' @concept visualization
+#' @examples
+#' data(matproii)
+#' suppressMessages({
+#'   ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+#' })
+#' plot_xt(ei_res)
+#' plot_xt(ei_res, options = list(CI = 0.95, goodman = TRUE))
 #' @export
 plot_xt <- function(ei.object, options = list(density = TRUE, fit = TRUE, CI = 0.8, goodman = FALSE)) {
   options <- plot_xt_options(options)
@@ -23,7 +30,7 @@ plot_xt <- function(ei.object, options = list(density = TRUE, fit = TRUE, CI = 0
 
 plot_xt_options <- function(options) {
   if (!"density" %in% names(options)) {
-    options$density <- FALSE
+    options$density <- TRUE
   }
 
   if (!options$density %in% c(TRUE, FALSE)) {
@@ -31,7 +38,7 @@ plot_xt_options <- function(options) {
   }
 
   if (!"fit" %in% names(options)) {
-    options$fit <- FALSE
+    options$fit <- TRUE
   }
 
   if (!options$fit %in% c(TRUE, FALSE)) {

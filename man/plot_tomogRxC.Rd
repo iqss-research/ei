@@ -20,4 +20,9 @@ a ggplot object
 \description{
 Visualizing EI (tomography plot for RxC)
 }
+\examples{
+data(RxCdata)
+formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
+plot_tomogRxC(formula, RxCdata)
+}
 \concept{visualization}

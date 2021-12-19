@@ -15,4 +15,11 @@ a ggplot object
 \description{
 Visualizing EI (simulation)
 }
+\examples{
+data(matproii)
+suppressMessages({
+  ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+})
+plot_sims(ei_res)
+}
 \concept{visualization}

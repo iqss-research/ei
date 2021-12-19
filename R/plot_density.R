@@ -4,6 +4,13 @@
 #' @param options The list of options
 #' @return a ggplot object
 #' @concept visualization
+#' @examples
+#' data(matproii)
+#' suppressMessages({
+#'   ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+#' })
+#' plot_tomog(ei_res, options = list(parameter = "betab"))
+#' plot_tomog(ei_res, options = list(parameter = "betaw"))
 #' @export
 plot_density <- function(ei.object, options = list(parameter = "betab")) {
   options <- plot_density_options(options)

@@ -3,6 +3,12 @@
 #' @param ei.object The output of \code{ei()}
 #' @return a ggplot object
 #' @concept visualization
+#' @examples
+#' data(matproii)
+#' suppressMessages({
+#'   ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+#' })
+#' plot_sims(ei_res)
 #' @export
 plot_sims <- function(ei.object) {
   options <- plot_sims_options(options = list())

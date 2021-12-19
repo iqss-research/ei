@@ -17,4 +17,12 @@ a ggplot object
 \description{
 Visualizing EI (density)
 }
+\examples{
+data(matproii)
+suppressMessages({
+  ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+})
+plot_tomog(ei_res, options = list(parameter = "betab"))
+plot_tomog(ei_res, options = list(parameter = "betaw"))
+}
 \concept{visualization}

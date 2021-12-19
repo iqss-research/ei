@@ -21,4 +21,12 @@ a ggplot object
 \description{
 Visualizing EI (tomography plot)
 }
+\examples{
+data(matproii)
+suppressMessages({
+  ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
+})
+plot_tomog(ei_res)
+plot_tomog(ei_res, options = list(points = FALSE, CI = 0.8))
+}
 \concept{visualization}
