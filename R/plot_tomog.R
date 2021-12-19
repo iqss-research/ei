@@ -10,6 +10,8 @@
 #'   ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
 #' })
 #' plot_tomog(ei_res)
+#' plot_tomog(ei_res, options = list(linecolor = "betab"))
+#' plot_tomog(ei_res, options = list(linecolor = "betaw", category = 5))
 #' plot_tomog(ei_res, options = list(points = FALSE, CI = 0.8))
 #' @export
 plot_tomog <- function(ei.object, options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points = TRUE, contour_ML = FALSE, contour_posterior = FALSE)) {
