@@ -113,6 +113,8 @@ plot_bound_baseRxC <- function(dbuf, options) {
       aes(group = .data$id),
       fill = rgb(res$red, 0, res$blue),
       alpha = res$alpha,
+      colour = "black",
+      size = 0.15,
       show.legend = FALSE
     ) +
     coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +

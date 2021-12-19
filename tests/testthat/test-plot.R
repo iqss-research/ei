@@ -68,3 +68,10 @@ test_that("`plot_bound()`", {
   p <- plot_bound(dbuf)
   expect_type(p, "list")
 })
+
+test_that("`plot_tomogRxC()`", {
+  data(RxCdata)
+  formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
+  p <- plot_tomogRxC(formula, RxCdata)
+  expect_type(p, "list")
+})
