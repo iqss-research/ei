@@ -60,8 +60,6 @@ test_that("`plot_sims()`", {
 })
 
 test_that("`plot_bound()`", {
-  p <- plot_bound(dbuf_v)
-  expect_type(p, "list")
   p <- plot_bound(dbuf_v, options = list(parameter = "betab"))
   expect_type(p, "list")
   p <- plot_bound(dbuf_v, options = list(parameter = "betaw"))
