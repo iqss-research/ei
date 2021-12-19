@@ -4,13 +4,34 @@
 #' @param options The list of options
 #' @return a ggplot object
 #' @concept visualization
+#' @examples
+#' # 2x2
+#' data(matproii)
+#' truth <- cbind(matproii$tb, matproii$tw)
+#' suppressMessages({
+#'   ei_res <- ei(formula = t ~ x, total = "n", truth = truth, data = matproii)
+#' })
+#' plot_bound(ei_res, options = list(parameter = "betab"))
+#' plot_bound(ei_res, options = list(parameter = "betaw"))
+#' # RxC
+#' data(RxCdata)
+#' formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
+#' suppressMessages({
+#'   ei_resRxC <- ei(formula, data = RxCdata)
+#' })
+#' plot_bound(ei_resRxC, options = list(parameter = "betab"))
+#' plot_bound(ei_resRxC, options = list(parameter = "betaw"))
 #' @export
 plot_bound <- function(ei.object, options = list(parameter = "betab")) {
   if ("hessian" %in% names(ei.object)) {
     # 2x2 case
     options <- plot_bound_options(options)
+    if (!"truth" %in% names(ei.object)) {
+      stop("The ei object does not have `truth`.")
+    }
     p <- plot_bound_base(ei.object, options)
   } else {
+    # RxC
     p <- plot_bound_baseRxC(ei.object, options)
   }
 
@@ -113,6 +134,8 @@ plot_bound_baseRxC <- function(dbuf, options) {
       aes(group = .data$id),
       fill = rgb(res$red, 0, res$blue),
       alpha = res$alpha,
+      colour = "black",
+      size = 0.15,
       show.legend = FALSE
     ) +
     coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +

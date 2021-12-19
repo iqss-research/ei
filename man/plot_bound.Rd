@@ -17,4 +17,22 @@ a ggplot object
 \description{
 Visualizing EI (bound)
 }
+\examples{
+# 2x2
+data(matproii)
+truth <- cbind(matproii$tb, matproii$tw)
+suppressMessages({
+  ei_res <- ei(formula = t ~ x, total = "n", truth = truth, data = matproii)
+})
+plot_bound(ei_res, options = list(parameter = "betab"))
+plot_bound(ei_res, options = list(parameter = "betaw"))
+# RxC
+data(RxCdata)
+formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
+suppressMessages({
+  ei_resRxC <- ei(formula, data = RxCdata)
+})
+plot_bound(ei_resRxC, options = list(parameter = "betab"))
+plot_bound(ei_resRxC, options = list(parameter = "betaw"))
+}
 \concept{visualization}

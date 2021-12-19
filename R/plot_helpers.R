@@ -2,20 +2,11 @@
 # For plot_tomog*()
 #
 
-
-# tomogd <- function(x, t, n, title, lci = T) {
-#   bounds <- bounds1(x, t, n)
-#   bbounds <- cbind(bounds[, 1], bounds[, 2])
-#   wbounds <- cbind(bounds[, 4], bounds[, 3])
-#   n <- dim(bounds)[1]
-#   return(bounds)
+# bounds <- function(x, t, n) {
+#   # Migrate bounds() later here?
+#   #   Original package has `.bounds()` and `bounds1()`
+#   return(bounds1(x, t, n))
 # }
-
-bounds <- function(x, t, n) {
-  # Migrate bounds() later here?
-  #   Original package has `.bounds()` and `bounds1()`
-  return(bounds1(x, t, n))
-}
 
 calc_ellipse <- function(x, scale = c(1, 1), centre = c(0, 0), level = 0.95,
                          t = sqrt(stats::qchisq(level, 2)), which = c(1, 2), npoints = 350) {

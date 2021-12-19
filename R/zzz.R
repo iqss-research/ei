@@ -1130,6 +1130,8 @@ getinput <- function() {
 #' @export tomogRxC
 tomogRxC <- function(formula, data, total = NULL, refine = 100) {
   # require(sp)  Now specified as Import
+  lifecycle::deprecate_warn("2.0.0", "tomogRxC()", "plot_tomogRxC()")
+
   noinfocount <- 0
   form <- formula
   ## total <- dbuf$total
@@ -1341,6 +1343,7 @@ tomogRxC <- function(formula, data, total = NULL, refine = 100) {
     }
   }
   image(contourx[2:refine], contoury[2:refine], contourz[2:refine, 2:refine], , col = sort(heat.colors(refine), decreasing = T), xlab = xl, ylab = yl, main = mn, xlim = c(0, 1), add = T)
+
   for (i in 1:dim(hstr)[1]) {
     if ((exp1[i] + exp2[i] + exp3[i] + exp4[i]) == 0) {
       xaxs <- c(hstr[i, 1], lstr[i, 1], lend[i, 1], hend[i, 1])

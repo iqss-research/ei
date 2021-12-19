@@ -3,6 +3,13 @@
 #' @param ei.object The output of \code{ei()}
 #' @return a ggplot object
 #' @concept visualization
+#' @examples
+#' data(matproii)
+#' truth <- cbind(matproii$tb, matproii$tw)
+#' suppressMessages({
+#'   ei_res <- ei(formula = t ~ x, total = "n", truth = truth, data = matproii)
+#' })
+#' plot_truth(ei_res)
 #' @export
 plot_truth <- function(ei.object) {
   options <- plot_truth_options(options = list())

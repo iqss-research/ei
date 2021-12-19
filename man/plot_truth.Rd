@@ -15,4 +15,12 @@ a ggplot object
 \description{
 Visualizing EI (with truth)
 }
+\examples{
+data(matproii)
+truth <- cbind(matproii$tb, matproii$tw)
+suppressMessages({
+  ei_res <- ei(formula = t ~ x, total = "n", truth = truth, data = matproii)
+})
+plot_truth(ei_res)
+}
 \concept{visualization}

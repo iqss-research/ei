@@ -46,6 +46,10 @@ tomogRxC3d <- function(formula, data, total = NULL, lci = TRUE, estimates = FALS
   ## Run Through RxC Code Once (from Molly's original tomogRxC function)
   # require(grDevices)
 
+  lifecycle::deprecate_warn("2.0.0", "tomogRxC3d()", details = c(
+    i = "This function is no longer supported."
+  ))
+
   if (!requireNamespace("rgl", quietly = TRUE)) {
     stop("Package rgl is needed for the tomogRxC3d function to work. Please install it.",
       call. = FALSE

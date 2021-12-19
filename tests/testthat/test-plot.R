@@ -28,7 +28,8 @@ test_that("`plot_tomog()`", {
 })
 
 test_that("`plot_density()`", {
-  p <- plot_density(dbuf_v); expect_type(p, "list")
+  p <- plot_density(dbuf_v)
+  expect_type(p, "list")
   p <- plot_density(dbuf_v, options = list(parameter = "betab"))
   expect_type(p, "list")
   p <- plot_density(dbuf_v, options = list(parameter = "betaw"))
@@ -59,12 +60,20 @@ test_that("`plot_sims()`", {
 })
 
 test_that("`plot_bound()`", {
-  p <- plot_bound(dbuf_v); expect_type(p, "list")
+  p <- plot_bound(dbuf_v)
+  expect_type(p, "list")
   p <- plot_bound(dbuf_v, options = list(parameter = "betab"))
   expect_type(p, "list")
   p <- plot_bound(dbuf_v, options = list(parameter = "betaw"))
   expect_type(p, "list")
 
   p <- plot_bound(dbuf)
+  expect_type(p, "list")
+})
+
+test_that("`plot_tomogRxC()`", {
+  data(RxCdata)
+  formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
+  p <- plot_tomogRxC(formula, RxCdata)
   expect_type(p, "list")
 })
