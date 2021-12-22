@@ -77,7 +77,8 @@ formula <- t ~ x
 dbuf <- ei(formula = formula, total = "n", data = data)
 summary(dbuf)
 eiread(dbuf, "betab", "betaw")
-plot(dbuf, "tomog", "betab", "betaw", "xtfit")
+plot_tomog(dbuf)
+plot_xt(dbuf)
 ```
 
 In most applications, `plot` and `eiread`
@@ -109,14 +110,11 @@ be included with these five to read in the data (`t`, `x`, and `n`).
   `ei` results.  `summary` will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values specified for the prior.
 
 ### `plot`: To graph relevant information
-  For graphics, use `plot(dbuf, "name")`;, where `dbuf` is
-  the ei.object that is the output of `ei` or `ei.sim`, and name can be any number
-  of a long list of ready-made graphs.  For example,
-  `plot(dbuf,"tomog")` will plot a tomography graph, and
-  `plot(dbuf,"xt")` will display a scattercross graph. Any number
-  of graphs can be selected in plot for output.  For example,
-  `plot(dbuf,"tomog","xt")` will produce both a tomography graph
-  and a scattercross graph.
+  For graphics, use `plot_**(dbuf)`;, where `dbuf` is
+  the ei.object that is the output of `ei` or `ei.sim`, and `**` completes a function for ready-made graphs.  For example,
+  `plot_tomog(dbuf)` will plot a tomography graph, and
+  `plot_xt(dbuf)` will display a scattercross graph. Any number
+  of graphs can be selected in plot for output.
 
   Some of the plots can be produced after estimating the maximum likelihood estimates using `ei`, but before simulating quantities of interest. These initial plots can be useful in determining which priors to include, and the user can opt to choose not to simulate quantities of interest by selecting the option `simulate = FALSE`. However, for some plots, `plot` will need the simulated quantities of interest, and therefore can only be plotted when simulate is set to the default, `TRUE`.
 
