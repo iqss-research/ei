@@ -239,62 +239,58 @@ bb.out <- eiread(dbuf, "betab", "sbetab")
 
 Plotting `ei` output is extremely useful for understanding the results of the ecological inference algorithm and diagnosing problems with estimation.  First, we graph a tomography plot of the data (Figure 1).
 
-```{r, eval = FALSE}
-plot(dbuf, "tomog")
+```{r}
+plot_tomog(dbuf)
 ```
 
-```{r echo = FALSE, eval = FALSE}
-plot(dbuf, "tomog")
+
+Tomography Plot with ML Contours:
+```{r}
+plot_tomog(dbuf, options = list(contour_ML = TRUE))
 ```
 
-![Tomography Plot with ML Contours](tomogplot.png)
-
-```{r echo = FALSE, eval = FALSE}
-plot(dbuf, "tomogE", "tomogCI")
+Tomography Plots with Point Estimates
+```{r}
+plot_tomog(dbuf, options = list(points = TRUE))
 ```
 
-![Tomography Plots: Point Estimates (left) and Confidence Intervals (right)](tomogplot2.png)
+Tomography Plots with Confidence Intervals
+```{r}
+plot_tomog(dbuf, options = list(CI = 0.95))
+```
+
+
+
 
  Each line on the map represents the possible values for $\beta_i^b$ and $\beta_i^w$ for one county.  The contour lines identify the portion of the lines that have the highest probability of containing the true estimates of $\beta_i^b$ and $\beta_i^w$.  These contour lines provide information about the overall pattern of registration.  Note that the area with highest probability is in the upper right-hand corner, where the proportion of whites registered is between $0.75$ and $1$ and the proportion of blacks registered is between $0.5$ and $1$.  Further, we see that the lines are clustered in the upper half of the figure, indicating that the possible values of $\beta_i^w$ will have a lower variance than the possible values of $\beta_i^b$.
 \newline
 Figure 2 is a double plot of the point estimates and their confidence intervals.  To compute this, we call plot to generate two graphs: a tomography plot with the point estimates generated from the algorithm, and a tomography plot with 80\% confidence intervals on the point estimate.
 
-```{r, eval = FALSE}
-plot(dbuf, "tomogE", "tomogCI")
+```{r}
+plot_tomog(dbuf, options = list(points = TRUE, CI = 0.95))
 ```
 
  This plot is useful to visualize the estimates and confidence intervals for each county.  We can see that the point estimates and confidence intervals are clustered in the same area as the contours from the previous plot.  Further, the point estimates and confidence intervals only fall on the lines that indicate the possible values of $\beta_i^b$ and $\beta_i^w$.
 \newline
+
 Figure 3 shows plots that indicate the distribution of $\beta_i^b$ and $\beta_i^w$. To produce these plots, run:
 
-```{r, eval = FALSE}
-plot(dbuf, "betab", "betaw")
+```{r}
+plot_density(dbuf, options = list(parameter = "betab"))
+plot_density(dbuf, options = list(parameter = "betaw"))
 ```
 
  Density plots are useful to visualize the location and uncertainty of the point estimates.  The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s $\beta_i^b$ and $\beta_i^w$.  You can see that the variance of the point estimates from $\beta_i^b$ is much higher than the variance of point estimates from $\beta_i^w$.
 \newline
 Figure 4 portrays the results of the `ei` algorithm by plotting the proportion of blacks in each country by the proportion of registered voters in each county.  To produce this plot, use:
 
-```{r, eval = FALSE}
-plot(dbuf, "xtfit")
+```{r}
+plot_xt(dbuf)
 ```
 
  The circles around each of the points in this plot are proportional to the population of each county.  The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80\% confidence interval around the regression line.  The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.
 
 
-```{r echo = FALSE, eval = FALSE}
-plot(dbuf, "betab", "betaw")
-```
-
-![Plots with Distribution of Point Estimates for $\beta_i^b$ (left) and $\beta_i^w$ (right), for all $i$](betas.png)
-
-
-
-```{r echo = FALSE, eval = FALSE}
-plot(dbuf, "xtfit")
-```
-
-![X and T Scatterplot with E(T|X) and 80\% CIs](xtfit.png)
 
 
 \pagebreak
@@ -303,14 +299,14 @@ plot(dbuf, "xtfit")
 ```{r}
 truth <- cbind(matproii$tb, matproii$tw)
 formula <- t ~ x
-dbuf <- ei(formula = formula, total = "n", data = matproii, truth = truth)
+dbuf_truth <- ei(formula = formula, total = "n", data = matproii, truth = truth)
 ```
 
 Then use plot to compare the estimates of the `ei` algorithm to the true proportions of white and black registered voters in each county.
 
-TODO: set eval = TRUE
-```{r, eval = FALSE}
-plot(dbuf, "truth")
+```{r}
+# Comparing Estimates to the Truth at the County Level
+plot_truth(dbuf_truth)
 ```
 
 The "truth" plot (Figure 5) has four components.  The top two figures have the posterior densities of the aggregate quantities of interest $B^b$ and $B^w$.  These densities tell us in what range the algorithm predicts that the point estimates lie.  For example, the density of $B^b$ is wider than the density of $B^w$, indicating that our estimates of $B^w$ lie in a smaller range than than our estimates of $B^b$.  The true aggregate values, computed from the \verb#truth# data we inputed, are indicated by the vertical bars.  The fact that the true $B^b$ and $B^w$ are within the densities we computed confirms that the model is did a good job at predicting the true proportions of registered white and black voters.
@@ -318,11 +314,6 @@ The "truth" plot (Figure 5) has four components.  The top two figures have the p
 
 The bottom two figures in Figure 5 plot the estimated values of $\beta_i^b$ and $\beta_i^w$ against the true values.  The size of each of the circles plotted is proportional to the number of blacks in the county in the first graph and the number of whites in each county in the second graph. If the estimated values were exactly equal to the true values, all of the points would be on the $45^{\circ}$ line.  Because the points fall quite close to the $45^{\circ}$ and do not deviate from the line in a systematic way, we can see that the `ei` algorithm predicts the point estimates quite well.
 
-```{r echo = FALSE, eval = FALSE}
-plot(dbuf, "truth")
-```
-
-Comparing Estimates to the Truth at the County Level
 
 # Overview:eiRxC R-commands
 

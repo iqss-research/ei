@@ -7,7 +7,7 @@
 plot_tomog(
   ei.object,
   options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points =
-    TRUE, contour_ML = FALSE, contour_posterior = FALSE)
+    FALSE, contour_ML = FALSE, contour_posterior = FALSE)
 )
 }
 \arguments{
