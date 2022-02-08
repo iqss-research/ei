@@ -212,9 +212,9 @@ plot_length_cat <- function(tb, options) {
 
   p <- plot_tomogd_base(strata(tb, q), options)
   legend_name <- case_when(
-    options$linecolor == "length" ~ latex2exp::TeX("Length (line)"),
-    options$linecolor == "betaw" ~ latex2exp::TeX("Bound ($\\beta_W$)"),
-    options$linecolor == "betab" ~ latex2exp::TeX("Bound ($\\beta_B$)")
+    options$linecolor == "length" ~ "Length (line)",
+    options$linecolor == "betaw" ~ "Bound $(\\beta_W)$",
+    options$linecolor == "betab" ~ "Bound $(\\beta_B)$"
   )
 
   # Categorical scale
@@ -227,7 +227,7 @@ plot_length_cat <- function(tb, options) {
     ggplot2::scale_color_manual(
       values = hcl(h = 30, c = 100, l = seq(1, 80, length.out = options$category + 1)),
       # name = paste0("Length (", legend_name, ")")
-      name = legend_name
+      name = latex2exp::TeX(legend_name)
     )
   return(p)
 }
