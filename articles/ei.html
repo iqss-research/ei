@@ -40,7 +40,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div id="navbar" class="collapse navbar-collapse ms-2">
+    <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="active nav-item">
   <a class="nav-link" href="../articles/ei.html">Get started</a>
@@ -62,6 +62,9 @@
     
   </div>
 </nav><div class="container template-article">
+
+
+
 <script src="ei_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>EI: A(n R) Program for Ecological Inference</h1>
@@ -74,17 +77,17 @@
 
     
     
-<div class="section level1">
-<h1 id="introduction-ecological-inference">Introduction: Ecological Inference<a class="anchor" aria-label="anchor" href="#introduction-ecological-inference"></a>
-</h1>
+<div class="section level2">
+<h2 id="introduction-ecological-inference">Introduction: Ecological Inference<a class="anchor" aria-label="anchor" href="#introduction-ecological-inference"></a>
+</h2>
 <p>This program provides methods of inferring individual behavior from aggregate data. It implements the statistical procedures, diagnostics, and graphics from the Gary King, <strong>A Solution to the Ecological Inference Problem: Reconstructing Individual Behavior from Aggregate Data</strong> (Princeton: Princeton University Press, 1997), <a href="http://j.mp/ecinfbook" class="external-link">http://j.mp/ecinfbook</a>; Ori Rosen, Wenxin Jiang, Gary King, and Martin A. Tanner (2001) ``Bayesian and Frequentist Inference for Ecological Inferece: The RxC Case.’’ (<em>Statistica Neerlandica</em>, Vol.55, nr.2, pp 134-156), <a href="http://j.mp/eiRxC" class="external-link">http://j.mp/eiRxC</a>; and from our own ongoing work. Except where indicated, all references to page, section, chapter, table, and figure numbers in this document refer to the the first reference.</p>
 <p>Ecological inference is the process of using aggregate (i.e., ``ecological’’) data to infer discrete individual-level relationships of interest when individual-level data are not available. Ecological inferences are required in political science research when individual-level surveys are unavailable (e.g., local or comparative electoral politics), unreliable (racial politics), insufficient (political geography), or infeasible (political history). They are also required in public policy (e.g., for applying the Voting Rights Act) and other academic disciplines ranging from epidemiology and marketing to sociology and quantitative history. Most researchers using aggregate data have encountered some form of the ecological inference problem.</p>
 <p>Because the ecological inference problem is caused by the lack of individual-level information, no method of ecological inference, including that estimated by this program, will always produce accurate results. However, potential difficulties are reduced by models that include more available information, diagnostics to evaluate when assumptions need to be modified, easy methods of modifying the assumptions, and uncertainty estimates for quantities of interest. We recommend reviewing Chapter 16 while using this program for actual research. Model dependence defines ecological inference when going anywhere beyond the bounds and tomography plots, and so we have added new graphical procedures for evaluating the degree of model dependence.</p>
 <p><code>ei</code> is a unifed program that contains methods for both the 2x2 ecological inference case and the RxC case. We will begin by explaining how to use eiR in the 2x2 case, and then move on to RxC examples.</p>
 </div>
-<div class="section level1">
-<h1 id="overview-2x2-r-commands">Overview: 2x2 R-commands<a class="anchor" aria-label="anchor" href="#overview-2x2-r-commands"></a>
-</h1>
+<div class="section level2">
+<h2 id="overview-2x2-r-commands">Overview: 2x2 R-commands<a class="anchor" aria-label="anchor" href="#overview-2x2-r-commands"></a>
+</h2>
 <p>In this section we describe the basic commands for 2x2 inference. For this purpose, and without loss of generality, we use the running example from the book portrayed in Table 2.3 (page 31). This example uses the proportion of the voting age population who are black (<span class="math inline">\(X_i\)</span>), the proportion turning out to vote (<span class="math inline">\(T_i\)</span>), and the number of voting age people (<span class="math inline">\({N_i}\)</span>) in each precinct (<span class="math inline">\(i=1,\ldots,p\)</span>) to infer the fraction of blacks who vote (<span class="math inline">\(\beta_i^b\)</span>) and the proportion of whites who vote (<span class="math inline">\(\beta_i^w\)</span>), also in each precinct. (For an extended example of <code>ei</code>, refer to the user’s guide below.) An example of a sequence of these commands are as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">formula</span> <span class="op">&lt;-</span> <span class="va">t</span> <span class="op">~</span> <span class="va">x</span>
@@ -93,36 +96,36 @@
 <span class="fu"><a href="../reference/eiread.html">eiread</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"betab"</span>, <span class="st">"betaw"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"tomog"</span>, <span class="st">"betab"</span>, <span class="st">"betaw"</span>, <span class="st">"xtfit"</span><span class="op">)</span></code></pre></div>
 <p>In most applications, <code>plot</code> and <code>eiread</code> would likely be run multiple times with different options chosen, and other commands would be included with these five to read in the data (<code>t</code>, <code>x</code>, and <code>n</code>).</p>
-<div class="section level3">
-<h3 id="ei-to-run-the-main-procedure">
+<div class="section level4">
+<h4 id="ei-to-run-the-main-procedure">
 <code>ei</code>: To run the main procedure<a class="anchor" aria-label="anchor" href="#ei-to-run-the-main-procedure"></a>
-</h3>
+</h4>
 <p>Use the format, <code>dbuf = ei(formula, total = "n", data = data)</code>, which takes three <span class="math inline">\(p\times 1\)</span> vectors as inputs: <code>t</code> (e.g. the fraction of the voting age population turning out to vote); <code>x (e.g. the   fraction of the voting age population who are black); and</code>n<code>(e.g. the total number of people in the voting age population). The output of this   procedure is the list</code>dbuf<code>(i.e. an output object of class   list called a "data buffer").  The data buffer includes the maximium likelihood estimates and simulated quantities of interest from the</code>ei<code>procedure. After running</code>ei<code>, it is a   good idea to save</code>dbuf<code>for further analysis.  The   output data buffer from</code>ei` includes a large variety of different results useful for understanding the results of the analysis. A minimal set of nonrepetitive information is stored in this list (or data buffer), and a large variety of other information can be easily computed from it. Fortunately, you do not need to know whether the information you request is stored or computed as both are treated the same.</p>
 <p>To extract information from the data buffer, three procedures are available:</p>
 </div>
-<div class="section level3">
-<h3 id="summary-to-obtain-a-general-summary-of-district-level-information">
+<div class="section level4">
+<h4 id="summary-to-obtain-a-general-summary-of-district-level-information">
 <code>summary</code>: To obtain a general summary of district-level information<a class="anchor" aria-label="anchor" href="#summary-to-obtain-a-general-summary-of-district-level-information"></a>
-</h3>
+</h4>
 <p><code>summary(dbuf)</code> will produce aggregate information about the <code>ei</code> results. <code>summary</code> will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values specified for the prior.</p>
 </div>
-<div class="section level3">
-<h3 id="plot-to-graph-relevant-information">
+<div class="section level4">
+<h4 id="plot-to-graph-relevant-information">
 <code>plot</code>: To graph relevant information<a class="anchor" aria-label="anchor" href="#plot-to-graph-relevant-information"></a>
-</h3>
+</h4>
 <p>For graphics, use <code>plot(dbuf, "name")</code>;, where <code>dbuf</code> is the ei.object that is the output of <code>ei</code> or <code>ei.sim</code>, and name can be any number of a long list of ready-made graphs. For example, <code>plot(dbuf,"tomog")</code> will plot a tomography graph, and <code>plot(dbuf,"xt")</code> will display a scattercross graph. Any number of graphs can be selected in plot for output. For example, <code>plot(dbuf,"tomog","xt")</code> will produce both a tomography graph and a scattercross graph.</p>
 <p>Some of the plots can be produced after estimating the maximum likelihood estimates using <code>ei</code>, but before simulating quantities of interest. These initial plots can be useful in determining which priors to include, and the user can opt to choose not to simulate quantities of interest by selecting the option <code>simulate = FALSE</code>. However, for some plots, <code>plot</code> will need the simulated quantities of interest, and therefore can only be plotted when simulate is set to the default, <code>TRUE</code>.</p>
 </div>
-<div class="section level3">
-<h3 id="eiread-to-obtain-relevant-information-and-numerical-results">
+<div class="section level4">
+<h4 id="eiread-to-obtain-relevant-information-and-numerical-results">
 <code>eiread</code>: To obtain relevant information and numerical results<a class="anchor" aria-label="anchor" href="#eiread-to-obtain-relevant-information-and-numerical-results"></a>
-</h3>
+</h4>
 <p>For numerical information, use <code>v &lt;- eiread(dbuf, "name")</code>, where <code>v</code> is the item extracted, <code>dbuf</code> is the data buffer output from <code>ei</code>, and name can be any of a list of output possibilities. For example, <code>eiread(dbuf, "betab")</code> will give a vector of point estimates of <span class="math inline">\(\beta_i^b\)</span>, <code>eiread(dbuf, "ci80w")</code> will give 80% confidence intervals for <span class="math inline">\(\beta_i^w\)</span>. Any number of items can be selected for output. For example, <code>eiread(dbuf, "betab", "ci80b")</code> will produce a list of the point estimates and 80% confidence intervals for $ _i^b$.</p>
 </div>
 </div>
-<div class="section level1">
-<h1 id="users-guide-an-example">User’s Guide: An Example<a class="anchor" aria-label="anchor" href="#users-guide-an-example"></a>
-</h1>
+<div class="section level2">
+<h2 id="users-guide-an-example">User’s Guide: An Example<a class="anchor" aria-label="anchor" href="#users-guide-an-example"></a>
+</h2>
 <p>We now show how to use <code>ei</code> through a simple example. We use data on voter registration and racial background of people from 268 counties in four Southern U.S. States: Florida, Louisiana, and South Carolina. These are the same data used in Chapter 10. The data include the total voting age population in each county (<code>n</code>), the proportion of the population in each county who are black (<code>x</code>), and the proportion of the population in each county who are registered to vote (<code>t</code>). The proportion of whites registered can be computed by (<code>1-x</code>). You can load the data into R using the command</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://gking.harvard.edu/eiR" class="external-link">ei</a></span><span class="op">)</span>
@@ -134,9 +137,9 @@
 <span class="co">#&gt;     filter</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">matproii</span><span class="op">)</span></code></pre></div>
 <p>The statistical goal is to estimate the fraction of blacks registered (<span class="math inline">\(\beta_i^b\)</span>) and the fraction of whites registered (<span class="math inline">\(\beta_i^w\)</span>) in each county. These quantities of interest are generally unknown. However, <code>ei</code> also includes an option that allows the user to assess the reliability of the <code>ei</code> algorithm when the true quantities of interest are known. To illustrate the use of this `<code>truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (</code>tw`).</p>
-<div class="section level2">
-<h2 id="the-basic-ei-algorithm">The Basic EI Algorithm<a class="anchor" aria-label="anchor" href="#the-basic-ei-algorithm"></a>
-</h2>
+<div class="section level3">
+<h3 id="the-basic-ei-algorithm">The Basic EI Algorithm<a class="anchor" aria-label="anchor" href="#the-basic-ei-algorithm"></a>
+</h3>
 <p>To begin, we perform ecological inference by calling the function <code>ei</code>. <code>ei</code> first computes and maximizes a likelihood distribution based on the inputed data, then estimates the county-level quantities of interest based on the possible values, or ``bounds", for each county and the overall likelihood distribution.</p>
 <p>To run this algorithm, at a minimum we need to have three vectors. Two vectors, <code>t</code> and <code>x</code>, contain the aggregate known information about the counties of interest. In this example, <code>t</code> is the proportion of voters registered in each county, and <code>x</code> is the proportion of blacks in each county. These two vectors contain aggregate information, since we are interested in the proportion of voters in each country who are black. The last vector we need is <code>n</code>, the number of people of interest in each county. In this example, <code>n</code> is the number of people of voting age.</p>
 <p>We proceed by performing ecological inference without covariates on the data:</p>
@@ -145,10 +148,10 @@
 <span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
 <span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt;  [36mℹ [39m Maximizing likelihood</span></span>
 <span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[892ms] [39m</span>
+<span id="cb3-6"><a href="#cb3-6"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[953ms] [39m</span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; </span></span>
 <span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; ⠙ Beginning importance sampling.</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[2.7s] [39m</span></span></code></pre></div>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[4.5s] [39m</span></span></code></pre></div>
 <p>To include a covariate on <span class="math inline">\(\beta_i^b\)</span> simply specify a covariate vector for the option , or a string that refers to the name of the covariate in the dataset. Similarly, to include a covariate on <span class="math inline">\(\beta_i^w\)</span>, specify a covariate vector for for the option , or a string that refers to the name of the covariate in the dataset.</p>
 <p>Next, we use and  to obtain general information about the estimation.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -166,7 +169,7 @@
 <span class="co">#&gt; [1] 268</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $Resamp</span>
-<span class="co">#&gt; [1] 2</span>
+<span class="co">#&gt; [1] 22</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Maximum likelihood results in scale of estimation (and se's)`</span>
 <span class="co">#&gt;        Bb0       Bw0       sigB       sigW       rho Zb0 Zw0</span>
@@ -174,12 +177,12 @@
 <span class="co">#&gt;  0.2845609 0.2825123  0.2138895  0.1645617 0.3144215   0   0</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Untruncated psi's`</span>
-<span class="co">#&gt;         BB       BW       SB        SW       RHO</span>
-<span class="co">#&gt;  0.9586868 1.124181 0.330864 0.2670584 0.9205041</span>
+<span class="co">#&gt;         BB       BW        SB        SW       RHO</span>
+<span class="co">#&gt;  0.9830268 1.150372 0.3280392 0.2756427 0.9054734</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Truncated psi's (ultimate scale)`</span>
 <span class="co">#&gt;         BB        BW        SB        SW       RHO</span>
-<span class="co">#&gt;  0.6174246 0.8270043 0.1991126 0.1413288 0.7817551</span>
+<span class="co">#&gt;  0.6250824 0.8244877 0.1966154 0.1436455 0.7452866</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Aggregate Bounds`</span>
 <span class="co">#&gt;           betab     betaw</span>
@@ -187,9 +190,9 @@
 <span class="co">#&gt; upper 0.9754242 0.9200036</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $`Estimates of Aggregate Quantities of Interest`</span>
-<span class="co">#&gt;         mean         sd</span>
-<span class="co">#&gt; Bb 0.5657077 0.01757333</span>
-<span class="co">#&gt; Bw 0.8193636 0.00500848</span>
+<span class="co">#&gt;         mean          sd</span>
+<span class="co">#&gt; Bb 0.5747999 0.021563693</span>
+<span class="co">#&gt; Bw 0.8167722 0.006145751</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $precision</span>
 <span class="co">#&gt; [1] 4</span>
@@ -201,17 +204,17 @@
 <p><code>summary</code> also produces information both about the maximum likelihood estimates and the quantities of interest. First, it provides the maximum likelihood estimates in the scale of estimation. Next, it provides the values of the MLEs when they are transformed into an untruncated bivariate normal distribution. These estimates provide information about the location of the highest density of estimates for the proportion of blacks who are registered to vote and the proportion of whites who are registered to vote. Last, it provides the values of the MLEs on the ultimate truncated bivariate normal scale. These estimates are an unweighted average of the fraction of blacks and whites registered to vote over all the counties in the sample. In this example, the <code>ei</code> algorithm predicts that the unweighted average of the proportion of blacks registered to vote across counties is 0.57 and the unweighted average of the proportion of whites registered to vote is 0.82.</p>
 <p>Finally, <code>summary</code> produces information on aggregrate quantities of interest. The aggregate bounds are the mean of the bounds on the proportions of black and white voters, weighted by the population in each county. The aggregate quantities of interest are the weighted mean of the proportion of registered blacks and the proportion of registered whites in each county. In this example the weighted average proportion of blacks who are registered is 0.57, and the weighted average proportion of whites who are registered is 0.82.</p>
 </div>
-<div class="section level2">
-<h2 id="extracting-quantities-of-interest">Extracting Quantities of Interest<a class="anchor" aria-label="anchor" href="#extracting-quantities-of-interest"></a>
-</h2>
+<div class="section level3">
+<h3 id="extracting-quantities-of-interest">Extracting Quantities of Interest<a class="anchor" aria-label="anchor" href="#extracting-quantities-of-interest"></a>
+</h3>
 <p><code>eiread</code> extracts quantities of interest in a list format from the object <code>dbuf</code>. For example,</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">bb.out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/eiread.html">eiread</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"betab"</span>, <span class="st">"sbetab"</span><span class="op">)</span></code></pre></div>
 <p>extracts the point estimates and estimated standard deviations for <span class="math inline">\(\beta_i^b\)</span>, the estimates of the proportion of registered blacks in each county. The user can then use <code>bb.out$betab</code> to obtain a vector of the point estimates for <span class="math inline">\(\beta_i^b\)</span>, and <code>bb.out$sbetab</code> to obtain a vector of the standard devations for <span class="math inline">\(\beta_i^b\)</span>.  <code><a href="../reference/eiread.html">eiread()</a></code> takes any number of arguments to extract any number of quantities of interest from the data buffer. <code><a href="../reference/eiread.html">?eiread</a></code> can be used to find a list of quantities of interest that are available in <code>ei</code>. Among the most useful arguments are <code>"betab"</code> and <code>"betaw"</code>, which report the point estimates; <code>"sbetab"</code> and <code>"sbetaw"</code>, which report the standard deviations of the point estimates; and <code>"CI80b</code> and <code>"CI80w"</code>, which report the confidence intervals of the point estimates.</p>
 </div>
-<div class="section level2">
-<h2 id="plotting-in-ei">Plotting in EI<a class="anchor" aria-label="anchor" href="#plotting-in-ei"></a>
-</h2>
+<div class="section level3">
+<h3 id="plotting-in-ei">Plotting in EI<a class="anchor" aria-label="anchor" href="#plotting-in-ei"></a>
+</h3>
 <p>Plotting <code>ei</code> output is extremely useful for understanding the results of the ecological inference algorithm and diagnosing problems with estimation. First, we graph a tomography plot of the data (Figure 1).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"tomog"</span><span class="op">)</span></code></pre></div>
@@ -245,10 +248,10 @@
 <span id="cb10-4"><a href="#cb10-4"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
 <span id="cb10-5"><a href="#cb10-5"></a><span class="co">#&gt;  [36mℹ [39m Maximizing likelihood</span></span>
 <span id="cb10-6"><a href="#cb10-6"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[804ms] [39m</span>
+<span id="cb10-7"><a href="#cb10-7"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[1s] [39m</span>
 <span id="cb10-8"><a href="#cb10-8"></a><span class="co">#&gt; </span></span>
 <span id="cb10-9"><a href="#cb10-9"></a><span class="co">#&gt; ⠙ Beginning importance sampling.</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[5.2s] [39m</span></span></code></pre></div>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[4s] [39m</span></span></code></pre></div>
 <p>Then use plot to compare the estimates of the <code>ei</code> algorithm to the true proportions of white and black registered voters in each county.</p>
 <p>TODO: set eval = TRUE</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -258,9 +261,9 @@
 <p>Comparing Estimates to the Truth at the County Level</p>
 </div>
 </div>
-<div class="section level1">
-<h1 id="overvieweirxc-r-commands">Overview:eiRxC R-commands<a class="anchor" aria-label="anchor" href="#overvieweirxc-r-commands"></a>
-</h1>
+<div class="section level2">
+<h2 id="overvieweirxc-r-commands">Overview:eiRxC R-commands<a class="anchor" aria-label="anchor" href="#overvieweirxc-r-commands"></a>
+</h2>
 <p>Although the 2x2 case is useful in many circumstances, eiR also allows users to expand beyond the 2x2 case and implement RxC models. To do this, eiR contains the MCMC implementation of the multinomial-Dirichlet eiRxC model in Rosen, Jiang, King and Tanner (2001) “Bayesian and Frequentist Inference for Ecological Inferece: The RxC Case.” (<em>Statistica Neerlandica</em>, Vol. 55, nr.2, pp 134-156), and incorporates R code from <code>eiPack</code> (Olivia Lau, Ryan Moore and Mike Kellermann).</p>
 <p>In this section we describe the basic commands needed for eiRxC. Imagine that instead of a 2x2 table where the user aims to infer the proportion of whites and non-whites who turned out to vote, for example, the user instead wants to infer the percent of turnout for white, black, and hispanic. This is a 2x3 table because the resulting estimates from this table will include two estimates (percent turnout and no turnout) for three categories of people (white, black and hispanic).</p>
 <p>We use the data <code>RxCdata</code> as a running example. <code>RxCdata</code> has variables for each of the five marginal variables for the 2x3 table: <code>turnout</code> is the number of people in each precinct who turned out to vote, <code>noturnout</code> is the number of people in each precinct that did not turn out to vote, <code>white</code> is the number of people who are white in the precinct, <code>black</code> is the number of people who are black in the precinct, and <code>hisp</code> is the number of people who are hispanic in the precinct. Note that, different that the 2x2 case, these are the numbers of people rather than proportions. The user can include proportions if they want to, but then must include the argument <code>total</code> for the the total number of people in the precinct.</p>
@@ -286,9 +289,9 @@
 </div>
 <p>From this output we can get the empirical mean and standard deviation of each of our quantities of interest. The user can add in extra arguments to specify the number of simulations, burnin, or priors for this function. For more information on this, see the documentation for <code>eiPack</code> and the Rosen et al (2001) paper.</p>
 </div>
-<div class="section level1">
-<h1 id="eirxc-tomography-plots-assessing-model-dependence">eiRxC Tomography Plots: Assessing Model Dependence<a class="anchor" aria-label="anchor" href="#eirxc-tomography-plots-assessing-model-dependence"></a>
-</h1>
+<div class="section level2">
+<h2 id="eirxc-tomography-plots-assessing-model-dependence">eiRxC Tomography Plots: Assessing Model Dependence<a class="anchor" aria-label="anchor" href="#eirxc-tomography-plots-assessing-model-dependence"></a>
+</h2>
 <p>While eiRxC model estimates are helpful, the uncertainty estimates they produce are — like all ecological inference point estimates — conditional on the model assumed. Yet, most of the actual scientific uncertainty in ei models does not stem from the sampling uncertainty given a statistical model, but rather the uncertainty associated with choosing a model — what is known as model dependence (King and Zeng 2006). A tomography plot that contains information about the possible values of the quantities of interest is therefore more useful than the model in understanding the true amount of information in the data from which the model is obtaining its estimates.</p>
 <p>While this has not been available in the RxC case before, we have developed a method to creating and displaying tomography plots for 2x3 RxC problems and by extension examine model dependence in any RxC model.</p>
 <p>In the 2x3 case, we can do this by using the function <code>tomogRxC</code>. Following the code above, using the <code>RxCdata</code>,</p>
@@ -316,9 +319,9 @@
 </div>
 <p>Here we see that even though the informative polygons indicate low values of percent hispanic and black turnout, we have the least information about the intersection of percent black and hispanic turnout. The polygons are spread all across the unit square space, indicating that the possible values for percent black and hispanic turnout spread over a large area. In the bottom right hand corner, and on the R console, the tomography plot reports how many of the tomography polygons have no information, or how many tomography polygons cover the entire unit square. Here we see that ther are 34 tomography polygons with no information, and since we onlyhave 60 precincts, this means that we have very little information for these quantities of interest. We might be more confident in the estimates for white turnout in this RxC analysis than for black and hispanic turnout.</p>
 </div>
-<div class="section level1">
-<h1 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
-</h1>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <p>Gary King, <em>A Solution to the Ecological Inference Problem: Reconstructing Individual Behaviour from Aggregate Data</em>, Princeton University Press (1997).</p>
 <p>Gary King and Langche Zeng, “The Dangers of Extreme Counterfactuals.” <em>Political Analysis</em>, 14:2, pp 131-159, 2006.</p>
 <p>Lau et al, “eiPack: Ecological Inference and Higher-Dimension Dtaa Management.” <a href="http://www.olivialau.org/software" class="external-link uri">http://www.olivialau.org/software</a>.</p>
@@ -340,7 +343,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
     </footer>
