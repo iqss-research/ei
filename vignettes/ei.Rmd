@@ -187,34 +187,6 @@ Next, we use \verb#summary(dbuf)#and \verb#summary(dbufsim)# to obtain general i
 summary(dbuf)
 ```
 
-\begin{verbatim}
-Erho = 0.5 , Esigma = 0.5 , Ebeta = 0.5 , N = 268 , Resamp = 35
-
-Maximum likelihood results in scale of estimation (and se's)
-    Bb0    Bw0    sigB    sigW    rho Zb Zw
- 1.2670 1.9348 -1.1151 -1.3272 1.6051  0  0
- 0.2775 0.2757  0.2132  0.1640 0.3120  0  0
-
-Untruncated psi's
-     BB     BW     SB     SW    RHO
- 0.9758 1.1411 0.3325 0.2713 0.9082
-
-Truncated psi's (ultimate scale)
-     BB     BW     SB     SW    RHO
- 0.6208 0.8259 0.2006 0.1425 0.7489
-
-Aggregate Bounds
-       betab  betaw
-lower 0.2125 0.7025
-upper 0.9754 0.9200
-
-Estimates of Aggregate Quantities of Interest
-     mean     sd
-Bb 0.5714 0.0253
-Bw 0.8177 0.0072
-
-\end{verbatim}
-
  The `summary` function provides basic information about the ecological inference estimation, the maximum likelihood estimates on three scales, and an overall summary of the quantities of interest.  First, it reports the values of the priors used in ecological inference (`Erho, Esigma, Ebeta`).  It also reports the number of counties in the dataset (`N`), as well as the number of importance sampling iterations required to produce estimates of the quantities of interest (`resamp`).
 
 
@@ -258,8 +230,6 @@ Tomography Plots with Confidence Intervals
 ```{r}
 plot_tomog(dbuf, options = list(CI = 0.95))
 ```
-
-
 
 
  Each line on the map represents the possible values for $\beta_i^b$ and $\beta_i^w$ for one county.  The contour lines identify the portion of the lines that have the highest probability of containing the true estimates of $\beta_i^b$ and $\beta_i^w$.  These contour lines provide information about the overall pattern of registration.  Note that the area with highest probability is in the upper right-hand corner, where the proportion of whites registered is between $0.75$ and $1$ and the proportion of blacks registered is between $0.5$ and $1$.  Further, we see that the lines are clustered in the upper half of the figure, indicating that the possible values of $\beta_i^w$ will have a lower variance than the possible values of $\beta_i^b$.
@@ -326,61 +296,39 @@ Although the 2x2 case is useful in many circumstances, eiR also allows users to 
 for the 2x3 table: `turnout` is the number of people in each precinct who turned out to vote, `noturnout` is the number of people in each precinct that did not turn out to vote, `white` is the number of people who are white in the precinct, `black` is the number of people who are black in the precinct, and `hisp` is the number of people who are hispanic in the precinct. Note that, different that the 2x2 case, these are the numbers of people rather than proportions.  The user can include proportions if they want to, but then must include the argument `total` for the the total number of people in the precinct.
 
  To begin, we load the RxC data from the `ei` library.
-```{r, eval = FALSE}
+```{r}
 data(RxCdata)
 ```
 
 The formula for the eiRxC case tells the program which variables go on each side of the table.  In this example, we have turnout and no turnout on one side of the table, and white, black and hispanic on the other side.  Therefore, our formula is:
 
-```{r, eval = FALSE}
+```{r}
 formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
 ```
 
 We can call this formula using ei:
-```{r, eval = FALSE}
+```{r}
 dbuf <- ei(formula, data = RxCdata)
 ```
 
 The MCMC output for the $\beta$'s can be found in the data buffer \verb#dbuf#.  \verb#dbuf$draws$Beta# is a matrix that contains the simulations for each of the $\beta$'s for each precinct.  Since there are 60 precincts in this dataset and 6 quantities of interest, the number of columns of \verb#dbuf$draws$Beta# is $60*6 = 360$.  We can analyze the MCMC output by picking out which $\beta$ we are interested at any given time.  For example, to look at the MCMC output for the estimated percent white turnout for the third precinct we can use the R code:
 
-```{r, eval = FALSE}
+```{r}
 out <- dbuf$draws$Beta[, "beta.white.turnout.3"]
 summary(out)
 ```
 
-\begin{verbatim}
-Iterations = 1:1000
-Thinning interval = 1
-Number of chains = 1
-Sample size per chain = 1000
-
-1. Empirical mean and standard deviation for each variable,
-   plus standard error of the mean:
-
-          Mean             SD       Naive SE Time-series SE
-      0.430233       0.035612       0.001126       0.003312
-
-2. Quantiles for each variable:
-
-  2.5%    25%    50%    75%  97.5%
-0.3615 0.4078 0.4306 0.4552 0.5007
-
-\end{verbatim}
 
 We can also plot this MCMC output to assess convergence:
-```{r, eval = FALSE}
+```{r}
 plot(out)
 ```
 
-![MCMC Output for \% White Turnout in Precinct 3](MCMCplot.png)
-
-
- From this output we can get the empirical mean and standard
+From this output we can get the empirical mean and standard
 deviation of each of our quantities of interest.  The user can add in
 extra arguments to specify the number of simulations, burnin, or
 priors for this function.  For more information on this, see the
 documentation for `eiPack` and the Rosen et al (2001) paper.
-
 
 
 # eiRxC Tomography Plots: Assessing Model Dependence
@@ -401,14 +349,12 @@ for 2x3 RxC problems and by extension examine model dependence in any
 RxC model.
 
  In the 2x3 case, we can do this by using the function
-`tomogRxC`. Following the code above, using the `RxCdata`,
+`plot_tomogRxC`. Following the code above, using the `RxCdata`,
 
-```{r, eval = FALSE}
+```{r}
 formula <- cbind(turnout, noturnout) ~ cbind(white, black, hisp)
-tomogRxC(formula, RxCdata)
+plot_tomogRxC(formula, RxCdata)
 ```
-
-![2x3 Tomography Plot: \% White Turnout and \% Black Turnout](whiteblackRxC.png)
 
 Each of the polygons on the plot below represent all the
 possibile values in a given precinct for percent white turnout and
@@ -424,8 +370,6 @@ little information about the percent black turnout, as most of the
 polygons seem to cover the entire range possible for percent black
 turnout.
 
-
-
 The quantity of interest percent hispanic turnout is left
 out of this tomography plot, since we can only graph two quantities of
 interest simulataneously.  However, if we reorganize the formula,
@@ -434,24 +378,20 @@ formula, we can create another tomography plot that expores the
 deterministic information for percent white turnout and percent
 hispanic turnout.
 
-```{r, eval = FALSE}
+```{r}
 formula <- cbind(turnout, noturnout) ~ cbind(white, hisp, black)
-tomogRxC(formula, RxCdata)
+plot_tomogRxC(formula, RxCdata)
 ```
-
-![2x3 Tomography Plot: % White Turnout and % Hispanic Turnout](whitehispRxC.png)
 
 With this new tomography plot (in Figure 8), we find very similar results to the previous one.  While we have quite a bit of information about the percent white turnout, we have less information about percent hispanic turnout.  This result derives from the fact that there are very few hispanics and blacks in this particular district.
 
 
 Last, we can plot the remaining two quantities of interest -- percent black turnout and percent hispanic turnout-- against each other:
 
-```{r, eval = FALSE}
+```{r}
 formula <- cbind(turnout, noturnout) ~ cbind(hisp, black, white)
-tomogRxC(formula, RxCdata)
+plot_tomogRxC(formula, RxCdata)
 ```
-
-![2x3 Tomography Plot: % Hispanic Turnout and % Black Turnout](hispblackRxC.png)
 
 Here we see that even though the informative polygons indicate low values of percent hispanic and black turnout, we have the least information about the intersection of percent black and hispanic turnout. The polygons are spread all across the unit square space, indicating that the possible values for percent black and hispanic turnout spread over a large area.  In the bottom right hand corner, and on the R console, the tomography plot reports how many of the tomography polygons have no information, or how many tomography polygons cover the entire unit square.  Here we see that ther are 34 tomography polygons with no information, and since we onlyhave 60 precincts, this means that we have very little information for these quantities of interest. We might be more confident in the estimates for white turnout in this RxC analysis than for black and hispanic turnout.
 
