@@ -22,7 +22,7 @@ TODO
 data(sample_ei)
 formula <- t ~ x
 dbuf <- ei(formula = formula, total = "n", data = sample_ei)
-print(summary(dbuf))
+summary(dbuf)
 }
 \references{
 Gary King (1997). A Solution to the Ecological Inference
