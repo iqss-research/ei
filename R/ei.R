@@ -227,14 +227,15 @@ print.ei <- function(x, ...) {
 }
 
 #' Returning an element in the ei object
+#' @param object An \code{ei} object from the function \code{ei}.
 #' @export
-values_ei <- function(x, name) {
-  if (! "ei" %in% class(x)) {
+values_ei <- function(object, name) {
+  if (! "ei" %in% class(object)) {
     stop("This is not an ei object")
   }
-  if (! name %in% names(x)) {
+  if (! name %in% names(object)) {
     stop(paste0('"', name, '"', " is not an element of this ei object"))
   }
-  return(x[[name]])
+  return(object[[name]])
 }
 
