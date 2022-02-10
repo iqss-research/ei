@@ -8,6 +8,8 @@ values_ei(object, name)
 }
 \arguments{
 \item{object}{An \code{ei} object from the function \code{ei}.}
+
+\item{name}{The name of the element to extract from the \code{ei} object.}
 }
 \description{
 Returning an element in the ei object

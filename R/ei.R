@@ -228,6 +228,7 @@ print.ei <- function(x, ...) {
 
 #' Returning an element in the ei object
 #' @param object An \code{ei} object from the function \code{ei}.
+#' @param name The name of the element to extract from the \code{ei} object.
 #' @export
 values_ei <- function(object, name) {
   if (! "ei" %in% class(object)) {
