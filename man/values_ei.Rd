@@ -4,7 +4,10 @@
 \alias{values_ei}
 \title{Returning an element in the ei object}
 \usage{
-values_ei(x, name)
+values_ei(object, name)
+}
+\arguments{
+\item{object}{An \code{ei} object from the function \code{ei}.}
 }
 \description{
 Returning an element in the ei object
