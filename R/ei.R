@@ -215,13 +215,26 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
     truth = truth, precision = precision, covs = covs, Rfun = Rfun, id = id
   )
 
-  class(output) <- "ei"
-  output
+  class(output) <- c("ei", class(output))
+  return(output)
 }
 
 
 #' @noRd
 #' @export
 print.ei <- function(x, ...) {
-  cat("ei object \n")
+  cli::cli_text("ei object")
 }
+
+#' Returning an element in the ei object
+#' @export
+values_ei <- function(x, name) {
+  if (! "ei" %in% class(x)) {
+    stop("This is not an ei object")
+  }
+  if (! name %in% names(x)) {
+    stop(paste0('"', name, '"', " is not an element of this ei object"))
+  }
+  return(x[[name]])
+}
+
