@@ -2,13 +2,11 @@
 #'
 #' `summary' method for the class `ei'.
 #'
-#'
 #' @param object An \code{ei} object from the function \code{ei}.
 #' @param \dots A list of options to return in graphs.  See values below.
 #' @author Gary King <<email: king@@harvard.edu>> and Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>
 #'
-#' @export
 #' @return TODO
 #'
 #' @references Gary King (1997). A Solution to the Ecological Inference
@@ -18,8 +16,10 @@
 #' data(sample_ei)
 #' formula <- t ~ x
 #' dbuf <- ei(formula = formula, total = "n", data = sample_ei)
-#' print(summary(dbuf))
+#' summary(dbuf)
+#' @export
 summary.ei <- function(object, ...) {
+
   if ("psi" %in% names(object)) {
     ei1 <- object
     # Calculate maximum likelihood results in the scale of estimation
@@ -95,11 +95,10 @@ summary.ei <- function(object, ...) {
       "Erho", "Esigma", "Ebeta", "N", "Resamp",
       "Maximum likelihood results in scale of estimation (and se's)",
       "Untruncated psi's", "Truncated psi's (ultimate scale)",
-      "Aggregate Bounds", "Estimates of Aggregate Quantities of Interest", "precision"
+      "Aggregate Bounds", "Estimates of Aggregate Quantities of Interest", "Precision"
     )
-    class(output) <- "summary"
-    return(output)
   }
+
   if (!("psi" %in% names(object))) {
     ei1 <- object
     # Calculate maximum likelihood results in the scale of estimation
@@ -149,9 +148,26 @@ summary.ei <- function(object, ...) {
     names(output) <- c(
       "Erho", "Esigma", "Ebeta", "N",
       "Maximum likelihood results in scale of estimation (and se's)",
-      "Aggregate Bounds", "precision"
+      "Aggregate Bounds", "Precision"
     )
-    class(output) <- "summary"
-    return(output)
+  }
+
+  class(output) <- c("summary", class(output))
+  return(output)
+}
+
+#' @noRd
+#' @export
+print.summary <- function(x, ...) {
+  # Show the output
+  cli::cli_h1("Summary")
+  for (name in names(x)) {
+    cli::cli_h2(name)
+    if (length(x[[name]]) == 1) {
+      cli::cli_text(x[[name]])
+    } else {
+      print(x[[name]])
+    }
+    cli::cli_text("")
   }
 }
