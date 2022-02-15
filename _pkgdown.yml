@@ -2,6 +2,23 @@ url: https://iqss-research.github.io/ei/
 template:
   bootstrap: 5
   bootswatch: cosmo
+
+navbar:
+  title: "ei"
+  left:
+    - text: "User's Guide"
+      menu:
+        - text: "Introduction"
+          href: articles/ei-introduction.html
+        - text: "2x2 case"
+          href: articles/ei-2x2.html
+        - text: "RxC case"
+          href: articles/ei-RxC.html
+    - text: "Reference"
+      href: reference/index.html
+    - text: "Changelog"
+      href: news/index.html
+
 reference:
 - title: "Functions"
   desc: "ei Functions"

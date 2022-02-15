@@ -33,6 +33,3 @@ Princeton University Press, 1997), by Gary King.
 
 For more information, see here: <https://gking.harvard.edu/eir>
 
-# Using ei
-
-Add demo here.
