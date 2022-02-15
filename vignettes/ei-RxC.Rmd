@@ -1,9 +1,9 @@
 ---
-title: "EI: A(n R) Program for Ecological Inference"
+title: "RxC Case"
 author: "Gary King and Margaret Roberts"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{EI: A(n R) Program for Ecological Inference}
+  %\VignetteIndexEntry{RxC Case}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,9 +20,9 @@ knitr::opts_chunk$set(
 
 Although the 2x2 case is useful in many circumstances, eiR also allows users to expand beyond the 2x2 case and implement RxC models.  To do this, eiR contains the MCMC implementation of the multinomial-Dirichlet eiRxC model in Rosen, Jiang, King and Tanner (2001) "Bayesian and Frequentist Inference for Ecological Inferece: The RxC Case." (*Statistica Neerlandica*, Vol. 55, nr.2, pp 134-156), and incorporates R code from `eiPack` (Olivia Lau, Ryan Moore and Mike Kellermann).
 
- In this section we describe the basic commands needed for eiRxC.  Imagine that instead of a 2x2 table where the user aims to infer the proportion of whites and non-whites who turned out to vote, for example, the user instead wants to infer the percent of turnout for white, black, and hispanic.  This is a 2x3 table because the resulting estimates from this table will include two estimates (percent turnout and no turnout) for three categories of people (white, black and hispanic).
+In this section we describe the basic commands needed for eiRxC.  Imagine that instead of a 2x2 table where the user aims to infer the proportion of whites and non-whites who turned out to vote, for example, the user instead wants to infer the percent of turnout for white, black, and hispanic.  This is a 2x3 table because the resulting estimates from this table will include two estimates (percent turnout and no turnout) for three categories of people (white, black and hispanic).
 
- We use the data `RxCdata` as a running example.
+We use the data `RxCdata` as a running example.
 `RxCdata` has variables for each of the five marginal variables
 for the 2x3 table: `turnout` is the number of people in each precinct who turned out to vote, `noturnout` is the number of people in each precinct that did not turn out to vote, `white` is the number of people who are white in the precinct, `black` is the number of people who are black in the precinct, and `hisp` is the number of people who are hispanic in the precinct. Note that, different that the 2x2 case, these are the numbers of people rather than proportions.  The user can include proportions if they want to, but then must include the argument `total` for the the total number of people in the precinct.
 

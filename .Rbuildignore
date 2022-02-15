@@ -6,6 +6,7 @@ README.md
 ^\.Rproj\.user$
 ^vignettesold$
 ^doc$
+^scratch$
 ^Meta$
 ^_pkgdown\.yml$
 ^docs$

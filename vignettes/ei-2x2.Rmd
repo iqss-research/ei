@@ -1,9 +1,9 @@
 ---
-title: "EI: A(n R) Program for Ecological Inference"
+title: "2x2 Case"
 author: "Gary King and Margaret Roberts"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{EI: A(n R) Program for Ecological Inference}
+  %\VignetteIndexEntry{2x2 Case}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -43,50 +43,50 @@ would likely be run multiple times with different options chosen, and other comm
 be included with these five to read in the data (`t`, `x`, and `n`).
 
 ### `ei`: To run the main procedure
-  Use the format, `dbuf = ei(formula, total = "n", data = data)`, which takes three $p\times 1$ vectors as inputs: `t` (e.g. the fraction of the
-  voting age population turning out to vote); `x (e.g. the
-  fraction of the voting age population who are black); and `n`
-  (e.g. the total number of people in the voting age population). The output of this
-  procedure is the list `dbuf` (i.e. an output object of class
-  list called a "data buffer").  The data buffer includes the maximium likelihood estimates and simulated quantities of interest from the `ei` procedure. After running `ei`, it is a
-  good idea to save `dbuf` for further analysis.  The
-  output data buffer from `ei` includes a large variety of
-  different results useful for understanding the results of the
-  analysis. A minimal set of nonrepetitive information is stored in
-  this list (or data buffer), and a large variety of other information
-  can be easily computed from it. Fortunately, you do not need to know
-  whether the information
-  you request is stored or computed as both are treated the same.
+Use the format, `dbuf = ei(formula, total = "n", data = data)`, which takes three $p\times 1$ vectors as inputs: `t` (e.g. the fraction of the
+voting age population turning out to vote); `x` (e.g. the
+fraction of the voting age population who are black); and `n`
+(e.g. the total number of people in the voting age population). The output of this
+procedure is the list `dbuf` (i.e. an output object of class
+list called a "data buffer").  The data buffer includes the maximium likelihood estimates and simulated quantities of interest from the `ei` procedure. After running `ei`, it is a
+good idea to save `dbuf` for further analysis.  The
+output data buffer from `ei` includes a large variety of
+different results useful for understanding the results of the
+analysis. A minimal set of nonrepetitive information is stored in
+this list (or data buffer), and a large variety of other information
+can be easily computed from it. Fortunately, you do not need to know
+whether the information
+you request is stored or computed as both are treated the same.
 
 
- To extract information from the data buffer, three
-  procedures are available:
+To extract information from the data buffer, three
+procedures are available:
 
 ### `summary`: To obtain a general summary of district-level information
-  `summary(dbuf)` will produce aggregate information about the
-  `ei` results.  `summary` will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values specified for the prior.
+`summary(dbuf)` will produce aggregate information about the
+`ei` results.  `summary` will produce a summary of both the maximum likelihood estimates and simulated quantities of interest. It also includes information on the values specified for the prior.
 
 ### `plot`: To graph relevant information
-  For graphics, use `plot_**(dbuf)`;, where `dbuf` is
-  the ei.object that is the output of `ei` or `ei.sim`, and `**` completes a function for ready-made graphs.  For example,
-  `plot_tomog(dbuf)` will plot a tomography graph, and
-  `plot_xt(dbuf)` will display a scattercross graph. Any number
-  of graphs can be selected in plot for output.
+For graphics, use `plot_**(dbuf)`;, where `dbuf` is
+the ei.object that is the output of `ei` or `ei.sim`, and `**` completes a function for ready-made graphs.  For example,
+`plot_tomog(dbuf)` will plot a tomography graph, and
+`plot_xt(dbuf)` will display a scattercross graph. Any number
+of graphs can be selected in plot for output.
 
-  Some of the plots can be produced after estimating the maximum likelihood estimates using `ei`, but before simulating quantities of interest. These initial plots can be useful in determining which priors to include, and the user can opt to choose not to simulate quantities of interest by selecting the option `simulate = FALSE`. However, for some plots, `plot` will need the simulated quantities of interest, and therefore can only be plotted when simulate is set to the default, `TRUE`.
+Some of the plots can be produced after estimating the maximum likelihood estimates using `ei`, but before simulating quantities of interest. These initial plots can be useful in determining which priors to include, and the user can opt to choose not to simulate quantities of interest by selecting the option `simulate = FALSE`. However, for some plots, `plot` will need the simulated quantities of interest, and therefore can only be plotted when simulate is set to the default, `TRUE`.
 
 ### `eiread`: To obtain relevant information and numerical results
 
-  For numerical information, use `v <- eiread(dbuf, "name")`,
-  where `v` is the item extracted, `dbuf` is the data buffer
-  output from `ei`, and name can be any of a list of output
-  possibilities. For example, `eiread(dbuf, "betab")` will give a
-  vector of point estimates of $\beta_i^b$,
-  `eiread(dbuf, "ci80w")` will give 80\% confidence intervals for
-  $\beta_i^w$.  Any number of items can be selected for output.  For
-  example, `eiread(dbuf, "betab", "ci80b")` will produce a list
-  of the point estimates and 80\% confidence intervals for $
-  \beta_i^b$.
+For numerical information, use `v <- eiread(dbuf, "name")`,
+where `v` is the item extracted, `dbuf` is the data buffer
+output from `ei`, and name can be any of a list of output
+possibilities. For example, `eiread(dbuf, "betab")` will give a
+vector of point estimates of $\beta_i^b$,
+`eiread(dbuf, "ci80w")` will give 80\% confidence intervals for
+$\beta_i^w$.  Any number of items can be selected for output.  For
+example, `eiread(dbuf, "betab", "ci80b")` will produce a list
+of the point estimates and 80\% confidence intervals for $
+\beta_i^b$.
 
 # User's Guide: An Example
 
@@ -107,7 +107,7 @@ library(ei)
 data(matproii)
 ```
 
-The statistical goal is to estimate the fraction of blacks registered ($\beta_i^b$) and the fraction of whites registered ($\beta_i^w$) in each county. These quantities of interest are generally unknown.  However, `ei` also includes an option that allows the user to assess the reliability of the `ei` algorithm when the true quantities of interest are known. To illustrate the use of this ``truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (`tw`).
+The statistical goal is to estimate the fraction of blacks registered ($\beta_i^b$) and the fraction of whites registered ($\beta_i^w$) in each county. These quantities of interest are generally unknown.  However, `ei` also includes an option that allows the user to assess the reliability of the `ei` algorithm when the true quantities of interest are known. To illustrate the use of this "truth" option, the data also include the true fractions of registered blacks (\verb#tb#) and the true fraction of registered whites (`tw`).
 
 ## The Basic EI Algorithm
 
@@ -189,16 +189,15 @@ plot_tomog(dbuf, options = list(CI = 0.95))
 ```
 
 
- Each line on the map represents the possible values for $\beta_i^b$ and $\beta_i^w$ for one county.  The contour lines identify the portion of the lines that have the highest probability of containing the true estimates of $\beta_i^b$ and $\beta_i^w$.  These contour lines provide information about the overall pattern of registration.  Note that the area with highest probability is in the upper right-hand corner, where the proportion of whites registered is between $0.75$ and $1$ and the proportion of blacks registered is between $0.5$ and $1$.  Further, we see that the lines are clustered in the upper half of the figure, indicating that the possible values of $\beta_i^w$ will have a lower variance than the possible values of $\beta_i^b$.
-\newline
+Each line on the map represents the possible values for $\beta_i^b$ and $\beta_i^w$ for one county.  The contour lines identify the portion of the lines that have the highest probability of containing the true estimates of $\beta_i^b$ and $\beta_i^w$.  These contour lines provide information about the overall pattern of registration.  Note that the area with highest probability is in the upper right-hand corner, where the proportion of whites registered is between $0.75$ and $1$ and the proportion of blacks registered is between $0.5$ and $1$.  Further, we see that the lines are clustered in the upper half of the figure, indicating that the possible values of $\beta_i^w$ will have a lower variance than the possible values of $\beta_i^b$.
+
 Figure 2 is a double plot of the point estimates and their confidence intervals.  To compute this, we call plot to generate two graphs: a tomography plot with the point estimates generated from the algorithm, and a tomography plot with 80\% confidence intervals on the point estimate.
 
 ```{r}
 plot_tomog(dbuf, options = list(points = TRUE, CI = 0.95))
 ```
 
- This plot is useful to visualize the estimates and confidence intervals for each county.  We can see that the point estimates and confidence intervals are clustered in the same area as the contours from the previous plot.  Further, the point estimates and confidence intervals only fall on the lines that indicate the possible values of $\beta_i^b$ and $\beta_i^w$.
-\newline
+This plot is useful to visualize the estimates and confidence intervals for each county.  We can see that the point estimates and confidence intervals are clustered in the same area as the contours from the previous plot.  Further, the point estimates and confidence intervals only fall on the lines that indicate the possible values of $\beta_i^b$ and $\beta_i^w$.
 
 Figure 3 shows plots that indicate the distribution of $\beta_i^b$ and $\beta_i^w$. To produce these plots, run:
 
@@ -207,15 +206,16 @@ plot_density(dbuf, options = list(parameter = "betab"))
 plot_density(dbuf, options = list(parameter = "betaw"))
 ```
 
- Density plots are useful to visualize the location and uncertainty of the point estimates.  The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s $\beta_i^b$ and $\beta_i^w$.  You can see that the variance of the point estimates from $\beta_i^b$ is much higher than the variance of point estimates from $\beta_i^w$.
-\newline
+Density plots are useful to visualize the location and uncertainty of the point estimates.  The green line represents the density of the simulated point estimates, and the black tick marks are a rug plot of the point estimates,s $\beta_i^b$ and $\beta_i^w$.  You can see that the variance of the point estimates from $\beta_i^b$ is much higher than the variance of point estimates from $\beta_i^w$.
+
 Figure 4 portrays the results of the `ei` algorithm by plotting the proportion of blacks in each country by the proportion of registered voters in each county.  To produce this plot, use:
+
 
 ```{r}
 plot_xt(dbuf)
 ```
 
- The circles around each of the points in this plot are proportional to the population of each county.  The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80\% confidence interval around the regression line.  The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.
+The circles around each of the points in this plot are proportional to the population of each county.  The graph represents the likelihood estimates by plotting the expected number of registered voters given the proportion of blacks in each county, represented by the yellow line. The red lines in the plot are the 80\% confidence interval around the regression line.  The higher uncertainty in the estimates of black registration can be seen by the absence of points on the right hand side of the graph and the larger confidence interval on the right hand side of the graph, where the proportion of blacks in the county is relatively large.
 
 
 \pagebreak

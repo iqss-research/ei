@@ -1,9 +1,9 @@
 ---
-title: "EI: A(n R) Program for Ecological Inference"
+title: "Introduction"
 author: "Gary King and Margaret Roberts"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{EI: A(n R) Program for Ecological Inference}
+  %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
