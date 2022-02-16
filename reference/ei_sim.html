@@ -18,8 +18,13 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../articles/ei.html">Get started</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-user-s-guide">User's Guide</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-user-s-guide">
+    <a class="dropdown-item" href="../articles/ei-introduction.html">Introduction</a>
+    <a class="dropdown-item" href="../articles/ei-2x2.html">2x2 case</a>
+    <a class="dropdown-item" href="../articles/ei-RxC.html">RxC case</a>
+  </div>
 </li>
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
@@ -71,7 +76,7 @@
 <span class="r-in"><span class="va">dbuf</span> <span class="op">&lt;-</span> <span class="fu"><a href="ei_est.html">ei_est</a></span><span class="op">(</span><span class="va">sample_ei</span>, <span class="va">x</span>, <span class="va">t</span>, <span class="va">n</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="fu">ei_sim</span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Maximizing likelihood</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ⠙ Beginning importance sampling.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[1.5s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[2.6s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

@@ -2,8 +2,10 @@ pandoc: 2.7.3
 pkgdown: 2.0.2
 pkgdown_sha: ~
 articles:
-  ei: ei.html
-last_built: 2022-02-10T20:25Z
+  ei-2x2: ei-2x2.html
+  ei-RxC: ei-RxC.html
+  ei-introduction: ei-introduction.html
+last_built: 2022-02-16T05:26Z
 urls:
   reference: https://iqss-research.github.io/ei/reference
   article: https://iqss-research.github.io/ei/articles

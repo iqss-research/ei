@@ -28,8 +28,13 @@ read with summary() or eiread() and graphed in plot()."><meta property="og:image
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../articles/ei.html">Get started</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-user-s-guide">User's Guide</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-user-s-guide">
+    <a class="dropdown-item" href="../articles/ei-introduction.html">Introduction</a>
+    <a class="dropdown-item" href="../articles/ei-2x2.html">2x2 case</a>
+    <a class="dropdown-item" href="../articles/ei-RxC.html">RxC case</a>
+  </div>
 </li>
 <li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
@@ -209,10 +214,10 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running 2x2 ei</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Maximizing likelihood</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running 2x2 ei</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Running 2x2 ei <span style="color: #B2B2B2;">[426ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Running 2x2 ei <span style="color: #B2B2B2;">[314ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ⠙ Beginning importance sampling.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[1.8s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[1.9s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dbuf</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -240,7 +245,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Resamp</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 15</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 20</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Maximum likelihood results in scale of estimation (and se's)</span> ──</span>
@@ -252,14 +257,14 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Untruncated psi's</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW      RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1983361 0.7229487 0.1064841 0.1521702 0.412127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW       RHO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1987847 0.7270111 0.1082336 0.1575826 0.3122226</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Truncated psi's (ultimate scale)</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW         SB       SW       RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2046492 0.7120257 0.09710265 0.139235 0.3513682</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW       RHO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2047028 0.7135233 0.0996562 0.1424712 0.2716507</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Aggregate Bounds</span> ──</span>
@@ -272,8 +277,8 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Estimates of Aggregate Quantities of Interest</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         mean          sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2044905 0.011245432</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7171180 0.008873405</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2042033 0.011680364</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7173446 0.009216596</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Precision</span> ──</span>
