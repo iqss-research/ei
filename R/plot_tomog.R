@@ -14,7 +14,7 @@
 #' plot_tomog(ei_res, options = list(linecolor = "betaw", category = 5))
 #' plot_tomog(ei_res, options = list(points = FALSE, CI = 0.8))
 #' @export
-plot_tomog <- function(ei.object, options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points = TRUE, contour_ML = FALSE, contour_posterior = FALSE)) {
+plot_tomog <- function(ei.object, options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points = FALSE, contour_ML = FALSE, contour_posterior = FALSE)) {
   options <- plot_tomog_options(options)
 
   p <- plot_tomog_base(ei.object, options)
@@ -98,7 +98,7 @@ plot_tomog_options <- function(options) {
 
   # Point estimate
   if (!"points" %in% names(options)) {
-    options$points <- TRUE
+    options$points <- FALSE
   }
 
   if (!options$points %in% c(TRUE, FALSE)) {
