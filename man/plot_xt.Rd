@@ -23,7 +23,7 @@ plot_xt(
 a ggplot object
 }
 \description{
-Visualizing EI (xt-plot)
+\eqn{X_i} by \eqn{T_i} scatterplot with circles sized proportional to \eqn{N_i}.
 }
 \examples{
 data(matproii)

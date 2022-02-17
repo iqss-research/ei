@@ -1,5 +1,7 @@
 #' Visualizing EI (xt-plot)
 #'
+#' \eqn{X_i} by \eqn{T_i} scatterplot with circles sized proportional to \eqn{N_i}.
+#'
 #' @param ei.object The output of \code{ei()}.
 #' @param options The list of options \itemize{
 #'    \item \strong{density}: Showing density estimate.
