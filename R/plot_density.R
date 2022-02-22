@@ -1,7 +1,9 @@
 #' Visualizing EI (density)
 #'
 #' @param ei.object The output of \code{ei()}
-#' @param options The list of options
+#' @param options The list of options \itemize{
+#'    \item \strong{parameter}: A parameter to plot. It takes either \code{betab} or \code{betaw}.
+#' }
 #' @return a ggplot object
 #' @concept visualization
 #' @examples
