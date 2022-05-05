@@ -78,47 +78,29 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
   if (is.null(Zw)) Zw <- 1
 
   cli::cli_progress_step("Running 2x2 ei")
-  if (!simulate) {
-    dbuf <- ei.estimate(t, x, n,
-      id = id, data = data, Zb = Zb, Zw = Zw,
-      erho = erho[1], esigma = esigma, ebeta = ebeta,
-      ealphab = ealphab, ealphaw = ealphaw, truth = truth
+
+  dbuf <- NULL
+  i <- 1
+  while (i <= length(erho) & is.null(dbuf)) {
+    try(
+      {
+        dbuf <- ei.estimate(t, x, n,
+                            id = id,
+                            data = data, Zb = Zb, Zw = Zw, erho = erho[i],
+                            esigma = esigma, ebeta = ebeta,
+                            ealphab = ealphab, ealphaw = ealphaw,
+                            truth = truth
+        )
+      },
+      silent = TRUE
     )
-    cli::cli_progress_done()
-    return(new_ei_tbl(
-      data,
-      x = x_name, t = t_name, n = n_name,
-      phi = dbuf$phi,
-      hessian = dbuf$hessian, hessianC = dbuf$hessianC, psi = dbuf$psi,
-      betab = dbuf$betab, betaw = dbuf$betaw, sbetab = dbuf$sbetab,
-      sbetaw = dbuf$sbetaw, betabs = dbuf$betabs, betaws = dbuf$betaws,
-      resamp = dbuf$resamp,
-      erho = dbuf$erho, esigma = dbuf$esigma, ebeta = dbuf$ebeta,
-      ealphab = dbuf$ealphab, ealphaw = dbuf$ealphaw, numb = dbuf$numb,
-      Zb = dbuf$Zb, Zw = dbuf$Zw, truth = dbuf$truth, precision = dbuf$precision,
-      id = dbuf$id
-    ))
-  } else {
-    dbuf <- NULL
-    i <- 1
-    while (i <= length(erho) & is.null(dbuf)) {
-      try(
-        {
-          dbuf <- ei.estimate(t, x, n,
-            id = id,
-            data = data, Zb = Zb, Zw = Zw, erho = erho[i],
-            esigma = esigma, ebeta = ebeta,
-            ealphab = ealphab, ealphaw = ealphaw,
-            truth = truth
-          )
-        },
-        silent = TRUE
-      )
-      i <- i + 1
-    }
-    if (is.null(dbuf)) {
-      cli::cli_abort("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.")
-    }
+    i <- i + 1
+  }
+  if (is.null(dbuf)) {
+    cli::cli_abort("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.")
+  }
+  cli::cli_progress_done()
+  if (simulate) {
     dbuf.sim <- ei.sim(dbuf)
     cli::cli_progress_done()
     return(new_ei_tbl(
@@ -133,6 +115,20 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
       ealphab = dbuf.sim$ealphab, ealphaw = dbuf.sim$ealphaw, numb = dbuf.sim$numb,
       Zb = dbuf.sim$Zb, Zw = dbuf.sim$Zw, truth = dbuf.sim$truth, precision = dbuf.sim$precision,
       id = dbuf.sim$id
+    ))
+  } else {
+    return(new_ei_tbl(
+      data,
+      x = x_name, t = t_name, n = n_name,
+      phi = dbuf$phi,
+      hessian = dbuf$hessian, hessianC = dbuf$hessianC, psi = dbuf$psi,
+      betab = dbuf$betab, betaw = dbuf$betaw, sbetab = dbuf$sbetab,
+      sbetaw = dbuf$sbetaw, betabs = dbuf$betabs, betaws = dbuf$betaws,
+      resamp = dbuf$resamp,
+      erho = dbuf$erho, esigma = dbuf$esigma, ebeta = dbuf$ebeta,
+      ealphab = dbuf$ealphab, ealphaw = dbuf$ealphaw, numb = dbuf$numb,
+      Zb = dbuf$Zb, Zw = dbuf$Zw, truth = dbuf$truth, precision = dbuf$precision,
+      id = dbuf$id
     ))
   }
 }
@@ -222,16 +218,16 @@ ei_est <- function(data, t, x, n, id = seq_len(nrow(data)), Zb = NULL, Zw = NULL
   cli::cli_alert_info("Maximizing likelihood")
 
   solution <- optim(start, like,
-    y = t, x = x, n = n, Zb = Zb,
-    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
-    hessian = TRUE,
-    method = "BFGS"
+                    y = t, x = x, n = n, Zb = Zb,
+                    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
+                    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
+                    hessian = TRUE,
+                    method = "BFGS"
   )
 
   # Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian) == 0 |
-    diag(solution$hessian) == 1, 0, 1))
+                              diag(solution$hessian) == 1, 0, 1))
   new_ei_tbl(
     data,
     x = x_name, t = t_name, n = n_name,
@@ -286,8 +282,8 @@ ei_sim <- function(data, ndraws = 99, nsims = 100) {
   cur_row <- 1 # 99 resamples
   while (cur_row <= ndraws) {
     out_samp <- .samp(t, x, n, Zb, Zw, attr(data, "phi"), hessian, nsims, keep,
-      numb = numb, covs, erho, esigma,
-      ebeta, ealphab, ealphaw, Rfun
+                      numb = numb, covs, erho, esigma,
+                      ebeta, ealphab, ealphaw, Rfun
     )
 
     if (!is.null(out_samp)) {
@@ -352,9 +348,9 @@ ei_sim <- function(data, ndraws = 99, nsims = 100) {
     out <- NULL
     for (j in 1:length(x[ok])) {
       out[ok][j] <- rtnorm(1,
-        mean = mbb[ok][j], sd = s[ok][j],
-        lower = bounds[ok, ][j, 1],
-        upper = bounds[ok, ][j, 2]
+                           mean = mbb[ok][j], sd = s[ok][j],
+                           lower = bounds[ok, ][j, 1],
+                           upper = bounds[ok, ][j, 2]
       )
     }
     out[wh] <- NA
