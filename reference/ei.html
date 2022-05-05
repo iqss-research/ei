@@ -75,7 +75,7 @@ read with <code><a href="https://rdrr.io/r/base/summary.html" class="external-li
   Zw <span class="op">=</span> <span class="fl">1</span>,
   id <span class="op">=</span> <span class="cn">NA</span>,
   data <span class="op">=</span> <span class="cn">NA</span>,
-  erho <span class="op">=</span> <span class="fl">0.5</span>,
+  erho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">0.1</span>, <span class="fl">10</span><span class="op">)</span>,
   esigma <span class="op">=</span> <span class="fl">0.5</span>,
   ebeta <span class="op">=</span> <span class="fl">0.5</span>,
   ealphab <span class="op">=</span> <span class="cn">NA</span>,
@@ -121,7 +121,7 @@ formula.  If using covariates and data is specified, data should also
 contain <code>Zb</code> and <code>Zw</code>.</p></dd>
 <dt>erho</dt>
 <dd><p>The standard deviation of the normal prior on \(\phi_5\) for
-the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.</p></dd>
+the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5, .1, 10)`.</p></dd>
 <dt>esigma</dt>
 <dd><p>The standard deviation of an underlying normal distribution,
 from which a half normal is constructed as a prior for both
@@ -214,10 +214,16 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running 2x2 ei</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Maximizing likelihood</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running 2x2 ei</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Running 2x2 ei <span style="color: #B2B2B2;">[395ms]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Maximizing likelihood</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running 2x2 ei</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Maximizing likelihood</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running 2x2 ei</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Maximizing likelihood</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Running 2x2 ei</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Running 2x2 ei <span style="color: #B2B2B2;">[716ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ⠙ Beginning importance sampling.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[3.7s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[2.6s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dbuf</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -225,7 +231,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Erho</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 0.5</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 0.1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Esigma</span> ──</span>
@@ -245,26 +251,26 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Resamp</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 33</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 35</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Maximum likelihood results in scale of estimation (and se's)</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         Bb0       Bw0       sigB       sigW       rho Zb0 Zw0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -1.1534919 0.8217156 -2.2861904 -1.8819733 0.4123728   0   0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.1009835 0.1017592  0.2487998  0.1575466 0.3652448   0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Bb0       Bw0       sigB       sigW        rho Zb0 Zw0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -1.1605918 0.8264157 -2.1410777 -1.8073480 0.03161319   0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.1175759 0.1130699  0.2519238  0.1606003 0.09794052   0   0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Untruncated psi's</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB       SW       RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1967422 0.7272123 0.1094384 0.158177 0.3453728</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW        RHO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1926113 0.7290708 0.1213997 0.1662576 0.04072043</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Truncated psi's (ultimate scale)</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB       SW       RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2064295 0.7127338 0.0997286 0.143652 0.2729845</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW        RHO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2098808 0.7086636 0.1079764 0.1494509 0.05555611</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Aggregate Bounds</span> ──</span>
@@ -276,9 +282,9 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Estimates of Aggregate Quantities of Interest</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         mean          sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2048912 0.011608552</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7168018 0.009159931</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         mean         sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2082775 0.01435788</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7141298 0.01132934</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Precision</span> ──</span>
