@@ -10,22 +10,29 @@ plot_xt(
 )
 }
 \arguments{
-\item{ei.object}{The output of \code{ei()}}
+\item{ei.object}{The output of \code{ei()}.}
 
-\item{options}{The list of options}
+\item{options}{The list of options \itemize{
+   \item \strong{density}: Showing density estimate.
+   \item \strong{fit}: Showing \eqn{X_i} by \eqn{T_i} on the plot with estimated \eqn{E(T_i|X_i)}
+   \item \strong{CI}: Showing a confidence interval with a specfied statistical level.
+   \item \strong{goodman}: Goodman's regression.
+}}
 }
 \value{
 a ggplot object
 }
 \description{
-Visualizing EI (xt-plot)
+\eqn{X_i} by \eqn{T_i} scatterplot with circles sized proportional to \eqn{N_i}.
 }
 \examples{
 data(matproii)
 suppressMessages({
   ei_res <- ei(formula = t ~ x, total = "n", data = matproii)
 })
+# `plot_xt()` function
 plot_xt(ei_res)
-plot_xt(ei_res, options = list(CI = 0.95, goodman = TRUE))
+# `plot_xt()` with options
+plot_xt(ei_res, options = list(CI = 0.95, fit = FALSE, goodman = TRUE))
 }
 \concept{visualization}

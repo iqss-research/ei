@@ -1,7 +1,9 @@
 #' Visualizing EI (bound)
 #'
-#' @param ei.object The output of \code{ei()}
-#' @param options The list of options
+#' @param ei.object The output of \code{ei()} (it should be used with the \code{truth} argument)
+#' @param options The list of options \itemize{
+#'    \item \strong{parameter}: A parameter to plot. It takes either \code{betab} or \code{betaw}. This option is only for the 2x2 case.
+#' }
 #' @return a ggplot object
 #' @concept visualization
 #' @examples

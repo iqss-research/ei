@@ -143,7 +143,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     dbuf$data <- data
     dbuf$total <- n
     dbuf$formula <- formula
-    class(dbuf) <- "ei"
+    class(dbuf) <- c("ei", "eiRxC")
     cli::cli_progress_done()
     return(dbuf)
   }
@@ -210,8 +210,9 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
     truth = truth, precision = precision, covs = covs, Rfun = Rfun, id = id
   )
 
-  class(output) <- c("ei", class(output))
+  class(output) <- c("ei", "ei2x2", class(output))
   output
+
 }
 
 
