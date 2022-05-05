@@ -27,7 +27,7 @@
 #' formula.  If using covariates and data is specified, data should also
 #' contain \code{Zb} and \code{Zw}.
 #' @param erho The standard deviation of the normal prior on \eqn{\phi_5} for
-#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.
+#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5, .1, 10)`.
 #' @param esigma The standard deviation of an underlying normal distribution,
 #' from which a half normal is constructed as a prior for both
 #' \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Default \eqn{= 0.5}
@@ -85,7 +85,7 @@
 #' dbuf <- ei(form, total = "n", data = sample_ei)
 #' summary(dbuf)
 ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
-               erho = .5, esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
+               erho = c(.5, 3, 5, .1, 10), esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
                truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
                lambda2 = 2, covariate.prior.list = NULL, tune.list = NULL,
                start.list = NULL, sample = 1000, thin = 1, burnin = 1000,
@@ -100,52 +100,45 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
 
   if (length(dv) == 1) {
     cli::cli_progress_step("Running 2x2 ei")
-    if (!simulate) {
-      dbuf <- ei.estimate(t, x, n,
-        id = id, data = data, Zb = Zb, Zw = Zw,
-        erho = erho, esigma = esigma, ebeta = ebeta,
-        ealphab = ealphab, ealphaw = ealphaw, truth = truth
+    dbuf <- NULL
+    i <- 1
+    while (i <= length(erho) & is.null(dbuf)) {
+      try(
+        {
+          dbuf <- ei.estimate(t, x, n,
+                              id = id,
+                              data = data, Zb = Zb, Zw = Zw, erho = erho[i],
+                              esigma = esigma, ebeta = ebeta,
+                              ealphab = ealphab, ealphaw = ealphaw,
+                              truth = truth
+          )
+        },
+        silent = TRUE
       )
-      return(dbuf)
+      i <- i + 1
     }
+    if (is.null(dbuf)) {
+      cli::cli_abort(c("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.", "i" = "Values tried: {erho}."))
+    }
+    cli::cli_progress_done()
     if (simulate) {
-      dbuf <- NULL
-      i <- 1
-      while (i <= length(erho) & is.null(dbuf)) {
-        try(
-          {
-            dbuf <- ei.estimate(t, x, n,
-              id = id,
-              data = data, Zb = Zb, Zw = Zw, erho = erho[i],
-              esigma = esigma, ebeta = ebeta,
-              ealphab = ealphab, ealphaw = ealphaw,
-              truth = truth
-            )
-          },
-          silent = TRUE
-        )
-        i <- i + 1
-      }
-      if (is.null(dbuf)) {
-        cli::cli_abort("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.")
-      }
-      cli::cli_progress_done()
-      dbuf.sim <- ei.sim(dbuf)
-      return(dbuf.sim)
+      dbuf <- ei.sim(dbuf)
+
     }
+    return(dbuf)
   }
 
   if (length(dv) > 1) {
     cli::cli_progress_step("Running eiRxC")
     # If the table is RxC use eiRxC
     dbuf <- ei.MD.bayes(formula,
-      data = data, total = total, covariate = covariate,
-      lambda1 = lambda1, lambda2 = lambda2,
-      covariate.prior.list = covariate.prior.list,
-      tune.list = tune.list, start.list = start.list,
-      sample = sample, thin = thin, burnin = burnin,
-      verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
-      usrfun = usrfun
+                        data = data, total = total, covariate = covariate,
+                        lambda1 = lambda1, lambda2 = lambda2,
+                        covariate.prior.list = covariate.prior.list,
+                        tune.list = tune.list, start.list = start.list,
+                        sample = sample, thin = thin, burnin = burnin,
+                        verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
+                        usrfun = usrfun
     )
     dbuf$data <- data
     dbuf$total <- n
@@ -193,17 +186,19 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
 
   cli::cli_alert_info("Maximizing likelihood")
 
-  solution <- optim(start, like,
+  solution <- optim(
+    par = start, fn = like,
     y = t, x = x, n = n, Zb = Zb,
     Zw = Zw, numb = numb, erho = erho, esigma = esigma,
     ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
     hessian = TRUE,
-    method = "BFGS"
+    #control = list(factr = 1e7),
+    method = "L-BFGS-B"
   )
 
   # Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian) == 0 |
-    diag(solution$hessian) == 1, 0, 1))
+                              diag(solution$hessian) == 1, 0, 1))
   hessian <- solution$hessian[covs, covs]
   output <- list(
     phi = solution$par,
@@ -216,7 +211,8 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   )
 
   class(output) <- c("ei", "ei2x2", class(output))
-  return(output)
+  output
+
 }
 
 

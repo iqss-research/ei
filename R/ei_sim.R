@@ -49,7 +49,9 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
 
     if (!is.null(out_samp)) {
       nro <- nrow(out_samp)
-      keep[cur_row:min(cur_row + nro - 1, ndraws), ] <- out_samp[1:min(nro, 1 + ndraws - cur_row), ]
+      #if (nro > 0) {
+        keep[cur_row:min(cur_row + nro - 1, ndraws), ] <- out_samp[1:min(nro, 1 + ndraws - cur_row), ]
+      #}
       cur_row <- cur_row + nro
     }
     resamp <- resamp + 1

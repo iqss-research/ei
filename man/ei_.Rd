@@ -12,7 +12,7 @@ ei_(
   Zb = NULL,
   Zw = NULL,
   id = NA,
-  erho = c(0.5, 3, 5),
+  erho = c(0.5, 3, 5, 0.1, 10),
   esigma = 0.5,
   ebeta = 0.5,
   ealphab = NA,
@@ -50,7 +50,7 @@ ei_(
 \item{id}{<[`data-masking`][dplyr_data_masking]> column of unique ids in data}
 
 \item{erho}{The standard deviation of the normal prior on \eqn{\phi_5} for
-the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.}
+the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5, .1, 10)`.}
 
 \item{esigma}{The standard deviation of an underlying normal distribution,
 from which a half normal is constructed as a prior for both
