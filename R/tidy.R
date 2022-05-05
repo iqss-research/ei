@@ -8,7 +8,7 @@
 #' @param Zw <[`data-masking`][dplyr_tidy_select]> columns of covariates in data
 #' @param id <[`data-masking`][dplyr_data_masking]> column of unique ids in data
 #' @param erho The standard deviation of the normal prior on \eqn{\phi_5} for
-#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.
+#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5, .1, 10)`.
 #' @param esigma The standard deviation of an underlying normal distribution,
 #' from which a half normal is constructed as a prior for both
 #' \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Default \eqn{= 0.5}
@@ -60,7 +60,7 @@
 #' data(sample_ei)
 #' dbuf <- ei_(sample_ei, x, t, n)
 ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
-                erho = c(.5, 3, 5), esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
+                erho = c(.5, 3, 5, .1, 10), esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
                 truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
                 lambda2 = 2, covariate.prior.list = NULL, tune.list = NULL,
                 start.list = NULL, sample = 1000, thin = 1, burnin = 1000,
