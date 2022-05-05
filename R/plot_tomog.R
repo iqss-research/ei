@@ -1,7 +1,18 @@
 #' Visualizing EI (tomography plot)
 #'
+#' Tomography plot with various opitons.
+#'
 #' @param ei.object The output of \code{ei()}
-#' @param options The list of options
+#' @param options The list of options \itemize{
+#'    \item \strong{color}: Change the line color by \code{linecolor} option.
+#'    \item \strong{linecolor}: Focus of the line color, options are \code{length}, \code{betab}, and \code{betaw}.
+#'    \item \strong{category}: Categorize values to color lines. The default value \code{0} means that it does not categorize values. When creating categories, it uses the option \code{breaks}.
+#'    \item \strong{breaks}: How to create categories. Options are \code{even} and \code{quantile}.
+#'    \item \strong{CI}: Tomography plot with confidence intervals. The default value is \code{0.8} (80% CI). If it is \code{NULL}, CI will not be shown.
+#'    \item \strong{points}: Tomography plot with estimated mean posterior \eqn{\beta_i^b} and \eqn{\beta_i^w} points.
+#'    \item \strong{contour_ML}: Tomography plot with ML contours.
+#'    \item \strong{contour_posterior}: Tomography plot with mean posterior contours.
+#' }
 #' @return a ggplot object
 #' @concept visualization
 #' @examples
@@ -12,9 +23,10 @@
 #' plot_tomog(ei_res)
 #' plot_tomog(ei_res, options = list(linecolor = "betab"))
 #' plot_tomog(ei_res, options = list(linecolor = "betaw", category = 5))
-#' plot_tomog(ei_res, options = list(points = FALSE, CI = 0.8))
+#' plot_tomog(ei_res, options = list(CI = 0.8))
+#' plot_tomog(ei_res, options = list(points = TRUE, contour_ML = TRUE))
 #' @export
-plot_tomog <- function(ei.object, options = list(color = TRUE, category = 0, linecolor = "length", CI = NULL, points = FALSE, contour_ML = FALSE, contour_posterior = FALSE)) {
+plot_tomog <- function(ei.object, options = list(color = TRUE, linecolor = "length", category = 0, breaks = "even",  CI = NULL, points = FALSE, contour_ML = FALSE, contour_posterior = FALSE)) {
   options <- plot_tomog_options(options)
 
   p <- plot_tomog_base(ei.object, options)

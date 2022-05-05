@@ -13,7 +13,7 @@ plot_truth(ei.object)
 a ggplot object
 }
 \description{
-Visualizing EI (with truth)
+Compares truth to estimates at the district and precinct-level. Requires the \code{truth} argument in the \code{ei} object.
 }
 \examples{
 data(matproii)

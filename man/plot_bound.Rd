@@ -7,9 +7,11 @@
 plot_bound(ei.object, options = list())
 }
 \arguments{
-\item{ei.object}{The output of \code{ei()}}
+\item{ei.object}{The output of \code{ei()} (it should be used with the \code{truth} argument)}
 
-\item{options}{The list of options}
+\item{options}{The list of options \itemize{
+   \item \strong{parameter}: A parameter to plot. It takes either \code{betab} or \code{betaw}. This option is only for the 2x2 case.
+}}
 }
 \value{
 a ggplot object

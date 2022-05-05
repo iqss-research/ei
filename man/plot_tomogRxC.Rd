@@ -18,7 +18,7 @@ col2,...)~cbind(row1,row2,...)}}
 a ggplot object
 }
 \description{
-Visualizing EI (tomography plot for RxC)
+A tomography plot for an estimated Ecological Inference model in RxC data.
 }
 \examples{
 data(RxCdata)

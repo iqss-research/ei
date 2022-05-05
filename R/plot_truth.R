@@ -1,5 +1,7 @@
 #' Visualizing EI (with truth)
 #'
+#' Compares truth to estimates at the district and precinct-level. Requires the \code{truth} argument in the \code{ei} object.
+#'
 #' @param ei.object The output of \code{ei()}
 #' @return a ggplot object
 #' @concept visualization
