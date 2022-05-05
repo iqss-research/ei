@@ -105,7 +105,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dbuf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ei.html">ei</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">RxCdata</span><span class="op">)</span>
 <span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running eiRxC</span>
-<span class="co">#&gt; <span style="color: #00BB00;">✔</span> Running eiRxC <span style="color: #B2B2B2;">[124ms]</span></span>
+<span class="co">#&gt; <span style="color: #00BB00;">✔</span> Running eiRxC <span style="color: #B2B2B2;">[112ms]</span></span>
 <span class="co">#&gt; </span></code></pre></div>
 <p>The MCMC output for the <span class="math inline">\(\beta\)</span>’s can be found in the data buffer .  is a matrix that contains the simulations for each of the <span class="math inline">\(\beta\)</span>’s for each precinct. Since there are 60 precincts in this dataset and 6 quantities of interest, the number of columns of  is <span class="math inline">\(60*6 = 360\)</span>. We can analyze the MCMC output by picking out which <span class="math inline">\(\beta\)</span> we are interested at any given time. For example, to look at the MCMC output for the estimated percent white turnout for the third precinct we can use the R code:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -121,12 +121,12 @@
 <span class="co">#&gt;    plus standard error of the mean:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;           Mean             SD       Naive SE Time-series SE </span>
-<span class="co">#&gt;       0.433513       0.035641       0.001127       0.004631 </span>
+<span class="co">#&gt;       0.414029       0.042843       0.001355       0.007735 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; 2. Quantiles for each variable:</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;   2.5%    25%    50%    75%  97.5% </span>
-<span class="co">#&gt; 0.3630 0.4085 0.4348 0.4587 0.4997</span></code></pre></div>
+<span class="co">#&gt; 0.3248 0.3851 0.4152 0.4442 0.4930</span></code></pre></div>
 <p>We can also plot this MCMC output to assess convergence:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/eiPack/man/plot.bounds.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></code></pre></div>
@@ -183,7 +183,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer>
