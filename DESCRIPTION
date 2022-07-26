@@ -18,7 +18,6 @@ Imports:
     ellipse,
     ggplot2,
     magrittr,
-    MASS,
     msm,
     mvtnorm,
     latex2exp,
@@ -30,8 +29,7 @@ Imports:
     shiny,
     sp,
     tibble,
-    tidyr,
-    tmvtnorm
+    tidyr
 Suggests:
     rmarkdown,
     knitr,
