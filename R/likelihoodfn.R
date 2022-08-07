@@ -79,7 +79,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     s <- ifelse(vbb >= 0 & vbb != Inf & !is.na(vbb), sqrt(vbb), NaN)
     b.s <- (bnds[, 2] - Ebb) / s
     as <- (bnds[, 1] - Ebb) / s
-    res <- log(pnorm(as, lower.tail = F) - pnorm(b.s, lower.tail = F))
+    res <- log(pnorm(as, lower.tail = FALSE) - pnorm(b.s, lower.tail = FALSE))
     # res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1],
     # mean=Ebb, sd=s))
     R[wh] <- .createR(wh, Rfun, bb, bw, sb, sw, rho, x)
@@ -99,7 +99,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     s <- ifelse(vbb >= 0 & vbb != Inf & !is.na(vbb), sqrt(vbb), NaN)
     b.s <- (bnds[, 2] - Ebb) / s
     as <- (bnds[, 1] - Ebb) / s
-    res <- log(pnorm(as, lower.tail = F) - pnorm(b.s, lower.tail = F))
+    res <- log(pnorm(as, lower.tail = FALSE) - pnorm(b.s, lower.tail = FALSE))
     # res <- log(pnorm(bnds[,2], mean=Ebb, sd=s) - pnorm(bnds[,1],
     # mean=Ebb, sd=s)) #res[ok] <- ifelse(abs(res[ok])==Inf,
     # NaN,res[ok])
@@ -183,11 +183,11 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   if (ebeta > 0 & mean(bw) > 1) prior <- prior - .5 * ((mean(bw) - 1)^2 / ebeta)
   if (sum(is.na(ealphab)) == 0) {
     prior <- prior +
-      sum(dmvnorm(Bb0v, ealphab[, 1], sigma = diag(ealphab[, 2]^2), log = T))
+      sum(dmvnorm(Bb0v, ealphab[, 1], sigma = diag(ealphab[, 2]^2), log = TRUE))
   }
   if (sum(is.na(ealphaw)) == 0) {
     prior <- prior +
-      sum(dmvnorm(Bw0v, ealphaw[, 1], sigma = diag(ealphaw[, 2]), log = T))
+      sum(dmvnorm(Bw0v, ealphaw[, 1], sigma = diag(ealphaw[, 2]), log = TRUE))
   }
   llik <- llik + prior
   # print(-llik)
