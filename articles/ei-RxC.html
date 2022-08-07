@@ -105,7 +105,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dbuf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ei.html">ei</a></span><span class="op">(</span><span class="va">formula</span>, data <span class="op">=</span> <span class="va">RxCdata</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Running eiRxC</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Running eiRxC <span style="color: #B2B2B2;">[132ms]</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Running eiRxC <span style="color: #B2B2B2;">[124ms]</span></span></span>
 <span><span class="co">#&gt; </span></span></code></pre></div>
 <p>The MCMC output for the <span class="math inline">\(\beta\)</span>’s can be found in the data buffer .  is a matrix that contains the simulations for each of the <span class="math inline">\(\beta\)</span>’s for each precinct. Since there are 60 precincts in this dataset and 6 quantities of interest, the number of columns of  is <span class="math inline">\(60*6 = 360\)</span>. We can analyze the MCMC output by picking out which <span class="math inline">\(\beta\)</span> we are interested at any given time. For example, to look at the MCMC output for the estimated percent white turnout for the third precinct we can use the R code:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -121,12 +121,12 @@
 <span><span class="co">#&gt;    plus standard error of the mean:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;           Mean             SD       Naive SE Time-series SE </span></span>
-<span><span class="co">#&gt;       0.436277       0.036715       0.001161       0.003724 </span></span>
+<span><span class="co">#&gt;       0.425179       0.039777       0.001258       0.007155 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 2. Quantiles for each variable:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   2.5%    25%    50%    75%  97.5% </span></span>
-<span><span class="co">#&gt; 0.3681 0.4125 0.4349 0.4600 0.5110</span></span></code></pre></div>
+<span><span class="co">#&gt; 0.3460 0.3971 0.4234 0.4526 0.4990</span></span></code></pre></div>
 <p>We can also plot this MCMC output to assess convergence:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
