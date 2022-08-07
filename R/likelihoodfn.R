@@ -46,7 +46,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   res <- NULL
   b.s <- (bounds[ok, 2] - ebb[ok]) / s[ok]
   as <- (bounds[ok, 1] - ebb[ok]) / s[ok]
-  res[ok] <- log(pnorm(as, lower.tail = F) - pnorm(b.s, lower.tail = F))
+  res[ok] <- log(pnorm(as, lower.tail = FALSE) - pnorm(b.s, lower.tail = FALSE))
   # res[ok] <- ifelse(abs(res[ok])==Inf, log(1*10^-15),res[ok])
   # res[ok] <- ifelse(abs(res[ok])==Inf, NaN,res[ok])
   # res[ok] <- log(pnorm(bounds[ok,2], mean=ebb[ok], sd=s[ok]) -

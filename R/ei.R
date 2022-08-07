@@ -102,7 +102,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     cli::cli_progress_step("Running 2x2 ei")
     dbuf <- NULL
     i <- 1
-    while (i <= length(erho) & is.null(dbuf)) {
+    while (i <= length(erho) && is.null(dbuf)) {
       try(
         {
           dbuf <- ei.estimate(t, x, n,
@@ -118,14 +118,14 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
       i <- i + 1
     }
     if (is.null(dbuf)) {
-      cli::cli_abort(c("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.", "i" = "Values tried: {erho}."))
+      cli::cli_abort(c("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.",
+                       "i" = "Values tried: {erho}."))
     }
     cli::cli_progress_done()
     if (simulate) {
       dbuf <- ei.sim(dbuf)
 
     }
-    return(dbuf)
   }
 
   if (length(dv) > 1) {
@@ -145,8 +145,8 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     dbuf$formula <- formula
     class(dbuf) <- c("ei", "eiRxC")
     cli::cli_progress_done()
-    return(dbuf)
   }
+  dbuf
 }
 
 ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
@@ -184,7 +184,7 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   # Starting values
   start <- c(0, 0, -1.2, -1.2, 0, rep(0, numb + numw))
 
-  cli::cli_alert_info("Maximizing likelihood")
+  cli::cli_alert_info("Maximizing likelihood for {.arg erho} = {erho}.")
 
   solution <- optim(
     par = start, fn = like,
@@ -192,9 +192,10 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
     Zw = Zw, numb = numb, erho = erho, esigma = esigma,
     ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
     hessian = TRUE,
-    #control = list(factr = 1e7),
+    control = list(factr = 1e6, pgtol = 0.001),
     method = "L-BFGS-B"
   )
+  cli::cli_process_done()
 
   # Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian) == 0 |
@@ -212,7 +213,6 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
 
   class(output) <- c("ei", "ei2x2", class(output))
   output
-
 }
 
 
@@ -228,11 +228,11 @@ print.ei <- function(x, ...) {
 #' @export
 values_ei <- function(object, name) {
   if (! "ei" %in% class(object)) {
-    stop("This is not an ei object")
+    cli::cli_abort("{.arg object} is not an ei object")
   }
   if (! name %in% names(object)) {
-    stop(paste0('"', name, '"', " is not an element of this ei object"))
+    cli::cli_abort("{.arg name} is not an element of this ei object.")
   }
-  return(object[[name]])
+  object[[name]]
 }
 
