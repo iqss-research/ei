@@ -68,6 +68,8 @@
 <span>  ealphaw <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  truth <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  simulate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  ndraws <span class="op">=</span> <span class="fl">99</span>,</span>
+<span>  nsims <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  covariate <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lambda1 <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  lambda2 <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -160,6 +162,14 @@ interest.</p></dd>
 options for RxC ei.</p></dd>
 
 
+<dt>ndraws</dt>
+<dd><p>integer. The number of draws. Default is 99.</p></dd>
+
+
+<dt>nsims</dt>
+<dd><p>integer. The number of simulations within each draw. Default is 100.</p></dd>
+
+
 <dt>covariate</dt>
 <dd><p>see documentation in <code>eiPack</code> for options for RxC ei.</p></dd>
 
@@ -241,7 +251,7 @@ options for RxC ei.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Running 2x2 ei <span style="color: #B2B2B2;">[2ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ⠙ Beginning importance sampling.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[2.7s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[2.8s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
