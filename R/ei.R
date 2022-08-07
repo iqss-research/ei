@@ -259,7 +259,25 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
 #' @noRd
 #' @export
 print.ei <- function(x, ...) {
-  cli::cli_text("ei object")
+
+  cli::cli_text("An ei object with{ifelse('betab' %in% names(x), ' ', 'out ')} simulated QoIs:")
+
+  if ('betab' %in% names(x)) {
+    magg <- matrix(round(.maggs(x), digits = x$precision), nrow = 2)
+    rownames(magg) <- c("Bb", "Bw")
+    colnames(magg) <- c("mean", "sd")
+
+    cli::cli_text('--- Estimates of Aggregate Quantities of Interest ---')
+    cli::cat_print(magg)
+  } else {
+    ab <- matrix(.abounds(x), nrow = 2)
+    rownames(ab) <- c("lower", "upper")
+    colnames(ab) <- c("betab", "betaw")
+    cli::cli_text('--- Aggregate Bounds ---')
+    cli::cat_print(ab)
+  }
+
+  invisible()
 }
 
 #' Returning an element in the ei object

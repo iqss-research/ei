@@ -1342,7 +1342,7 @@ tomogRxC <- function(formula, data, total = NULL, refine = 100) {
       }
     }
   }
-  image(contourx[2:refine], contoury[2:refine], contourz[2:refine, 2:refine], , col = sort(heat.colors(refine), decreasing = T), xlab = xl, ylab = yl, main = mn, xlim = c(0, 1), add = T)
+  image(contourx[2:refine], contoury[2:refine], contourz[2:refine, 2:refine], col = sort(heat.colors(refine), decreasing = T), xlab = xl, ylab = yl, main = mn, xlim = c(0, 1), add = TRUE)
 
   for (i in 1:dim(hstr)[1]) {
     if ((exp1[i] + exp2[i] + exp3[i] + exp4[i]) == 0) {
