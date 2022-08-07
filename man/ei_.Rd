@@ -19,6 +19,8 @@ ei_(
   ealphaw = NA,
   truth = NA,
   simulate = TRUE,
+  ndraws = 99,
+  nsims = 100,
   covariate = NULL,
   lambda1 = 4,
   lambda2 = 2,
@@ -80,6 +82,10 @@ interest.}
 
 \item{simulate}{default = TRUE:see documentation in \code{eiPack} for
 options for RxC ei.}
+
+\item{ndraws}{integer. The number of draws. Default is 99.}
+
+\item{nsims}{integer. The number of simulations within each draw. Default is 100.}
 
 \item{covariate}{see documentation in \code{eiPack} for options for RxC ei.}
 

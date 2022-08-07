@@ -51,6 +51,8 @@
 #' interest.
 #' @param simulate default = TRUE:see documentation in \code{eiPack} for
 #' options for RxC ei.
+#' @param ndraws integer. The number of draws. Default is 99.
+#' @param nsims integer. The number of simulations within each draw. Default is 100.
 #' @param covariate see documentation in \code{eiPack} for options for RxC ei.
 #' @param lambda1 default = 4:see documentation in \code{eiPack} for options
 #' for RxC ei.
@@ -77,19 +79,25 @@
 #' Problem.  Princeton: Princeton University Press.
 #'
 #' @export
-#' @return TODO
+#' @return ei object
 #'
 #' @examples
 #' data(sample_ei)
 #' form <- t ~ x
 #' dbuf <- ei(form, total = "n", data = sample_ei)
 #' summary(dbuf)
-ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
+ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data,
                erho = c(.5, 3, 5, .1, 10), esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
-               truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
+               truth = NA, simulate = TRUE, ndraws = 99, nsims = 100,
+               covariate = NULL, lambda1 = 4,
                lambda2 = 2, covariate.prior.list = NULL, tune.list = NULL,
                start.list = NULL, sample = 1000, thin = 1, burnin = 1000,
                verbose = 0, ret.beta = "r", ret.mcmc = TRUE, usrfun = NULL) {
+
+  if (missing(formula)) {
+    cli::cli_abort('{.arg formula} is required.')
+  }
+
   # Extract formula
   dv <- terms.formula(formula)[[2]]
   iv <- terms.formula(formula)[[3]]
@@ -97,6 +105,16 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   x <- as.character(iv)
   n <- as.character(total)
   id <- as.character(id)
+
+  if (missing(data)) {
+    cli::cli_abort('{.arg data} is required.')
+  }
+  data <- as.data.frame(data)
+
+  if (simulate) {
+    if (!is.numeric(nsims)) cli::cli_abort('{.arg nsims} must be {.cls numeric}.')
+    if (!is.numeric(ndraws)) cli::cli_abort('{.arg ndraws} must be {.cls numeric}.')
+  }
 
   if (length(dv) == 1) {
     cli::cli_progress_step("Running 2x2 ei")
@@ -123,7 +141,7 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     }
     cli::cli_progress_done()
     if (simulate) {
-      dbuf <- ei.sim(dbuf)
+      dbuf <- ei.sim(dbuf, ndraws = ndraws, nsims = nsims)
 
     }
   }
@@ -153,14 +171,36 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
                         esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
                         truth = NA, Rfun = 2, precision = 4) {
 
+  if (missing(t)) {
+    cli::cli_abort('{.arg t} is required for {.fn ei.estimate}.')
+  }
+  if (missing(x)) {
+    cli::cli_abort('{.arg x} is required for {.fn ei.estimate}.')
+  }
+  if (missing(n)) {
+    cli::cli_abort('{.arg n} is required for {.fn ei.estimate}.')
+  }
+  if (missing(id)) {
+    cli::cli_abort('{.arg id} is required for {.fn ei.estimate}.')
+  }
+
   # Check to make sure data is not null
-  if (!missing(data)) {
+  if (!is.na(data)) {
     if (is.character(t)) t <- data[[t]]
     if (is.character(x)) x <- data[[x]]
     if (is.character(n)) n <- data[[n]]
     if (is.character(Zb)) Zb <- data[[Zb]]
     if (is.character(Zw)) Zw <- data[[Zw]]
     if (is.character(id)) id <- data[[id]]
+  }
+
+  if (any(is.na(t)) | any(is.na(x)) | any(is.na(n))) {
+    drops <- union(union(which(is.na(t)), which(is.na(x))), which(is.na(n)))
+    t <- t[-drops]
+    x <- x[-drops]
+    n <- n[-drops]
+    if (!is.na(id)) id <- id[-drops]
+    cli::cli_warn('Found and removed {length(drops)} NA{?s}.')
   }
 
   Zb <- as.matrix(Zb)

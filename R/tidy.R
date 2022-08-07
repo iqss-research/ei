@@ -32,6 +32,8 @@
 #' interest.
 #' @param simulate default = TRUE:see documentation in \code{eiPack} for
 #' options for RxC ei.
+#' @param ndraws integer. The number of draws. Default is 99.
+#' @param nsims integer. The number of simulations within each draw. Default is 100.
 #' @param covariate see documentation in \code{eiPack} for options for RxC ei.
 #' @param lambda1 default = 4:see documentation in \code{eiPack} for options
 #' for RxC ei.
@@ -61,7 +63,9 @@
 #' dbuf <- ei_(sample_ei, x, t, n)
 ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
                 erho = c(.5, 3, 5, .1, 10), esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
-                truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
+                truth = NA, simulate = TRUE,
+                ndraws = 99, nsims = 100,
+                covariate = NULL, lambda1 = 4,
                 lambda2 = 2, covariate.prior.list = NULL, tune.list = NULL,
                 start.list = NULL, sample = 1000, thin = 1, burnin = 1000,
                 verbose = 0, ret.beta = "r", ret.mcmc = TRUE, usrfun = NULL) {
@@ -97,13 +101,14 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
     i <- i + 1
   }
   if (is.null(dbuf)) {
-    cli::cli_abort("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.")
+    cli::cli_abort(c("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.",
+                     "i" = "Values tried: {erho}."))
   }
   cli::cli_progress_done()
   if (simulate) {
-    dbuf.sim <- ei.sim(dbuf)
+    dbuf.sim <- ei.sim(dbuf, ndraws = ndraws, nsims = nsims)
     cli::cli_progress_done()
-    return(new_ei_tbl(
+    new_ei_tbl(
       data,
       x = x_name, t = t_name, n = n_name,
       phi = dbuf.sim$phi,
@@ -115,9 +120,9 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
       ealphab = dbuf.sim$ealphab, ealphaw = dbuf.sim$ealphaw, numb = dbuf.sim$numb,
       Zb = dbuf.sim$Zb, Zw = dbuf.sim$Zw, truth = dbuf.sim$truth, precision = dbuf.sim$precision,
       id = dbuf.sim$id
-    ))
+    )
   } else {
-    return(new_ei_tbl(
+    new_ei_tbl(
       data,
       x = x_name, t = t_name, n = n_name,
       phi = dbuf$phi,
@@ -129,7 +134,7 @@ ei_ <- function(data, x, t, n, Zb = NULL, Zw = NULL, id = NA,
       ealphab = dbuf$ealphab, ealphaw = dbuf$ealphaw, numb = dbuf$numb,
       Zb = dbuf$Zb, Zw = dbuf$Zw, truth = dbuf$truth, precision = dbuf$precision,
       id = dbuf$id
-    ))
+    )
   }
 }
 

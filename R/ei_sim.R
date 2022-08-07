@@ -1,8 +1,8 @@
 #' Simulate EI Solution via Importance Sampling
 #'
 #' @param ei.object \code{ei} object
-#' @param ndraws integer. The number of draws.
-#' @param nsims integer. The number of simulations within each draw.
+#' @param ndraws integer. The number of draws. Default is 99.
+#' @param nsims integer. The number of simulations within each draw. Default is 100.
 #'
 #' @author Gary King <<email: king@@harvard.edu>> and Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>

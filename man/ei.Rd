@@ -11,7 +11,7 @@ ei(
   Zb = 1,
   Zw = 1,
   id = NA,
-  data = NA,
+  data,
   erho = c(0.5, 3, 5, 0.1, 10),
   esigma = 0.5,
   ebeta = 0.5,
@@ -19,6 +19,8 @@ ei(
   ealphaw = NA,
   truth = NA,
   simulate = TRUE,
+  ndraws = 99,
+  nsims = 100,
   covariate = NULL,
   lambda1 = 4,
   lambda2 = 2,
@@ -86,6 +88,10 @@ interest.}
 \item{simulate}{default = TRUE:see documentation in \code{eiPack} for
 options for RxC ei.}
 
+\item{ndraws}{integer. The number of draws. Default is 99.}
+
+\item{nsims}{integer. The number of simulations within each draw. Default is 100.}
+
 \item{covariate}{see documentation in \code{eiPack} for options for RxC ei.}
 
 \item{lambda1}{default = 4:see documentation in \code{eiPack} for options
@@ -119,7 +125,7 @@ options for RxC ei.}
 \item{usrfun}{see documentation in \code{eiPack} for options for RxC ei.}
 }
 \value{
-TODO
+ei object
 }
 \description{
 \code{ei} is the main command in the package \code{EI}.  It gives
