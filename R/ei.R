@@ -185,7 +185,7 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   }
 
   # Check to make sure data is not null
-  if (!is.na(data)) {
+  if (!missing(data)) {
     if (is.character(t)) t <- data[[t]]
     if (is.character(x)) x <- data[[x]]
     if (is.character(n)) n <- data[[n]]
