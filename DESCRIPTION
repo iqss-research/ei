@@ -39,7 +39,9 @@ Suggests:
 License: GPL (>= 2)
 URL: http://gking.harvard.edu/eiR,
     http://gking.harvard.edu/eicamera/kinroot.html,
-    https://iqss-research.github.io/ei/
+    https://iqss-research.github.io/ei/,
+    https://github.com/iqss-research/ei
+BugReports: https://github.com/iqss-research/ei/issues
 RoxygenNote: 7.2.0
 Encoding: UTF-8
 VignetteBuilder: knitr
