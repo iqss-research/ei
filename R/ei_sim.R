@@ -1,8 +1,8 @@
 #' Simulate EI Solution via Importance Sampling
 #'
 #' @param ei.object \code{ei} object
-#' @param ndraws integer. The number of draws.
-#' @param nsims integer. The number of simulations within each draw.
+#' @param ndraws integer. The number of draws. Default is 99.
+#' @param nsims integer. The number of simulations within each draw. Default is 100.
 #'
 #' @author Gary King <<email: king@@harvard.edu>> and Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>
@@ -49,7 +49,9 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
 
     if (!is.null(out_samp)) {
       nro <- nrow(out_samp)
-      keep[cur_row:min(cur_row + nro - 1, ndraws), ] <- out_samp[1:min(nro, 1 + ndraws - cur_row), ]
+      #if (nro > 0) {
+        keep[cur_row:min(cur_row + nro - 1, ndraws), ] <- out_samp[1:min(nro, 1 + ndraws - cur_row), ]
+      #}
       cur_row <- cur_row + nro
     }
     resamp <- resamp + 1

@@ -18,7 +18,6 @@ Imports:
     ellipse,
     ggplot2,
     magrittr,
-    MASS,
     msm,
     mvtnorm,
     latex2exp,
@@ -30,8 +29,7 @@ Imports:
     shiny,
     sp,
     tibble,
-    tidyr,
-    tmvtnorm
+    tidyr
 Suggests:
     rmarkdown,
     knitr,
@@ -41,7 +39,9 @@ Suggests:
 License: GPL (>= 2)
 URL: http://gking.harvard.edu/eiR,
     http://gking.harvard.edu/eicamera/kinroot.html,
-    https://iqss-research.github.io/ei/
+    https://iqss-research.github.io/ei/,
+    https://github.com/iqss-research/ei
+BugReports: https://github.com/iqss-research/ei/issues
 RoxygenNote: 7.2.1
 Encoding: UTF-8
 VignetteBuilder: knitr

@@ -27,7 +27,7 @@
 #' formula.  If using covariates and data is specified, data should also
 #' contain \code{Zb} and \code{Zw}.
 #' @param erho The standard deviation of the normal prior on \eqn{\phi_5} for
-#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.
+#' the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5, .1, 10)`.
 #' @param esigma The standard deviation of an underlying normal distribution,
 #' from which a half normal is constructed as a prior for both
 #' \eqn{\breve{\sigma}_b} and \eqn{\breve{\sigma}_w}. Default \eqn{= 0.5}
@@ -51,6 +51,8 @@
 #' interest.
 #' @param simulate default = TRUE:see documentation in \code{eiPack} for
 #' options for RxC ei.
+#' @param ndraws integer. The number of draws. Default is 99.
+#' @param nsims integer. The number of simulations within each draw. Default is 100.
 #' @param covariate see documentation in \code{eiPack} for options for RxC ei.
 #' @param lambda1 default = 4:see documentation in \code{eiPack} for options
 #' for RxC ei.
@@ -77,19 +79,25 @@
 #' Problem.  Princeton: Princeton University Press.
 #'
 #' @export
-#' @return TODO
+#' @return ei object
 #'
 #' @examples
 #' data(sample_ei)
 #' form <- t ~ x
 #' dbuf <- ei(form, total = "n", data = sample_ei)
 #' summary(dbuf)
-ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
-               erho = .5, esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
-               truth = NA, simulate = TRUE, covariate = NULL, lambda1 = 4,
+ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data,
+               erho = c(.5, 3, 5, .1, 10), esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
+               truth = NA, simulate = TRUE, ndraws = 99, nsims = 100,
+               covariate = NULL, lambda1 = 4,
                lambda2 = 2, covariate.prior.list = NULL, tune.list = NULL,
                start.list = NULL, sample = 1000, thin = 1, burnin = 1000,
                verbose = 0, ret.beta = "r", ret.mcmc = TRUE, usrfun = NULL) {
+
+  if (missing(formula)) {
+    cli::cli_abort('{.arg formula} is required.')
+  }
+
   # Extract formula
   dv <- terms.formula(formula)[[2]]
   iv <- terms.formula(formula)[[3]]
@@ -98,40 +106,43 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
   n <- as.character(total)
   id <- as.character(id)
 
+  if (missing(data)) {
+    cli::cli_abort('{.arg data} is required.')
+  }
+  data <- as.data.frame(data)
+
+  if (simulate) {
+    if (!is.numeric(nsims)) cli::cli_abort('{.arg nsims} must be {.cls numeric}.')
+    if (!is.numeric(ndraws)) cli::cli_abort('{.arg ndraws} must be {.cls numeric}.')
+  }
+
   if (length(dv) == 1) {
     cli::cli_progress_step("Running 2x2 ei")
-    if (!simulate) {
-      dbuf <- ei.estimate(t, x, n,
-        id = id, data = data, Zb = Zb, Zw = Zw,
-        erho = erho, esigma = esigma, ebeta = ebeta,
-        ealphab = ealphab, ealphaw = ealphaw, truth = truth
+    dbuf <- NULL
+    i <- 1
+    while (i <= length(erho) && is.null(dbuf)) {
+      try(
+        {
+          dbuf <- ei.estimate(t, x, n,
+                              id = id,
+                              data = data, Zb = Zb, Zw = Zw, erho = erho[i],
+                              esigma = esigma, ebeta = ebeta,
+                              ealphab = ealphab, ealphaw = ealphaw,
+                              truth = truth
+          )
+        },
+        silent = TRUE
       )
-      return(dbuf)
+      i <- i + 1
     }
+    if (is.null(dbuf)) {
+      cli::cli_abort(c("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.",
+                       "i" = "Values tried: {erho}."))
+    }
+    cli::cli_progress_done()
     if (simulate) {
-      dbuf <- NULL
-      i <- 1
-      while (i <= length(erho) & is.null(dbuf)) {
-        try(
-          {
-            dbuf <- ei.estimate(t, x, n,
-              id = id,
-              data = data, Zb = Zb, Zw = Zw, erho = erho[i],
-              esigma = esigma, ebeta = ebeta,
-              ealphab = ealphab, ealphaw = ealphaw,
-              truth = truth
-            )
-          },
-          silent = TRUE
-        )
-        i <- i + 1
-      }
-      if (is.null(dbuf)) {
-        cli::cli_abort("{.fn ei.estimate} did not converge. Try a different value of {.arg erho}.")
-      }
-      cli::cli_progress_done()
-      dbuf.sim <- ei.sim(dbuf)
-      return(dbuf.sim)
+      dbuf <- ei.sim(dbuf, ndraws = ndraws, nsims = nsims)
+
     }
   }
 
@@ -139,26 +150,39 @@ ei <- function(formula, total = NULL, Zb = 1, Zw = 1, id = NA, data = NA,
     cli::cli_progress_step("Running eiRxC")
     # If the table is RxC use eiRxC
     dbuf <- ei.MD.bayes(formula,
-      data = data, total = total, covariate = covariate,
-      lambda1 = lambda1, lambda2 = lambda2,
-      covariate.prior.list = covariate.prior.list,
-      tune.list = tune.list, start.list = start.list,
-      sample = sample, thin = thin, burnin = burnin,
-      verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
-      usrfun = usrfun
+                        data = data, total = total, covariate = covariate,
+                        lambda1 = lambda1, lambda2 = lambda2,
+                        covariate.prior.list = covariate.prior.list,
+                        tune.list = tune.list, start.list = start.list,
+                        sample = sample, thin = thin, burnin = burnin,
+                        verbose = verbose, ret.beta = ret.beta, ret.mcmc = ret.mcmc,
+                        usrfun = usrfun
     )
     dbuf$data <- data
     dbuf$total <- n
     dbuf$formula <- formula
     class(dbuf) <- c("ei", "eiRxC")
     cli::cli_progress_done()
-    return(dbuf)
   }
+  dbuf
 }
 
 ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
                         esigma = .5, ebeta = .5, ealphab = NA, ealphaw = NA,
                         truth = NA, Rfun = 2, precision = 4) {
+
+  if (missing(t)) {
+    cli::cli_abort('{.arg t} is required for {.fn ei.estimate}.')
+  }
+  if (missing(x)) {
+    cli::cli_abort('{.arg x} is required for {.fn ei.estimate}.')
+  }
+  if (missing(n)) {
+    cli::cli_abort('{.arg n} is required for {.fn ei.estimate}.')
+  }
+  if (missing(id)) {
+    cli::cli_abort('{.arg id} is required for {.fn ei.estimate}.')
+  }
 
   # Check to make sure data is not null
   if (!missing(data)) {
@@ -168,6 +192,15 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
     if (is.character(Zb)) Zb <- data[[Zb]]
     if (is.character(Zw)) Zw <- data[[Zw]]
     if (is.character(id)) id <- data[[id]]
+  }
+
+  if (any(is.na(t)) | any(is.na(x)) | any(is.na(n))) {
+    drops <- union(union(which(is.na(t)), which(is.na(x))), which(is.na(n)))
+    t <- t[-drops]
+    x <- x[-drops]
+    n <- n[-drops]
+    if (!is.na(id)) id <- id[-drops]
+    cli::cli_warn('Found and removed {length(drops)} NA{?s}.')
   }
 
   Zb <- as.matrix(Zb)
@@ -191,19 +224,22 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   # Starting values
   start <- c(0, 0, -1.2, -1.2, 0, rep(0, numb + numw))
 
-  cli::cli_alert_info("Maximizing likelihood")
+  cli::cli_alert_info("Maximizing likelihood for {.arg erho} = {erho}.")
 
-  solution <- optim(start, like,
+  solution <- optim(
+    par = start, fn = like,
     y = t, x = x, n = n, Zb = Zb,
     Zw = Zw, numb = numb, erho = erho, esigma = esigma,
     ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
     hessian = TRUE,
-    method = "BFGS"
+    control = list(factr = 1e6, pgtol = 0.001),
+    method = "L-BFGS-B"
   )
+  cli::cli_process_done()
 
   # Find values of the Hessian that are 0 or 1.
   covs <- as.logical(ifelse(diag(solution$hessian) == 0 |
-    diag(solution$hessian) == 1, 0, 1))
+                              diag(solution$hessian) == 1, 0, 1))
   hessian <- solution$hessian[covs, covs]
   output <- list(
     phi = solution$par,
@@ -216,14 +252,32 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
   )
 
   class(output) <- c("ei", "ei2x2", class(output))
-  return(output)
+  output
 }
 
 
 #' @noRd
 #' @export
 print.ei <- function(x, ...) {
-  cli::cli_text("ei object")
+
+  cli::cli_text("An ei object with{ifelse('betab' %in% names(x), ' ', 'out ')} simulated QoIs:")
+
+  if ('betab' %in% names(x)) {
+    magg <- matrix(round(.maggs(x), digits = x$precision), nrow = 2)
+    rownames(magg) <- c("Bb", "Bw")
+    colnames(magg) <- c("mean", "sd")
+
+    cli::cli_text('--- Estimates of Aggregate Quantities of Interest ---')
+    cli::cat_print(magg)
+  } else {
+    ab <- matrix(.abounds(x), nrow = 2)
+    rownames(ab) <- c("lower", "upper")
+    colnames(ab) <- c("betab", "betaw")
+    cli::cli_text('--- Aggregate Bounds ---')
+    cli::cat_print(ab)
+  }
+
+  invisible()
 }
 
 #' Returning an element in the ei object
@@ -232,11 +286,11 @@ print.ei <- function(x, ...) {
 #' @export
 values_ei <- function(object, name) {
   if (! "ei" %in% class(object)) {
-    stop("This is not an ei object")
+    cli::cli_abort("{.arg object} is not an ei object")
   }
   if (! name %in% names(object)) {
-    stop(paste0('"', name, '"', " is not an element of this ei object"))
+    cli::cli_abort("{.arg name} is not an element of this ei object.")
   }
-  return(object[[name]])
+  object[[name]]
 }
 
