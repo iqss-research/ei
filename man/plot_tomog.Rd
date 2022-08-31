@@ -6,8 +6,8 @@
 \usage{
 plot_tomog(
   ei.object,
-  options = list(color = TRUE, linecolor = "length", category = 0, breaks = "even", CI
-    = NULL, points = FALSE, contour_ML = FALSE, contour_posterior = FALSE)
+  options = list(color = TRUE, linecolor = "length", category = 0, breaks = "even", CI =
+    NULL, points = FALSE, contour_ML = FALSE, contour_posterior = FALSE)
 )
 }
 \arguments{
