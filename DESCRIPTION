@@ -42,7 +42,7 @@ URL: http://gking.harvard.edu/eiR,
     https://iqss-research.github.io/ei/,
     https://github.com/iqss-research/ei
 BugReports: https://github.com/iqss-research/ei/issues
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3

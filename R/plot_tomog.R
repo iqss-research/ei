@@ -172,6 +172,14 @@ plot_length_cont <- function(tb, options) {
       color = "yellow"
       )
   }
+
+  res <- tibble::tibble(
+    x = tb$b_bounds[, 1], y = tb$w_bounds[, 1],
+    xend = tb$b_bounds[, 2], yend = tb$w_bounds[, 2]
+  )
+
+  attr(p, "data") <- list(base = res)
+
   return(p)
 }
 
@@ -241,6 +249,14 @@ plot_length_cat <- function(tb, options) {
       # name = paste0("Length (", legend_name, ")")
       name = latex2exp::TeX(legend_name)
     )
+
+  res <- tibble::tibble(
+    x = tb$b_bounds[, 1], y = tb$w_bounds[, 1],
+    xend = tb$b_bounds[, 2], yend = tb$w_bounds[, 2]
+  )
+
+  attr(p, "data") <- list(base = res)
+
   return(p)
 }
 
@@ -261,6 +277,7 @@ plot_tomog_base <- function(ei.object, options) {
     # categorical
     p <- plot_length_cat(tb, options)
   }
+
 
   return(p)
 }
@@ -311,6 +328,9 @@ plot_add_CI <- function(p, ei.object, options) {
       ),
       color = "red", show.legend = FALSE
     ) -> p
+
+  attr(p, "data")$CI <- tomo_res_CI
+
   return(p)
 }
 
@@ -340,6 +360,9 @@ plot_add_points <- function(p, ei.object, options) {
       aes(x = .data$betabm, y = .data$betawm),
       colour = "blue"
     ) -> p
+
+  attr(p, "data")$points <- points
+
   return(p)
 }
 
@@ -391,6 +414,8 @@ plot_add_contourML <- function(p, ei.object, options) {
     geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
     geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5)
 
+  attr(p, "data")$contourML <- list(res_a, res_b, res_c)
+
   return(p)
 }
 
@@ -431,6 +456,8 @@ plot_add_contourPost <- function(p, ei.object, options) {
     geom_path(data = res_a, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
     geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5) +
     geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", size = 1.5)
+
+  attr(p, "data")$contourPost <- list(res_a, res_b, res_c)
 
   return(p)
 }

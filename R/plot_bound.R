@@ -41,7 +41,7 @@ plot_bound <- function(ei.object, options = list()) {
 
 plot_bound_options <- function(options) {
   if (!"parameter" %in% names(options)) {
-    stop("Please specify `parameter` in the option")
+    stop('Please specify `parameter` in the option: `plot_bound(dbuf, options = list(parameter = "betaw"))`')
   }
 
   if (!options$parameter %in% c("betab", "betaw")) {
@@ -111,6 +111,8 @@ plot_bound_base <- function(ei.object, options) {
     scale_x_continuous(expand = c(0, 0.01)) +
     scale_y_continuous(expand = c(0, 0)) +
     theme_ei()
+
+  attr(p, "data") <- list(base = res)
 
   return(p)
 }

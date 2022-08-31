@@ -29,11 +29,12 @@ proportion of whites who vote ($\beta_i^w$), also in each precinct.
 (For an extended example of `ei`, refer to the user's guide
 below.)  An example of a sequence of these commands are as follows:
 
-```{r,, eval = FALSE}
+```{r, eval = FALSE}
+library(ei)
+data(matproii)
 formula <- t ~ x
-dbuf <- ei(formula = formula, total = "n", data = data)
+dbuf <- ei(formula = formula, total = "n", data = matproii)
 summary(dbuf)
-eiread(dbuf, "betab", "betaw")
 plot_tomog(dbuf)
 plot_xt(dbuf)
 ```

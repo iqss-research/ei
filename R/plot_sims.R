@@ -60,5 +60,7 @@ plot_sims_base <- function(ei.object, options) {
     scale_y_continuous(expand = c(0, 0)) +
     theme_ei()
 
+  attr(p, "data") <- list(base = dat)
+
   return(p)
 }
