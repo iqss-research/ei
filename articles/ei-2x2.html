@@ -94,10 +94,11 @@
 </h2>
 <p>In this section we describe the basic commands for 2x2 inference. For this purpose, and without loss of generality, we use the running example from the book portrayed in Table 2.3 (page 31). This example uses the proportion of the voting age population who are black (<span class="math inline">\(X_i\)</span>), the proportion turning out to vote (<span class="math inline">\(T_i\)</span>), and the number of voting age people (<span class="math inline">\({N_i}\)</span>) in each precinct (<span class="math inline">\(i=1,\ldots,p\)</span>) to infer the fraction of blacks who vote (<span class="math inline">\(\beta_i^b\)</span>) and the proportion of whites who vote (<span class="math inline">\(\beta_i^w\)</span>), also in each precinct. (For an extended example of <code>ei</code>, refer to the user’s guide below.) An example of a sequence of these commands are as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="va">t</span> <span class="op">~</span> <span class="va">x</span></span>
-<span><span class="va">dbuf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ei.html">ei</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, total <span class="op">=</span> <span class="st">"n"</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://gking.harvard.edu/eiR" class="external-link">ei</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">matproii</span><span class="op">)</span></span>
+<span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="va">t</span> <span class="op">~</span> <span class="va">x</span></span>
+<span><span class="va">dbuf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ei.html">ei</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">formula</span>, total <span class="op">=</span> <span class="st">"n"</span>, data <span class="op">=</span> <span class="va">matproii</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dbuf</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/eiread.html">eiread</a></span><span class="op">(</span><span class="va">dbuf</span>, <span class="st">"betab"</span>, <span class="st">"betaw"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_tomog.html">plot_tomog</a></span><span class="op">(</span><span class="va">dbuf</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_xt.html">plot_xt</a></span><span class="op">(</span><span class="va">dbuf</span><span class="op">)</span></span></code></pre></div>
 <p>In most applications, <code>plot</code> and <code>eiread</code> would likely be run multiple times with different options chosen, and other commands would be included with these five to read in the data (<code>t</code>, <code>x</code>, and <code>n</code>).</p>
@@ -155,10 +156,10 @@
 <span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a> [36mℹ [39m Maximizing likelihood <span class="cf">for</span> <span class="st">`</span><span class="dt">erho</span><span class="st">`</span> =<span class="st"> </span><span class="fl">3.</span></span>
 <span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt;  [36mℹ [39m Running 2x2 ei</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[5ms] [39m</span>
+<span id="cb3-8"><a href="#cb3-8"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[6ms] [39m</span>
 <span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; </span></span>
 <span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; ⠙ Beginning importance sampling.</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[4s] [39m</span></span></code></pre></div>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[5.7s] [39m</span></span></code></pre></div>
 <p>To include a covariate on <span class="math inline">\(\beta_i^b\)</span> simply specify a covariate vector for the option , or a string that refers to the name of the covariate in the dataset. Similarly, to include a covariate on <span class="math inline">\(\beta_i^w\)</span>, specify a covariate vector for for the option , or a string that refers to the name of the covariate in the dataset.</p>
 <p>Next, we use <code>summary(dbuf)</code> to obtain general information about the estimation.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -184,7 +185,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Resamp</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 22</span></span>
+<span><span class="co">#&gt; 29</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Maximum likelihood results in scale of estimation (and se's)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -195,12 +196,12 @@
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Untruncated psi's</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;        BB       BW        SB        SW       RHO</span></span>
-<span><span class="co">#&gt;  1.191991 1.258423 0.4365937 0.3108075 0.9775168</span></span>
+<span><span class="co">#&gt;  1.243349 1.299811 0.4488903 0.3245751 0.9781554</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Truncated psi's (ultimate scale)</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;         BB        BW        SB        SW       RHO</span></span>
-<span><span class="co">#&gt;  0.6048007 0.8312595 0.2028157 0.1356076 0.8937001</span></span>
+<span><span class="co">#&gt;  0.6062889 0.8306569 0.2016217 0.1363561 0.8908158</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Aggregate Bounds</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -210,9 +211,9 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Estimates of Aggregate Quantities of Interest</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         mean         sd</span></span>
-<span><span class="co">#&gt; Bb 0.5523778 0.01595427</span></span>
-<span><span class="co">#&gt; Bw 0.8231626 0.00454704</span></span>
+<span><span class="co">#&gt;         mean          sd</span></span>
+<span><span class="co">#&gt; Bb 0.5555968 0.015523677</span></span>
+<span><span class="co">#&gt; Bw 0.8222452 0.004424319</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Precision</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -281,7 +282,7 @@
 <span id="cb14-9"><a href="#cb14-9"></a> [32m✔ [39m Running 2x2 ei  [<span class="dv">38</span>;<span class="dv">5</span>;249m[2ms] [39m</span>
 <span id="cb14-10"><a href="#cb14-10"></a><span class="co">#&gt; </span></span>
 <span id="cb14-11"><a href="#cb14-11"></a><span class="co">#&gt; ⠙ Beginning importance sampling.</span></span>
-<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[4.2s] [39m</span></span></code></pre></div>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co">#&gt;  [32m✔ [39m Beginning importance sampling.  [38;5;249m[4.9s] [39m</span></span></code></pre></div>
 <p>Then use plot to compare the estimates of the <code>ei</code> algorithm to the true proportions of white and black registered voters in each county.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Comparing Estimates to the Truth at the County Level</span></span>
