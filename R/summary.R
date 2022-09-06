@@ -20,6 +20,15 @@
 #' @export
 summary.ei <- function(object, ...) {
 
+  # Checking the input
+  if ("eiRxC" %in% class(object)) {
+    cli::cli_abort(
+      "eiRxC object needs to specify a dimension.
+      Reference: https://iqss-research.github.io/ei/articles/ei-RxC.html"
+    )
+  }
+
+
   if ("psi" %in% names(object)) {
     ei1 <- object
     # Calculate maximum likelihood results in the scale of estimation
