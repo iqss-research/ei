@@ -18,6 +18,12 @@
 #' ei_obj <- ei(form, total = "n", data = sample_ei, simulate = FALSE)
 #' sims <- ei.sim(ei_obj)
 ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
+  # Check the output
+  if ("eiRxC" %in% class(ei.object)) {
+    cli::cli_abort("`ei.sim()` does not support the RxC case.")
+  }
+
+  # Preparation
   hessian <- ei.object$hessianC
   erho <- ei.object$erho
   esigma <- ei.object$esigma
