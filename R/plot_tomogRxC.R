@@ -76,6 +76,15 @@ plot_tomogRxC_base <- function(form, data, total) {
 }
 
 format_tomog_RxC <- function(form, data, total, refine) {
+  # This function supports the 2x3 case
+  #   https://github.com/cran/ei/blob/master/R/tomogRxc3d.R#L1
+
+  # Checking the formula
+  pos_cbind <- which(all.names(form) == "cbind")
+  if (!all(pos_cbind == c(2, 5))) {
+    cli::cli_abort("`plot_tomogRxC()` only supports the 2x3 case.")
+  }
+
   noinfocount <- 0
   dvname <- terms.formula(form)[[2]]
   covariate <- NA
