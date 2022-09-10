@@ -158,6 +158,11 @@ format_bound_RxC <- function(dbuf) {
   n <- nrow(data)
   covariate <- NA
 
+  pos_cbind <- which(all.names(form) == "cbind")
+  if (!all(pos_cbind == c(2, 5))) {
+    cli::cli_abort("`plot_bound()` only supports the 2x3 case.")
+  }
+
   # Make the bounds
   rows <- c(all.names(form)[6:(length(all.names(form)))])
   names <- rows

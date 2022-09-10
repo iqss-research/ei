@@ -7,8 +7,6 @@
 #' @author Gary King <<email: king@@harvard.edu>> and Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>
 #'
-#' @return TODO
-#'
 #' @references Gary King (1997). A Solution to the Ecological Inference
 #' Problem.  Princeton: Princeton University Press.
 #' @examples
@@ -163,20 +161,4 @@ summary.ei <- function(object, ...) {
 
   class(output) <- c("summary", class(output))
   return(output)
-}
-
-#' @noRd
-#' @export
-print.summary <- function(x, ...) {
-  # Show the output
-  cli::cli_h1("Summary")
-  for (name in names(x)) {
-    cli::cli_h2(name)
-    if (length(x[[name]]) == 1) {
-      cli::cli_text(x[[name]])
-    } else {
-      print(x[[name]])
-    }
-    cli::cli_text("")
-  }
 }

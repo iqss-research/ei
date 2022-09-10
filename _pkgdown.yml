@@ -19,6 +19,16 @@ navbar:
     - text: "Changelog"
       href: news/index.html
 
+authors:
+  Gary King:
+    href: "https://gking.harvard.edu/"
+  Molly Roberts:
+    href: "http://www.margaretroberts.net/"
+  Christopher T. Kenny:
+    href: "https://christophertkenny.com/"
+  Shusei Eshima:
+    href: "https://shusei-e.github.io"
+
 reference:
 - title: "Functions"
   desc: "ei Functions"

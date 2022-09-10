@@ -10,7 +10,7 @@
 #' Problem.  Princeton: Princeton University Press.
 #'
 #' @export
-#' @return TODO
+#' @return `ei.sim` object
 #'
 #' @examples
 #' data(sample_ei)

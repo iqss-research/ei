@@ -79,8 +79,7 @@
 #' Problem.  Princeton: Princeton University Press.
 #'
 #' @export
-#' @return ei object
-#'
+#' @return `ei` object
 #' @examples
 #' data(sample_ei)
 #' form <- t ~ x

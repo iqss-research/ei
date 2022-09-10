@@ -278,7 +278,6 @@ plot_tomog_base <- function(ei.object, options) {
     p <- plot_length_cat(tb, options)
   }
 
-
   return(p)
 }
 

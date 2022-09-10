@@ -5,7 +5,9 @@ Description: Software accompanying Gary King's book: A Solution to the Ecologica
 Authors@R: c(
     person("Gary", "King", email = "king@harvard.edu", role = "aut",
            comment = c(ORCID = "0000-0002-5327-7631")),
-    person("Molly", "Roberts", email = "roberts8@fas.harvard.edu", role = c("cre", "aut"))
+    person("Molly", "Roberts", email = "meroberts@ucsd.edu", role = c("cre", "aut")),
+    person(given = "Christopher T.", family = "Kenny", role = c("aut"), email = "christopherkenny@fas.harvard.edu", comment = c(ORCID = "0000-0002-9386-6860")),
+    person("Shusei", "Eshima", email = "shuseieshima@g.harvard.edu", role = c("aut"), comment = c(ORCID = "0000-0003-3613-4046"))
     )
 Maintainer: James Honaker <zelig.zee@gmail.com>
 Depends:

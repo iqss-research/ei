@@ -2,12 +2,6 @@
 # For plot_tomog*()
 #
 
-# bounds <- function(x, t, n) {
-#   # Migrate bounds() later here?
-#   #   Original package has `.bounds()` and `bounds1()`
-#   return(bounds1(x, t, n))
-# }
-
 calc_ellipse <- function(x, scale = c(1, 1), centre = c(0, 0), level = 0.95,
                          t = sqrt(stats::qchisq(level, 2)), which = c(1, 2), npoints = 350) {
   # From R package `ellipse`
@@ -37,7 +31,6 @@ calc_ellipse <- function(x, scale = c(1, 1), centre = c(0, 0), level = 0.95,
   ))
   return(tibble::as_tibble(res))
 }
-
 
 eiPack_bounds <- function(formula, data, rows, column, excluded = NULL,
                           threshold = 0.9, total = NULL) {

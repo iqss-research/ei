@@ -57,7 +57,7 @@ that may distort colors.}
 seconds.}
 }
 \value{
-TODO
+a figure
 }
 \description{
 A tomography plot in 3 dimensions for RxC Ecological Inference data and an

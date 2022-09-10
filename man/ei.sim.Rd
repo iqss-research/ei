@@ -14,7 +14,7 @@ ei.sim(ei.object, ndraws = 99, nsims = 100)
 \item{nsims}{integer. The number of simulations within each draw. Default is 100.}
 }
 \value{
-TODO
+`ei.sim` object
 }
 \description{
 Simulate EI Solution via Importance Sampling

@@ -19,6 +19,7 @@ a ggplot object
 }
 \description{
 A tomography plot for an estimated Ecological Inference model in RxC data.
+This function supports the 2x3 case.
 }
 \examples{
 data(RxCdata)

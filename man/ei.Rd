@@ -125,7 +125,7 @@ options for RxC ei.}
 \item{usrfun}{see documentation in \code{eiPack} for options for RxC ei.}
 }
 \value{
-ei object
+`ei` object
 }
 \description{
 \code{ei} is the main command in the package \code{EI}.  It gives
