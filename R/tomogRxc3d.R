@@ -30,9 +30,10 @@
 #' @param rotate logical value specifying whether the plot will rotate for 20
 #' seconds.
 #'
+#' @return a figure
+#'
 #' @export
 #' @concept deprecated
-#' @return TODO
 #'
 #' @author Gary King <<email: king@@harvard.edu>>; Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>; Soledad Prillaman <<email:

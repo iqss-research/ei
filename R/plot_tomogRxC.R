@@ -1,6 +1,7 @@
 #' Visualizing EI (tomography plot for RxC)
 #'
 #' A tomography plot for an estimated Ecological Inference model in RxC data.
+#' This function supports the 2x3 case.
 #'
 #' @param formula A formula of the form \code{cbind(col1,
 #' col2,...)~cbind(row1,row2,...)}

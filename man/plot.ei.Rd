@@ -64,7 +64,7 @@ choose to view the next observation (hit return), jump to a specific
 observation number (type in the number and hit return), or stop (hit ``s"
 and return).}
 
-TODO
+a figure
 }
 \description{
 `plot' method for the class `ei'.

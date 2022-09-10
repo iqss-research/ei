@@ -34,7 +34,7 @@
 #' Regression.  See Section 3.1}
 #'
 #' @export
-#' @return TODO
+#' @return numeric values
 #'
 #' @author Gary King <<email: king@@harvard.edu>> and Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>
@@ -75,6 +75,5 @@ eiread <- function(ei.object, ...) {
   if (length(results) < 1) {
     warning("qi results object is empty")
   }
-  # class(results) <- "eiread"
-  results
+  return(results)
 }

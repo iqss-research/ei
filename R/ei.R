@@ -77,7 +77,7 @@
 #' Problem.  Princeton: Princeton University Press.
 #'
 #' @export
-#' @return TODO
+#' @return `ei` object
 #'
 #' @examples
 #' data(sample_ei)

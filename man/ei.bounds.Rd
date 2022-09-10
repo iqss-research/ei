@@ -16,7 +16,7 @@ each district}
 \item{n}{size of each observation, e.g. number of voters in each district}
 }
 \value{
-TODO
+a numeric matrix
 }
 \description{
 Returns analytical bounds from accounting identity on unknown table

@@ -10,9 +10,9 @@
 #' @param t vector of characteristics, e.g. percentage of people that voted in
 #' each district
 #' @param n size of each observation, e.g. number of voters in each district
+#' @return a numeric matrix
 #'
 #' @export
-#' @return TODO
 #'
 #' @author Gary King <<email: king@@harvard.edu>> and Molly Roberts <<email:
 #' molly.e.roberts@@gmail.com>>

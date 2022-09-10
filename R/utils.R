@@ -1,16 +1,4 @@
 #' Reparameterize
-#'
-#' @param Bb0 TODO
-#' @param Bw0 TODO
-#' @param sb0 TODO
-#' @param sw0 TODO
-#' @param rho0 TODO
-#' @param Bb0v TODO
-#' @param Bw0v TODO
-#' @param Zb TODO
-#' @param Zw TODO
-#'
-#' @return TODO
 #' @noRd
 repar <- function(Bb0, Bw0, sb0, sw0, rho0, Bb0v, Bw0v, Zb, Zw) {
   sb <- exp(sb0)
@@ -37,4 +25,14 @@ check_object <- function(obj, name, msg = "") {
       stop(paste0(name, " is missing."))
     }
   }
+}
+
+#' Get data used to create a plot
+#'
+#' @param x a plot object.
+#' @concept visualization
+#' @export
+plot_data <- function(x) {
+  data <- attr(x, "data")
+  return(data)
 }

@@ -38,7 +38,7 @@ section 8.2.} \item{eaggbias}{Regressions of estimated \eqn{\beta_i^b} and
 \eqn{\beta_i^w} on a constant term and \eqn{X_i}.} \item{goodman}{Goodman's
 Regression.  See Section 3.1}
 
-TODO
+numeric values
 }
 \description{
 \code{eiread} is the command that pulls quantities of interest from the
