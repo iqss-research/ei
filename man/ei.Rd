@@ -11,14 +11,16 @@ ei(
   Zb = 1,
   Zw = 1,
   id = NA,
-  data = NA,
-  erho = 0.5,
+  data,
+  erho = c(0.5, 3, 5, 0.1, 10),
   esigma = 0.5,
   ebeta = 0.5,
   ealphab = NA,
   ealphaw = NA,
   truth = NA,
   simulate = TRUE,
+  ndraws = 99,
+  nsims = 100,
   covariate = NULL,
   lambda1 = 4,
   lambda2 = 2,
@@ -55,7 +57,7 @@ formula.  If using covariates and data is specified, data should also
 contain \code{Zb} and \code{Zw}.}
 
 \item{erho}{The standard deviation of the normal prior on \eqn{\phi_5} for
-the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.}
+the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5, .1, 10)`.}
 
 \item{esigma}{The standard deviation of an underlying normal distribution,
 from which a half normal is constructed as a prior for both
@@ -85,6 +87,10 @@ interest.}
 
 \item{simulate}{default = TRUE:see documentation in \code{eiPack} for
 options for RxC ei.}
+
+\item{ndraws}{integer. The number of draws. Default is 99.}
+
+\item{nsims}{integer. The number of simulations within each draw. Default is 100.}
 
 \item{covariate}{see documentation in \code{eiPack} for options for RxC ei.}
 

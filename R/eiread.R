@@ -73,7 +73,7 @@ eiread <- function(ei.object, ...) {
     results <- results[[1]]
   }
   if (length(results) < 1) {
-    warning("qi results object is empty")
+    cli::cli_warn("qi results object is empty")
   }
   return(results)
 }

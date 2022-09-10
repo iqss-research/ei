@@ -9,9 +9,9 @@ ei.sim(ei.object, ndraws = 99, nsims = 100)
 \arguments{
 \item{ei.object}{\code{ei} object}
 
-\item{ndraws}{integer. The number of draws.}
+\item{ndraws}{integer. The number of draws. Default is 99.}
 
-\item{nsims}{integer. The number of simulations within each draw.}
+\item{nsims}{integer. The number of simulations within each draw. Default is 100.}
 }
 \value{
 `ei.sim` object
