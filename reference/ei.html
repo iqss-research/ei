@@ -255,7 +255,7 @@ options for RxC ei.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>ei object</p>
+<p>`ei` object</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -292,7 +292,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Running 2x2 ei <span style="color: #B2B2B2;">[4ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ⠙ Beginning importance sampling.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[2.3s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[1.4s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dbuf</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -320,7 +320,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Resamp</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 30</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 15</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Maximum likelihood results in scale of estimation (and se's)</span> ──</span>
@@ -333,13 +333,13 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Untruncated psi's</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW        RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1907826 0.7338096 0.1217213 0.1680944 0.02315298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1899486 0.7309042 0.1241833 0.1655167 0.02721002</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Truncated psi's (ultimate scale)</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW        RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2076639 0.7099367 0.1082703 0.1514244 0.04827911</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2074486 0.7115644 0.1103601 0.1488192 0.04910215</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Aggregate Bounds</span> ──</span>
@@ -351,9 +351,9 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Estimates of Aggregate Quantities of Interest</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         mean         sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2071226 0.01432066</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7150411 0.01129997</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         mean          sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2064737 0.012454935</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7155531 0.009827785</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Precision</span> ──</span>
@@ -367,7 +367,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Gary King, Molly Roberts.</p>
+  <p></p><p>Developed by <a href="https://gking.harvard.edu/" class="external-link">Gary King</a>, <a href="http://www.margaretroberts.net/" class="external-link">Molly Roberts</a>, <a href="https://christophertkenny.com/" class="external-link">Christopher T. Kenny</a>, <a href="https://shusei-e.github.io" class="external-link">Shusei Eshima</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">

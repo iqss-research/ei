@@ -74,12 +74,6 @@
 
 </dl></div>
     <div class="section level2">
-    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    
-
-<p>TODO</p>
-    </div>
-    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Gary King (1997). A Solution to the Ecological Inference
 Problem.  Princeton: Princeton University Press.</p>
@@ -108,7 +102,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Running 2x2 ei <span style="color: #B2B2B2;">[1ms]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ⠙ Beginning importance sampling.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[1.5s]</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Beginning importance sampling. <span style="color: #B2B2B2;">[3.1s]</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dbuf</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -136,7 +130,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Resamp</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 18</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 48</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Maximum likelihood results in scale of estimation (and se's)</span> ──</span>
@@ -148,14 +142,14 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Untruncated psi's</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW        RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1826268 0.7355242 0.1228925 0.1663993 0.03305099</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         BB        BW        SB        SW       RHO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.1881247 0.7273637 0.1264514 0.1638402 0.0201767</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Truncated psi's (ultimate scale)</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         BB       BW        SB        SW        RHO</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.2034621 0.714334 0.1084563 0.1489977 0.06137105</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        BB        BW        SB        SW        RHO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.208106 0.7100981 0.1113766 0.1478725 0.05706124</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Aggregate Bounds</span> ──</span>
@@ -167,9 +161,9 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Estimates of Aggregate Quantities of Interest</span> ──</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         mean          sd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2031763 0.011245060</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7181550 0.008873112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         mean         sd</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bb 0.2066709 0.01394642</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bw 0.7153975 0.01100467</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Precision</span> ──</span>
@@ -183,7 +177,7 @@ molly.e.roberts@gmail.com&gt;&gt;</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Gary King, Molly Roberts.</p>
+  <p></p><p>Developed by <a href="https://gking.harvard.edu/" class="external-link">Gary King</a>, <a href="http://www.margaretroberts.net/" class="external-link">Molly Roberts</a>, <a href="https://christophertkenny.com/" class="external-link">Christopher T. Kenny</a>, <a href="https://shusei-e.github.io" class="external-link">Shusei Eshima</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
