@@ -7,7 +7,7 @@
 A data frame containing 60 observations.
 }
 \source{
-Source
+Sample data
 }
 \description{
 Sample EI data for RxC with estimates for White, Black, and Hispanic groups.

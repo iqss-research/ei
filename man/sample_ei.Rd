@@ -7,7 +7,7 @@
 A data.frame containing 141 observations.
 }
 \source{
-Source
+Sample data
 }
 \description{
 A sample data.frame containing turnout, proportion Black, and total voters.

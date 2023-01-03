@@ -30,7 +30,7 @@ NULL
 #' @format A data frame containing 93 observations.
 #' @references Gary King (1997). \emph{A Solution to the Ecological Inference
 #' Problem.} Princeton: Princeton University Press.
-#' @source Source
+#' @source Sample data
 #' @keywords datasets
 NULL
 
@@ -116,7 +116,7 @@ NULL
 #' @format A data frame containing 60 observations.
 #' @references Gary King (1997). \emph{A Solution to the Ecological Inference
 #' Problem.} Princeton: Princeton University Press.
-#' @source Source
+#' @source Sample data
 #' @keywords datasets
 NULL
 
@@ -129,6 +129,6 @@ NULL
 #' @format A data.frame containing 141 observations.
 #' @references Gary King (1997). \emph{A Solution to the Ecological Inference
 #' Problem.} Princeton: Princeton University Press.
-#' @source Source
+#' @source Sample data
 #' @keywords datasets
 NULL
