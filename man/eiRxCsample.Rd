@@ -10,7 +10,7 @@ A data frame containing 93 observations.
 Source
 }
 \description{
-A description for this dataset
+Sample EI data for RxC with estimates for White, Black, and Hispanic groups.
 }
 \references{
 Gary King (1997). \emph{A Solution to the Ecological Inference

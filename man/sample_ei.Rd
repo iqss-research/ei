@@ -4,13 +4,13 @@
 \alias{sample_ei}
 \title{Sample Data for Black Votes}
 \format{
-A vector containing 141 observations.
+A data.frame containing 141 observations.
 }
 \source{
 Source
 }
 \description{
-A description for this dataset
+A sample data.frame containing turnout, proportion Black, and total voters.
 }
 \references{
 Gary King (1997). \emph{A Solution to the Ecological Inference

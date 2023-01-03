@@ -13,7 +13,7 @@ http://hdl.handle.net/1902.1/LWMMKUTYXS UNF:3:DRWozWd89+vNLO7lY2AHbg== IQSS
 Dataverse Network \link{Distributor} V3 \link{Version}
 }
 \description{
-A description for this dataset
+New Jersey turnout and counts for White and non-white voters.
 }
 \references{
 Gary King (1997). \emph{A Solution to the Ecological Inference

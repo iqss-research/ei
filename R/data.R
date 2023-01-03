@@ -22,7 +22,7 @@ NULL
 
 #' RxC Sample Dataset
 #'
-#' A description for this dataset
+#' Sample EI data for RxC with estimates for White, Black, and Hispanic groups.
 #'
 #'
 #' @name eiRxCsample
@@ -93,8 +93,7 @@ NULL
 
 #' Nonminority Turnout in New Jersey
 #'
-#' A description for this dataset
-#'
+#' New Jersey turnout and counts for White and non-white voters.
 #'
 #' @name nj
 #' @concept data
@@ -110,8 +109,7 @@ NULL
 
 #' Sample Dataset
 #'
-#' A description for this dataset
-#'
+#' Sample EI data for RxC with estimates for White, Black, and Hispanic groups.
 #'
 #' @name RxCdata
 #' @concept data
@@ -124,12 +122,11 @@ NULL
 
 #' Sample Data for Black Votes
 #'
-#' A description for this dataset
-#'
+#' A sample data.frame containing turnout, proportion Black, and total voters.
 #'
 #' @name sample_ei
 #' @concept data
-#' @format A vector containing 141 observations.
+#' @format A data.frame containing 141 observations.
 #' @references Gary King (1997). \emph{A Solution to the Ecological Inference
 #' Problem.} Princeton: Princeton University Press.
 #' @source Source
