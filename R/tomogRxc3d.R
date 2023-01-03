@@ -30,7 +30,7 @@
 #' @param rotate logical value specifying whether the plot will rotate for 20
 #' seconds.
 #'
-#' @return a figure
+#' @return a base plot
 #'
 #' @export
 #' @concept deprecated

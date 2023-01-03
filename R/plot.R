@@ -70,7 +70,7 @@
 #' @references Gary King (1997). A Solution to the Ecological Inference
 #' Problem.  Princeton: Princeton University Press.
 #'
-#' @return a figure
+#' @return a base plot
 #'
 #' @export
 #' @concept deprecated

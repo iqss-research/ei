@@ -9,8 +9,9 @@
 #'
 #' @references Gary King (1997). A Solution to the Ecological Inference
 #' Problem.  Princeton: Princeton University Press.
-#' @examples
+#' @return formatted summary object
 #'
+#' @examples
 #' data(sample_ei)
 #' formula <- t ~ x
 #' dbuf <- ei(formula = formula, total = "n", data = sample_ei)

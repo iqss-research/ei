@@ -21,22 +21,22 @@ ei_est(
 )
 }
 \arguments{
-\item{data}{data where `x`, `t`, `total`, `Zb`, `Zw` are found}
+\item{data}{data where \code{x}, \code{t}, \code{total}, \code{Zb}, \code{Zw} are found}
 
-\item{t}{<[`data-masking`][dplyr_data_masking]> column of turnout in data}
+\item{t}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of turnout in data}
 
-\item{x}{<[`data-masking`][dplyr_data_masking]> column of subgroup proportions in data}
+\item{x}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of subgroup proportions in data}
 
-\item{n}{<[`data-masking`][dplyr_data_masking]> column of total in data}
+\item{n}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of total in data}
 
-\item{id}{<[`data-masking`][dplyr_data_masking]> column of unique ids in data}
+\item{id}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of unique ids in data}
 
-\item{Zb}{<[`data-masking`][dplyr_tidy_select]> columns of covariates in data}
+\item{Zb}{<\code{\link[=dplyr_tidy_select]{data-masking}}> columns of covariates in data}
 
-\item{Zw}{<[`data-masking`][dplyr_tidy_select]> columns of covariates in data}
+\item{Zw}{<\code{\link[=dplyr_tidy_select]{data-masking}}> columns of covariates in data}
 
 \item{erho}{The standard deviation of the normal prior on \eqn{\phi_5} for
-the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5)`.}
+the correlation. Numeric vector, used one at a time, in order. Default \code{c(.5, 3, 5)}.}
 
 \item{esigma}{The standard deviation of an underlying normal distribution,
 from which a half normal is constructed as a prior for both

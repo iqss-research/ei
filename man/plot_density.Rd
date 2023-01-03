@@ -10,7 +10,7 @@ plot_density(ei.object, options = list(parameter = "betab"))
 \item{ei.object}{The output of \code{ei()}}
 
 \item{options}{The list of options \itemize{
-   \item \strong{parameter}: A parameter to plot. It takes either \code{betab} or \code{betaw}.
+\item \strong{parameter}: A parameter to plot. It takes either \code{betab} or \code{betaw}.
 }}
 }
 \value{

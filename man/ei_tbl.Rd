@@ -3,7 +3,7 @@
 \name{as_ei_tbl}
 \alias{as_ei_tbl}
 \alias{ei_as_ei_tbl}
-\title{Convert to `ei_tbl` objects}
+\title{Convert to \code{ei_tbl} objects}
 \usage{
 as_ei_tbl(x)
 
@@ -18,7 +18,7 @@ ei_as_ei_tbl(ei.object)
 ei_tbl object
 }
 \description{
-Convert to `ei_tbl` objects
+Convert to \code{ei_tbl} objects
 }
 \examples{
 data(sample_ei)

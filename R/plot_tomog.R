@@ -1,6 +1,6 @@
 #' Visualizing EI (tomography plot)
 #'
-#' Tomography plot with various opitons.
+#' Tomography plot with various options.
 #'
 #' @param ei.object The output of \code{ei()}
 #' @param options The list of options \itemize{

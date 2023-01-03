@@ -11,11 +11,13 @@
 
 \item{\dots}{A list of options to return in graphs.  See values below.}
 }
+\value{
+formatted summary object
+}
 \description{
-`summary' method for the class `ei'.
+\verb{summary' method for the class }ei'.
 }
 \examples{
-
 data(sample_ei)
 formula <- t ~ x
 dbuf <- ei(formula = formula, total = "n", data = sample_ei)

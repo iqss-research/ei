@@ -238,5 +238,5 @@ threshold")
     threshold = threshold
   )
   class(out) <- "bounds"
-  return(out)
+  out
 }

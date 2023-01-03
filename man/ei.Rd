@@ -49,15 +49,14 @@ in the dataset}
 \item{Zw}{\eqn{p} x \eqn{k^w} matrix of covariates or the name of covariates
 in the dataset}
 
-\item{id}{`id' is the name of the variable in the dataset that identifies
-the precinct. Used for `movie' and `movieD' plot functions.}
+\item{id}{\verb{id' is the name of the variable in the dataset that identifies the precinct. Used for }movie' and `movieD' plot functions.}
 
 \item{data}{data frame that contains the variables that correspond to
 formula.  If using covariates and data is specified, data should also
 contain \code{Zb} and \code{Zw}.}
 
 \item{erho}{The standard deviation of the normal prior on \eqn{\phi_5} for
-the correlation. Numeric vector, used one at a time, in order. Default `c(.5, 3, 5, .1, 10)`.}
+the correlation. Numeric vector, used one at a time, in order. Default \code{c(.5, 3, 5, .1, 10)}.}
 
 \item{esigma}{The standard deviation of an underlying normal distribution,
 from which a half normal is constructed as a prior for both
@@ -125,7 +124,7 @@ options for RxC ei.}
 \item{usrfun}{see documentation in \code{eiPack} for options for RxC ei.}
 }
 \value{
-`ei` object
+\code{ei} object
 }
 \description{
 \code{ei} is the main command in the package \code{EI}.  It gives

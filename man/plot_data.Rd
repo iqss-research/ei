@@ -9,6 +9,9 @@ plot_data(x)
 \arguments{
 \item{x}{a plot object.}
 }
+\value{
+a data.frame
+}
 \description{
 Get data used to create a plot
 }

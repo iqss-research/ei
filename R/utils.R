@@ -31,6 +31,7 @@ check_object <- function(obj, name, msg = "") {
 #'
 #' @param x a plot object.
 #' @concept visualization
+#' @return a data.frame
 #' @export
 plot_data <- function(x) {
   data <- attr(x, "data")

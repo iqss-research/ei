@@ -13,10 +13,10 @@ plot_xt(
 \item{ei.object}{The output of \code{ei()}.}
 
 \item{options}{The list of options \itemize{
-   \item \strong{density}: Showing density estimate.
-   \item \strong{fit}: Showing \eqn{X_i} by \eqn{T_i} on the plot with estimated \eqn{E(T_i|X_i)}
-   \item \strong{CI}: Showing a confidence interval with a specfied statistical level.
-   \item \strong{goodman}: Goodman's regression.
+\item \strong{density}: Showing density estimate.
+\item \strong{fit}: Showing \eqn{X_i} by \eqn{T_i} on the plot with estimated \eqn{E(T_i|X_i)}
+\item \strong{CI}: Showing a confidence interval with a specfied statistical level.
+\item \strong{goodman}: Goodman's regression.
 }}
 }
 \value{

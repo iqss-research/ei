@@ -7,7 +7,7 @@
 ei_sim(data, ndraws = 99, nsims = 100)
 }
 \arguments{
-\item{data}{an `ei_tbl` object from `ei_est()`}
+\item{data}{an \code{ei_tbl} object from \code{ei_est()}}
 
 \item{ndraws}{integer, default 99. The number of draws.}
 

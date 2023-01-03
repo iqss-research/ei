@@ -55,7 +55,7 @@
 #' @param usrfun see documentation in \code{eiPack} for options for RxC ei.
 #'
 #' @concept tidy
-#' @return ei_tbl
+#' @return an `ei_tbl`
 #' @export
 #'
 #' @examples

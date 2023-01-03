@@ -64,10 +64,10 @@ choose to view the next observation (hit return), jump to a specific
 observation number (type in the number and hit return), or stop (hit ``s"
 and return).}
 
-a figure
+a base plot
 }
 \description{
-`plot' method for the class `ei'.
+\verb{plot' method for the class }ei'.
 }
 \details{
 Returns any of a set of possible graphical objects, mirroring those in the
@@ -75,7 +75,7 @@ examples in King (1997).  Graphical option \code{lci} is a logical value
 specifying the use of the Law of Conservation of Ink, where the implicit
 information in the data is represented through color gradients, i.e. the
 color of the line is a function of the length of the tomography line.  This
-can be passed as an argument and is used for ``tomogD'' and ``tomog'' plots.
+can be passed as an argument and is used for \verb{tomogD'' and }tomog'' plots.
 }
 \examples{
 data(sample_ei)

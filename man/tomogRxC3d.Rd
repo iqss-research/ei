@@ -40,7 +40,7 @@ tomography plane.}
 is included on the tomography plot.}
 
 \item{level}{numeric value from 0 to 1 specifying the significance level of
-the confidence ellipse; eg. .95 refers to 95\% confidence ellipse.}
+the confidence ellipse; eg. .95 refers to 95\\% confidence ellipse.}
 
 \item{seed}{seed value for model estimation.}
 
@@ -57,7 +57,7 @@ that may distort colors.}
 seconds.}
 }
 \value{
-a figure
+a base plot
 }
 \description{
 A tomography plot in 3 dimensions for RxC Ecological Inference data and an
