@@ -173,5 +173,5 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
 
   cli::cli_progress_done()
   class(output) <- c("ei", "ei2X2", "eisim")
-  return(output)
+  output
 }
