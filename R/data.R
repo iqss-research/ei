@@ -16,7 +16,7 @@
 #' @source Gary King, 1997, "Replication data for: A Solution to the Ecological
 #' Inference Problem: Reconstructing Individual Behavior from Aggregate Data",
 #' http://hdl.handle.net/1902.1/LWMMKUTYXS UNF:3:DRWozWd89+vNLO7lY2AHbg== IQSS
-#' Dataverse Network [Distributor] V3 [Version]
+#' Dataverse Network Distributor V3 Version
 #' @keywords datasets
 NULL
 
@@ -50,7 +50,7 @@ NULL
 #' @source Gary King, 1997, "Replication data for: A Solution to the Ecological
 #' Inference Problem: Reconstructing Individual Behavior from Aggregate Data",
 #' http://hdl.handle.net/1902.1/LWMMKUTYXS UNF:3:DRWozWd89+vNLO7lY2AHbg== IQSS
-#' Dataverse Network [Distributor] V3 [Version]
+#' Dataverse Network Distributor V3 Version
 #' @keywords datasets
 NULL
 
@@ -69,7 +69,7 @@ NULL
 #' @source Gary King, 1997, "Replication data for: A Solution to the Ecological
 #' Inference Problem: Reconstructing Individual Behavior from Aggregate Data",
 #' http://hdl.handle.net/1902.1/LWMMKUTYXS UNF:3:DRWozWd89+vNLO7lY2AHbg== IQSS
-#' Dataverse Network [Distributor] V3 [Version]
+#' Dataverse Network Distributor V3 Version
 #' @keywords datasets
 NULL
 
@@ -87,7 +87,7 @@ NULL
 #' @source Gary King, 1997, "Replication data for: A Solution to the Ecological
 #' Inference Problem: Reconstructing Individual Behavior from Aggregate Data",
 #' http://hdl.handle.net/1902.1/LWMMKUTYXS UNF:3:DRWozWd89+vNLO7lY2AHbg== IQSS
-#' Dataverse Network [Distributor] V3 [Version]
+#' Dataverse Network Distributor V3 Version
 #' @keywords datasets
 NULL
 
@@ -103,7 +103,7 @@ NULL
 #' @source Gary King, 1997, "Replication data for: A Solution to the Ecological
 #' Inference Problem: Reconstructing Individual Behavior from Aggregate Data",
 #' http://hdl.handle.net/1902.1/LWMMKUTYXS UNF:3:DRWozWd89+vNLO7lY2AHbg== IQSS
-#' Dataverse Network [Distributor] V3 [Version]
+#' Dataverse Network Distributor V3 Version
 #' @keywords datasets
 NULL
 

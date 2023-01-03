@@ -10,7 +10,7 @@ A data frame containing 289 observations.
 Gary King, 1997, "Replication data for: A Solution to the Ecological
 Inference Problem: Reconstructing Individual Behavior from Aggregate Data",
 http://hdl.handle.net/1902.1/LWMMKUTYXS UNF:3:DRWozWd89+vNLO7lY2AHbg== IQSS
-Dataverse Network \link{Distributor} V3 \link{Version}
+Dataverse Network Distributor V3 Version
 }
 \description{
 Aggregated data from 289 precincts in Fulton County, Georgia.  The variable

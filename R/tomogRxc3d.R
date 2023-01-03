@@ -19,7 +19,7 @@
 #' @param ci logical value specifying whether the estimated confidence ellipse
 #' is included on the tomography plot.
 #' @param level numeric value from 0 to 1 specifying the significance level of
-#' the confidence ellipse; eg. .95 refers to 95\% confidence ellipse.
+#' the confidence ellipse; eg. .95 refers to 95% confidence ellipse.
 #' @param seed seed value for model estimation.
 #' @param color color of tomography planes if lci=F.
 #' @param transparency numeric value from 0 to 1 specifying transparency of
