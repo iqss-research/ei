@@ -46,6 +46,7 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
 
   keep <- matrix(data = NA, nrow = ndraws, ncol = length(ei.object$phi))
   resamp <- 0
+  max_resamp <- ndraws * 50
   cur_row <- 1 # 99 resamples
   while (cur_row <= ndraws) {
     out_samp <- .samp(t, x, n, Zb, Zw, ei.object$phi, hessian, nsims, keep,
@@ -55,12 +56,15 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
 
     if (!is.null(out_samp)) {
       nro <- nrow(out_samp)
-      #if (nro > 0) {
+      if (nro > 0) {
         keep[cur_row:min(cur_row + nro - 1, ndraws), ] <- out_samp[1:min(nro, 1 + ndraws - cur_row), ]
-      #}
-      cur_row <- cur_row + nro
+        cur_row <- cur_row + nro
+      }
     }
     resamp <- resamp + 1
+    if (resamp > max_resamp) {
+      cli::cli_abort("Importance sampling did not converge after {max_resamp} attempts.")
+    }
   }
 
   # Extract values from importance sampling

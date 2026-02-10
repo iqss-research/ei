@@ -8,6 +8,13 @@
                   erho, esigma, ebeta, ealphab, ealphaw, Rfun) {
   varcv2 <- solve(varcv) / 4
 
+  # Ensure varcv2 is positive definite for rmvnorm
+  eig <- eigen(varcv2, symmetric = TRUE)
+  if (any(eig$values <= 0)) {
+    eig$values <- pmax(eig$values, 1e-6)
+    varcv2 <- eig$vectors %*% diag(eig$values) %*% t(eig$vectors)
+  }
+
   draw <- rmvnorm(nsims, par[covs], varcv2)
 
   phiv <- dmvnorm(draw, par[covs], varcv2, log = TRUE)

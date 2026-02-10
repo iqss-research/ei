@@ -191,7 +191,7 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   }
   llik <- llik + prior
   # print(-llik)
-  if (is.na(llik) | abs(llik) == Inf) llik <- NaN
+  if (is.na(llik) | abs(llik) == Inf) llik <- -1e20
   return(-llik)
 }
 
