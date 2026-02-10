@@ -7,7 +7,7 @@
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/ei)](https://cran.r-project.org/package=ei)
 ![CRAN downloads](http://cranlogs.r-pkg.org/badges/grand-total/ei)
-[![R-CMD-check](https://github.com/iqss-research/ei/workflows/R-CMD-check/badge.svg)](https://github.com/iqss-research/ei/actions)
+[![R-CMD-check](https://github.com/iqss-research/ei/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/iqss-research/ei/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 ## Installation
@@ -32,4 +32,3 @@ Data](https://gking.harvard.edu/eicamera/kinroot.html) (Princeton:
 Princeton University Press, 1997), by Gary King.
 
 For more information, see here: <https://gking.harvard.edu/eir>
-
