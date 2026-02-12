@@ -34,9 +34,9 @@ plot_tomogRxC_base <- function(form, data, total) {
   colnames(heatmap) <- as.character(1:ncol(heatmap))
   heatmap$x <- as.character(1:nrow(heatmap))
   heatmap %>%
-    tidyr::pivot_longer(-.data$x) %>%
-    dplyr::rename(y = .data$name) %>%
-    dplyr::relocate(.data$x, .data$y) %>%
+    tidyr::pivot_longer(-"x") %>%
+    dplyr::rename(y = "name") %>%
+    dplyr::relocate("x", "y") %>%
     dplyr::mutate(
       x = as.numeric(.data$x) / refine,
       y = as.numeric(.data$y) / refine,
@@ -55,7 +55,7 @@ plot_tomogRxC_base <- function(form, data, total) {
       alpha = 0.3,
       colour = "black",
       fill = NA,
-      size = 0.12,
+      linewidth = 0.12,
       show.legend = FALSE
     ) +
     scale_fill_gradient(

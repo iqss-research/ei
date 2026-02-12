@@ -41,13 +41,13 @@ plot_sims_base <- function(ei.object, options) {
         .name_repair = ~ paste0("V", 1:ncol(betabs))
       ) %>%
         tidyr::pivot_longer(everything()) %>%
-        rename(x = .data$value),
+        rename(x = "value"),
       as_tibble(
         betaws,
         .name_repair = ~ paste0("V", 1:ncol(betaws))
       ) %>%
         tidyr::pivot_longer(everything()) %>%
-        rename(y = .data$value)
+        rename(y = "value")
     ) -> dat
     dat$color <- runif(nrow(dat), 26, 51)
   })

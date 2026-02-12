@@ -138,7 +138,7 @@ plot_bound_baseRxC <- function(dbuf, options) {
       fill = rgb(res$red, 0, res$blue),
       alpha = res$alpha,
       colour = "black",
-      size = 0.15,
+      linewidth = 0.15,
       show.legend = FALSE
     ) +
     coord_fixed(xlim = c(0, 1), ylim = c(0, 1)) +
