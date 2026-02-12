@@ -71,7 +71,7 @@ plot_tomogRxC_base <- function(form, data, total) {
     scale_y_continuous(expand = c(0, 0)) +
     theme_ei()
 
-  attr(p, "data") <- formatted
+  attr(p, "ei_data") <- formatted
 
   return(p)
 }

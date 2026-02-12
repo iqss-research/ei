@@ -45,7 +45,7 @@ URL: http://gking.harvard.edu/eiR,
     https://github.com/iqss-research/ei
 BugReports: https://github.com/iqss-research/ei/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3

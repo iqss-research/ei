@@ -112,7 +112,7 @@ plot_bound_base <- function(ei.object, options) {
     scale_y_continuous(expand = c(0, 0)) +
     theme_ei()
 
-  attr(p, "data") <- list(base = res)
+  attr(p, "ei_data") <- list(base = res)
 
   return(p)
 }

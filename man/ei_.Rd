@@ -39,17 +39,17 @@ ei_(
 \arguments{
 \item{data}{data where \code{x}, \code{t}, \code{total}, \code{Zb}, \code{Zw} are found}
 
-\item{x}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of subgroup proportions in data}
+\item{x}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> column of subgroup proportions in data}
 
-\item{t}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of turnout in data}
+\item{t}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> column of turnout in data}
 
-\item{n}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of total in data}
+\item{n}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> column of total in data}
 
-\item{Zb}{<\code{\link[=dplyr_tidy_select]{data-masking}}> columns of covariates in data}
+\item{Zb}{<\code{\link[dplyr:dplyr_tidy_select]{data-masking}}> columns of covariates in data}
 
-\item{Zw}{<\code{\link[=dplyr_tidy_select]{data-masking}}> columns of covariates in data}
+\item{Zw}{<\code{\link[dplyr:dplyr_tidy_select]{data-masking}}> columns of covariates in data}
 
-\item{id}{<\code{\link[=dplyr_data_masking]{data-masking}}> column of unique ids in data}
+\item{id}{<\code{\link[dplyr:dplyr_data_masking]{data-masking}}> column of unique ids in data}
 
 \item{erho}{The standard deviation of the normal prior on \eqn{\phi_5} for
 the correlation. Numeric vector, used one at a time, in order. Default \code{c(.5, 3, 5, .1, 10)}.}

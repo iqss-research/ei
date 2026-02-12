@@ -178,7 +178,7 @@ plot_length_cont <- function(tb, options) {
     xend = tb$b_bounds[, 2], yend = tb$w_bounds[, 2]
   )
 
-  attr(p, "data") <- list(base = res)
+  attr(p, "ei_data") <- list(base = res)
 
   return(p)
 }
@@ -255,7 +255,7 @@ plot_length_cat <- function(tb, options) {
     xend = tb$b_bounds[, 2], yend = tb$w_bounds[, 2]
   )
 
-  attr(p, "data") <- list(base = res)
+  attr(p, "ei_data") <- list(base = res)
 
   return(p)
 }
@@ -328,7 +328,7 @@ plot_add_CI <- function(p, ei.object, options) {
       color = "red", show.legend = FALSE
     ) -> p
 
-  attr(p, "data")$CI <- tomo_res_CI
+  attr(p, "ei_data")$CI <- tomo_res_CI
 
   return(p)
 }
@@ -360,7 +360,7 @@ plot_add_points <- function(p, ei.object, options) {
       colour = "blue"
     ) -> p
 
-  attr(p, "data")$points <- points
+  attr(p, "ei_data")$points <- points
 
   return(p)
 }
@@ -413,7 +413,7 @@ plot_add_contourML <- function(p, ei.object, options) {
     geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", linewidth = 1.5) +
     geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", linewidth = 1.5)
 
-  attr(p, "data")$contourML<- list(res_a, res_b, res_c)
+  attr(p, "ei_data")$contourML<- list(res_a, res_b, res_c)
 
   return(p)
 }
@@ -456,7 +456,7 @@ plot_add_contourPost <- function(p, ei.object, options) {
     geom_path(data = res_b, aes(x = .data$x, y = .data$y), colour = "#16a307", linewidth = 1.5) +
     geom_path(data = res_c, aes(x = .data$x, y = .data$y), colour = "#16a307", linewidth = 1.5)
 
-  attr(p, "data")$contourPost<- list(res_a, res_b, res_c)
+  attr(p, "ei_data")$contourPost<- list(res_a, res_b, res_c)
 
   return(p)
 }

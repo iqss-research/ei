@@ -128,8 +128,8 @@ ungroup.ei_tbl <- function(x, ...) {
 
 #' @export
 #' @importFrom dplyr rowwise
-rowwise.ei_tbl <- function(x, ...) {
-  reconstruct.ei_tbl(NextMethod(), x)
+rowwise.ei_tbl <- function(data, ...) {
+  reconstruct.ei_tbl(NextMethod(), data)
 }
 
 rename_helper <- function(.data, attribute, loc) {

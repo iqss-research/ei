@@ -67,7 +67,7 @@ plot_density_base <- function(ei.object, options) {
     ggplot2::xlim(c(0, 1)) +
     theme_ei() -> p
 
-  attr(p, "data") <- list(base = beta)
+  attr(p, "ei_data") <- list(base = beta)
 
   return(p)
 }
