@@ -1,0 +1,109 @@
+# Package index
+
+## Functions
+
+ei Functions
+
+- [`ei()`](https://iqss-research.github.io/ei/reference/ei.md) :
+  Ecological Inference Estimation
+- [`ei.bounds()`](https://iqss-research.github.io/ei/reference/ei.bounds.md)
+  : Computes Analytical Bounds from Accounting Identity
+- [`ei.sim()`](https://iqss-research.github.io/ei/reference/ei.sim.md) :
+  Simulate EI Solution via Importance Sampling
+- [`eiread()`](https://iqss-research.github.io/ei/reference/eiread.md) :
+  Quantities of Interest from Ecological Inference Estimation
+- [`summary(`*`<ei>`*`)`](https://iqss-research.github.io/ei/reference/summary.ei.md)
+  : Summarize Ecological Inference Estimates
+- [`values_ei()`](https://iqss-research.github.io/ei/reference/values_ei.md)
+  : Returning an element in the ei object
+
+## Visualization functions
+
+ei visualization functions
+
+- [`plot_bound()`](https://iqss-research.github.io/ei/reference/plot_bound.md)
+  : Visualizing EI (bound)
+- [`plot_data()`](https://iqss-research.github.io/ei/reference/plot_data.md)
+  : Get data used to create a plot
+- [`plot_density()`](https://iqss-research.github.io/ei/reference/plot_density.md)
+  : Visualizing EI (density)
+- [`plot_movie()`](https://iqss-research.github.io/ei/reference/plot_movie.md)
+  : Visualizing EI (Shiny visualization)
+- [`plot_sims()`](https://iqss-research.github.io/ei/reference/plot_sims.md)
+  : Visualizing EI (simulation)
+- [`plot_tomog()`](https://iqss-research.github.io/ei/reference/plot_tomog.md)
+  : Visualizing EI (tomography plot)
+- [`plot_tomogRxC()`](https://iqss-research.github.io/ei/reference/plot_tomogRxC.md)
+  : Visualizing EI (tomography plot for RxC)
+- [`plot_truth()`](https://iqss-research.github.io/ei/reference/plot_truth.md)
+  : Visualizing EI (with truth)
+- [`plot_xt()`](https://iqss-research.github.io/ei/reference/plot_xt.md)
+  : Visualizing EI (xt-plot)
+
+## Tidy Workflow
+
+Alternative approach for a tidy workflow
+
+- [`ei_()`](https://iqss-research.github.io/ei/reference/ei_.md) : Run
+  (tidy) Ecological Inference Estimation and Simulation
+
+- [`ei_est()`](https://iqss-research.github.io/ei/reference/ei_est.md) :
+  Run (tidy) Ecological Inference Estimation
+
+- [`ei_sim()`](https://iqss-research.github.io/ei/reference/ei_sim.md) :
+  Run Ecological Inference Simulation
+
+- [`as_ei_tbl()`](https://iqss-research.github.io/ei/reference/ei_tbl.md)
+  [`ei_as_ei_tbl()`](https://iqss-research.github.io/ei/reference/ei_tbl.md)
+  :
+
+  Convert to `ei_tbl` objects
+
+## Data
+
+Included Data
+
+- [`RxCdata`](https://iqss-research.github.io/ei/reference/RxCdata.md) :
+  Sample Dataset
+- [`census1910`](https://iqss-research.github.io/ei/reference/census1910.md)
+  : Black Literacy in 1910
+- [`eiRxCsample`](https://iqss-research.github.io/ei/reference/eiRxCsample.md)
+  : RxC Sample Dataset
+- [`fultongen`](https://iqss-research.github.io/ei/reference/fultongen.md)
+  : Voter Transitions
+- [`lavoteall`](https://iqss-research.github.io/ei/reference/lavoteall.md)
+  : Turnout by Race in Louisiana
+- [`matproii`](https://iqss-research.github.io/ei/reference/matproii.md)
+  : Voter Registration by Race in Southern States
+- [`nj`](https://iqss-research.github.io/ei/reference/nj.md) :
+  Nonminority Turnout in New Jersey
+- [`sample_ei`](https://iqss-research.github.io/ei/reference/sample_ei.md)
+  : Sample Data for Black Votes
+
+## Misc.
+
+Additional functions
+
+- [`ei()`](https://iqss-research.github.io/ei/reference/ei.md) :
+  Ecological Inference Estimation
+- [`ei.bounds()`](https://iqss-research.github.io/ei/reference/ei.bounds.md)
+  : Computes Analytical Bounds from Accounting Identity
+- [`ei.sim()`](https://iqss-research.github.io/ei/reference/ei.sim.md) :
+  Simulate EI Solution via Importance Sampling
+- [`eiread()`](https://iqss-research.github.io/ei/reference/eiread.md) :
+  Quantities of Interest from Ecological Inference Estimation
+- [`summary(`*`<ei>`*`)`](https://iqss-research.github.io/ei/reference/summary.ei.md)
+  : Summarize Ecological Inference Estimates
+- [`values_ei()`](https://iqss-research.github.io/ei/reference/values_ei.md)
+  : Returning an element in the ei object
+
+## Deprecated Functions
+
+Functions that have been superceded by better tools
+
+- [`plot(`*`<ei>`*`)`](https://iqss-research.github.io/ei/reference/plot.ei.md)
+  : Plotting Ecological Inference Estimates
+- [`tomogRxC()`](https://iqss-research.github.io/ei/reference/tomogRxC.md)
+  : Plotting Ecological Inference Estimates with eiRxC information
+- [`tomogRxC3d()`](https://iqss-research.github.io/ei/reference/tomogRxC3d.md)
+  : Plotting 2x3 Ecological Inference Estimates in 3 dimensions

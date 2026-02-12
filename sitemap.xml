@@ -1,126 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://iqss-research.github.io/ei/404.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/articles/ei-2x2.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/articles/ei-RxC.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/articles/ei-introduction.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/index.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/RxCdata.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/census1910.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/ei.bounds.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/ei.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/ei.sim.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/eiRxCsample.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/ei_.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/ei_est.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/ei_sim.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/ei_tbl.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/eiread.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/fultongen.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/lavoteall.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/matproii.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/nj.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot.ei.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_bound.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_data.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_density.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_movie.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_sims.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_tomog.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_tomogRxC.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_truth.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/plot_xt.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/reexports.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/sample_ei.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/summary.ei.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/tomogRxC.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/tomogRxC3d.html</loc>
-  </url>
-  <url>
-    <loc>https://iqss-research.github.io/ei/reference/values_ei.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://iqss-research.github.io/ei/404.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/articles/ei-2x2.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/articles/ei-RxC.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/articles/ei-introduction.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/articles/index.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/authors.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/index.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/news/index.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/RxCdata.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/census1910.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/ei.bounds.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/ei.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/ei.sim.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/eiRxCsample.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/ei_.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/ei_est.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/ei_sim.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/ei_tbl.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/eiread.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/fultongen.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/index.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/lavoteall.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/matproii.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/nj.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/pipe.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot.ei.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_bound.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_data.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_density.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_movie.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_sims.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_tomog.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_tomogRxC.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_truth.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/plot_xt.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/reexports.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/sample_ei.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/summary.ei.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/tomogRxC.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/tomogRxC3d.html</loc></url>
+<url><loc>https://iqss-research.github.io/ei/reference/values_ei.html</loc></url>
 </urlset>
+

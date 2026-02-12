@@ -1,0 +1,43 @@
+# Introduction
+
+## Introduction: Ecological Inference
+
+This program provides methods of inferring individual behavior from
+aggregate data. It implements the statistical procedures, diagnostics,
+and graphics from the Gary King, **A Solution to the Ecological
+Inference Problem: Reconstructing Individual Behavior from Aggregate
+Data** (Princeton: Princeton University Press, 1997),
+<http://j.mp/ecinfbook>; Ori Rosen, Wenxin Jiang, Gary King, and Martin
+A. Tanner (2001) \`\`Bayesian and Frequentist Inference for Ecological
+Inferece: The RxC Case.’’ (*Statistica Neerlandica*, Vol.55, nr.2, pp
+134-156), <http://j.mp/eiRxC>; and from our own ongoing work. Except
+where indicated, all references to page, section, chapter, table, and
+figure numbers in this document refer to the the first reference.
+
+Ecological inference is the process of using aggregate (i.e.,
+“ecological”) data to infer discrete individual-level relationships of
+interest when individual-level data are not available. Ecological
+inferences are required in political science research when
+individual-level surveys are unavailable (e.g., local or comparative
+electoral politics), unreliable (racial politics), insufficient
+(political geography), or infeasible (political history). They are also
+required in public policy (e.g., for applying the Voting Rights Act) and
+other academic disciplines ranging from epidemiology and marketing to
+sociology and quantitative history. Most researchers using aggregate
+data have encountered some form of the ecological inference problem.
+
+Because the ecological inference problem is caused by the lack of
+individual-level information, no method of ecological inference,
+including that estimated by this program, will always produce accurate
+results. However, potential difficulties are reduced by models that
+include more available information, diagnostics to evaluate when
+assumptions need to be modified, easy methods of modifying the
+assumptions, and uncertainty estimates for quantities of interest. We
+recommend reviewing Chapter 16 while using this program for actual
+research. Model dependence defines ecological inference when going
+anywhere beyond the bounds and tomography plots, and so we have added
+new graphical procedures for evaluating the degree of model dependence.
+
+`ei` is a unifed program that contains methods for both the 2x2
+ecological inference case and the RxC case. We will begin by explaining
+how to use eiR in the 2x2 case, and then move on to RxC examples.
