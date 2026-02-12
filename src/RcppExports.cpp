@@ -23,9 +23,65 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// createR_cpp
+NumericVector createR_cpp(NumericVector bb, NumericVector bw, double sb, double sw, double rho, LogicalVector sub, int Rfun);
+RcppExport SEXP _ei_createR_cpp(SEXP bbSEXP, SEXP bwSEXP, SEXP sbSEXP, SEXP swSEXP, SEXP rhoSEXP, SEXP subSEXP, SEXP RfunSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type bb(bbSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type bw(bwSEXP);
+    Rcpp::traits::input_parameter< double >::type sb(sbSEXP);
+    Rcpp::traits::input_parameter< double >::type sw(swSEXP);
+    Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type sub(subSEXP);
+    Rcpp::traits::input_parameter< int >::type Rfun(RfunSEXP);
+    rcpp_result_gen = Rcpp::wrap(createR_cpp(bb, bw, sb, sw, rho, sub, Rfun));
+    return rcpp_result_gen;
+END_RCPP
+}
+// like_cpp
+double like_cpp(NumericVector param, NumericVector y, NumericVector x, NumericVector n_vec, int numb, double erho, double esigma, double ebeta);
+RcppExport SEXP _ei_like_cpp(SEXP paramSEXP, SEXP ySEXP, SEXP xSEXP, SEXP n_vecSEXP, SEXP numbSEXP, SEXP erhoSEXP, SEXP esigmaSEXP, SEXP ebetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type param(paramSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n_vec(n_vecSEXP);
+    Rcpp::traits::input_parameter< int >::type numb(numbSEXP);
+    Rcpp::traits::input_parameter< double >::type erho(erhoSEXP);
+    Rcpp::traits::input_parameter< double >::type esigma(esigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type ebeta(ebetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(like_cpp(param, y, x, n_vec, numb, erho, esigma, ebeta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// like_batch_cpp
+NumericVector like_batch_cpp(NumericMatrix draw, NumericVector y, NumericVector x, NumericVector n_vec, int numb, double erho, double esigma, double ebeta);
+RcppExport SEXP _ei_like_batch_cpp(SEXP drawSEXP, SEXP ySEXP, SEXP xSEXP, SEXP n_vecSEXP, SEXP numbSEXP, SEXP erhoSEXP, SEXP esigmaSEXP, SEXP ebetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericMatrix >::type draw(drawSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type n_vec(n_vecSEXP);
+    Rcpp::traits::input_parameter< int >::type numb(numbSEXP);
+    Rcpp::traits::input_parameter< double >::type erho(erhoSEXP);
+    Rcpp::traits::input_parameter< double >::type esigma(esigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type ebeta(ebetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(like_batch_cpp(draw, y, x, n_vec, numb, erho, esigma, ebeta));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_ei_bounds_cpp", (DL_FUNC) &_ei_bounds_cpp, 3},
+    {"_ei_createR_cpp", (DL_FUNC) &_ei_createR_cpp, 7},
+    {"_ei_like_cpp", (DL_FUNC) &_ei_like_cpp, 8},
+    {"_ei_like_batch_cpp", (DL_FUNC) &_ei_like_batch_cpp, 8},
     {NULL, NULL, 0}
 };
 

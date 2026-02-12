@@ -22,13 +22,16 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   # print(c(mean(Bb0),mean(Bw0),sb0,sw0,rho0,mean(Bb0v),mean(Bw0v)))
   # print(c(mean(bb),mean(bw),sb,sw,rho))
 
-  # Create Demographic Categories
-  homoindx <- ifelse(x == 0, 1, 0)
-  homoindx <- ifelse(x == 1, 2, homoindx)
+  # Create Demographic Categories (avoid ifelse overhead)
+  np <- length(x)
+  homoindx <- integer(np)
+  homoindx[x == 0] <- 1L
+  homoindx[x == 1] <- 2L
   enumtol <- .0001
-  cT0 <- y < enumtol & homoindx == 0
-  cT1 <- y > (1 - enumtol) & homoindx == 0
-  ok <- ifelse(homoindx == 0 & cT0 == 0 & cT1 == 0, TRUE, FALSE)
+  hetero <- homoindx == 0L
+  cT0 <- hetero & y < enumtol
+  cT1 <- hetero & y > (1 - enumtol)
+  ok <- hetero & !cT0 & !cT1
 
   # Compute likelihood for different categories
 
@@ -40,9 +43,10 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
   omega <- sigb2 * x + sigbw * omx
   ebb <- bb + (omega / s2) * epsilon
   vbb <- sigb2 - (omega^2) / s2
-  vbb <- ifelse(vbb < 1 * 10^-32, .0001, vbb)
+  vbb[vbb < 1e-32] <- .0001
   bounds <- bounds1(x, y, n)
-  s <- ifelse(vbb >= 0 & vbb != Inf & !is.na(vbb), sqrt(vbb), NaN)
+  s <- sqrt(vbb)
+  s[!is.finite(s)] <- NaN
   res <- NULL
   b.s <- (bounds[ok, 2] - ebb[ok]) / s[ok]
   as <- (bounds[ok, 1] - ebb[ok]) / s[ok]
@@ -75,8 +79,9 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     bnds <- cbind(rep(0, sum(wh)), rep(1, sum(wh)))
     Ebb <- bb[wh] + rho * (sb / sw) * epsilon
     vbb <- sigb2 * (1 - rho^2)
-    vbb <- ifelse(vbb < 1 * 10^-32, .0001, vbb)
-    s <- ifelse(vbb >= 0 & vbb != Inf & !is.na(vbb), sqrt(vbb), NaN)
+    vbb[vbb < 1e-32] <- .0001
+    s <- sqrt(vbb)
+    s[!is.finite(s)] <- NaN
     b.s <- (bnds[, 2] - Ebb) / s
     as <- (bnds[, 1] - Ebb) / s
     res <- log(pnorm(as, lower.tail = FALSE) - pnorm(b.s, lower.tail = FALSE))
@@ -95,8 +100,9 @@ like <- function(param, y, x, n, Zb, Zw, numb, erho, esigma, ebeta,
     bnds <- cbind(rep(0, sum(bl)), rep(1, sum(bl)))
     Ebb <- bw[bl] + rho * (sw / sb) * epsilon
     vbb <- sigw2 * (1 - rho^2)
-    vbb <- ifelse(vbb < 1 * 10^-32, .0001, vbb)
-    s <- ifelse(vbb >= 0 & vbb != Inf & !is.na(vbb), sqrt(vbb), NaN)
+    vbb[vbb < 1e-32] <- .0001
+    s <- sqrt(vbb)
+    s[!is.finite(s)] <- NaN
     b.s <- (bnds[, 2] - Ebb) / s
     as <- (bnds[, 1] - Ebb) / s
     res <- log(pnorm(as, lower.tail = FALSE) - pnorm(b.s, lower.tail = FALSE))

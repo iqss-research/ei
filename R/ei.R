@@ -225,15 +225,27 @@ ei.estimate <- function(t, x, n, id, Zb = 1, Zw = 1, data = NA, erho = .5,
 
   cli::cli_alert_info("Maximizing likelihood for {.arg erho} = {erho}.")
 
-  solution <- optim(
-    par = start, fn = like,
-    y = t, x = x, n = n, Zb = Zb,
-    Zw = Zw, numb = numb, erho = erho, esigma = esigma,
-    ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
-    hessian = TRUE,
-    control = list(factr = 1e6, pgtol = 0.001),
-    method = "L-BFGS-B"
-  )
+  # Use C++ likelihood for the no-covariates case (much faster)
+  if (Rfun == 5 && all(is.na(ealphab)) && all(is.na(ealphaw))) {
+    solution <- optim(
+      par = start, fn = like_cpp,
+      y = t, x = x, n_vec = n, numb = numb,
+      erho = erho, esigma = esigma, ebeta = ebeta,
+      hessian = TRUE,
+      control = list(factr = 1e6, pgtol = 0.001),
+      method = "L-BFGS-B"
+    )
+  } else {
+    solution <- optim(
+      par = start, fn = like,
+      y = t, x = x, n = n, Zb = Zb,
+      Zw = Zw, numb = numb, erho = erho, esigma = esigma,
+      ebeta = ebeta, ealphab = ealphab, ealphaw = ealphaw, Rfun = Rfun,
+      hessian = TRUE,
+      control = list(factr = 1e6, pgtol = 0.001),
+      method = "L-BFGS-B"
+    )
+  }
   cli::cli_process_done()
 
   # Find values of the Hessian that are 0 or 1.

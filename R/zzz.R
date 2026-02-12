@@ -31,20 +31,23 @@
   }
 
   # Calculates importance ratio
-  import1 <- vapply(1:nsims, function(i) {
-    -like(draw[i, ], t, x, n, Zb, Zw,
-      numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
-    ) - phiv[i]
-  }, 0)
+  # Use C++ batch computation for the no-covariates case (Rfun==5)
+  if (Rfun == 5 && all(is.na(ealphab)) && all(is.na(ealphaw))) {
+    import1 <- like_batch_cpp(draw, t, x, n, numb, erho, esigma, ebeta) - phiv
+  } else {
+    import1 <- vapply(1:nsims, function(i) {
+      -like(draw[i, ], t, x, n, Zb, Zw,
+        numb = numb, erho, esigma, ebeta, ealphab, ealphaw, Rfun
+      ) - phiv[i]
+    }, 0)
+  }
 
   ok <- !is.nan(import1)
   lnir <- import1 - max(import1[ok])
-  ir <- NA
+  ir <- rep(NA_real_, nsims)
   ir[ok] <- exp(lnir[ok])
-  # print(mean(is.finite(ir)))
-  tst <- ifelse(is.finite(ir), ir > runif(1, 0, 1), FALSE)
-  # print(sum(tst))
-  # rbind(keep, draw[tst, , drop = FALSE])
+  u <- runif(1, 0, 1)
+  tst <- is.finite(ir) & ir > u
   draw[tst, , drop = FALSE]
 }
 
@@ -54,11 +57,14 @@
 # numb numw -- number of covaraites for bb and bw
 
 .createR <- function(sub, Rfun, bb, bw, sb, sw, rho, x, numb, numw) {
+  # Use C++ implementation for Rfun 1, 2, or 5 (fast bivariate normal CDF)
+  if (Rfun %in% c(1, 2, 5)) {
+    return(createR_cpp(as.numeric(bb), as.numeric(bw), sb, sw, rho, sub, as.integer(Rfun)))
+  }
+
   out <- NULL
   lower <- cbind(-bb[sub] / sb, -bw[sub] / sw)
   upper <- cbind(-bb[sub] / sb + 1 / sb, -bw[sub] / sw + 1 / sw)
-  # lower[!is.finite(lower)] <- -Inf
-  # upper[!is.finite(upper)] <- Inf
   mean <- c(0, 0)
   corr <- matrix(c(1, rho, rho, 1), nrow = 2)
 

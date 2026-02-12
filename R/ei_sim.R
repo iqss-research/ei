@@ -99,60 +99,78 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
   rho <- psi[, (length(x) * 2 + 3)]
   omx <- 1 - x
   sbw <- rho * sb * sw
-  betab <- matrix(nrow = length(x), ncol = nrow(keep))
-  betaw <- matrix(nrow = length(x), ncol = nrow(keep))
-  homoindx <- ifelse(x == 0, 1, 0)
-  homoindx <- ifelse(x == 1, 2, homoindx)
+  np <- length(x)
+  nd <- nrow(keep)
+  betab <- matrix(nrow = np, ncol = nd)
+  betaw <- matrix(nrow = np, ncol = nd)
+
+  # Precompute categories using direct logical indexing (avoid ifelse)
+  homoindx <- integer(np)
+  homoindx[x == 0] <- 1L
+  homoindx[x == 1] <- 2L
   enumtol <- .0001
-  cT0 <- t < enumtol & homoindx == 0
-  cT1 <- t > (1 - enumtol) & homoindx == 0
-  ok <- ifelse(homoindx == 0 & cT0 == 0 & cT1 == 0, T, F)
-  wh <- homoindx == 1
-  bl <- homoindx == 2
-  for (i in 1:nrow(keep)) {
-    sig2 <- sb[i]^2 * x^2 + sw[i]^2 * omx^2 + sbw[i] * 2 * x * omx
+  hetero <- homoindx == 0L
+  cT0 <- hetero & t < enumtol
+  cT1 <- hetero & t > (1 - enumtol)
+  ok <- hetero & !cT0 & !cT1
+  wh <- homoindx == 1L
+  bl <- homoindx == 2L
+
+  # Hoist bounds computation out of the loop (constant across iterations)
+  bounds <- bounds1(x, t, n)
+  ok_idx <- which(ok)
+  n_ok <- length(ok_idx)
+  bounds_ok_lo <- bounds[ok_idx, 1]
+  bounds_ok_hi <- bounds[ok_idx, 2]
+
+  # Precompute fixed values for special categories
+  out_template <- numeric(np)
+  out_template[wh] <- NA
+  out_template[bl] <- t[bl]
+  out_template[cT1] <- bounds[cT1, 1]
+  out_template[cT0] <- bounds[cT0, 1]
+
+  x2 <- x^2
+  omx2 <- omx^2
+  x_omx_2 <- 2 * x * omx
+
+  for (i in 1:nd) {
+    sig2 <- sb[i]^2 * x2 + sw[i]^2 * omx2 + sbw[i] * x_omx_2
     omega <- sb[i]^2 * x + sbw[i] * omx
-    eps <- t - (bb[i, ]) * x - (bw[i, ]) * omx
+    eps <- t - bb[i, ] * x - bw[i, ] * omx
     mbb <- bb[i, ] + omega / sig2 * eps
-    vbb <- sb[i]^2 - (omega^2) / sig2
-    vbb <- ifelse(vbb < 1 * 10^-32, .0001, vbb)
-    s <- ifelse(vbb >= 0 & vbb != Inf & !is.na(vbb), sqrt(vbb), NaN)
-    bounds <- bounds1(x, t, n)
-    out <- NULL
-    for (j in 1:length(x[ok])) {
-      out[ok][j] <- rtnorm(1,
-        mean = mbb[ok][j], sd = s[ok][j],
-        lower = bounds[ok, ][j, 1],
-        upper = bounds[ok, ][j, 2]
-      )
-    }
-    out[wh] <- NA
-    out[bl] <- t[bl]
-    out[cT1] <- bounds[cT1, 1]
-    out[cT0] <- bounds[cT0, 1]
+    vbb_raw <- sb[i]^2 - (omega^2) / sig2
+    vbb_raw[vbb_raw < 1e-32] <- .0001
+    s_all <- sqrt(vbb_raw)
+    s_all[!is.finite(s_all)] <- NaN
+
+    # Vectorized rtnorm call for all ok indices at once
+    out <- out_template
+    out[ok_idx] <- rtnorm(n_ok,
+      mean = mbb[ok_idx], sd = s_all[ok_idx],
+      lower = bounds_ok_lo, upper = bounds_ok_hi
+    )
     betab[, i] <- out
   }
-  omx <- 1 - x
-  for (j in 1:length(x[ok])) {
-    betabs <- betab[ok, ][j, ]
-    betaw[ok, ][j, ] <- t[ok][j] / omx[ok][j] - betabs * x[ok][j] / omx[ok][j]
+
+  # Vectorized betaw computation (no loop needed)
+  if (n_ok > 0) {
+    t_over_omx <- t[ok_idx] / omx[ok_idx]
+    x_over_omx <- x[ok_idx] / omx[ok_idx]
+    betaw[ok_idx, ] <- t_over_omx - betab[ok_idx, , drop = FALSE] * x_over_omx
   }
 
   if (sum(wh) > 0) {
-    betaw[wh, ] <- as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(t[wh]))
+    betaw[wh, ] <- rep(1, nd) %o% t[wh]
   }
-
   if (sum(bl) > 0) {
-    # betaw[bl, ] <- NA
-    betaw[bl, ] <- as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(t[bl]))
+    betaw[bl, ] <- rep(1, nd) %o% t[bl]
   }
   if (sum(cT1) > 0) {
-    betaw[cT1, ] <-
-      as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(bounds[cT1, 3]))
+    betaw[cT1, ] <- rep(1, nd) %o% bounds[cT1, 3]
   }
   if (sum(cT0) > 0) {
-    betaw[cT0, ] <-
-      as.matrix(rep(1, nrow(keep))) %*% t(as.matrix(bounds[cT0, 3]))
+    betaw[cT0, ] <- rep(1, nd) %o% bounds[cT0, 3]
   }
 
   mbetab <- rowMeans(betab)

@@ -4,3 +4,16 @@
 bounds_cpp <- function(x, t, n) {
   .Call(`_ei_bounds_cpp`, x, t, n)
 }
+
+createR_cpp <- function(bb, bw, sb, sw, rho, sub, Rfun) {
+    .Call(`_ei_createR_cpp`, bb, bw, sb, sw, rho, sub, Rfun)
+}
+
+like_cpp <- function(param, y, x, n_vec, numb, erho, esigma, ebeta) {
+    .Call(`_ei_like_cpp`, param, y, x, n_vec, numb, erho, esigma, ebeta)
+}
+
+like_batch_cpp <- function(draw, y, x, n_vec, numb, erho, esigma, ebeta) {
+    .Call(`_ei_like_batch_cpp`, draw, y, x, n_vec, numb, erho, esigma, ebeta)
+}
+
