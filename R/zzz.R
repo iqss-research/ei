@@ -6,7 +6,17 @@
 
 .samp <- function(t, x, n, Zb, Zw, par, varcv, nsims, keep, numb, covs,
                   erho, esigma, ebeta, ealphab, ealphaw, Rfun) {
-  varcv2 <- solve(varcv) / 4
+  # Try standard solve, fallback to pseudoinverse if singular
+  varcv2 <- tryCatch(
+    solve(varcv) / 4,
+    error = function(e) {
+      # Matrix is computationally singular, use Moore-Penrose pseudoinverse
+      eig <- eigen(varcv, symmetric = TRUE)
+      tol <- max(1e-8, max(abs(eig$values)) * sqrt(.Machine$double.eps))
+      pos <- eig$values > tol
+      (eig$vectors[, pos, drop = FALSE] %*% diag(1 / eig$values[pos], nrow = sum(pos)) %*% t(eig$vectors[, pos, drop = FALSE])) / 4
+    }
+  )
 
   # Ensure varcv2 is positive definite for rmvnorm
   eig <- eigen(varcv2, symmetric = TRUE)
