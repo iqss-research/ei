@@ -17,18 +17,14 @@
 
   draw <- rmvnorm(nsims, par[covs], varcv2)
 
-  phiv <- dmvnorm(draw, par[covs], varcv2, log = TRUE)
-  zbmiss <- isFALSE(covs[6])
-  zwmiss <- isFALSE(covs[(6 + numb)])
-  if (zbmiss == TRUE & zwmiss == FALSE) {
-    draw <- cbind(draw[, 1:5], rep(1, nsims), draw[, (5 + numb):sum(covs)])
+  # Restore missing columns: insert 0 for parameters not being estimated
+  if (sum(covs) < length(covs)) {
+    full_draw <- matrix(0, nrow = nsims, ncol = length(covs))
+    full_draw[, covs] <- draw
+    draw <- full_draw
   }
-  if (zbmiss == FALSE & zwmiss == TRUE) {
-    draw <- cbind(draw, rep(1, nsims))
-  }
-  if (zbmiss == TRUE & zwmiss == TRUE) {
-    draw <- cbind(draw, rep(1, nsims), rep(1, nsims))
-  }
+
+  phiv <- dmvnorm(draw[, covs, drop = FALSE], par[covs], varcv2, log = TRUE)
 
   # Calculates importance ratio
   # Use C++ batch computation for the no-covariates case (Rfun==5)
@@ -46,7 +42,7 @@
   lnir <- import1 - max(import1[ok])
   ir <- rep(NA_real_, nsims)
   ir[ok] <- exp(lnir[ok])
-  u <- runif(1, 0, 1)
+  u <- runif(nsims, 0, 1)
   tst <- is.finite(ir) & ir > u
   draw[tst, , drop = FALSE]
 }

@@ -57,8 +57,9 @@ ei.sim <- function(ei.object, ndraws = 99, nsims = 100) {
     if (!is.null(out_samp)) {
       nro <- nrow(out_samp)
       if (nro > 0) {
-        keep[cur_row:min(cur_row + nro - 1, ndraws), ] <- out_samp[1:min(nro, 1 + ndraws - cur_row), ]
-        cur_row <- cur_row + nro
+        nrows_to_add <- min(nro, ndraws - cur_row + 1)
+        keep[cur_row:(cur_row + nrows_to_add - 1), ] <- out_samp[1:nrows_to_add, , drop = FALSE]
+        cur_row <- cur_row + nrows_to_add
       }
     }
     resamp <- resamp + 1
