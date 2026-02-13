@@ -216,7 +216,7 @@ dbuf <- ei(form, total = "n", data = sample_ei)
 #> ✔ Running 2x2 ei [2ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [324ms]
+#> ✔ Beginning importance sampling. [280ms]
 #> 
 summary(dbuf)
 #> 

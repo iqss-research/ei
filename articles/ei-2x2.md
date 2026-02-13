@@ -144,7 +144,7 @@ dbuf <- ei(formula = formula, total = "n", data = matproii)
 #> ℹ Running 2x2 ei✔ Running 2x2 ei [3ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [167ms]
+#> ✔ Beginning importance sampling. [165ms]
 ```
 
 To include a covariate on $\beta_{i}^{b}$ simply specify a covariate
@@ -396,7 +396,7 @@ dbuf_truth <- ei(formula = formula, total = "n", data = matproii, truth = truth)
 #> ℹ Running 2x2 ei✔ Running 2x2 ei [1ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [194ms]
+#> ✔ Beginning importance sampling. [191ms]
 ```
 
 Then use plot to compare the estimates of the `ei` algorithm to the true
