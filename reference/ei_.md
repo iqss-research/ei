@@ -195,6 +195,6 @@ dbuf <- ei_(sample_ei, x, t, n)
 #> ✔ Running 2x2 ei [1ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [56ms]
+#> ✔ Beginning importance sampling. [86ms]
 #> 
 ```

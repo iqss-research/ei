@@ -49,6 +49,6 @@ ei_obj <- ei(form, total = "n", data = sample_ei, simulate = FALSE)
 #> 
 sims <- ei.sim(ei_obj)
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [107ms]
+#> ✔ Beginning importance sampling. [68ms]
 #> 
 ```

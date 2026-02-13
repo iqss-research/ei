@@ -156,7 +156,7 @@ dbuf <- ei(formula = formula, total = "n", data = sample_ei)
 #> ✔ Running 2x2 ei [1ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [52ms]
+#> ✔ Beginning importance sampling. [56ms]
 #> 
 plot(dbuf, "tomog")
 #> Warning: `plot()` was deprecated in ei 2.0.0.

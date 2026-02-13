@@ -144,7 +144,7 @@ dbuf <- ei(formula = formula, total = "n", data = matproii)
 #> ℹ Running 2x2 ei✔ Running 2x2 ei [3ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [210ms]
+#> ✔ Beginning importance sampling. [167ms]
 ```
 
 To include a covariate on $\beta_{i}^{b}$ simply specify a covariate
@@ -179,7 +179,7 @@ summary(dbuf)
 #> 
 #> ── Resamp ──
 #> 
-#> 24
+#> 19
 #> 
 #> ── Maximum likelihood results in scale of estimation (and se's) ──
 #> 
@@ -190,12 +190,12 @@ summary(dbuf)
 #> ── Untruncated psi's ──
 #> 
 #>         BB       BW        SB        SW       RHO
-#>  0.9961841 1.158898 0.3388497 0.2793922 0.9036207
+#>  0.9905045 1.152859 0.3368288 0.2760415 0.9179783
 #> 
 #> ── Truncated psi's (ultimate scale) ──
 #> 
-#>         BB        BW       SB        SW      RHO
-#>  0.6225328 0.8254656 0.201364 0.1429169 0.733478
+#>         BB        BW       SB        SW       RHO
+#>  0.6199244 0.8259608 0.198239 0.1423288 0.7695587
 #> 
 #> ── Aggregate Bounds ──
 #> 
@@ -205,9 +205,9 @@ summary(dbuf)
 #> 
 #> ── Estimates of Aggregate Quantities of Interest ──
 #> 
-#>         mean         sd
-#> Bb 0.5732757 0.02833158
-#> Bw 0.8172067 0.00807463
+#>         mean          sd
+#> Bb 0.5711949 0.024469142
+#> Bw 0.8177997 0.006973817
 #> 
 #> ── Precision ──
 #> 
@@ -396,7 +396,7 @@ dbuf_truth <- ei(formula = formula, total = "n", data = matproii, truth = truth)
 #> ℹ Running 2x2 ei✔ Running 2x2 ei [1ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [101ms]
+#> ✔ Beginning importance sampling. [194ms]
 ```
 
 Then use plot to compare the estimates of the `ei` algorithm to the true

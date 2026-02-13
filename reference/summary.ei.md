@@ -45,7 +45,7 @@ dbuf <- ei(formula = formula, total = "n", data = sample_ei)
 #> ✔ Running 2x2 ei [1ms]
 #> 
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [64ms]
+#> ✔ Beginning importance sampling. [70ms]
 #> 
 summary(dbuf)
 #> 
@@ -73,7 +73,7 @@ summary(dbuf)
 #> 
 #> ── Resamp ──
 #> 
-#> 19
+#> 22
 #> 
 #> 
 #> ── Maximum likelihood results in scale of estimation (and se's) ──
@@ -85,14 +85,14 @@ summary(dbuf)
 #> 
 #> ── Untruncated psi's ──
 #> 
-#>         BB        BW        SB        SW       RHO
-#>  0.1948911 0.7254949 0.1076914 0.1534774 0.3826016
+#>        BB        BW        SB        SW       RHO
+#>  0.198537 0.7276286 0.1045091 0.1552543 0.3733942
 #> 
 #> 
 #> ── Truncated psi's (ultimate scale) ──
 #> 
-#>        BB        BW         SB        SW       RHO
-#>  0.203037 0.7147618 0.09824348 0.1394448 0.3389257
+#>         BB      BW         SB        SW       RHO
+#>  0.2042261 0.71488 0.09799781 0.1411995 0.3158756
 #> 
 #> 
 #> ── Aggregate Bounds ──
@@ -104,9 +104,9 @@ summary(dbuf)
 #> 
 #> ── Estimates of Aggregate Quantities of Interest ──
 #> 
-#>         mean         sd
-#> Bb 0.2030510 0.01126210
-#> Bw 0.7182539 0.00888656
+#>         mean          sd
+#> Bb 0.2035611 0.012311631
+#> Bw 0.7178513 0.009714708
 #> 
 #> 
 #> ── Precision ──

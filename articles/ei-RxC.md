@@ -57,7 +57,7 @@ We can call this formula using ei:
 ``` r
 dbuf <- ei(formula, data = RxCdata)
 #> ℹ Running eiRxC
-#> ✔ Running eiRxC [103ms]
+#> ✔ Running eiRxC [104ms]
 #> 
 ```
 

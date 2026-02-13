@@ -34,6 +34,6 @@ data(sample_ei)
 dbuf <- ei_est(sample_ei, x, t, n) %>% ei_sim()
 #> ℹ Maximizing likelihood
 #> ⠙ Beginning importance sampling.
-#> ✔ Beginning importance sampling. [883ms]
+#> ✔ Beginning importance sampling. [904ms]
 #> 
 ```
